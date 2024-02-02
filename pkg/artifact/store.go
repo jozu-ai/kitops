@@ -9,7 +9,7 @@ import (
 	_ "crypto/sha512"
 
 	"github.com/opencontainers/go-digest"
-	"github.com/opencontainers/image-spec/specs-go/v1"
+	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/content/oci"
 )
 
@@ -29,21 +29,21 @@ func NewArtifactStore() *Store {
 	}
 }
 
-func (store *Store) SaveContentLayer (layer *Layer)  (*v1.Descriptor, error)  {
-	 ctx := context.Background()
-	 
-	 buf := &bytes.Buffer{}
-	 err := layer.Apply(buf)
-	 if err != nil {
+func (store *Store) SaveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) {
+	ctx := context.Background()
+
+	buf := &bytes.Buffer{}
+	err := layer.Apply(buf)
+	if err != nil {
 		return nil, err
 	}
-	
-    // Create a descriptor for the layer
-    desc := v1.Descriptor{
-        MediaType: v1.MediaTypeImageLayer,
-        Digest:    digest.FromBytes(buf.Bytes()),
-        Size:      int64(buf.Len()),
-    }
+
+	// Create a descriptor for the layer
+	desc := v1.Descriptor{
+		MediaType: v1.MediaTypeImageLayer,
+		Digest:    digest.FromBytes(buf.Bytes()),
+		Size:      int64(buf.Len()),
+	}
 	err = store.Storage.Push(ctx, desc, buf)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (store *Store) SaveContentLayer (layer *Layer)  (*v1.Descriptor, error)  {
 	return &desc, nil
 }
 
-func (store *Store) SaveModelFile (model *JozuFile) error {
+func (store *Store) SaveModelFile(model *JozuFile) error {
 	ctx := context.Background()
 	buf, err := model.MarshalToJSON()
 	if err != nil {

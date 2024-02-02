@@ -9,19 +9,18 @@ import (
 	"path/filepath"
 	"strings"
 )
-type Layer struct {
+
+type ModelLayer struct {
 	ContextDir string
 }
 
-
-func NewLayer(context string) *Layer {
-	return &Layer{
+func NewLayer(context string) *ModelLayer {
+	return &ModelLayer{
 		ContextDir: context,
 	}
 }
 
-
-func (layer *Layer) Apply(writers ...io.Writer) error {
+func (layer *ModelLayer) Apply(writers ...io.Writer) error {
 	// Check if ContextDir exists and is a directory
 	fileInfo, err := os.Stat(layer.ContextDir)
 	if err != nil {
@@ -82,7 +81,7 @@ func (layer *Layer) Apply(writers ...io.Writer) error {
 
 		return nil
 	})
-	
+
 	if err != nil {
 		return err
 	}

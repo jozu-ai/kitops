@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"jmm/pkg/artifact"
 	"github.com/spf13/cobra"
+	"jmm/pkg/artifact"
 )
 
 const DEFAULT_MODEL_FILE = "Jozufile"
@@ -25,13 +25,10 @@ var (
 
 type BuildFlags struct {
 	ModelFile string
-	
-	
-
 }
 
 type BuildOptions struct {
-	ModelFile string
+	ModelFile  string
 	ContextDir string
 }
 
@@ -41,7 +38,7 @@ func NewCmdBuild() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "build",
 		Short: shortDesc,
-		Long: longDesc,
+		Long:  longDesc,
 		Run: func(cmd *cobra.Command, args []string) {
 			options, err := buildFlags.ToOptions()
 			if err != nil {
@@ -64,7 +61,6 @@ func NewCmdBuild() *cobra.Command {
 	buildFlags.AddFlags(cmd)
 	return cmd
 }
-
 
 func (options *BuildOptions) Complete(cmd *cobra.Command, argsIn []string) error {
 	options.ContextDir = argsIn[0]
@@ -92,7 +88,6 @@ func (options *BuildOptions) RunBuild() error {
 		fmt.Println(err)
 		return err
 	}
-	
 
 	// 2. Run the build steps from the model file
 
@@ -103,14 +98,16 @@ func (options *BuildOptions) RunBuild() error {
 	if err != nil {
 		return err
 	}
-	
-	
+
 	// 4. Push the model file to the local registry
 	err = store.SaveModelFile(jozufile)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+	// 5. Push model manfiest to local registry
+	
+
 	return nil
 }
 
@@ -125,9 +122,9 @@ func (o *BuildFlags) ToOptions() (*BuildOptions, error) {
 func (flags *BuildFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&flags.ModelFile, "file", "f", "", "Path to the model file")
 	cmd.Args = cobra.ExactArgs(1)
-	
+
 }
 
-func NewBuildFlags() *BuildFlags{
+func NewBuildFlags() *BuildFlags {
 	return &BuildFlags{}
 }
