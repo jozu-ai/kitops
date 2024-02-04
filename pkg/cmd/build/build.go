@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"jmm/pkg/artifact"
+
+	v1 "github.com/opencontainers/image-spec/specs-go/v1"
+	"github.com/spf13/cobra"
 )
 
 const DEFAULT_MODEL_FILE = "Jozufile"
@@ -92,22 +94,19 @@ func (options *BuildOptions) RunBuild() error {
 	// 2. Run the build steps from the model file
 
 	// 3. Tar the build context and push to local registry
-	store := artifact.NewArtifactStore()
 	layer := artifact.NewLayer(options.ContextDir)
-	_, err = store.SaveContentLayer(layer)
-	if err != nil {
-		return err
-	}
-
-	// 4. Push the model file to the local registry
-	err = store.SaveModelFile(jozufile)
-	if err != nil {
+	model := artifact.NewModel()
+	model.Layers = append(model.Layers, layer)
+	model.Config = jozufile	
+	
+	store := artifact.NewArtifactStore()
+	var manifest *v1.Manifest
+	manifest, err = store.SaveModel(model)
+	if(err != nil) {
 		fmt.Println(err)
 		return err
 	}
-	// 5. Push model manfiest to local registry
-	
-
+	fmt.Println("Model saved: ", manifest)
 	return nil
 }
 

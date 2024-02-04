@@ -7,19 +7,21 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
-type JozuFile struct {
-	Maintainer   string      `yaml:"maintainer"`
-	ModelFormat  string      `yaml:"modelFormat"`
-	Inputs        []Parameter `yaml:"inputs"`
-	Outputs       []Parameter `yaml:"outputs"`
-}
 
-type Parameter struct {
-	Name     string `yaml:"name"`
-	Datatype string `yaml:"datatype"`
-	Dims     []int  `yaml:"dims"`
-}
+type (
+	JozuFile struct {
+		Maintainer  string      `yaml:"maintainer"`
+		ModelFormat string      `yaml:"modelFormat"`
+		Inputs      []Parameter `yaml:"inputs"`
+		Outputs     []Parameter `yaml:"outputs"`
+	}
 
+	Parameter struct {
+		Name     string `yaml:"name"`
+		Datatype string `yaml:"datatype"`
+		Dims     []int  `yaml:"dims"`
+	}
+)
 
 func NewJozuFile() *JozuFile {
 	return &JozuFile{}
