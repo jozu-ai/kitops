@@ -106,7 +106,7 @@ func (options *BuildOptions) RunBuild() error {
 		fmt.Println(err)
 		return err
 	}
-	fmt.Println("Model saved: ", manifest)
+	fmt.Println("Model saved: ", manifest.Config.Digest)
 	return nil
 }
 
