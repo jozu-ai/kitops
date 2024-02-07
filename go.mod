@@ -1,6 +1,6 @@
 module jmm
 
-go 1.21.6
+go 1.21
 
 require (
 	github.com/opencontainers/go-digest v1.0.0
