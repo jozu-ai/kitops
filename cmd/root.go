@@ -44,7 +44,7 @@ func init() {
 	rootCmd.AddCommand(pull.NewCmdPull())
 	rootCmd.AddCommand(push.NewCmdPush())
 	rootCmd.AddCommand(models.NewCmdModels())
-	
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -55,5 +55,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-

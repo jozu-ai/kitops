@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 Jozu.com
-
 */
 package push
 
@@ -13,7 +12,7 @@ import (
 // pushCmd represents the push command
 
 func NewCmdPush() *cobra.Command {
-	
+
 	cmd := &cobra.Command{
 		Use:   "push",
 		Short: "A brief description of your command",
@@ -29,7 +28,6 @@ func NewCmdPush() *cobra.Command {
 	}
 	return cmd
 }
-
 
 func init() {
 

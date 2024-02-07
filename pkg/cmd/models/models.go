@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 Jozu.com
-
 */
 package models
 
@@ -11,7 +10,6 @@ import (
 )
 
 type ModelsFlags struct {
-
 }
 type ModelsOptions struct {
 }
@@ -41,16 +39,15 @@ func NewCmdModels() *cobra.Command {
 				return
 			}
 			options.RunModels()
-			if err != nil{
+			if err != nil {
 				fmt.Println(err)
-				return	
+				return
 			}
 		},
 	}
-	modelsFlags.AddFlags(cmd)	
+	modelsFlags.AddFlags(cmd)
 	return cmd
 }
-
 
 func NewModelsFlags() *ModelsFlags {
 	return &ModelsFlags{}

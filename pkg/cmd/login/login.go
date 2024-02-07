@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 Jozu.com
-
 */
 package login
 
@@ -9,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra"
 )
-
 
 func NewCmdLogin() *cobra.Command {
 	cmd := &cobra.Command{
