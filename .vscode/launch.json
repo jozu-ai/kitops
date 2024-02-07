@@ -6,12 +6,12 @@
     "configurations": [
 
         {
-            "name": "Launch Package",
+            "name": "Launch for build",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["build","./testData"] 
+            "args": ["build","./examples/onnx"] 
         }
     ]
 }
