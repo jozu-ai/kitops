@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 Jozu.com
-
 */
 package pull
 
