@@ -58,6 +58,10 @@ func NewCmdBuild() *cobra.Command {
 				return
 			}
 			options.RunBuild()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		},
 	}
 	buildFlags.AddFlags(cmd)

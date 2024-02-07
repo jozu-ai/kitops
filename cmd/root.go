@@ -6,6 +6,7 @@ package cmd
 import (
 	"jmm/pkg/cmd/build"
 	"jmm/pkg/cmd/login"
+	"jmm/pkg/cmd/models"
 	"jmm/pkg/cmd/pull"
 	"jmm/pkg/cmd/push"
 	"os"
@@ -42,6 +43,7 @@ func init() {
 	rootCmd.AddCommand(login.NewCmdLogin())
 	rootCmd.AddCommand(pull.NewCmdPull())
 	rootCmd.AddCommand(push.NewCmdPush())
+	rootCmd.AddCommand(models.NewCmdModels())
 	
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
