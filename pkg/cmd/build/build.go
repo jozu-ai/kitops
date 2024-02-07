@@ -98,7 +98,7 @@ func (options *BuildOptions) RunBuild() error {
 
 	// 3. Tar the build context and push to local registry
 	layer := artifact.NewLayer(options.ContextDir)
-	model := artifact.NewModel()
+	model := &artifact.Model{}
 	model.Layers = append(model.Layers, layer)
 	model.Config = jozufile
 
