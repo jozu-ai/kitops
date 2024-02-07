@@ -1,0 +1,41 @@
+name: Validate PRs
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  go:
+    name: Check sources
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21.6
+
+      - name: Check go.mod
+        run: |
+          go mod tidy
+          if ! git diff --quiet; then
+            echo "Go modules need tidying (go mod tidy)"
+            exit 1
+          fi
+
+      - name: Check format
+        run: |
+          go fmt ./...
+          if ! git diff --quiet; then
+            echo "Files are not formatted (go fmt ./...)"
+            exit 1
+          fi
+
+      - name: Check build
+        run: |
+          if ! go build; then
+            echo "Project does not build"
+            exit 1
+          fi
