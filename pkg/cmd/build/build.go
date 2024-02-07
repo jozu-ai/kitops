@@ -89,8 +89,7 @@ func (options *BuildOptions) RunBuild() error {
 	}
 	defer modelfile.Close()
 	jozufile := artifact.NewJozuFile()
-	jozufile.LoadModel(modelfile)
-	if err != nil {
+	if err = jozufile.LoadModel(modelfile); err != nil {
 		fmt.Println(err)
 		return err
 	}
@@ -101,12 +100,12 @@ func (options *BuildOptions) RunBuild() error {
 	layer := artifact.NewLayer(options.ContextDir)
 	model := artifact.NewModel()
 	model.Layers = append(model.Layers, layer)
-	model.Config = jozufile	
-	
+	model.Config = jozufile
+
 	store := artifact.NewArtifactStore()
 	var manifest *v1.Manifest
 	manifest, err = store.SaveModel(model)
-	if(err != nil) {
+	if err != nil {
 		fmt.Println(err)
 		return err
 	}

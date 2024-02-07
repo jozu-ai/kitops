@@ -21,9 +21,9 @@ type Store struct {
 
 func NewArtifactStore() *Store {
 
-	store, error := oci.New(".jozuStore")
-	if error != nil {
-		panic(error)
+	store, err := oci.New(".jozuStore")
+	if err != nil {
+		panic(err)
 	}
 
 	return &Store{
@@ -45,7 +45,6 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) 
 		MediaType: ModelLayerMediaType,
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
-
 	}
 	err = store.Storage.Push(ctx, desc, buf)
 	layer.Descriptor = desc
@@ -56,7 +55,7 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) 
 	return &desc, nil
 }
 
-func (store *Store) saveConfigFile(model *JozuFile) (*v1.Descriptor, error)  {
+func (store *Store) saveConfigFile(model *JozuFile) (*v1.Descriptor, error) {
 	ctx := context.Background()
 	buf, err := model.MarshalToJSON()
 	if err != nil {
@@ -78,8 +77,8 @@ func (store *Store) saveModelManifest(model *Model, config *v1.Descriptor) (*v1.
 	ctx := context.Background()
 	manifest := v1.Manifest{
 		Versioned: specs.Versioned{SchemaVersion: 2},
-		Config: *config,
-		Layers: []v1.Descriptor{},
+		Config:    *config,
+		Layers:    []v1.Descriptor{},
 	}
 	// Add the layers to the manifest
 	for _, layer := range model.Layers {
