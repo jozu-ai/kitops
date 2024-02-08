@@ -10,23 +10,73 @@ import (
 	"jmm/pkg/cmd/pull"
 	"jmm/pkg/cmd/push"
 	"os"
+	"os/user"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+type (
+	RootOptions struct {
+		ConfigHome string
+	}
+
+	RootFlags struct {
+		ConfigHome string
+	}
+)
+
+var (
+	shortDesc = `Jozu Model Manager`
+	longDesc  = `Jozu Model Manager is a tool to manage AI and ML models`
 )
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "jmm",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+var rootCmd = newRootCmd()
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+func newRootCmd() *cobra.Command {
+	flags := &RootFlags{}
+	cmd := &cobra.Command{
+		Use:   "jmm",
+		Short: shortDesc,
+		Long:  longDesc,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			options, err := flags.ToOptions()
+			if err != nil {
+				panic(err)
+			}
+			err = options.Complete()
+			if err != nil {
+				panic(err)
+			}
+		},
+	}
+	flags.addFlags(cmd)
+	return cmd
+}
+
+func (f *RootFlags) addFlags(cmd *cobra.Command) {
+	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.jozu)")
+	viper.BindPFlag("config", cmd.PersistentFlags().Lookup("config"))
+}
+
+func (f *RootFlags) ToOptions() (*RootOptions, error) {
+	return &RootOptions{
+		ConfigHome: f.ConfigHome,
+	}, nil
+}
+func (o *RootOptions) Complete() error {
+	if o.ConfigHome == "" {
+		currentUser, err := user.Current()
+		if err != nil {
+			return err
+		}
+		configpath := filepath.Join(currentUser.HomeDir, ".jozu")
+		viper.Set("config", configpath)
+		o.ConfigHome = configpath
+	}
+	return nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -44,14 +94,4 @@ func init() {
 	rootCmd.AddCommand(pull.NewCmdPull())
 	rootCmd.AddCommand(push.NewCmdPush())
 	rootCmd.AddCommand(models.NewCmdModels())
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.jmm.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -11,6 +11,7 @@ import (
 
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const DEFAULT_MODEL_FILE = "Jozufile"
@@ -32,6 +33,7 @@ type BuildFlags struct {
 type BuildOptions struct {
 	ModelFile  string
 	ContextDir string
+	JozuHome   string
 }
 
 func NewCmdBuild() *cobra.Command {
@@ -73,6 +75,8 @@ func (options *BuildOptions) Complete(cmd *cobra.Command, argsIn []string) error
 	if options.ModelFile == "" {
 		options.ModelFile = options.ContextDir + "/" + DEFAULT_MODEL_FILE
 	}
+	fmt.Println("config: ", viper.GetString("config"))
+	options.JozuHome = viper.GetString("config")
 	return nil
 }
 
@@ -102,7 +106,7 @@ func (options *BuildOptions) RunBuild() error {
 	model.Layers = append(model.Layers, layer)
 	model.Config = jozufile
 
-	store := artifact.NewArtifactStore()
+	store := artifact.NewArtifactStore(options.JozuHome)
 	var manifest *v1.Manifest
 	manifest, err = store.SaveModel(model)
 	if err != nil {

@@ -39,3 +39,10 @@ jobs:
             echo "Project does not build"
             exit 1
           fi
+
+      - name: Run tests
+        run: |
+          if ! go test ./... -v; then
+            echo "Project tests failed"
+            exit 1
+          fi
