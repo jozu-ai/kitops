@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 
 	_ "crypto/sha256"
 	_ "crypto/sha512"
@@ -19,9 +20,9 @@ type Store struct {
 	Storage *oci.Store
 }
 
-func NewArtifactStore() *Store {
+func NewArtifactStore(jozuhome string) *Store {
 
-	store, err := oci.New(".jozuStore")
+	store, err := oci.New(filepath.Join(jozuhome, ".jozuStore"))
 	if err != nil {
 		panic(err)
 	}
