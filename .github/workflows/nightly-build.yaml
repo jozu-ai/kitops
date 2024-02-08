@@ -1,0 +1,73 @@
+name: Nightly builds
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}
+
+jobs:
+
+    platfor-builds:
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                os: [linux, darwin, windows]
+                arch: [amd64, arm64]
+                exclude:
+                    - os: windows
+                      arch: arm64
+                include:
+                    - os: windows
+                      archive_ext: zip
+                    - os: linux
+                      archive_ext: tar.gz
+                    - os: darwin
+                      archive_ext: tar.gz
+                
+        name: "${{ matrix.os }}-${{ matrix.arch }}"
+        env:
+            GOOS: ${{ matrix.os }}
+            GOARCH: ${{ matrix.arch }}
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+       
+          - name: Setup Go
+            uses: actions/setup-go@v5
+            with:
+                go-version-file: 'go.mod'
+    
+          - name: Cross-compile
+            run: |
+                version="$(git describe --no-match --always --abbrev=9 --dirty --broken 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)-nightly"
+                binName="jmm-$GOOS-$GOARCH"
+                if [ $GOOS == "windows" ]; then
+                    binName="${binName}.exe"
+                fi
+                go build -o "$binName" \
+                    -ldflags="-s -w" \
+    
+          - name: Generate archive
+            run: |
+                if [ $GOOS == "windows" ]; then
+                    zip -9 -y -r -q "jmm-${GOOS}-${GOARCH}.zip" "jmm-${GOOS}-${GOARCH}.exe"
+                else
+                    tar -czvf "jmm-${GOOS}-${GOARCH}.tar.gz" "jmm-${GOOS}-${GOARCH}"
+                fi
+
+
+          - name: Upload artifacts
+            uses: WebFreak001/deploy-nightly@v3.0.0
+            with:
+                upload_url: https://uploads.github.com/repos/jozu-ai/jmm/releases/140709733/assets{?name,label}",
+                release_id: 140709733 
+                asset_path: jmm-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.archive_ext }}
+                asset_name: jmm-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.archive_ext }}
+                asset_content_type: application/zip 
+                max_releases: 2
+
