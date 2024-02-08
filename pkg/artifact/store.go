@@ -10,8 +10,8 @@ import (
 	_ "crypto/sha512"
 
 	"github.com/opencontainers/go-digest"
-	"github.com/opencontainers/image-spec/specs-go"
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
+	specs "github.com/opencontainers/image-spec/specs-go"
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/content/oci"
 )
 
@@ -31,7 +31,7 @@ func NewArtifactStore() *Store {
 	}
 }
 
-func (store *Store) saveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) {
+func (store *Store) saveContentLayer(layer *ModelLayer) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 
 	buf := &bytes.Buffer{}
@@ -41,7 +41,7 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) 
 	}
 
 	// Create a descriptor for the layer
-	desc := v1.Descriptor{
+	desc := ocispec.Descriptor{
 		MediaType: ModelLayerMediaType,
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
@@ -55,13 +55,13 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*v1.Descriptor, error) 
 	return &desc, nil
 }
 
-func (store *Store) saveConfigFile(model *JozuFile) (*v1.Descriptor, error) {
+func (store *Store) saveConfigFile(model *JozuFile) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 	buf, err := model.MarshalToJSON()
 	if err != nil {
 		return nil, err
 	}
-	desc := v1.Descriptor{
+	desc := ocispec.Descriptor{
 		MediaType: ModelConfigMediaType,
 		Digest:    digest.FromBytes(buf),
 		Size:      int64(len(buf)),
@@ -73,12 +73,12 @@ func (store *Store) saveConfigFile(model *JozuFile) (*v1.Descriptor, error) {
 	return &desc, nil
 }
 
-func (store *Store) saveModelManifest(model *Model, config *v1.Descriptor) (*v1.Manifest, error) {
+func (store *Store) saveModelManifest(model *Model, config *ocispec.Descriptor) (*ocispec.Manifest, error) {
 	ctx := context.Background()
-	manifest := v1.Manifest{
+	manifest := ocispec.Manifest{
 		Versioned: specs.Versioned{SchemaVersion: 2},
 		Config:    *config,
-		Layers:    []v1.Descriptor{},
+		Layers:    []ocispec.Descriptor{},
 	}
 	// Add the layers to the manifest
 	for _, layer := range model.Layers {
@@ -90,8 +90,8 @@ func (store *Store) saveModelManifest(model *Model, config *v1.Descriptor) (*v1.
 		return nil, err
 	}
 	// Push the manifest to the store
-	desc := v1.Descriptor{
-		MediaType: v1.MediaTypeImageManifest,
+	desc := ocispec.Descriptor{
+		MediaType: ocispec.MediaTypeImageManifest,
 		Digest:    digest.FromBytes(manifestBytes),
 		Size:      int64(len(manifestBytes)),
 	}
@@ -102,7 +102,7 @@ func (store *Store) saveModelManifest(model *Model, config *v1.Descriptor) (*v1.
 	return &manifest, nil
 }
 
-func (store *Store) SaveModel(model *Model) (*v1.Manifest, error) {
+func (store *Store) SaveModel(model *Model) (*ocispec.Manifest, error) {
 	config, err := store.saveConfigFile(model.Config)
 	if err != nil {
 		return nil, err
