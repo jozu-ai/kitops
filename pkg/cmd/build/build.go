@@ -57,7 +57,7 @@ func NewCmdBuild() *cobra.Command {
 				fmt.Println(err)
 				return
 			}
-			options.RunBuild()
+			err = options.RunBuild()
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -88,7 +88,7 @@ func (options *BuildOptions) RunBuild() error {
 		return err
 	}
 	defer modelfile.Close()
-	jozufile := artifact.NewJozuFile()
+	jozufile := &artifact.JozuFile{}
 	if err = jozufile.LoadModel(modelfile); err != nil {
 		fmt.Println(err)
 		return err

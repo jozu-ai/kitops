@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/opencontainers/image-spec/specs-go/v1"
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 type ModelLayer struct {
 	ContextDir string
-	Descriptor v1.Descriptor
+	Descriptor ocispec.Descriptor
 }
 
 func NewLayer(context string) *ModelLayer {

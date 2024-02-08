@@ -23,10 +23,6 @@ type (
 	}
 )
 
-func NewJozuFile() *JozuFile {
-	return &JozuFile{}
-}
-
 func (jf *JozuFile) LoadModel(file *os.File) error {
 	// Read the file
 	data, err := io.ReadAll(file)
