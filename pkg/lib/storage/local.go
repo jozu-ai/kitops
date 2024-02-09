@@ -1,28 +1,31 @@
-package artifact
+package storage
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"jmm/pkg/artifact"
+	"jmm/pkg/lib/constants"
 	"os"
 	"path/filepath"
-
-	_ "crypto/sha256"
-	_ "crypto/sha512"
 
 	"github.com/opencontainers/go-digest"
 	specs "github.com/opencontainers/image-spec/specs-go"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2/content"
 	"oras.land/oras-go/v2/content/oci"
 )
 
-type Store struct {
+type LocalStore struct {
 	Storage   *oci.Store
 	indexPath string
 }
 
-func NewArtifactStore(jozuhome string) *Store {
+// Assert LocalStore implements the Store interface.
+var _ Store = (*LocalStore)(nil)
+
+func NewLocalStore(jozuhome string) *LocalStore {
 	storeHome := filepath.Join(jozuhome, ".jozuStore")
 	indexPath := filepath.Join(storeHome, "index.json")
 
@@ -31,13 +34,13 @@ func NewArtifactStore(jozuhome string) *Store {
 		panic(err)
 	}
 
-	return &Store{
+	return &LocalStore{
 		Storage:   store,
 		indexPath: indexPath,
 	}
 }
 
-func (store *Store) SaveModel(model *Model) (*ocispec.Manifest, error) {
+func (store *LocalStore) SaveModel(model *artifact.Model) (*ocispec.Manifest, error) {
 	config, err := store.saveConfigFile(model.Config)
 	if err != nil {
 		return nil, err
@@ -56,7 +59,12 @@ func (store *Store) SaveModel(model *Model) (*ocispec.Manifest, error) {
 	return manifest, nil
 }
 
-func (store *Store) ParseIndexJson() (*ocispec.Index, error) {
+func (store *LocalStore) Fetch(ctx context.Context, desc ocispec.Descriptor) ([]byte, error) {
+	bytes, err := content.FetchAll(ctx, store.Storage, desc)
+	return bytes, err
+}
+
+func (store *LocalStore) ParseIndexJson() (*ocispec.Index, error) {
 	indexBytes, err := os.ReadFile(store.indexPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read index: %w", err)
@@ -70,7 +78,7 @@ func (store *Store) ParseIndexJson() (*ocispec.Index, error) {
 	return index, nil
 }
 
-func (store *Store) saveContentLayer(layer *ModelLayer) (*ocispec.Descriptor, error) {
+func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 
 	buf := &bytes.Buffer{}
@@ -81,7 +89,7 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*ocispec.Descriptor, er
 
 	// Create a descriptor for the layer
 	desc := ocispec.Descriptor{
-		MediaType: ModelLayerMediaType,
+		MediaType: constants.ModelLayerMediaType,
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
 	}
@@ -94,14 +102,14 @@ func (store *Store) saveContentLayer(layer *ModelLayer) (*ocispec.Descriptor, er
 	return &desc, nil
 }
 
-func (store *Store) saveConfigFile(model *JozuFile) (*ocispec.Descriptor, error) {
+func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 	buf, err := model.MarshalToJSON()
 	if err != nil {
 		return nil, err
 	}
 	desc := ocispec.Descriptor{
-		MediaType: ModelConfigMediaType,
+		MediaType: constants.ModelConfigMediaType,
 		Digest:    digest.FromBytes(buf),
 		Size:      int64(len(buf)),
 	}
@@ -112,7 +120,7 @@ func (store *Store) saveConfigFile(model *JozuFile) (*ocispec.Descriptor, error)
 	return &desc, nil
 }
 
-func (store *Store) saveModelManifest(model *Model, config *ocispec.Descriptor) (*ocispec.Manifest, error) {
+func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispec.Descriptor) (*ocispec.Manifest, error) {
 	ctx := context.Background()
 	manifest := ocispec.Manifest{
 		Versioned: specs.Versioned{SchemaVersion: 2},

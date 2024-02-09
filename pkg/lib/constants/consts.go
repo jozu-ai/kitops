@@ -1,4 +1,4 @@
-package artifact
+package constants
 
 const (
 	// Media type for the model layer

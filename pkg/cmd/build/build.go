@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"jmm/pkg/artifact"
+	"jmm/pkg/lib/storage"
 
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/spf13/cobra"
@@ -106,7 +107,7 @@ func (options *BuildOptions) RunBuild() error {
 	model.Layers = append(model.Layers, layer)
 	model.Config = jozufile
 
-	store := artifact.NewArtifactStore(options.JozuHome)
+	store := storage.NewLocalStore(options.JozuHome)
 	var manifest *v1.Manifest
 	manifest, err = store.SaveModel(model)
 	if err != nil {
