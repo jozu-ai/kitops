@@ -92,30 +92,49 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
 	}
-	err = store.storage.Push(ctx, desc, buf)
-	layer.Descriptor = desc
+
+	exists, err := store.storage.Exists(ctx, desc)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Saved model layer: ", desc.Digest)
+	if exists {
+		fmt.Println("Model layer already saved: ", desc.Digest)
+	} else {
+		// Does not exist in storage, need to push
+		err = store.storage.Push(ctx, desc, buf)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println("Saved model layer: ", desc.Digest)
+	}
+
 	return &desc, nil
 }
 
 func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
-	buf, err := model.MarshalToJSON()
+	modelBytes, err := model.MarshalToJSON()
 	if err != nil {
 		return nil, err
 	}
 	desc := ocispec.Descriptor{
 		MediaType: constants.ModelConfigMediaType,
-		Digest:    digest.FromBytes(buf),
-		Size:      int64(len(buf)),
+		Digest:    digest.FromBytes(modelBytes),
+		Size:      int64(len(modelBytes)),
 	}
-	err = store.storage.Push(ctx, desc, bytes.NewReader(buf))
+
+	exists, err := store.storage.Exists(ctx, desc)
 	if err != nil {
 		return nil, err
 	}
+	if !exists {
+		// Does not exist in storage, need to push
+		err = store.storage.Push(ctx, desc, bytes.NewReader(modelBytes))
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &desc, nil
 }
 
@@ -147,9 +166,16 @@ func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispe
 		Digest:    digest.FromBytes(manifestBytes),
 		Size:      int64(len(manifestBytes)),
 	}
-	err = store.storage.Push(ctx, desc, bytes.NewReader(manifestBytes))
-	if err != nil {
+
+	if exists, err := store.storage.Exists(ctx, desc); err != nil {
 		return nil, err
+	} else if !exists {
+		// Does not exist in storage, need to push
+		err = store.storage.Push(ctx, desc, bytes.NewReader(manifestBytes))
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	return &manifest, nil
 }
