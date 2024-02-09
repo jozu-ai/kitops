@@ -35,6 +35,14 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = newRootCmd()
 
+func init() {
+	rootCmd.AddCommand(build.NewCmdBuild())
+	rootCmd.AddCommand(login.NewCmdLogin())
+	rootCmd.AddCommand(pull.NewCmdPull())
+	rootCmd.AddCommand(push.NewCmdPush())
+	rootCmd.AddCommand(models.ModelsCommand())
+}
+
 func newRootCmd() *cobra.Command {
 	flags := &RootFlags{}
 	cmd := &cobra.Command{
@@ -66,6 +74,7 @@ func (f *RootFlags) ToOptions() (*RootOptions, error) {
 		ConfigHome: f.ConfigHome,
 	}, nil
 }
+
 func (o *RootOptions) Complete() error {
 	if o.ConfigHome == "" {
 		currentUser, err := user.Current()
@@ -86,12 +95,4 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.AddCommand(build.NewCmdBuild())
-	rootCmd.AddCommand(login.NewCmdLogin())
-	rootCmd.AddCommand(pull.NewCmdPull())
-	rootCmd.AddCommand(push.NewCmdPush())
-	rootCmd.AddCommand(models.NewCmdModels())
 }

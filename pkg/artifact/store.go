@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	_ "crypto/sha256"
@@ -17,19 +18,56 @@ import (
 )
 
 type Store struct {
-	Storage *oci.Store
+	Storage   *oci.Store
+	indexPath string
 }
 
 func NewArtifactStore(jozuhome string) *Store {
+	storeHome := filepath.Join(jozuhome, ".jozuStore")
+	indexPath := filepath.Join(storeHome, "index.json")
 
-	store, err := oci.New(filepath.Join(jozuhome, ".jozuStore"))
+	store, err := oci.New(storeHome)
 	if err != nil {
 		panic(err)
 	}
 
 	return &Store{
-		Storage: store,
+		Storage:   store,
+		indexPath: indexPath,
 	}
+}
+
+func (store *Store) SaveModel(model *Model) (*ocispec.Manifest, error) {
+	config, err := store.saveConfigFile(model.Config)
+	if err != nil {
+		return nil, err
+	}
+	for _, layer := range model.Layers {
+		_, err = store.saveContentLayer(layer)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	manifest, err := store.saveModelManifest(model, config)
+	if err != nil {
+		return nil, err
+	}
+	return manifest, nil
+}
+
+func (store *Store) ParseIndexJson() (*ocispec.Index, error) {
+	indexBytes, err := os.ReadFile(store.indexPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read index: %w", err)
+	}
+
+	index := &ocispec.Index{}
+	if err := json.Unmarshal(indexBytes, index); err != nil {
+		return nil, fmt.Errorf("failed to parse index: %w", err)
+	}
+
+	return index, nil
 }
 
 func (store *Store) saveContentLayer(layer *ModelLayer) (*ocispec.Descriptor, error) {
@@ -101,23 +139,4 @@ func (store *Store) saveModelManifest(model *Model, config *ocispec.Descriptor) 
 		return nil, err
 	}
 	return &manifest, nil
-}
-
-func (store *Store) SaveModel(model *Model) (*ocispec.Manifest, error) {
-	config, err := store.saveConfigFile(model.Config)
-	if err != nil {
-		return nil, err
-	}
-	for _, layer := range model.Layers {
-		_, err = store.saveContentLayer(layer)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	manifest, err := store.saveModelManifest(model, config)
-	if err != nil {
-		return nil, err
-	}
-	return manifest, nil
 }
