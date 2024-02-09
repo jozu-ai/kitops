@@ -18,15 +18,14 @@ import (
 )
 
 type LocalStore struct {
-	Storage   *oci.Store
+	storage   *oci.Store
 	indexPath string
 }
 
 // Assert LocalStore implements the Store interface.
 var _ Store = (*LocalStore)(nil)
 
-func NewLocalStore(jozuhome string) *LocalStore {
-	storeHome := filepath.Join(jozuhome, ".jozuStore")
+func NewLocalStore(storeHome string) Store {
 	indexPath := filepath.Join(storeHome, "index.json")
 
 	store, err := oci.New(storeHome)
@@ -35,7 +34,7 @@ func NewLocalStore(jozuhome string) *LocalStore {
 	}
 
 	return &LocalStore{
-		Storage:   store,
+		storage:   store,
 		indexPath: indexPath,
 	}
 }
@@ -60,7 +59,7 @@ func (store *LocalStore) SaveModel(model *artifact.Model) (*ocispec.Manifest, er
 }
 
 func (store *LocalStore) Fetch(ctx context.Context, desc ocispec.Descriptor) ([]byte, error) {
-	bytes, err := content.FetchAll(ctx, store.Storage, desc)
+	bytes, err := content.FetchAll(ctx, store.storage, desc)
 	return bytes, err
 }
 
@@ -93,7 +92,7 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
 	}
-	err = store.Storage.Push(ctx, desc, buf)
+	err = store.storage.Push(ctx, desc, buf)
 	layer.Descriptor = desc
 	if err != nil {
 		return nil, err
@@ -113,7 +112,7 @@ func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Desc
 		Digest:    digest.FromBytes(buf),
 		Size:      int64(len(buf)),
 	}
-	err = store.Storage.Push(ctx, desc, bytes.NewReader(buf))
+	err = store.storage.Push(ctx, desc, bytes.NewReader(buf))
 	if err != nil {
 		return nil, err
 	}
@@ -123,13 +122,19 @@ func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Desc
 func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispec.Descriptor) (*ocispec.Manifest, error) {
 	ctx := context.Background()
 	manifest := ocispec.Manifest{
-		Versioned: specs.Versioned{SchemaVersion: 2},
-		Config:    *config,
-		Layers:    []ocispec.Descriptor{},
+		Versioned:   specs.Versioned{SchemaVersion: 2},
+		Config:      *config,
+		Layers:      []ocispec.Descriptor{},
+		Annotations: map[string]string{},
 	}
 	// Add the layers to the manifest
 	for _, layer := range model.Layers {
 		manifest.Layers = append(manifest.Layers, layer.Descriptor)
+	}
+
+	// Add tags, if any
+	if model.Tag != "" {
+		manifest.Annotations[ocispec.AnnotationRefName] = model.Tag
 	}
 
 	manifestBytes, err := json.Marshal(manifest)
@@ -142,7 +147,7 @@ func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispe
 		Digest:    digest.FromBytes(manifestBytes),
 		Size:      int64(len(manifestBytes)),
 	}
-	err = store.Storage.Push(ctx, desc, bytes.NewReader(manifestBytes))
+	err = store.storage.Push(ctx, desc, bytes.NewReader(manifestBytes))
 	if err != nil {
 		return nil, err
 	}

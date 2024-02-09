@@ -6,6 +6,8 @@ package build
 import (
 	"fmt"
 	"os"
+	"path"
+	"strings"
 
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/storage"
@@ -13,9 +15,12 @@ import (
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"oras.land/oras-go/v2/registry"
 )
 
-const DEFAULT_MODEL_FILE = "Jozufile"
+const (
+	DEFAULT_MODEL_FILE = "Jozufile"
+)
 
 var (
 	shortDesc = `Build a model`
@@ -28,13 +33,16 @@ var (
 )
 
 type BuildFlags struct {
-	ModelFile string
+	ModelFile  string
+	FullTagRef string
 }
 
 type BuildOptions struct {
-	ModelFile  string
-	ContextDir string
-	JozuHome   string
+	ModelFile   string
+	ContextDir  string
+	configHome  string
+	storageHome string
+	modelRef    *registry.Reference
 }
 
 func NewCmdBuild() *cobra.Command {
@@ -76,8 +84,9 @@ func (options *BuildOptions) Complete(cmd *cobra.Command, argsIn []string) error
 	if options.ModelFile == "" {
 		options.ModelFile = options.ContextDir + "/" + DEFAULT_MODEL_FILE
 	}
-	fmt.Println("config: ", viper.GetString("config"))
-	options.JozuHome = viper.GetString("config")
+	options.configHome = viper.GetString("config")
+	fmt.Println("config: ", options.configHome)
+	options.storageHome = path.Join(options.configHome, "storage")
 	return nil
 }
 
@@ -107,7 +116,12 @@ func (options *BuildOptions) RunBuild() error {
 	model.Layers = append(model.Layers, layer)
 	model.Config = jozufile
 
-	store := storage.NewLocalStore(options.JozuHome)
+	modelStorePath := options.storageHome
+	if options.modelRef != nil {
+		modelStorePath = path.Join(options.storageHome, options.modelRef.Registry, options.modelRef.Repository)
+		model.Tag = options.modelRef.Reference
+	}
+	store := storage.NewLocalStore(modelStorePath)
 	var manifest *v1.Manifest
 	manifest, err = store.SaveModel(model)
 	if err != nil {
@@ -123,13 +137,24 @@ func (o *BuildFlags) ToOptions() (*BuildOptions, error) {
 	if o.ModelFile != "" {
 		options.ModelFile = o.ModelFile
 	}
+	if o.FullTagRef != "" {
+		// References _must_ contain host; use localhost to mark local-only
+		if !strings.Contains(o.FullTagRef, "/") {
+			o.FullTagRef = fmt.Sprintf("localhost/%s", o.FullTagRef)
+		}
+		modelRef, err := registry.ParseReference(o.FullTagRef)
+		if err != nil {
+			return nil, err
+		}
+		options.modelRef = &modelRef
+	}
 	return options, nil
 }
 
 func (flags *BuildFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&flags.ModelFile, "file", "f", "", "Path to the model file")
+	cmd.Flags().StringVarP(&flags.FullTagRef, "tag", "t", "", "Tag for the model")
 	cmd.Args = cobra.ExactArgs(1)
-
 }
 
 func NewBuildFlags() *BuildFlags {
