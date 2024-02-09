@@ -7,8 +7,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"jmm/pkg/artifact"
+	"jmm/pkg/lib/storage"
 	"os"
 	"text/tabwriter"
 
@@ -22,7 +22,7 @@ const (
 )
 
 func listModels(opts *ModelsOptions) error {
-	store := artifact.NewArtifactStore(opts.configHome)
+	store := storage.NewLocalStore(opts.configHome)
 	index, err := store.ParseIndexJson()
 	if err != nil {
 		return err
@@ -40,14 +40,10 @@ func listModels(opts *ModelsOptions) error {
 	return nil
 }
 
-func manifestsFromIndex(index *ocispec.Index, store *artifact.Store) (map[digest.Digest]ocispec.Manifest, error) {
+func manifestsFromIndex(index *ocispec.Index, store storage.Store) (map[digest.Digest]ocispec.Manifest, error) {
 	manifests := map[digest.Digest]ocispec.Manifest{}
 	for _, manifestDesc := range index.Manifests {
-		manifestReader, err := store.Storage.Fetch(context.Background(), manifestDesc)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get manifest %s: %w", manifestDesc.Digest, err)
-		}
-		manifestBytes, err := io.ReadAll(manifestReader)
+		manifestBytes, err := store.Fetch(context.Background(), manifestDesc)
 		if err != nil {
 			return nil, fmt.Errorf("failed to read manifest %s: %w", manifestDesc.Digest, err)
 		}
@@ -60,12 +56,8 @@ func manifestsFromIndex(index *ocispec.Index, store *artifact.Store) (map[digest
 	return manifests, nil
 }
 
-func readManifestConfig(manifest *ocispec.Manifest, store *artifact.Store) (*artifact.JozuFile, error) {
-	configReader, err := store.Storage.Fetch(context.Background(), manifest.Config)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get config: %w", err)
-	}
-	configBytes, err := io.ReadAll(configReader)
+func readManifestConfig(manifest *ocispec.Manifest, store storage.Store) (*artifact.JozuFile, error) {
+	configBytes, err := store.Fetch(context.Background(), manifest.Config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
@@ -76,7 +68,7 @@ func readManifestConfig(manifest *ocispec.Manifest, store *artifact.Store) (*art
 	return config, nil
 }
 
-func printManifestsSummary(manifests map[digest.Digest]ocispec.Manifest, store *artifact.Store) error {
+func printManifestsSummary(manifests map[digest.Digest]ocispec.Manifest, store storage.Store) error {
 	tw := tabwriter.NewWriter(os.Stdout, 0, 2, 3, ' ', 0)
 	fmt.Fprintln(tw, ModelsTableHeader)
 	for digest, manifest := range manifests {
@@ -91,7 +83,7 @@ func printManifestsSummary(manifests map[digest.Digest]ocispec.Manifest, store *
 	return nil
 }
 
-func getManifestInfoLine(digest digest.Digest, manifest *ocispec.Manifest, store *artifact.Store) (string, error) {
+func getManifestInfoLine(digest digest.Digest, manifest *ocispec.Manifest, store storage.Store) (string, error) {
 	config, err := readManifestConfig(manifest, store)
 	if err != nil {
 		return "", err
