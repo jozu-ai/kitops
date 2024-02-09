@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"jmm/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -50,10 +51,14 @@ func RunCommand(options *ModelsOptions) func(*cobra.Command, []string) {
 			fmt.Println(err)
 			return
 		}
-		err = listModels(options)
+		store := storage.NewLocalStore(opts.configHome)
+
+		summary, err := listModels(store)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+
+		fmt.Println(summary)
 	}
 }
