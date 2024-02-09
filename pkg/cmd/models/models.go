@@ -4,12 +4,13 @@ Copyright © 2024 Jozu.com
 package models
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/storage"
-	"os"
+	"math"
 	"text/tabwriter"
 
 	"github.com/opencontainers/go-digest"
@@ -21,23 +22,23 @@ const (
 	ModelsTableFmt    = "%s\t%s\t%s\t%s\t"
 )
 
-func listModels(opts *ModelsOptions) error {
-	store := storage.NewLocalStore(opts.configHome)
+func listModels(store storage.Store) (string, error) {
 	index, err := store.ParseIndexJson()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	manifests, err := manifestsFromIndex(index, store)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if err := printManifestsSummary(manifests, store); err != nil {
-		return err
+	summary, err := printManifestsSummary(manifests, store)
+	if err != nil {
+		return "", err
 	}
 
-	return nil
+	return summary, nil
 }
 
 func manifestsFromIndex(index *ocispec.Index, store storage.Store) (map[digest.Digest]ocispec.Manifest, error) {
@@ -68,19 +69,20 @@ func readManifestConfig(manifest *ocispec.Manifest, store storage.Store) (*artif
 	return config, nil
 }
 
-func printManifestsSummary(manifests map[digest.Digest]ocispec.Manifest, store storage.Store) error {
-	tw := tabwriter.NewWriter(os.Stdout, 0, 2, 3, ' ', 0)
+func printManifestsSummary(manifests map[digest.Digest]ocispec.Manifest, store storage.Store) (string, error) {
+	buf := bytes.Buffer{}
+	tw := tabwriter.NewWriter(&buf, 0, 2, 3, ' ', 0)
 	fmt.Fprintln(tw, ModelsTableHeader)
 	for digest, manifest := range manifests {
 		// TODO: filter this list for manifests we're interested in (build needs to set a manifest mediaType/artifactType)
 		line, err := getManifestInfoLine(digest, &manifest, store)
 		if err != nil {
-			return err
+			return "", err
 		}
 		fmt.Fprintln(tw, line)
 	}
 	tw.Flush()
-	return nil
+	return buf.String(), nil
 }
 
 func getManifestInfoLine(digest digest.Digest, manifest *ocispec.Manifest, store storage.Store) (string, error) {
@@ -103,17 +105,24 @@ func formatBytes(i int64) string {
 		return "0 B"
 	}
 
-	suffixes := []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB"}
+	if i < 1024 {
+		// Catch bytes to avoid printing fractional amounts of bytes e.g. 123.0 bytes
+		return fmt.Sprintf("%d B", i)
+	}
+
+	suffixes := []string{"KiB", "MiB", "GiB", "TiB"}
 	unit := float64(1024)
 
-	size := float64(i)
+	size := float64(i) / unit
 	for _, suffix := range suffixes {
 		if size < unit {
-			return fmt.Sprintf("%.1f %s", size, suffix)
+			// Round down to the nearest tenth of a unit to avoid e.g. 1MiB - 1B = 1024KiB
+			niceSize := math.Floor(size*10) / 10
+			return fmt.Sprintf("%.1f %s", niceSize, suffix)
 		}
 		size = size / unit
 	}
 
-	// Fall back to printing 1000's of PiB
+	// Fall back to printing whatever's left as PiB
 	return fmt.Sprintf("%.1f PiB", size)
 }
