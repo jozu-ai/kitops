@@ -4,7 +4,7 @@ The Jozu manifest for AI/ML is a YAML file designed to encapsulate all the neces
 
 ## Overview
 
-The manifest is structured into several key sections: `version`, `package`, and `artifacts`. Each section serves a specific purpose in describing the AI/ML package components and requirements.
+The manifest is structured into several key sections: `version`, `package`,`code`, `datasets` and `models`. Each section serves a specific purpose in describing the AI/ML package components and requirements.
 
 ### `version`
 
@@ -43,15 +43,12 @@ This section provides general information about the AI/ML project.
 - **Type**: String
 - **Example**: `MIT`, `Apache-2.0`
 
-### `artifacts`
-
-This section details the artifacts included in the AI/ML package, such as code, datasets, and models.
 
 #### `code`
 
 - **Description**: Information about the source code.
 - **Type**: Object Array
-  - `path`: Location of the source code within the context.
+  - `path`: Location of the source cod files or directory relative to the context
   - `description`: Description of what the code does.
   - `license`: SPDX license identifier for the code.
 
@@ -60,7 +57,7 @@ This section details the artifacts included in the AI/ML package, such as code, 
 - **Description**: Information about the datasets used.
 - **Type**: Object Array
   - `name`: Name of the dataset.
-  - `path`: Location of the dataset file or directory.
+  - `path`: Location of the dataset file or directory relative to the context.
   - `description`: Overview of the dataset.
   - `source`: Origin of the dataset.
   - `license`: SPDX license identifier for the dataset.
@@ -71,7 +68,7 @@ This section details the artifacts included in the AI/ML package, such as code, 
 - **Description**: Details of the trained models included in the package.
 - **Type**: Object Array
   - `name`: Name of the model 
-  - `path`: Location of the model
+  - `path`: Location of the model file or directory relative to the context
   - `framework`: AI/ML framework
   - `version`: Version of the model
   - `description`: Overview of the model
@@ -95,36 +92,35 @@ package:
     A brief description of the AI/ML project.
   authors: [Author Name, Contributor Name]
   license: MIT
-artifacts:
-  code:
-    - path: src/
-      description: Source code for the AI models.
-      license: Apache-2.0
-  datasets:
-    - name: DatasetName
-      path: data/dataset.csv
-      description: Description of the dataset.
-      source: URL
-      license: CC-BY-4.0
-      preprocessing: Preprocessing steps.
-  models:
-    - name: ModelName
-      path: models/model.h5
-      framework: TensorFlow
-      version: 1.0
-      description: Model description.
-      license: Apache-2.0
-      training:
-        dataset: DatasetName
-        parameters:
-          learning_rate: 0.001
-          epochs: 100
-          batch_size: 32
-      Validation:
-        - dataset: DatasetName
-          metrics:
-            accuracy: 0.95
-            f1_score: 0.94
+code:
+  - path: src/
+    description: Source code for the AI models.
+    license: Apache-2.0
+datasets:
+  - name: DatasetName
+    path: data/dataset.csv
+    description: Description of the dataset.
+    source: URL
+    license: CC-BY-4.0
+    preprocessing: Preprocessing steps.
+models:
+  - name: ModelName
+    path: models/model.h5
+    framework: TensorFlow
+    version: 1.0
+    description: Model description.
+    license: Apache-2.0
+    training:
+      dataset: DatasetName
+      parameters:
+        learning_rate: 0.001
+        epochs: 100
+        batch_size: 32
+    Validation:
+      - dataset: DatasetName
+        metrics:
+          accuracy: 0.95
+          f1_score: 0.94
 ```
 
 
