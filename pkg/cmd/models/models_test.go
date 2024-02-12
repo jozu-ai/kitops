@@ -14,7 +14,8 @@ import (
 
 func TestListModels(t *testing.T) {
 	tests := []struct {
-		name                  string
+		testName              string
+		repo                  string
 		manifests             map[digest.Digest]ocispec.Manifest
 		configs               map[digest.Digest]artifact.JozuFile
 		index                 *ocispec.Index
@@ -22,16 +23,16 @@ func TestListModels(t *testing.T) {
 		expectErrRegexp       string
 	}{
 		{
-			name:            "Cannot read index.json",
+			testName:        "Cannot read index.json",
 			index:           nil,
 			expectErrRegexp: "artifact not found",
 		},
 		{
-			name: "Cannot find manifest from index.json",
+			testName: "Cannot find manifest from index.json",
 			index: &ocispec.Index{
 				Manifests: []ocispec.Descriptor{
-					ManifestDesc("manifestA", true),
-					ManifestDesc("manifestNotFound", true),
+					ManifestDesc("manifestA", "", true),
+					ManifestDesc("manifestNotFound", "", true),
 				},
 			},
 			manifests: map[digest.Digest]ocispec.Manifest{
@@ -45,11 +46,11 @@ func TestListModels(t *testing.T) {
 			expectErrRegexp: "failed to read manifest manifestNotFound.*",
 		},
 		{
-			name: "Cannot find config in manifest",
+			testName: "Cannot find config in manifest",
 			index: &ocispec.Index{
 				Manifests: []ocispec.Descriptor{
-					ManifestDesc("manifestA", true),
-					ManifestDesc("manifestB", true),
+					ManifestDesc("manifestA", "", true),
+					ManifestDesc("manifestB", "", true),
 				},
 			},
 			manifests: map[digest.Digest]ocispec.Manifest{
@@ -63,11 +64,29 @@ func TestListModels(t *testing.T) {
 			expectErrRegexp: "failed to read config.*",
 		},
 		{
-			name: "Prints summary of for each manifest line (layers are 1024 bytes)",
+			testName: "Catches invalid size error",
 			index: &ocispec.Index{
 				Manifests: []ocispec.Descriptor{
-					ManifestDesc("manifestA", true),
-					ManifestDesc("manifestB", true),
+					ManifestDesc("manifestA", "", true),
+					ManifestDesc("manifestB", "", false),
+				},
+			},
+			manifests: map[digest.Digest]ocispec.Manifest{
+				"manifestA": Manifest("configA", "layerA"),
+				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
+			},
+			configs: map[digest.Digest]artifact.JozuFile{
+				"configA": Config("maintainerA", "formatA"),
+				"configB": Config("maintainerB", "formatB"),
+			},
+			expectErrRegexp: "failed to read manifest manifestB: invalid size",
+		},
+		{
+			testName: "Prints summary of for each manifest line (layers are 1024 bytes)",
+			index: &ocispec.Index{
+				Manifests: []ocispec.Descriptor{
+					ManifestDesc("manifestA", "", true),
+					ManifestDesc("manifestB", "", true),
 				},
 			},
 			manifests: map[digest.Digest]ocispec.Manifest{
@@ -79,23 +98,68 @@ func TestListModels(t *testing.T) {
 				"configB": Config("maintainerB", "formatB"),
 			},
 			expectedOutputRegexps: []string{
-				"manifestA.*maintainerA.*formatA.*1.0 KiB",
-				"manifestB.*maintainerB.*formatB.*3.0 KiB",
+				"<none>\t<none>\tmaintainerA\tformatA\t1.0 KiB\tmanifestA\t",
+				"<none>\t<none>\tmaintainerB\tformatB\t3.0 KiB\tmanifestB\t",
+			},
+		},
+		{
+			testName: "Prints summary of for each manifest line including repo and tag",
+			repo:     "testregistry/testrepo",
+			index: &ocispec.Index{
+				Manifests: []ocispec.Descriptor{
+					ManifestDesc("manifestA", "tagA", true),
+					ManifestDesc("manifestB", "tagB", true),
+				},
+			},
+			manifests: map[digest.Digest]ocispec.Manifest{
+				"manifestA": Manifest("configA", "layerA"),
+				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
+			},
+			configs: map[digest.Digest]artifact.JozuFile{
+				"configA": Config("maintainerA", "formatA"),
+				"configB": Config("maintainerB", "formatB"),
+			},
+			expectedOutputRegexps: []string{
+				"testregistry/testrepo\ttagA\tmaintainerA\tformatA\t1.0 KiB\tmanifestA\t",
+				"testregistry/testrepo\ttagB\tmaintainerB\tformatB\t3.0 KiB\tmanifestB\t",
+			},
+		},
+		{
+			testName: "Prints summary of for each manifest line, stripping localhost/ if present",
+			repo:     "localhost/testrepo",
+			index: &ocispec.Index{
+				Manifests: []ocispec.Descriptor{
+					ManifestDesc("manifestA", "tagA", true),
+					ManifestDesc("manifestB", "", true),
+				},
+			},
+			manifests: map[digest.Digest]ocispec.Manifest{
+				"manifestA": Manifest("configA", "layerA"),
+				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
+			},
+			configs: map[digest.Digest]artifact.JozuFile{
+				"configA": Config("maintainerA", "formatA"),
+				"configB": Config("maintainerB", "formatB"),
+			},
+			expectedOutputRegexps: []string{
+				"testrepo\ttagA\tmaintainerA\tformatA\t1.0 KiB\tmanifestA\t",
+				"testrepo\t<none>\tmaintainerB\tformatB\t3.0 KiB\tmanifestB\t",
 			},
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.testName, func(t *testing.T) {
 			testStore := &internal.TestStore{
 				Manifests: tt.manifests,
 				Configs:   tt.configs,
 				Index:     tt.index,
+				Repo:      tt.repo,
 			}
-			summary, err := listModels(testStore)
+			summaryLines, err := listModels(testStore)
 			if tt.expectErrRegexp != "" {
 				// Should be error
-				assert.Empty(t, summary, "Should not output summary on error")
-				if assert.Error(t, err, "Should return an error") {
+				assert.Empty(t, summaryLines, "Should not output summary on error")
+				if !assert.Error(t, err, "Should return an error") {
 					return
 				}
 				assert.Regexp(t, tt.expectErrRegexp, err.Error())
@@ -105,7 +169,7 @@ func TestListModels(t *testing.T) {
 				}
 				for _, line := range tt.expectedOutputRegexps {
 					// Assert all lines in expected output are somewhere in the summary
-					assert.Regexp(t, line, summary)
+					assert.Contains(t, summaryLines, line)
 				}
 			}
 		})
@@ -167,15 +231,19 @@ func Config(maintainer, format string) artifact.JozuFile {
 	return config
 }
 
-func ManifestDesc(digestStr string, valid bool) ocispec.Descriptor {
+func ManifestDesc(digestStr string, tag string, valid bool) ocispec.Descriptor {
 	size := internal.ValidSize
 	if !valid {
 		size = internal.InvalidSize
 	}
-
-	return ocispec.Descriptor{
-		Digest:    digest.Digest(digestStr),
-		MediaType: ocispec.MediaTypeImageManifest,
-		Size:      size,
+	desc := ocispec.Descriptor{
+		Digest:      digest.Digest(digestStr),
+		MediaType:   ocispec.MediaTypeImageManifest,
+		Size:        size,
+		Annotations: map[string]string{},
 	}
+	if tag != "" {
+		desc.Annotations[ocispec.AnnotationRefName] = tag
+	}
+	return desc
 }
