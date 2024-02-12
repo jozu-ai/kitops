@@ -20,12 +20,14 @@ import (
 type LocalStore struct {
 	storage   *oci.Store
 	indexPath string
+	repo      string
 }
 
 // Assert LocalStore implements the Store interface.
 var _ Store = (*LocalStore)(nil)
 
-func NewLocalStore(storeHome string) Store {
+func NewLocalStore(storeRoot, repo string) Store {
+	storeHome := filepath.Join(storeRoot, repo)
 	indexPath := filepath.Join(storeHome, "index.json")
 
 	store, err := oci.New(storeHome)
@@ -36,6 +38,7 @@ func NewLocalStore(storeHome string) Store {
 	return &LocalStore{
 		storage:   store,
 		indexPath: indexPath,
+		repo:      repo,
 	}
 }
 
@@ -44,11 +47,12 @@ func (store *LocalStore) SaveModel(model *artifact.Model, tag string) (*ocispec.
 	if err != nil {
 		return nil, err
 	}
-	for _, layer := range model.Layers {
-		_, err = store.saveContentLayer(&layer)
+	for idx, layer := range model.Layers {
+		layerDesc, err := store.saveContentLayer(&layer)
 		if err != nil {
 			return nil, err
 		}
+		model.Layers[idx].Descriptor = *layerDesc
 	}
 
 	manifestDesc, err := store.saveModelManifest(model, config, tag)
@@ -87,6 +91,10 @@ func (store *LocalStore) ParseIndexJson() (*ocispec.Index, error) {
 	}
 
 	return index, nil
+}
+
+func (store *LocalStore) GetRepository() string {
+	return store.repo
 }
 
 func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.Descriptor, error) {

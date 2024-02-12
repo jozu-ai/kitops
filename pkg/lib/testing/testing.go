@@ -19,6 +19,8 @@ var TestingNotFoundError = errors.New("artifact not found")
 var TestingInvalidSizeError = errors.New("invalid size")
 
 type TestStore struct {
+	// Repository for this store
+	Repo string
 	// Map of digest to Manifest, to simulate retrieval from e.g. disk
 	Manifests map[digest.Digest]ocispec.Manifest
 	// Map of digest to Config, to simulate retrieval from e.g. disk
@@ -76,4 +78,8 @@ func (*TestStore) TagModel(ocispec.Descriptor, string) error {
 // SaveModel is not yet implemented!
 func (*TestStore) SaveModel(*artifact.Model, string) (*ocispec.Descriptor, error) {
 	return nil, fmt.Errorf("save model is not implemented for testing")
+}
+
+func (t *TestStore) GetRepository() string {
+	return t.Repo
 }

@@ -117,12 +117,13 @@ func (options *BuildOptions) RunBuild() error {
 	model.Config = jozufile
 
 	modelStorePath := options.storageHome
+	repo := ""
 	tag := ""
 	if options.modelRef != nil {
-		modelStorePath = path.Join(options.storageHome, options.modelRef.Registry, options.modelRef.Repository)
+		repo = path.Join(options.modelRef.Registry, options.modelRef.Repository)
 		tag = options.modelRef.Reference
 	}
-	store := storage.NewLocalStore(modelStorePath)
+	store := storage.NewLocalStore(modelStorePath, repo)
 	manifestDesc, err := store.SaveModel(model, tag)
 	if err != nil {
 		fmt.Println(err)
