@@ -2,7 +2,6 @@ package artifact
 
 type Model struct {
 	Repository string
-	Tag        string
-	Layers     []*ModelLayer
+	Layers     []ModelLayer
 	Config     *JozuFile
 }

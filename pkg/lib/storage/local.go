@@ -39,23 +39,35 @@ func NewLocalStore(storeHome string) Store {
 	}
 }
 
-func (store *LocalStore) SaveModel(model *artifact.Model) (*ocispec.Manifest, error) {
+func (store *LocalStore) SaveModel(model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
 	config, err := store.saveConfigFile(model.Config)
 	if err != nil {
 		return nil, err
 	}
 	for _, layer := range model.Layers {
-		_, err = store.saveContentLayer(layer)
+		_, err = store.saveContentLayer(&layer)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	manifest, err := store.saveModelManifest(model, config)
+	manifestDesc, err := store.saveModelManifest(model, config, tag)
 	if err != nil {
 		return nil, err
 	}
-	return manifest, nil
+	return manifestDesc, nil
+}
+
+func (store *LocalStore) TagModel(manifestDesc ocispec.Descriptor, tag string) error {
+	if err := validateTag(tag); err != nil {
+		return err
+	}
+
+	if err := store.storage.Tag(context.Background(), manifestDesc, tag); err != nil {
+		return fmt.Errorf("failed to tag manifest: %w", err)
+	}
+
+	return nil
 }
 
 func (store *LocalStore) Fetch(ctx context.Context, desc ocispec.Descriptor) ([]byte, error) {
@@ -138,7 +150,7 @@ func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Desc
 	return &desc, nil
 }
 
-func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispec.Descriptor) (*ocispec.Manifest, error) {
+func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispec.Descriptor, tag string) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 	manifest := ocispec.Manifest{
 		Versioned:   specs.Versioned{SchemaVersion: 2},
@@ -149,11 +161,6 @@ func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispe
 	// Add the layers to the manifest
 	for _, layer := range model.Layers {
 		manifest.Layers = append(manifest.Layers, layer.Descriptor)
-	}
-
-	// Add tags, if any
-	if model.Tag != "" {
-		manifest.Annotations[ocispec.AnnotationRefName] = model.Tag
 	}
 
 	manifestBytes, err := json.Marshal(manifest)
@@ -177,5 +184,14 @@ func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispe
 		}
 	}
 
-	return &manifest, nil
+	if tag != "" {
+		if err := validateTag(tag); err != nil {
+			return nil, err
+		}
+		if err := store.storage.Tag(context.Background(), desc, tag); err != nil {
+			return nil, fmt.Errorf("failed to tag manifest: %w", err)
+		}
+	}
+
+	return &desc, nil
 }
