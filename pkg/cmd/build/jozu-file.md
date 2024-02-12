@@ -42,7 +42,7 @@ This section provides general information about the AI/ML project.
 
 - **Description**: Information about the source code.
 - **Type**: Object Array
-  - `path`: Location of the source cod files or directory relative to the context
+  - `path`: Location of the source code files or directory relative to the context
   - `description`: Description of what the code does.
   - `license`: SPDX license identifier for the code.
 
