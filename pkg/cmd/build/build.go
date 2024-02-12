@@ -12,7 +12,6 @@ import (
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/storage"
 
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"oras.land/oras-go/v2/registry"
@@ -43,6 +42,7 @@ type BuildOptions struct {
 	configHome  string
 	storageHome string
 	modelRef    *registry.Reference
+	extraRefs   []string
 }
 
 func NewCmdBuild() *cobra.Command {
@@ -113,22 +113,30 @@ func (options *BuildOptions) RunBuild() error {
 	// 3. Tar the build context and push to local registry
 	layer := artifact.NewLayer(options.ContextDir)
 	model := &artifact.Model{}
-	model.Layers = append(model.Layers, layer)
+	model.Layers = append(model.Layers, *layer)
 	model.Config = jozufile
 
 	modelStorePath := options.storageHome
+	tag := ""
 	if options.modelRef != nil {
 		modelStorePath = path.Join(options.storageHome, options.modelRef.Registry, options.modelRef.Repository)
-		model.Tag = options.modelRef.Reference
+		tag = options.modelRef.Reference
 	}
 	store := storage.NewLocalStore(modelStorePath)
-	var manifest *v1.Manifest
-	manifest, err = store.SaveModel(model)
+	manifestDesc, err := store.SaveModel(model, tag)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	fmt.Println("Model saved: ", manifest.Config.Digest)
+
+	for _, tag := range options.extraRefs {
+		if err := store.TagModel(*manifestDesc, tag); err != nil {
+			return err
+		}
+	}
+
+	fmt.Println("Model saved: ", manifestDesc.Digest)
+
 	return nil
 }
 
@@ -142,18 +150,22 @@ func (o *BuildFlags) ToOptions() (*BuildOptions, error) {
 		if !strings.Contains(o.FullTagRef, "/") {
 			o.FullTagRef = fmt.Sprintf("localhost/%s", o.FullTagRef)
 		}
-		modelRef, err := registry.ParseReference(o.FullTagRef)
+
+		// Handle multiple tags specified with commas, e.g. <registry>/<repo>:tag1,tag2
+		refs := strings.Split(o.FullTagRef, ",")
+		modelRef, err := registry.ParseReference(refs[0])
 		if err != nil {
 			return nil, err
 		}
 		options.modelRef = &modelRef
+		options.extraRefs = refs[1:]
 	}
 	return options, nil
 }
 
 func (flags *BuildFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&flags.ModelFile, "file", "f", "", "Path to the model file")
-	cmd.Flags().StringVarP(&flags.FullTagRef, "tag", "t", "", "Tag for the model")
+	cmd.Flags().StringVarP(&flags.FullTagRef, "tag", "t", "", "Tag for the model. Example: -t registry/repository:tag1,tag2")
 	cmd.Args = cobra.ExactArgs(1)
 }
 

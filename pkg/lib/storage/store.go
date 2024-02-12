@@ -11,7 +11,8 @@ import (
 )
 
 type Store interface {
-	SaveModel(*artifact.Model) (*ocispec.Manifest, error)
+	SaveModel(model *artifact.Model, tag string) (*ocispec.Descriptor, error)
+	TagModel(manifestDesc ocispec.Descriptor, tag string) error
 	ParseIndexJson() (*ocispec.Index, error)
 	Fetch(context.Context, ocispec.Descriptor) ([]byte, error)
 }
