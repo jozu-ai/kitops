@@ -222,10 +222,9 @@ func Manifest(configDigest string, layerDigests ...string) ocispec.Manifest {
 	return manifest
 }
 
-func Config(maintainer, format string) artifact.JozuFile {
+func Config(maintainer, name string) artifact.JozuFile {
 	config := artifact.JozuFile{
-		Maintainer:  maintainer,
-		ModelFormat: format,
+		Package: artifact.Package{Authors: []string{maintainer}, Name: name},
 	}
 
 	return config

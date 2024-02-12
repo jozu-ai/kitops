@@ -108,7 +108,7 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.
 
 	// Create a descriptor for the layer
 	desc := ocispec.Descriptor{
-		MediaType: constants.ModelLayerMediaType,
+		MediaType: layer.MediaType,
 		Digest:    digest.FromBytes(buf.Bytes()),
 		Size:      int64(buf.Len()),
 	}

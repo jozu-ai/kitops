@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	ModelsTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tMODEL FORMAT\tSIZE\tDIGEST"
+	ModelsTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tNAME\tSIZE\tDIGEST"
 	ModelsTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
 )
 
@@ -89,7 +89,7 @@ func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec
 	}
 	sizeStr := formatBytes(size)
 
-	info := fmt.Sprintf(ModelsTableFmt, repo, ref, config.Maintainer, config.ModelFormat, sizeStr, desc.Digest)
+	info := fmt.Sprintf(ModelsTableFmt, repo, ref, config.Package.Authors[0], config.Package.Name, sizeStr, desc.Digest)
 	return info, nil
 }
 
