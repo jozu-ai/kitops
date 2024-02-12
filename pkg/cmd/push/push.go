@@ -4,40 +4,26 @@ Copyright © 2024 Jozu.com
 package push
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/spf13/cobra"
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2"
+	"oras.land/oras-go/v2/content/oci"
+	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote"
 )
 
-// pushCmd represents the push command
-
-func NewCmdPush() *cobra.Command {
-
-	cmd := &cobra.Command{
-		Use:   "push",
-		Short: "A brief description of your command",
-		Long: `A longer description that spans multiple lines and likely contains examples
-	and usage of using your command. For example:
-	
-	Cobra is a CLI library for Go that empowers applications.
-	This application is a tool to generate the needed files
-	to quickly create a Cobra application.`,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("push called")
-		},
+func doPush(ctx context.Context, localStore *oci.Store, remoteRegistry *remote.Registry, ref *registry.Reference) (ocispec.Descriptor, error) {
+	repo, err := remoteRegistry.Repository(ctx, ref.Repository)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)
 	}
-	return cmd
-}
 
-func init() {
+	desc, err := oras.Copy(ctx, localStore, ref.Reference, repo, ref.Reference, oras.DefaultCopyOptions)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
+	}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// pushCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// pushCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	return desc, err
 }
