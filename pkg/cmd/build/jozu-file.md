@@ -37,12 +37,6 @@ This section provides general information about the AI/ML project.
 - **Description**: A list of individuals or entities that have contributed to the project.
 - **Type**: Array of Strings
 
-#### `license`
-
-- **Description**: The SPDX identifier for the project's license.
-- **Type**: String
-- **Example**: `MIT`, `Apache-2.0`
-
 
 #### `code`
 
@@ -59,7 +53,6 @@ This section provides general information about the AI/ML project.
   - `name`: Name of the dataset.
   - `path`: Location of the dataset file or directory relative to the context.
   - `description`: Overview of the dataset.
-  - `source`: Origin of the dataset.
   - `license`: SPDX license identifier for the dataset.
   - `preprocessing`: Reference to preprocessing steps.
 
@@ -91,7 +84,6 @@ package:
   description: >-
     A brief description of the AI/ML project.
   authors: [Author Name, Contributor Name]
-  license: MIT
 code:
   - path: src/
     description: Source code for the AI models.
@@ -100,7 +92,6 @@ datasets:
   - name: DatasetName
     path: data/dataset.csv
     description: Description of the dataset.
-    source: URL
     license: CC-BY-4.0
     preprocessing: Preprocessing steps.
 models:
