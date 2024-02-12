@@ -107,7 +107,7 @@ models:
         learning_rate: 0.001
         epochs: 100
         batch_size: 32
-    Validation:
+    validation:
       - dataset: DatasetName
         metrics:
           accuracy: 0.95
