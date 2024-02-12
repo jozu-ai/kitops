@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"jmm/pkg/artifact"
+	"jmm/pkg/lib/constants"
 	"jmm/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
@@ -108,13 +110,38 @@ func (options *BuildOptions) RunBuild() error {
 		return err
 	}
 
-	// 2. Run the build steps from the model file
-
-	// 3. Tar the build context and push to local registry
-	layer := artifact.NewLayer(options.ContextDir)
 	model := &artifact.Model{}
-	model.Layers = append(model.Layers, *layer)
 	model.Config = jozufile
+
+	// 2. package the Code
+	for _, code := range jozufile.Code {
+		codePath, err := toAbsPath(options.ContextDir, code.Path)
+		if err != nil {
+			return err
+		}
+		layer := artifact.NewLayer(codePath, constants.CodeLayerMediaType)
+		model.Layers = append(model.Layers, *layer)
+	}
+	// 3. package the DataSets
+	datasetPath := ""
+	for _, dataset := range jozufile.DataSets {
+		datasetPath, err = toAbsPath(options.ContextDir, dataset.Path)
+		if err != nil {
+			return err
+		}
+		layer := artifact.NewLayer(datasetPath, constants.DataSetLayerMediaType)
+		model.Layers = append(model.Layers, *layer)
+	}
+
+	// 4. package the TrainedModels
+	for _, trainedModel := range jozufile.Models {
+		modelPath, err := toAbsPath(options.ContextDir, trainedModel.Path)
+		if err != nil {
+			return err
+		}
+		layer := artifact.NewLayer(modelPath, constants.ModelLayerMediaType)
+		model.Layers = append(model.Layers, *layer)
+	}
 
 	modelStorePath := options.storageHome
 	repo := ""
@@ -172,4 +199,17 @@ func (flags *BuildFlags) AddFlags(cmd *cobra.Command) {
 
 func NewBuildFlags() *BuildFlags {
 	return &BuildFlags{}
+}
+func toAbsPath(context string, relativePath string) (string, error) {
+
+	absContext, err := filepath.Abs(context)
+	if err != nil {
+		fmt.Println("Error resolving base path:", err)
+		return "", err
+	}
+	combinedPath := filepath.Join(absContext, relativePath)
+
+	cleanPath := filepath.Clean(combinedPath)
+	return cleanPath, nil
+
 }

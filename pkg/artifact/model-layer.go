@@ -3,7 +3,6 @@ package artifact
 import (
 	"archive/tar"
 	"compress/gzip"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -13,24 +12,23 @@ import (
 )
 
 type ModelLayer struct {
-	ContextDir string
+	contextDir string
+	MediaType  string
 	Descriptor ocispec.Descriptor
 }
 
-func NewLayer(context string) *ModelLayer {
+func NewLayer(rootpath string, mediaType string) *ModelLayer {
 	return &ModelLayer{
-		ContextDir: context,
+		contextDir: rootpath,
+		MediaType:  mediaType,
 	}
 }
 
 func (layer *ModelLayer) Apply(writers ...io.Writer) error {
-	// Check if ContextDir exists and is a directory
-	fileInfo, err := os.Stat(layer.ContextDir)
+	// Check if path exists
+	_, err := os.Stat(layer.contextDir)
 	if err != nil {
 		return err
-	}
-	if !fileInfo.IsDir() {
-		return fmt.Errorf("ContextDir is not a valid directory")
 	}
 
 	mw := io.MultiWriter(writers...)
@@ -42,7 +40,7 @@ func (layer *ModelLayer) Apply(writers ...io.Writer) error {
 	defer tw.Close()
 
 	// walk the context dir and tar everything
-	err = filepath.Walk(layer.ContextDir, func(file string, fi os.FileInfo, err error) error {
+	err = filepath.Walk(layer.contextDir, func(file string, fi os.FileInfo, err error) error {
 
 		if err != nil {
 			return err
@@ -58,7 +56,7 @@ func (layer *ModelLayer) Apply(writers ...io.Writer) error {
 			return err
 		}
 
-		parentDir := filepath.Dir(layer.ContextDir)
+		parentDir := filepath.Dir(layer.contextDir)
 
 		// update the name to correctly reflect the desired destination when untaring
 		header.Name = strings.TrimPrefix(
