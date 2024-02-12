@@ -38,8 +38,8 @@ var rootCmd = newRootCmd()
 func init() {
 	rootCmd.AddCommand(build.NewCmdBuild())
 	rootCmd.AddCommand(login.NewCmdLogin())
-	rootCmd.AddCommand(pull.NewCmdPull())
-	rootCmd.AddCommand(push.NewCmdPush())
+	rootCmd.AddCommand(pull.PullCommand())
+	rootCmd.AddCommand(push.PushCommand())
 	rootCmd.AddCommand(models.ModelsCommand())
 }
 
