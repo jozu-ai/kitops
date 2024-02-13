@@ -44,13 +44,15 @@ jobs:
     
           - name: Cross-compile
             run: |
-                version="$(git describe --no-match --always --abbrev=9 --dirty --broken 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)-nightly"
+                version="nightly"
+                gitCommit=$(git rev-parse HEAD)
+                buildTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
                 binName="jmm-$GOOS-$GOARCH"
                 if [ $GOOS == "windows" ]; then
                     binName="${binName}.exe"
                 fi
                 go build -o "$binName" \
-                    ldflags="-s -w -X 'pkg/cmd/version.Version=${version}' -X 'pkg/cmd/version.GitCommit=${gitCommit}' -X 'pkg/cmd/version.BuildTime=${buildTime}'"
+                    -ldflags="-s -w -X 'pkg/cmd/version.Version=${version}' -X 'pkg/cmd/version.GitCommit=${gitCommit}' -X 'pkg/cmd/version.BuildTime=${buildTime}'"
 
           - name: Generate archive
             run: |
