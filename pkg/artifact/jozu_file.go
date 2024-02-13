@@ -10,11 +10,11 @@ import (
 
 type (
 	JozuFile struct {
-		Version  string         `yaml:"version"`
-		Package  Package        `yaml:"package"`
-		Code     []Code         `yaml:"code"`
-		DataSets []DataSet      `yaml:"datasets"`
-		Models   []TrainedModel `yaml:"models"`
+		ManifestVersion string         `yaml:"manifestVersion"`
+		Package         Package        `yaml:"package"`
+		Code            []Code         `yaml:"code"`
+		DataSets        []DataSet      `yaml:"datasets"`
+		Models          []TrainedModel `yaml:"models"`
 	}
 
 	Package struct {
