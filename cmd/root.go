@@ -9,6 +9,7 @@ import (
 	"jmm/pkg/cmd/models"
 	"jmm/pkg/cmd/pull"
 	"jmm/pkg/cmd/push"
+	"jmm/pkg/cmd/version"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -41,6 +42,7 @@ func init() {
 	rootCmd.AddCommand(pull.NewCmdPull())
 	rootCmd.AddCommand(push.NewCmdPush())
 	rootCmd.AddCommand(models.ModelsCommand())
+	rootCmd.AddCommand(version.NewCmdVersion())
 }
 
 func newRootCmd() *cobra.Command {
