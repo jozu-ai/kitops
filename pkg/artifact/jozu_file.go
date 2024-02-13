@@ -5,58 +5,59 @@ import (
 	"io"
 	"os"
 
-	"gopkg.in/yaml.v3"
+	"sigs.k8s.io/yaml"
 )
 
 type (
 	JozuFile struct {
-		ManifestVersion string         `yaml:"manifestVersion"`
-		Package         Package        `yaml:"package"`
-		Code            []Code         `yaml:"code"`
-		DataSets        []DataSet      `yaml:"datasets"`
-		Models          []TrainedModel `yaml:"models"`
+		ManifestVersion string         `json:"manifestVersion"`
+		Package         Package        `json:"package,omitempty"`
+		Code            []Code         `json:"code,omitempty"`
+		DataSets        []DataSet      `json:"datasets,omitempty"`
+		Models          []TrainedModel `json:"models,omitempty"`
 	}
 
 	Package struct {
-		Name        string   `yaml:"name"`
-		Version     string   `yaml:"version"`
-		Description string   `yaml:"description"`
-		Authors     []string `yaml:"authors"`
+		Name        string   `json:"name,omitempty"`
+		Version     string   `json:"version,omitempty"`
+		Description string   `json:"description,omitempty"`
+		License     string   `json:"license,omitempty"`
+		Authors     []string `json:"authors,omitempty"`
 	}
 
 	Code struct {
-		Path        string `yaml:"path"`
-		License     string `yaml:"license"`
-		Description string `yaml:"description"`
+		Path        string `json:"path,omitempty"`
+		License     string `json:"license,omitempty"`
+		Description string `json:"description,omitempty"`
 	}
 
 	DataSet struct {
-		Name          string `yaml:"name"`
-		Path          string `yaml:"path"`
-		Description   string `yaml:"description"`
-		License       string `yaml:"license"`
-		Preprocessing string `yaml:"preprocessing"`
+		Name          string `json:"name,omitempty"`
+		Path          string `json:"path,omitempty"`
+		Description   string `json:"description,omitempty"`
+		License       string `json:"license,omitempty"`
+		Preprocessing string `json:"preprocessing,omitempty"`
 	}
 
 	TrainedModel struct {
-		Name        string     `yaml:"name"`
-		Path        string     `yaml:"path"`
-		Framework   string     `yaml:"framework"`
-		Version     string     `yaml:"version"`
-		Description string     `yaml:"description"`
-		License     string     `yaml:"license"`
-		Training    Training   `yaml:"training"`
-		Validation  Validation `yaml:"validation"`
+		Name        string      `json:"name,omitempty"`
+		Path        string      `json:"path,omitempty"`
+		Framework   string      `json:"framework,omitempty"`
+		Version     string      `json:"version,omitempty"`
+		Description string      `json:"description,omitempty"`
+		License     string      `json:"license,omitempty"`
+		Training    *Training   `json:"training,omitempty"`
+		Validation  *Validation `json:"validation,omitempty"`
 	}
 
 	Training struct {
-		DataSet    string                 `yaml:"dataset"`
-		Parameters map[string]interface{} `yaml:"parameters"`
+		DataSet    string                 `json:"dataset,omitempty"`
+		Parameters map[string]interface{} `json:"parameters,omitempty"`
 	}
 
 	Validation struct {
-		DataSet string                 `yaml:"dataset"`
-		Metrics map[string]interface{} `yaml:"metrics"`
+		DataSet string                 `json:"dataset,omitempty"`
+		Metrics map[string]interface{} `json:"metrics,omitempty"`
 	}
 )
 
