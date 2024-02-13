@@ -6,7 +6,7 @@ The Jozu manifest for AI/ML is a YAML file designed to encapsulate all the neces
 
 The manifest is structured into several key sections: `version`, `package`,`code`, `datasets` and `models`. Each section serves a specific purpose in describing the AI/ML package components and requirements.
 
-### `version`
+### `ManifestVersion`
 
 - **Description**: Specifies the manifest format version.
 - **Type**: String
@@ -77,7 +77,7 @@ This section provides general information about the AI/ML project.
 ## Example
 
 ```yaml
-version: 1.0
+manifestVersion: 1.0
 package:
   name: AIProjectName
   version: 1.2.3
