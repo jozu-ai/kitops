@@ -60,7 +60,7 @@ func PullCommand() *cobra.Command {
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Push to http registry")
+	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	return cmd
 }
 

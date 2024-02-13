@@ -2,15 +2,13 @@ package models
 
 import (
 	"fmt"
-	"io/fs"
-	"jmm/pkg/lib/storage"
 	"os"
 	"path"
-	"path/filepath"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"oras.land/oras-go/v2/registry"
 )
 
 const (
@@ -19,17 +17,33 @@ const (
 )
 
 var (
-	opts *ModelsOptions
+	flags *ModelsFlags
+	opts  *ModelsOptions
 )
+
+type ModelsFlags struct {
+	UseHTTP bool
+}
 
 type ModelsOptions struct {
 	configHome  string
 	storageHome string
+	remoteRef   *registry.Reference
+	usehttp     bool
 }
 
-func (opts *ModelsOptions) complete() {
+func (opts *ModelsOptions) complete(flags *ModelsFlags, args []string) error {
 	opts.configHome = viper.GetString("config")
 	opts.storageHome = path.Join(opts.configHome, "storage")
+	if len(args) > 0 {
+		remoteRef, err := registry.ParseReference(args[0])
+		if err != nil {
+			return fmt.Errorf("invalid reference: %w", err)
+		}
+		opts.remoteRef = &remoteRef
+	}
+	opts.usehttp = flags.UseHTTP
+	return nil
 }
 
 func (opts *ModelsOptions) validate() error {
@@ -38,75 +52,52 @@ func (opts *ModelsOptions) validate() error {
 
 // ModelsCommand represents the models command
 func ModelsCommand() *cobra.Command {
+	flags = &ModelsFlags{}
 	opts = &ModelsOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "models",
+		Use:   "models [repository]",
 		Short: shortDesc,
 		Long:  longDesc,
 		Run:   RunCommand(opts),
 	}
 
+	cmd.Args = cobra.MaximumNArgs(1)
+	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	return cmd
 }
 
 func RunCommand(options *ModelsOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		options.complete()
-		err := options.validate()
-		if err != nil {
+		if err := options.complete(flags, args); err != nil {
+			fmt.Printf("Failed to parse argument: %s", err)
+			return
+		}
+		if err := options.validate(); err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		storeDirs, err := findRepos(opts.storageHome)
-		if err != nil {
-			fmt.Println(err)
-		}
-
 		var allInfoLines []string
-		for _, storeDir := range storeDirs {
-			store := storage.NewLocalStore(opts.storageHome, storeDir)
-
-			infolines, err := listModels(store)
+		if opts.remoteRef == nil {
+			lines, err := listLocalModels(opts.storageHome)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			allInfoLines = append(allInfoLines, infolines...)
+			allInfoLines = lines
+		} else {
+			lines, err := listRemoteModels(cmd.Context(), opts.remoteRef, opts.usehttp)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			allInfoLines = lines
 		}
 
 		printSummary(allInfoLines)
 
 	}
-}
-
-func findRepos(storePath string) ([]string, error) {
-	var indexPaths []string
-	err := filepath.WalkDir(storePath, func(file string, info fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.Name() == "index.json" && !info.IsDir() {
-			dir := filepath.Dir(file)
-			relDir, err := filepath.Rel(storePath, dir)
-			if err != nil {
-				return err
-			}
-			if relDir == "." {
-				relDir = ""
-			}
-			indexPaths = append(indexPaths, relDir)
-		}
-		return nil
-	})
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("failed to read local storage: %w", err)
-	}
-	return indexPaths, nil
 }
 
 func printSummary(lines []string) {
