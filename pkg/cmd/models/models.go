@@ -7,9 +7,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/storage"
 	"math"
+	"os"
+	"path/filepath"
 	"strings"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -19,6 +22,25 @@ const (
 	ModelsTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tNAME\tSIZE\tDIGEST"
 	ModelsTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
 )
+
+func listLocalModels(storageRoot string) ([]string, error) {
+	storeDirs, err := findRepos(storageRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	var allInfoLines []string
+	for _, storeDir := range storeDirs {
+		store := storage.NewLocalStore(storageRoot, storeDir)
+
+		infolines, err := listModels(store)
+		if err != nil {
+			return nil, err
+		}
+		allInfoLines = append(allInfoLines, infolines...)
+	}
+	return allInfoLines, nil
+}
 
 func listModels(store storage.Store) ([]string, error) {
 	index, err := store.ParseIndexJson()
@@ -37,10 +59,7 @@ func listModels(store storage.Store) ([]string, error) {
 			return nil, err
 		}
 		// TODO: filter list for our manifests only, ignore other artifacts
-		infoline, err := getManifestInfoLine(store.GetRepository(), manifestDesc, manifest, manifestConf)
-		if err != nil {
-			return nil, err
-		}
+		infoline := getManifestInfoLine(store.GetRepository(), manifestDesc, manifest, manifestConf)
 		infolines = append(infolines, infoline)
 	}
 
@@ -71,7 +90,7 @@ func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artif
 	return config, nil
 }
 
-func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.JozuFile) (string, error) {
+func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.JozuFile) string {
 	ref := desc.Annotations[ocispec.AnnotationRefName]
 	if ref == "" {
 		ref = "<none>"
@@ -90,7 +109,35 @@ func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec
 	sizeStr := formatBytes(size)
 
 	info := fmt.Sprintf(ModelsTableFmt, repo, ref, config.Package.Authors[0], config.Package.Name, sizeStr, desc.Digest)
-	return info, nil
+	return info
+}
+
+func findRepos(storePath string) ([]string, error) {
+	var indexPaths []string
+	err := filepath.WalkDir(storePath, func(file string, info fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.Name() == "index.json" && !info.IsDir() {
+			dir := filepath.Dir(file)
+			relDir, err := filepath.Rel(storePath, dir)
+			if err != nil {
+				return err
+			}
+			if relDir == "." {
+				relDir = ""
+			}
+			indexPaths = append(indexPaths, relDir)
+		}
+		return nil
+	})
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to read local storage: %w", err)
+	}
+	return indexPaths, nil
 }
 
 func formatBytes(i int64) string {
