@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"jmm/pkg/lib/storage"
 	"os"
 	"path"
 	"text/tabwriter"
@@ -36,11 +37,14 @@ func (opts *ModelsOptions) complete(flags *ModelsFlags, args []string) error {
 	opts.configHome = viper.GetString("config")
 	opts.storageHome = path.Join(opts.configHome, "storage")
 	if len(args) > 0 {
-		remoteRef, err := registry.ParseReference(args[0])
+		remoteRef, extraTags, err := storage.ParseReference(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid reference: %w", err)
 		}
-		opts.remoteRef = &remoteRef
+		if len(extraTags) > 0 {
+			return fmt.Errorf("repository cannot reference multiple tags")
+		}
+		opts.remoteRef = remoteRef
 	}
 	opts.usehttp = flags.UseHTTP
 	return nil

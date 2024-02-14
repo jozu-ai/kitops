@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/constants"
@@ -88,7 +87,7 @@ func (options *BuildOptions) Complete(cmd *cobra.Command, argsIn []string) error
 	}
 	options.configHome = viper.GetString("config")
 	fmt.Println("config: ", options.configHome)
-	options.storageHome = path.Join(options.configHome, "storage")
+	options.storageHome = storage.StorageHome(options.configHome)
 	return nil
 }
 
@@ -174,19 +173,12 @@ func (o *BuildFlags) ToOptions() (*BuildOptions, error) {
 		options.ModelFile = o.ModelFile
 	}
 	if o.FullTagRef != "" {
-		// References _must_ contain host; use localhost to mark local-only
-		if !strings.Contains(o.FullTagRef, "/") {
-			o.FullTagRef = fmt.Sprintf("localhost/%s", o.FullTagRef)
-		}
-
-		// Handle multiple tags specified with commas, e.g. <registry>/<repo>:tag1,tag2
-		refs := strings.Split(o.FullTagRef, ",")
-		modelRef, err := registry.ParseReference(refs[0])
+		modelRef, extraRefs, err := storage.ParseReference(o.FullTagRef)
 		if err != nil {
 			return nil, err
 		}
-		options.modelRef = &modelRef
-		options.extraRefs = refs[1:]
+		options.modelRef = modelRef
+		options.extraRefs = extraRefs
 	}
 	return options, nil
 }

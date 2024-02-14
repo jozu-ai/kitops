@@ -2,7 +2,7 @@ package pull
 
 import (
 	"fmt"
-	"path"
+	"jmm/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,12 +34,18 @@ type PullOptions struct {
 
 func (opts *PullOptions) complete(args []string) error {
 	opts.configHome = viper.GetString("config")
-	opts.storageHome = path.Join(opts.configHome, "storage")
-	modelRef, err := registry.ParseReference(args[0])
+	opts.storageHome = storage.StorageHome(opts.configHome)
+	modelRef, extraTags, err := storage.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
 	}
-	opts.modelRef = &modelRef
+	if modelRef.Registry == "localhost" {
+		return fmt.Errorf("registry is required when pulling")
+	}
+	if len(extraTags) > 0 {
+		return fmt.Errorf("reference cannot include multiple tags")
+	}
+	opts.modelRef = modelRef
 	opts.usehttp = flags.UseHTTP
 	return nil
 }
@@ -83,7 +89,7 @@ func runCommand(opts *PullOptions) func(*cobra.Command, []string) {
 			remoteRegistry.PlainHTTP = true
 		}
 
-		localStorePath := path.Join(opts.storageHome, opts.modelRef.Registry, opts.modelRef.Repository)
+		localStorePath := storage.LocalStorePath(opts.storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
 			fmt.Println(err)
