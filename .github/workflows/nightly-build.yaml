@@ -52,7 +52,7 @@ jobs:
                     binName="${binName}.exe"
                 fi
                 go build -o "$binName" \
-                    -ldflags="-s -w -X 'pkg/cmd/version.Version=${version}' -X 'pkg/cmd/version.GitCommit=${gitCommit}' -X 'pkg/cmd/version.BuildTime=${buildTime}'"
+                    -ldflags="-s -w -X 'jmm/pkg/cmd/version.Version=${version}' -X 'jmm/pkg/cmd/version.GitCommit=${gitCommit}' -X 'jmm/pkg/cmd/version.BuildTime=${buildTime}'"
 
           - name: Generate archive
             run: |
