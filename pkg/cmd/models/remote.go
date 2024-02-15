@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"jmm/pkg/artifact"
+	"jmm/pkg/lib/constants"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"
@@ -68,6 +69,9 @@ func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.R
 	manifest := &ocispec.Manifest{}
 	if err := json.Unmarshal(manifestBytes, manifest); err != nil {
 		return nil, fmt.Errorf("failed to parse manifest: %w", err)
+	}
+	if manifest.Config.MediaType != constants.ModelConfigMediaType {
+		return nil, nil
 	}
 
 	configReader, err := repo.Fetch(ctx, manifest.Config)

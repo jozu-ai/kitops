@@ -99,7 +99,8 @@ func runCommand(opts *PullOptions) func(*cobra.Command, []string) {
 		fmt.Printf("Pulling %s\n", opts.modelRef.String())
 		desc, err := doPull(cmd.Context(), remoteRegistry, localStore, opts.modelRef)
 		if err != nil {
-			fmt.Printf("Failed to push: %s\n", err)
+			fmt.Printf("Failed to pull: %s\n", err)
+			return
 		}
 		fmt.Printf("Pulled %s\n", desc.Digest)
 	}
