@@ -100,6 +100,7 @@ func runCommand(opts *PushOptions) func(*cobra.Command, []string) {
 		desc, err := doPush(cmd.Context(), localStore, remoteRegistry, opts.modelRef)
 		if err != nil {
 			fmt.Printf("Failed to push: %s\n", err)
+			return
 		}
 		fmt.Printf("Pushed %s\n", desc.Digest)
 	}

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/fs"
 	"jmm/pkg/artifact"
+	"jmm/pkg/lib/constants"
 	"jmm/pkg/lib/storage"
 	"math"
 	"os"
@@ -54,11 +55,13 @@ func listModels(store storage.Store) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		if manifest.Config.MediaType != constants.ModelConfigMediaType {
+			continue
+		}
 		manifestConf, err := readManifestConfig(store, manifest)
 		if err != nil {
 			return nil, err
 		}
-		// TODO: filter list for our manifests only, ignore other artifacts
 		infoline := getManifestInfoLine(store.GetRepository(), manifestDesc, manifest, manifestConf)
 		infolines = append(infolines, infoline)
 	}
