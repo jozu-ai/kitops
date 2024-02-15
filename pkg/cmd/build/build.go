@@ -18,10 +18,6 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
-const (
-	DEFAULT_MODEL_FILE = "Jozufile"
-)
-
 var (
 	shortDesc = `Build a model`
 	longDesc  = `A longer description that spans multiple lines and likely contains examples
@@ -83,7 +79,7 @@ func NewCmdBuild() *cobra.Command {
 func (options *BuildOptions) Complete(cmd *cobra.Command, argsIn []string) error {
 	options.ContextDir = argsIn[0]
 	if options.ModelFile == "" {
-		options.ModelFile = options.ContextDir + "/" + DEFAULT_MODEL_FILE
+		options.ModelFile = path.Join(options.ContextDir, constants.DefaultModelFileName)
 	}
 	options.configHome = viper.GetString("config")
 	fmt.Println("config: ", options.configHome)

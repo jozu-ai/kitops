@@ -1,6 +1,8 @@
 package build
 
 import (
+	"jmm/pkg/lib/constants"
+	"path"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -26,7 +28,7 @@ func TestBuildOptions_Complete(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, args[0], options.ContextDir)
-	assert.Equal(t, options.ContextDir+"/"+DEFAULT_MODEL_FILE, options.ModelFile)
+	assert.Equal(t, path.Join(options.ContextDir, constants.DefaultModelFileName), options.ModelFile)
 }
 
 func TestBuildOptions_Validate(t *testing.T) {
