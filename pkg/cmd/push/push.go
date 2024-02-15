@@ -14,7 +14,7 @@ import (
 	"oras.land/oras-go/v2/registry/remote"
 )
 
-func doPush(ctx context.Context, localStore *oci.Store, remoteRegistry *remote.Registry, ref *registry.Reference) (ocispec.Descriptor, error) {
+func PushModel(ctx context.Context, localStore *oci.Store, remoteRegistry *remote.Registry, ref *registry.Reference) (ocispec.Descriptor, error) {
 	repo, err := remoteRegistry.Repository(ctx, ref.Repository)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)

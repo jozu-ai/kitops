@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"jmm/pkg/cmd/build"
+	"jmm/pkg/cmd/export"
 	"jmm/pkg/cmd/login"
 	"jmm/pkg/cmd/models"
 	"jmm/pkg/cmd/pull"
@@ -42,6 +43,7 @@ func init() {
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(push.PushCommand())
 	rootCmd.AddCommand(models.ModelsCommand())
+	rootCmd.AddCommand(export.ExportCommand())
 	rootCmd.AddCommand(version.NewCmdVersion())
 }
 
