@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./demo-magic/demo-magic.sh
+source ./.demo-magic/demo-magic.sh
 
 
 ########################
@@ -25,10 +25,37 @@ DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 # hide the evidence
 clear
 
-# enters interactive mode and allows newly typed command to be executed
-cmd
-
-pe "./jmm --help"
 
 pe "./jmm version" 
+
+# Let's check if there are any models locally
+pe "./jmm models"
+
+# clean the local models and check again
+pe "rm -rf ~/.jozu"
+pe "./jmm models"
+
+pe "./jmm build --help"
+
+# Let's build the onnx model
+pe "./jmm build ../examples/onnx -t localhost:5050/test-repo:test-tag"
+
+# Let's check if the model is built
+pe "./jmm models"
+
+# run a local registry
+pe "docker run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry" 
+
+# Let's push the model to the local registry
+pe "./jmm push localhost:5050/test-repo:test-tag --http"
+# Let's check if the model is pushed
+pe "./jmm models localhost:5050/test-repo --http"
+# clean the local models and check again
+pe "rm -rf ~/.jozu"
+pe "./jmm models"
+
+# Let's pull the model to the local registry
+pe "./jmm pull localhost:5050/test-repo:test-tag --http"
+
+pe "./jmm models"
 
