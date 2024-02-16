@@ -22,6 +22,15 @@ DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 # text color
 # DEMO_CMD_COLOR=$BLACK
 
+if command -v docker; then
+  DOCKER=docker
+elif command -v podman; then
+  DOCKER=podman
+else
+  echo "You need docker or podman installed for this demo"
+  exit 1
+fi
+
 # hide the evidence
 clear
 
@@ -44,7 +53,7 @@ pe "./jmm build ../examples/onnx -t localhost:5050/test-repo:test-tag"
 pe "./jmm models"
 
 # run a local registry
-pe "docker run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry" 
+pe "$DOCKER run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry" 
 
 # Let's push the model to the local registry
 pe "./jmm push localhost:5050/test-repo:test-tag --http"
