@@ -1,0 +1,7 @@
+ray[serve]
+tensorflow
+torch
+onnxruntime
+scikit-learn
+sanic
+
