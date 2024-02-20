@@ -19,7 +19,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Reference, exportDir string) error {
+func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Reference, exportDir string, conf ExportConf) error {
 	manifestDesc, err := localStore.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("failed to resolve local reference: %w", err)
@@ -29,19 +29,22 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
-	if err := ExportConfig(config, exportDir); err != nil {
-		return err
+	if conf.ExportConfig {
+		if err := ExportConfig(config, exportDir); err != nil {
+			return err
+		}
 	}
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for exporting
 	var modelIdx, codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
-		fmt.Printf("Processing layer %s\n", layerDesc.Digest)
-
 		var layerExportErr error
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
+			if !conf.ExportModels {
+				continue
+			}
 			modelEntry := config.Models[modelIdx]
 			layerDir := path.Join(exportDir, modelEntry.Path)
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
@@ -49,6 +52,9 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 			modelIdx += 1
 
 		case constants.CodeLayerMediaType:
+			if !conf.ExportCode {
+				continue
+			}
 			codeEntry := config.Code[codeIdx]
 			layerDir := path.Join(exportDir, codeEntry.Path)
 			fmt.Printf("Exporting code to %s\n", layerDir)
@@ -56,6 +62,9 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
+			if !conf.ExportDatasets {
+				continue
+			}
 			datasetEntry := config.DataSets[datasetIdx]
 			layerDir := path.Join(exportDir, datasetEntry.Path)
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
