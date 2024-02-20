@@ -1,13 +1,16 @@
 package export
 
 import (
+	"context"
 	"fmt"
 	"jmm/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote"
 )
 
 const (
@@ -110,14 +113,10 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 			fmt.Println(err)
 			return
 		}
-		store, err := oci.New(storage.LocalStorePath(opts.storageHome, opts.modelRef))
-		if err != nil {
-			fmt.Printf("failed to read local storage: %s\n", err)
-			return
-		}
 
-		if _, err := store.Resolve(cmd.Context(), opts.modelRef.Reference); err != nil {
-			fmt.Printf("reference %s not found in local store\n", opts.modelRef.String())
+		store, err := getStoreForRef(cmd.Context(), opts)
+		if err != nil {
+			fmt.Println(err)
 			return
 		}
 
@@ -128,4 +127,35 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 			return
 		}
 	}
+}
+
+func getStoreForRef(ctx context.Context, opts *ExportOptions) (oras.Target, error) {
+	localStore, err := oci.New(storage.LocalStorePath(opts.storageHome, opts.modelRef))
+	if err != nil {
+		return nil, fmt.Errorf("failed to read local storage: %s\n", err)
+	}
+
+	if _, err := localStore.Resolve(ctx, opts.modelRef.Reference); err == nil {
+		// Reference is present in local storage
+		return localStore, nil
+	}
+
+	// Not in local storage, check remote
+	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry)
+	if err != nil {
+		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.modelRef.Registry, err)
+	}
+	if opts.usehttp {
+		remoteRegistry.PlainHTTP = true
+	}
+
+	repo, err := remoteRegistry.Repository(ctx, opts.modelRef.Repository)
+	if err != nil {
+		return nil, fmt.Errorf("could not resolve repository %s in registry %s", opts.modelRef.Repository, opts.modelRef.Registry)
+	}
+	if _, err := repo.Resolve(ctx, opts.modelRef.Reference); err != nil {
+		return nil, fmt.Errorf("reference %s is not present in local storage and could not be found in remote", opts.modelRef.String())
+	}
+
+	return repo, nil
 }

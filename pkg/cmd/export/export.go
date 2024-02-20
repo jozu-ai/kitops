@@ -13,18 +13,18 @@ import (
 	"path"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content"
-	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 	"sigs.k8s.io/yaml"
 )
 
-func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Reference, exportDir string, conf ExportConf) error {
-	manifestDesc, err := localStore.Resolve(ctx, ref.Reference)
+func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference, exportDir string, conf ExportConf) error {
+	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("failed to resolve local reference: %w", err)
 	}
-	manifest, config, err := repo.GetManifestAndConfig(ctx, localStore, manifestDesc)
+	manifest, config, err := repo.GetManifestAndConfig(ctx, store, manifestDesc)
 	if err != nil {
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
@@ -48,7 +48,7 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 			modelEntry := config.Models[modelIdx]
 			layerDir := path.Join(exportDir, modelEntry.Path)
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, localStore, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
 			modelIdx += 1
 
 		case constants.CodeLayerMediaType:
@@ -58,7 +58,7 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 			codeEntry := config.Code[codeIdx]
 			layerDir := path.Join(exportDir, codeEntry.Path)
 			fmt.Printf("Exporting code to %s\n", layerDir)
-			layerExportErr = ExportLayer(ctx, localStore, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
@@ -68,7 +68,7 @@ func ExportModel(ctx context.Context, localStore *oci.Store, ref *registry.Refer
 			datasetEntry := config.DataSets[datasetIdx]
 			layerDir := path.Join(exportDir, datasetEntry.Path)
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, localStore, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
 			datasetIdx += 1
 		}
 		if layerExportErr != nil {
@@ -97,8 +97,8 @@ func ExportConfig(config *artifact.JozuFile, exportDir string) error {
 	return nil
 }
 
-func ExportLayer(ctx context.Context, localStore content.Storage, desc ocispec.Descriptor, exportDir string) error {
-	rc, err := localStore.Fetch(ctx, desc)
+func ExportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string) error {
+	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
 	}
