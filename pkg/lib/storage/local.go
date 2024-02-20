@@ -43,19 +43,20 @@ func NewLocalStore(storeRoot, repo string) Store {
 }
 
 func (store *LocalStore) SaveModel(model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
-	config, err := store.saveConfigFile(model.Config)
+	configDesc, err := store.saveConfigFile(model.Config)
 	if err != nil {
 		return nil, err
 	}
-	for idx, layer := range model.Layers {
+	var layerDescs []ocispec.Descriptor
+	for _, layer := range model.Layers {
 		layerDesc, err := store.saveContentLayer(&layer)
 		if err != nil {
 			return nil, err
 		}
-		model.Layers[idx].Descriptor = *layerDesc
+		layerDescs = append(layerDescs, layerDesc)
 	}
 
-	manifestDesc, err := store.saveModelManifest(model, config, tag)
+	manifestDesc, err := store.saveModelManifest(layerDescs, configDesc, tag)
 	if err != nil {
 		return nil, err
 	}
@@ -97,13 +98,13 @@ func (store *LocalStore) GetRepository() string {
 	return store.repo
 }
 
-func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.Descriptor, error) {
+func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (ocispec.Descriptor, error) {
 	ctx := context.Background()
 
 	buf := &bytes.Buffer{}
 	err := layer.Apply(buf)
 	if err != nil {
-		return nil, err
+		return ocispec.DescriptorEmptyJSON, err
 	}
 
 	// Create a descriptor for the layer
@@ -115,7 +116,7 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.
 
 	exists, err := store.storage.Exists(ctx, desc)
 	if err != nil {
-		return nil, err
+		return ocispec.DescriptorEmptyJSON, err
 	}
 	if exists {
 		fmt.Println("Model layer already saved: ", desc.Digest)
@@ -123,19 +124,19 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (*ocispec.
 		// Does not exist in storage, need to push
 		err = store.storage.Push(ctx, desc, buf)
 		if err != nil {
-			return nil, err
+			return ocispec.DescriptorEmptyJSON, err
 		}
 		fmt.Println("Saved model layer: ", desc.Digest)
 	}
 
-	return &desc, nil
+	return desc, nil
 }
 
-func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Descriptor, error) {
+func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (ocispec.Descriptor, error) {
 	ctx := context.Background()
 	modelBytes, err := model.MarshalToJSON()
 	if err != nil {
-		return nil, err
+		return ocispec.DescriptorEmptyJSON, err
 	}
 	desc := ocispec.Descriptor{
 		MediaType: constants.ModelConfigMediaType,
@@ -145,30 +146,30 @@ func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (*ocispec.Desc
 
 	exists, err := store.storage.Exists(ctx, desc)
 	if err != nil {
-		return nil, err
+		return ocispec.DescriptorEmptyJSON, err
 	}
 	if !exists {
 		// Does not exist in storage, need to push
 		err = store.storage.Push(ctx, desc, bytes.NewReader(modelBytes))
 		if err != nil {
-			return nil, err
+			return ocispec.DescriptorEmptyJSON, err
 		}
 	}
 
-	return &desc, nil
+	return desc, nil
 }
 
-func (store *LocalStore) saveModelManifest(model *artifact.Model, config *ocispec.Descriptor, tag string) (*ocispec.Descriptor, error) {
+func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, config ocispec.Descriptor, tag string) (*ocispec.Descriptor, error) {
 	ctx := context.Background()
 	manifest := ocispec.Manifest{
 		Versioned:   specs.Versioned{SchemaVersion: 2},
-		Config:      *config,
+		Config:      config,
 		Layers:      []ocispec.Descriptor{},
 		Annotations: map[string]string{},
 	}
 	// Add the layers to the manifest
-	for _, layer := range model.Layers {
-		manifest.Layers = append(manifest.Layers, layer.Descriptor)
+	for _, layerDesc := range layerDescs {
+		manifest.Layers = append(manifest.Layers, layerDesc)
 	}
 
 	manifestBytes, err := json.Marshal(manifest)

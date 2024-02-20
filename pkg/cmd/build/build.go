@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/constants"
+	"jmm/pkg/lib/filesystem"
 	"jmm/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
@@ -110,31 +110,39 @@ func (options *BuildOptions) RunBuild() error {
 
 	// 2. package the Code
 	for _, code := range jozufile.Code {
-		codePath, err := toAbsPath(options.ContextDir, code.Path)
+		codePath, err := filesystem.VerifySubpath(options.ContextDir, code.Path)
 		if err != nil {
 			return err
 		}
-		layer := artifact.NewLayer(codePath, constants.CodeLayerMediaType)
+		layer := &artifact.ModelLayer{
+			BaseDir:   codePath,
+			MediaType: constants.CodeLayerMediaType,
+		}
 		model.Layers = append(model.Layers, *layer)
 	}
 	// 3. package the DataSets
-	datasetPath := ""
 	for _, dataset := range jozufile.DataSets {
-		datasetPath, err = toAbsPath(options.ContextDir, dataset.Path)
+		datasetPath, err := filesystem.VerifySubpath(options.ContextDir, dataset.Path)
 		if err != nil {
 			return err
 		}
-		layer := artifact.NewLayer(datasetPath, constants.DataSetLayerMediaType)
+		layer := &artifact.ModelLayer{
+			BaseDir:   datasetPath,
+			MediaType: constants.DataSetLayerMediaType,
+		}
 		model.Layers = append(model.Layers, *layer)
 	}
 
 	// 4. package the TrainedModels
 	for _, trainedModel := range jozufile.Models {
-		modelPath, err := toAbsPath(options.ContextDir, trainedModel.Path)
+		modelPath, err := filesystem.VerifySubpath(options.ContextDir, trainedModel.Path)
 		if err != nil {
 			return err
 		}
-		layer := artifact.NewLayer(modelPath, constants.ModelLayerMediaType)
+		layer := &artifact.ModelLayer{
+			BaseDir:   modelPath,
+			MediaType: constants.ModelLayerMediaType,
+		}
 		model.Layers = append(model.Layers, *layer)
 	}
 
@@ -187,17 +195,4 @@ func (flags *BuildFlags) AddFlags(cmd *cobra.Command) {
 
 func NewBuildFlags() *BuildFlags {
 	return &BuildFlags{}
-}
-func toAbsPath(context string, relativePath string) (string, error) {
-
-	absContext, err := filepath.Abs(context)
-	if err != nil {
-		fmt.Println("Error resolving base path:", err)
-		return "", err
-	}
-	combinedPath := filepath.Join(absContext, relativePath)
-
-	cleanPath := filepath.Clean(combinedPath)
-	return cleanPath, nil
-
 }

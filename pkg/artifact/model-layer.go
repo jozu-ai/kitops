@@ -7,26 +7,16 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 type ModelLayer struct {
-	contextDir string
-	MediaType  string
-	Descriptor ocispec.Descriptor
-}
-
-func NewLayer(rootpath string, mediaType string) *ModelLayer {
-	return &ModelLayer{
-		contextDir: rootpath,
-		MediaType:  mediaType,
-	}
+	BaseDir   string
+	MediaType string
 }
 
 func (layer *ModelLayer) Apply(writers ...io.Writer) error {
 	// Check if path exists
-	_, err := os.Stat(layer.contextDir)
+	_, err := os.Stat(layer.BaseDir)
 	if err != nil {
 		return err
 	}
@@ -40,50 +30,56 @@ func (layer *ModelLayer) Apply(writers ...io.Writer) error {
 	defer tw.Close()
 
 	// walk the context dir and tar everything
-	err = filepath.Walk(layer.contextDir, func(file string, fi os.FileInfo, err error) error {
-
+	err = filepath.Walk(layer.BaseDir, func(file string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-
-		if !fi.Mode().IsRegular() {
+		// Skip anything that's not a regular file or directory
+		if !fi.Mode().IsRegular() && !fi.Mode().IsDir() {
+			return nil
+		}
+		// Skip the baseDir itself
+		if file == layer.BaseDir {
 			return nil
 		}
 
-		// create a new dir/file header
 		header, err := tar.FileInfoHeader(fi, fi.Name())
 		if err != nil {
 			return err
 		}
 
-		parentDir := filepath.Dir(layer.contextDir)
+		// We want the path in the tarball to be relative to the layer's base directory
+		subPath := strings.TrimPrefix(strings.Replace(file, layer.BaseDir, "", -1), string(filepath.Separator))
+		header.Name = subPath
 
-		// update the name to correctly reflect the desired destination when untaring
-		header.Name = strings.TrimPrefix(
-			strings.Replace(file, parentDir, "", -1), string(filepath.Separator))
-
-		// write the header
 		if err := tw.WriteHeader(header); err != nil {
 			return err
 		}
 
-		// open files for taring
-		f, err := os.Open(file)
-		if err != nil {
-			return err
+		if fi.Mode().IsRegular() {
+			err := writeFileToTar(file, tw)
+			if err != nil {
+				return err
+			}
 		}
-
-		// copy file data into tar writer
-		if _, err := io.Copy(tw, f); err != nil {
-			return err
-		}
-
-		f.Close()
 
 		return nil
 	})
 
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeFileToTar(file string, tw *tar.Writer) error {
+	f, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err := io.Copy(tw, f); err != nil {
 		return err
 	}
 	return nil
