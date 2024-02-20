@@ -1,0 +1,17 @@
+{
+  "peerDependencies": {
+    "vue": "^3.4"
+  },
+  "devDependencies": {
+    "vitepress": "1.0.0-rc.42",
+    "vue": "^3.4.18"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.7.2"
+  }
+}
