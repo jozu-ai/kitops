@@ -2,6 +2,7 @@ package export
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"jmm/pkg/lib/storage"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/spf13/viper"
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content/oci"
+	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
 )
@@ -120,7 +122,11 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 			return
 		}
 
-		fmt.Printf("Exporting to %s\n", opts.exportDir)
+		exportTo := opts.exportDir
+		if exportTo == "" {
+			exportTo = "current directory"
+		}
+		fmt.Printf("Exporting to %s\n", exportTo)
 		err = ExportModel(cmd.Context(), store, opts.modelRef, opts.exportDir, opts.exportConf)
 		if err != nil {
 			fmt.Println(err)
@@ -154,7 +160,10 @@ func getStoreForRef(ctx context.Context, opts *ExportOptions) (oras.Target, erro
 		return nil, fmt.Errorf("could not resolve repository %s in registry %s", opts.modelRef.Repository, opts.modelRef.Registry)
 	}
 	if _, err := repo.Resolve(ctx, opts.modelRef.Reference); err != nil {
-		return nil, fmt.Errorf("reference %s is not present in local storage and could not be found in remote", opts.modelRef.String())
+		if errors.Is(err, errdef.ErrNotFound) {
+			return nil, fmt.Errorf("reference %s is not present in local storage and could not be found in remote", opts.modelRef.String())
+		}
+		return nil, fmt.Errorf("unexpected error retrieving reference from remote: %w", err)
 	}
 
 	return repo, nil
