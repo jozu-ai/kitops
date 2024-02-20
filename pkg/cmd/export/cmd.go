@@ -21,8 +21,12 @@ var (
 )
 
 type ExportFlags struct {
-	UseHTTP   bool
-	ExportDir string
+	UseHTTP        bool
+	ExportConfig   bool
+	ExportModels   bool
+	ExportDatasets bool
+	ExportCode     bool
+	ExportDir      string
 }
 
 type ExportOptions struct {
@@ -30,7 +34,15 @@ type ExportOptions struct {
 	configHome  string
 	storageHome string
 	exportDir   string
+	exportConf  ExportConf
 	modelRef    *registry.Reference
+}
+
+type ExportConf struct {
+	ExportConfig   bool
+	ExportModels   bool
+	ExportCode     bool
+	ExportDatasets bool
 }
 
 func (opts *ExportOptions) complete(args []string) error {
@@ -46,6 +58,18 @@ func (opts *ExportOptions) complete(args []string) error {
 	opts.modelRef = modelRef
 	opts.usehttp = flags.UseHTTP
 	opts.exportDir = flags.ExportDir
+
+	if !flags.ExportConfig && !flags.ExportModels && !flags.ExportCode && !flags.ExportDatasets {
+		opts.exportConf.ExportConfig = true
+		opts.exportConf.ExportModels = true
+		opts.exportConf.ExportCode = true
+		opts.exportConf.ExportDatasets = true
+	} else {
+		opts.exportConf.ExportConfig = flags.ExportConfig
+		opts.exportConf.ExportModels = flags.ExportModels
+		opts.exportConf.ExportCode = flags.ExportCode
+		opts.exportConf.ExportDatasets = flags.ExportDatasets
+	}
 
 	return nil
 }
@@ -68,6 +92,10 @@ func ExportCommand() *cobra.Command {
 	cmd.Args = cobra.ExactArgs(1)
 	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	cmd.Flags().StringVarP(&flags.ExportDir, "dir", "d", "", "Directory to export into. Will be created if it does not exist")
+	cmd.Flags().BoolVar(&flags.ExportConfig, "config", false, "Export only config file")
+	cmd.Flags().BoolVar(&flags.ExportModels, "models", false, "Export only models")
+	cmd.Flags().BoolVar(&flags.ExportCode, "code", false, "Export only code")
+	cmd.Flags().BoolVar(&flags.ExportDatasets, "datasets", false, "Export only datasets")
 
 	return cmd
 }
@@ -94,7 +122,7 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 		}
 
 		fmt.Printf("Exporting to %s\n", opts.exportDir)
-		err = ExportModel(cmd.Context(), store, opts.modelRef, opts.exportDir)
+		err = ExportModel(cmd.Context(), store, opts.modelRef, opts.exportDir, opts.exportConf)
 		if err != nil {
 			fmt.Println(err)
 			return
