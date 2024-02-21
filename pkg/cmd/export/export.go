@@ -12,6 +12,7 @@ import (
 	"jmm/pkg/lib/repo"
 	"os"
 	"path"
+	"path/filepath"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
@@ -40,16 +41,15 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	// through the config's relevant field to get the correct path for exporting
 	var modelIdx, codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
-		var layerExportErr error
+		layerDir := ""
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
 			if !options.exportConf.ExportModels {
 				continue
 			}
 			modelEntry := config.Models[modelIdx]
-			layerDir := path.Join(options.exportDir, modelEntry.Path)
+			layerDir = filepath.Join(options.exportDir, modelEntry.Path)
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			modelIdx += 1
 
 		case constants.CodeLayerMediaType:
@@ -57,9 +57,8 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir := path.Join(options.exportDir, codeEntry.Path)
+			layerDir = filepath.Join(options.exportDir, codeEntry.Path)
 			fmt.Printf("Exporting code to %s\n", layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
@@ -67,13 +66,15 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir := path.Join(options.exportDir, datasetEntry.Path)
+			layerDir = filepath.Join(options.exportDir, datasetEntry.Path)
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			datasetIdx += 1
 		}
-		if layerExportErr != nil {
-			return layerExportErr
+		if _, err := filesystem.VerifySubpath(options.exportDir, layerDir); err != nil {
+			return err
+		}
+		if err := ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
+			return err
 		}
 	}
 
