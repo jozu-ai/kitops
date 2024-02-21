@@ -132,7 +132,7 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (ocispec.D
 	return desc, nil
 }
 
-func (store *LocalStore) saveConfigFile(model *artifact.JozuFile) (ocispec.Descriptor, error) {
+func (store *LocalStore) saveConfigFile(model *artifact.KitFile) (ocispec.Descriptor, error) {
 	ctx := context.Background()
 	modelBytes, err := model.MarshalToJSON()
 	if err != nil {

@@ -37,8 +37,8 @@ func TestRootCmd(t *testing.T) {
 
 			err = o.Complete()
 			assert.NoError(t, err)
-			assert.Equal(t, filepath.Join(currentUser.HomeDir, ".jozu"), o.ConfigHome)
-			assert.Equal(t, filepath.Join(currentUser.HomeDir, ".jozu"), viper.GetString("config"))
+			assert.Equal(t, filepath.Join(currentUser.HomeDir, ".kitops"), o.ConfigHome)
+			assert.Equal(t, filepath.Join(currentUser.HomeDir, ".kitops"), viper.GetString("config"))
 
 		})
 	})

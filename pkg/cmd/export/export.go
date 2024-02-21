@@ -81,7 +81,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	return nil
 }
 
-func ExportConfig(config *artifact.JozuFile, exportDir string, overwrite bool) error {
+func ExportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
 	configPath := path.Join(exportDir, constants.DefaultModelFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {

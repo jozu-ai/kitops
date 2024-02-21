@@ -41,7 +41,7 @@ pe "./kit version"
 pe "./kit models"
 
 # clean the local models and check again
-pe "rm -rf ~/.jozu"
+pe "rm -rf ~/.kitops"
 pe "./kit models"
 
 pe "./kit build --help"
@@ -60,7 +60,7 @@ pe "./kit push localhost:5050/test-repo:test-tag --http"
 # Let's check if the model is pushed
 pe "./kit models localhost:5050/test-repo --http"
 # clean the local models and check again
-pe "rm -rf ~/.jozu"
+pe "rm -rf ~/.kitops"
 pe "./kit models"
 
 # Let's pull the model to the local registry

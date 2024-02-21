@@ -81,19 +81,19 @@ func getManifest(store storage.Store, manifestDesc ocispec.Descriptor) (*ocispec
 	return manifest, nil
 }
 
-func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artifact.JozuFile, error) {
+func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artifact.KitFile, error) {
 	configBytes, err := store.Fetch(context.Background(), manifest.Config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	config := &artifact.JozuFile{}
+	config := &artifact.KitFile{}
 	if err := json.Unmarshal(configBytes, config); err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
 	return config, nil
 }
 
-func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.JozuFile) string {
+func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.KitFile) string {
 	ref := desc.Annotations[ocispec.AnnotationRefName]
 	if ref == "" {
 		ref = "<none>"

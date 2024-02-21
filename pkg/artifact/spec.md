@@ -1,4 +1,4 @@
-# Jozu Model Specification v0.1
+# Kit Model Specification v0.1
 
 A *model package* is an ordered collection AI/ML artifacts and the corresponding execution and training parameters. This specification outlines the format of these artifacts and corresponding parameters and describes how to create and use them.
 

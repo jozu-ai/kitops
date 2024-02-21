@@ -24,7 +24,7 @@ type TestStore struct {
 	// Map of digest to Manifest, to simulate retrieval from e.g. disk
 	Manifests map[digest.Digest]ocispec.Manifest
 	// Map of digest to Config, to simulate retrieval from e.g. disk
-	Configs map[digest.Digest]artifact.JozuFile
+	Configs map[digest.Digest]artifact.KitFile
 	// Index for the store
 	Index *ocispec.Index
 }
