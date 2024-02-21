@@ -1,11 +1,11 @@
-# Atama CLI tool
+# Kit CLI tool
 
-The `atama CLI` is a tool to easily and quickly manage models.
+The `kit CLI` is a tool to easily and quickly manage models.
 
 ## Usage
 
 ```sh
-$ ./atama [command]
+$ ./kit [command]
 ```
 
 Available Commands:
@@ -19,12 +19,12 @@ Available Commands:
 | `models` | List models |
 | `pull` | Pull model from registry |
 | `push` | Push model to registry |
-| `version` | Display the version information for atama |
+| `version` | Display the version information for kit |
 
 ## Example
 
 To list your available models you can do:
 
 ```sh
-$ ./atama models
+$ ./kit models
 ```

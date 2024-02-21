@@ -4,9 +4,9 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
-  title: 'AtamaOPS',
-  titleTemplate: 'AtamaOPS',
-  description: 'Documentation for the AtamaOPS',
+  title: 'KitOps',
+  titleTemplate: 'KitOps',
+  description: 'Documentation for KitOps',
 
   head: [
     // ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
@@ -75,7 +75,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'MLOps with Atamafile',
+        text: 'MLOps with Kitfile',
         items: [
           { text: 'Continuos integration and deployment', link: '/docs/mlops/ci-cd' },
           { text: 'Monitoring and logging', link: '/docs/mlops/ci-cd' },
@@ -95,7 +95,7 @@ export default defineConfig({
       {
         text: 'Contribute',
         items: [
-          { text: 'Contribute to Atama docs', link: '/' }
+          { text: 'Contribute to KitOps docs', link: '/' }
         ]
       },
       {
@@ -110,7 +110,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/jozu-ai/atamaml'
+        link: 'https://github.com/jozu-ai/kitops'
       },
       {
         icon: {

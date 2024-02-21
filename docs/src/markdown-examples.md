@@ -43,7 +43,7 @@ Dynamic snippets that depends on the selected platform needs to be wrapped into 
   <template #windows>
 
   ```bat
-  $ atama run --win atama.yaml
+  $ kit run --win kit.yaml
   ```
 
   </template>
@@ -51,7 +51,7 @@ Dynamic snippets that depends on the selected platform needs to be wrapped into 
   <template #mac>
 
   ```sh
-  $ atama run --mac atama.yaml
+  $ kit run --mac kit.yaml
   ```
 
   </template>
@@ -59,7 +59,7 @@ Dynamic snippets that depends on the selected platform needs to be wrapped into 
   <template #linux>
 
   ```sh
-  $ atama run --linux atama.yaml
+  $ kit run --linux kit.yaml
   ```
 
   </template>
@@ -78,7 +78,7 @@ An extra line is required between `<template>` and the \`\`\` codeblock. And the
   <template #windows>
 
   ```bat
-  $ atama run --win myfile.atamafile
+  $ kit run --win myfile.kitfile
   ```
 
   </template>
@@ -86,7 +86,7 @@ An extra line is required between `<template>` and the \`\`\` codeblock. And the
   <template #mac>
 
   ```sh
-  $ atama run --mac myfile.atamafile
+  $ kit run --mac myfile.kitfile
   ```
 
   </template>
@@ -94,7 +94,7 @@ An extra line is required between `<template>` and the \`\`\` codeblock. And the
   <template #linux>
 
   ```sh
-  $ atama run --linux myfile.atamafile
+  $ kit run --linux myfile.kitfile
   ```
 
   </template>

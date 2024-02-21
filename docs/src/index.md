@@ -3,12 +3,12 @@
 layout: home
 
 hero:
-  name: "AtamaOps"
-  text: "Documentation for the AtamaOps"
+  name: "KitOps"
+  text: "Documentation for the KitOps"
   tagline: The simple and standard way to build, package, and manage AI / ML models for deploying anywhere.
   actions:
     - theme: brand
-      text: What exactly is AtamaOps?
+      text: What exactly is KitOps?
       link: /docs/overview
     - theme: alt
       text: Install

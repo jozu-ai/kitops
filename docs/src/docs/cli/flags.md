@@ -1,6 +1,6 @@
 # Flags
 
-`atama` supports global and local flags.
+`kit cli` supports global and local flags.
 
 ## Global flags
 
@@ -9,7 +9,7 @@ These flags must be run with no command.
 | Flag |	Description |
 | ---- | ---- |
 | `--config <string>` | config file (default is `$HOME/.jozu`) |
-| `-h`, `--help` | help for atama |
+| `-h`, `--help` | help for kit |
 
 ### Example
 
@@ -17,7 +17,7 @@ These flags must be run with no command.
   <template #windows>
 
   ```sh
-  ./atama --config c:\Applications\caches\.jozucache
+  ./kit --config c:\Applications\caches\.jozucache
   ```
 
   </template>
@@ -25,7 +25,7 @@ These flags must be run with no command.
   <template #linux>
 
   ```sh
-  ./atama --config /var/usr/.jozucache
+  ./kit --config /var/usr/.jozucache
   ```
 
   </template>
@@ -33,7 +33,7 @@ These flags must be run with no command.
   <template #mac>
 
   ```sh
-  ./atama --config ~/Library/.jozucache
+  ./kit --config ~/Library/.jozucache
   ```
 
   </template>
@@ -45,12 +45,12 @@ These flags run next to a command.
 
 | Flag |	Description |
 | ---- | ---- |
-| `-h`, `--help` | help for atama |
+| `-h`, `--help` | help for kit |
 
 ### Example
 
-`./atama models --help`
+`./kit models --help`
 
 or
 
-`./atama models -h`
+`./kit models -h`
