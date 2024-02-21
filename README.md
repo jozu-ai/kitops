@@ -15,7 +15,7 @@
 ## Build the project
 
 ```shell
-go build
+go build -o kit
 ```
 
 ## Run the project

@@ -82,7 +82,7 @@ func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.R
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	config := &artifact.JozuFile{}
+	config := &artifact.KitFile{}
 	if err := json.Unmarshal(configBytes, config); err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}

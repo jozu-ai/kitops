@@ -1,6 +1,6 @@
-# Jozu AI/ML Packaging Manifest Format Reference
+# KitOps AI/ML Packaging Manifest Format Reference
 
-The Jozu manifest for AI/ML is a YAML file designed to encapsulate all the necessary information about the package, including code, datasets, models, and their metadata. This reference documentation outlines the structure and specifications of the manifest format.
+The Kit manifest for AI/ML is a YAML file designed to encapsulate all the necessary information about the package, including code, datasets, models, and their metadata. This reference documentation outlines the structure and specifications of the manifest format.
 
 ## Overview
 

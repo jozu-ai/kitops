@@ -1,14 +1,14 @@
 package constants
 
 const (
-	DefaultModelFileName = "Jozufile"
+	DefaultModelFileName = "Kitfile"
 
 	// Media type for the model layer
-	ModelLayerMediaType = "application/vnd.jozu.model.content.v1.tar+gzip"
+	ModelLayerMediaType = "application/vnd.kitops.model.content.v1.tar+gzip"
 	// Media type for the dataset layer
-	DataSetLayerMediaType = "application/vnd.jozu.dataset.content.v1.tar+gzip"
+	DataSetLayerMediaType = "application/vnd.kitops.dataset.content.v1.tar+gzip"
 	// Media type for the code layer
-	CodeLayerMediaType = "application/vnd.jozu.model.code.v1.tar+gzip"
-	// Media type for the model config (Jozufile)
-	ModelConfigMediaType = "application/vnd.jozu.model.config.v1+json"
+	CodeLayerMediaType = "application/vnd.kitops.model.code.v1.tar+gzip"
+	// Media type for the model config (Kitfile)
+	ModelConfigMediaType = "application/vnd.kitops.model.config.v1+json"
 )

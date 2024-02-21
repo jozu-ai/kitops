@@ -33,7 +33,7 @@ func TestBuildOptions_Complete(t *testing.T) {
 
 func TestBuildOptions_Validate(t *testing.T) {
 	options := &BuildOptions{
-		ModelFile:  "Jozufile",
+		ModelFile:  "Kitfile",
 		ContextDir: "/path/to/context",
 	}
 
@@ -45,7 +45,7 @@ func TestBuildOptions_Validate(t *testing.T) {
 func TestBuildOptions_RunBuild(t *testing.T) {
 	t.Skip("Skipping test for now")
 	options := &BuildOptions{
-		ModelFile:  "Jozufile",
+		ModelFile:  "Kitfile",
 		ContextDir: "/path/to/context",
 	}
 
@@ -56,7 +56,7 @@ func TestBuildOptions_RunBuild(t *testing.T) {
 
 func TestBuildFlags_ToOptions(t *testing.T) {
 	flags := &BuildFlags{
-		ModelFile: "Jozufile",
+		ModelFile: "Kitfile",
 	}
 
 	options, err := flags.ToOptions()

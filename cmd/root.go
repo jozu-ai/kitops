@@ -30,8 +30,8 @@ type (
 )
 
 var (
-	shortDesc = `Jozu Model Manager`
-	longDesc  = `Jozu Model Manager is a tool to manage AI and ML models`
+	shortDesc = `KitOps model manager`
+	longDesc  = `KitOps is a tool to manage AI and ML models`
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -69,7 +69,7 @@ func newRootCmd() *cobra.Command {
 }
 
 func (f *RootFlags) addFlags(cmd *cobra.Command) {
-	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.jozu)")
+	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.kitops)")
 	viper.BindPFlag("config", cmd.PersistentFlags().Lookup("config"))
 }
 
@@ -85,7 +85,7 @@ func (o *RootOptions) Complete() error {
 		if err != nil {
 			return err
 		}
-		configpath := filepath.Join(currentUser.HomeDir, ".jozu")
+		configpath := filepath.Join(currentUser.HomeDir, ".kitops")
 		viper.Set("config", configpath)
 		o.ConfigHome = configpath
 	}

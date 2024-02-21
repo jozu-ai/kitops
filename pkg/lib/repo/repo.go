@@ -11,7 +11,7 @@ import (
 	"oras.land/oras-go/v2/content"
 )
 
-func GetManifestAndConfig(ctx context.Context, store content.Storage, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, *artifact.JozuFile, error) {
+func GetManifestAndConfig(ctx context.Context, store content.Storage, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, *artifact.KitFile, error) {
 	manifest, err := GetManifest(ctx, store, manifestDesc)
 	if err != nil {
 		return nil, nil, err
@@ -39,12 +39,12 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 	return manifest, nil
 }
 
-func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.Descriptor) (*artifact.JozuFile, error) {
+func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.Descriptor) (*artifact.KitFile, error) {
 	configBytes, err := content.FetchAll(ctx, store, configDesc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	config := &artifact.JozuFile{}
+	config := &artifact.KitFile{}
 	if err := json.Unmarshal(configBytes, config); err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
