@@ -2,6 +2,8 @@ package filesystem
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -37,4 +39,12 @@ func VerifySubpath(context, subDir string) (absPath string, err error) {
 	}
 
 	return resolvedFullPath, nil
+}
+
+func PathExists(path string) (fs.FileInfo, bool) {
+	fi, err := os.Stat(path)
+	if err != nil && os.IsNotExist(err) {
+		return nil, false
+	}
+	return fi, true
 }

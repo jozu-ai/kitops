@@ -8,6 +8,7 @@ import (
 	"io"
 	"jmm/pkg/artifact"
 	"jmm/pkg/lib/constants"
+	"jmm/pkg/lib/filesystem"
 	"jmm/pkg/lib/repo"
 	"os"
 	"path"
@@ -19,7 +20,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference, exportDir string, conf ExportConf) error {
+func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *ExportOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("failed to resolve local reference: %w", err)
@@ -29,8 +30,8 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
-	if conf.ExportConfig {
-		if err := ExportConfig(config, exportDir); err != nil {
+	if options.exportConf.ExportConfig {
+		if err := ExportConfig(config, options.exportDir, options.overwrite); err != nil {
 			return err
 		}
 	}
@@ -42,33 +43,33 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		var layerExportErr error
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
-			if !conf.ExportModels {
+			if !options.exportConf.ExportModels {
 				continue
 			}
 			modelEntry := config.Models[modelIdx]
-			layerDir := path.Join(exportDir, modelEntry.Path)
+			layerDir := path.Join(options.exportDir, modelEntry.Path)
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			modelIdx += 1
 
 		case constants.CodeLayerMediaType:
-			if !conf.ExportCode {
+			if !options.exportConf.ExportCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir := path.Join(exportDir, codeEntry.Path)
+			layerDir := path.Join(options.exportDir, codeEntry.Path)
 			fmt.Printf("Exporting code to %s\n", layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
-			if !conf.ExportDatasets {
+			if !options.exportConf.ExportDatasets {
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir := path.Join(exportDir, datasetEntry.Path)
+			layerDir := path.Join(options.exportDir, datasetEntry.Path)
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
-			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir)
+			layerExportErr = ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite)
 			datasetIdx += 1
 		}
 		if layerExportErr != nil {
@@ -79,10 +80,14 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	return nil
 }
 
-func ExportConfig(config *artifact.JozuFile, exportDir string) error {
+func ExportConfig(config *artifact.JozuFile, exportDir string, overwrite bool) error {
 	configPath := path.Join(exportDir, constants.DefaultModelFileName)
-	if pathExists(configPath) {
-		return fmt.Errorf("failed to export config: path %s already exists", configPath)
+	if fi, exists := filesystem.PathExists(configPath); exists {
+		if !overwrite {
+			return fmt.Errorf("failed to export config: path %s already exists", exportDir)
+		} else if !fi.Mode().IsRegular() {
+			return fmt.Errorf("failed to export config: path %s exists and is not a regular file", exportDir)
+		}
 	}
 
 	configBytes, err := yaml.Marshal(config)
@@ -92,12 +97,12 @@ func ExportConfig(config *artifact.JozuFile, exportDir string) error {
 
 	fmt.Printf("Exporting config to %s\n", configPath)
 	if err := os.WriteFile(configPath, configBytes, 0644); err != nil {
-		return fmt.Errorf("failed to export config file: %w", err)
+		return fmt.Errorf("failed to write config file: %w", err)
 	}
 	return nil
 }
 
-func ExportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string) error {
+func ExportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string, overwrite bool) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
@@ -111,17 +116,21 @@ func ExportLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer gzr.Close()
 	tr := tar.NewReader(gzr)
 
-	if pathExists(exportDir) {
-		return fmt.Errorf("failed to export: path %s already exists", exportDir)
+	if fi, exists := filesystem.PathExists(exportDir); exists {
+		if !overwrite {
+			return fmt.Errorf("failed to export: path %s already exists", exportDir)
+		} else if !fi.IsDir() {
+			return fmt.Errorf("failed to export: path %s exists and is not a directory", exportDir)
+		}
 	}
 	if err := os.MkdirAll(exportDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", exportDir, err)
 	}
 
-	return extractTar(tr, exportDir)
+	return extractTar(tr, exportDir, overwrite)
 }
 
-func extractTar(tr *tar.Reader, dir string) error {
+func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -132,10 +141,16 @@ func extractTar(tr *tar.Reader, dir string) error {
 		}
 		outPath := path.Join(dir, header.Name)
 		fmt.Printf("Extracting %s\n", outPath)
+
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if pathExists(outPath) {
-				return fmt.Errorf("directory '%s' already exists", outPath)
+			if fi, exists := filesystem.PathExists(outPath); exists {
+				if !overwrite {
+					return fmt.Errorf("path '%s' already exists", outPath)
+				}
+				if !fi.IsDir() {
+					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
+				}
 			}
 			fmt.Printf("Creating directory %s\n", outPath)
 			if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
@@ -143,8 +158,16 @@ func extractTar(tr *tar.Reader, dir string) error {
 			}
 
 		case tar.TypeReg:
+			if fi, exists := filesystem.PathExists(outPath); exists {
+				if !overwrite {
+					return fmt.Errorf("path '%s' already exists", outPath)
+				}
+				if !fi.Mode().IsRegular() {
+					return fmt.Errorf("path '%s' already exists and is not a regular file", outPath)
+				}
+			}
 			fmt.Printf("Extracting file %s\n", outPath)
-			file, err := os.OpenFile(outPath, os.O_CREATE|os.O_RDWR|os.O_EXCL, header.FileInfo().Mode())
+			file, err := os.OpenFile(outPath, os.O_TRUNC|os.O_RDWR|os.O_EXCL, header.FileInfo().Mode())
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
@@ -163,12 +186,4 @@ func extractTar(tr *tar.Reader, dir string) error {
 		}
 	}
 	return nil
-}
-
-func pathExists(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil && os.IsNotExist(err) {
-		return false
-	}
-	return true
 }
