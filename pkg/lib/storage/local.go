@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 

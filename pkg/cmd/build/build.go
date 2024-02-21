@@ -8,10 +8,10 @@ import (
 	"os"
 	"path"
 
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	"jmm/pkg/lib/filesystem"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

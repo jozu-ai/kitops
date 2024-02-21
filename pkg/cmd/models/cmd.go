@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/lib/storage"
 	"os"
 	"path"
 	"text/tabwriter"

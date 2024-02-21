@@ -2,9 +2,9 @@ package models
 
 import (
 	"fmt"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	internal "jmm/pkg/lib/testing"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	internal "kitops/pkg/lib/testing"
 	"testing"
 
 	"github.com/opencontainers/go-digest"
