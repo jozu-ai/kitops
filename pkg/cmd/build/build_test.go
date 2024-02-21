@@ -1,7 +1,7 @@
 package build
 
 import (
-	"jmm/pkg/lib/constants"
+	"kitops/pkg/lib/constants"
 	"path"
 	"testing"
 

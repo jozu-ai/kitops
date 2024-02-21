@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"jmm/pkg/artifact"
+	"kitops/pkg/artifact"
 
 	_ "crypto/sha256"
 	_ "crypto/sha512"

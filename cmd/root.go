@@ -4,13 +4,13 @@ Copyright © 2024 Jozu.com
 package cmd
 
 import (
-	"jmm/pkg/cmd/build"
-	"jmm/pkg/cmd/export"
-	"jmm/pkg/cmd/login"
-	"jmm/pkg/cmd/models"
-	"jmm/pkg/cmd/pull"
-	"jmm/pkg/cmd/push"
-	"jmm/pkg/cmd/version"
+	"kitops/pkg/cmd/build"
+	"kitops/pkg/cmd/export"
+	"kitops/pkg/cmd/login"
+	"kitops/pkg/cmd/models"
+	"kitops/pkg/cmd/pull"
+	"kitops/pkg/cmd/push"
+	"kitops/pkg/cmd/version"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -50,7 +50,7 @@ func init() {
 func newRootCmd() *cobra.Command {
 	flags := &RootFlags{}
 	cmd := &cobra.Command{
-		Use:   "jmm",
+		Use:   "kit",
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {

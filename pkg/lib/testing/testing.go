@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/storage"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"

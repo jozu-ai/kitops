@@ -2,7 +2,7 @@ package pull
 
 import (
 	"fmt"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
