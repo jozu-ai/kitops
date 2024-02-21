@@ -57,7 +57,7 @@ func (opts *ExportOptions) complete(args []string) error {
 	opts.storageHome = storage.StorageHome(opts.configHome)
 	modelRef, extraTags, err := storage.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("can not export multiple tags")
@@ -113,6 +113,7 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(args); err != nil {
 			fmt.Printf("Failed to process arguments: %s", err)
+			return
 		}
 		err := opts.validate()
 		if err != nil {
