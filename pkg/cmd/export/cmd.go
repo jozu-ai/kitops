@@ -26,6 +26,7 @@ var (
 )
 
 type ExportFlags struct {
+	Overwrite      bool
 	UseHTTP        bool
 	ExportConfig   bool
 	ExportModels   bool
@@ -35,12 +36,13 @@ type ExportFlags struct {
 }
 
 type ExportOptions struct {
-	usehttp     bool
 	configHome  string
 	storageHome string
 	exportDir   string
+	overwrite   bool
 	exportConf  ExportConf
 	modelRef    *registry.Reference
+	usehttp     bool
 }
 
 type ExportConf struct {
@@ -61,6 +63,7 @@ func (opts *ExportOptions) complete(args []string) error {
 		return fmt.Errorf("can not export multiple tags")
 	}
 	opts.modelRef = modelRef
+	opts.overwrite = flags.Overwrite
 	opts.usehttp = flags.UseHTTP
 	opts.exportDir = flags.ExportDir
 
@@ -95,12 +98,13 @@ func ExportCommand() *cobra.Command {
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	cmd.Flags().StringVarP(&flags.ExportDir, "dir", "d", "", "Directory to export into. Will be created if it does not exist")
+	cmd.Flags().BoolVarP(&flags.Overwrite, "overwrite", "o", false, "Overwrite existing files and directories in the export dir")
 	cmd.Flags().BoolVar(&flags.ExportConfig, "config", false, "Export only config file")
 	cmd.Flags().BoolVar(&flags.ExportModels, "models", false, "Export only models")
 	cmd.Flags().BoolVar(&flags.ExportCode, "code", false, "Export only code")
 	cmd.Flags().BoolVar(&flags.ExportDatasets, "datasets", false, "Export only datasets")
+	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 
 	return cmd
 }
@@ -127,7 +131,7 @@ func runCommand(opts *ExportOptions) func(*cobra.Command, []string) {
 			exportTo = "current directory"
 		}
 		fmt.Printf("Exporting to %s\n", exportTo)
-		err = ExportModel(cmd.Context(), store, opts.modelRef, opts.exportDir, opts.exportConf)
+		err = ExportModel(cmd.Context(), store, opts.modelRef, opts)
 		if err != nil {
 			fmt.Println(err)
 			return
