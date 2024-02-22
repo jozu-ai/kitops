@@ -18,6 +18,7 @@ import (
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 )
@@ -29,6 +30,7 @@ var (
 
 type rootFlags struct {
 	configHome string
+	verbose    bool
 }
 
 func RunCommand() *cobra.Command {
@@ -43,9 +45,12 @@ func RunCommand() *cobra.Command {
 			if configHome == "" {
 				currentUser, err := user.Current()
 				if err != nil {
-					fmt.Printf("Failed to resolve default storage path '$HOME/%s: could not get current user", constants.DefaultConfigSubdir)
+					output.Fatalf("Failed to resolve default storage path '$HOME/%s: could not get current user", constants.DefaultConfigSubdir)
 				}
 				configHome = filepath.Join(currentUser.HomeDir, constants.DefaultConfigSubdir)
+			}
+			if flags.verbose {
+				output.SetDebug(true)
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
@@ -53,8 +58,8 @@ func RunCommand() *cobra.Command {
 	}
 
 	addSubcommands(cmd)
-	cmd.PersistentFlags().StringVar(&flags.configHome, "config", "", fmt.Sprintf("config file (default is $HOME/%s)", constants.DefaultConfigSubdir))
-
+	cmd.PersistentFlags().StringVar(&flags.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
+	cmd.PersistentFlags().BoolVarP(&flags.verbose, "verbose", "v", false, "Include additional information in output (default false)")
 	return cmd
 }
 

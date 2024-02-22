@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2"
@@ -78,6 +79,7 @@ func (opts *exportOptions) complete(ctx context.Context, flags *exportFlags, arg
 		opts.exportConf.exportDatasets = flags.exportDatasets
 	}
 
+	printConfig(opts)
 	return nil
 }
 
@@ -107,25 +109,22 @@ func runCommand(flags *exportFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		opts := &exportOptions{}
 		if err := opts.complete(cmd.Context(), flags, args); err != nil {
-			fmt.Printf("Failed to process arguments: %s", err)
-			return
+			output.Fatalf("Failed to process arguments: %s", err)
 		}
 
 		store, err := getStoreForRef(cmd.Context(), opts)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 
 		exportTo := opts.exportDir
 		if exportTo == "" {
 			exportTo = "current directory"
 		}
-		fmt.Printf("Exporting to %s\n", exportTo)
+		output.Infof("Exporting to %s", exportTo)
 		err = exportModel(cmd.Context(), store, opts.modelRef, opts)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 	}
 }
@@ -162,4 +161,10 @@ func getStoreForRef(ctx context.Context, opts *exportOptions) (oras.Target, erro
 	}
 
 	return repo, nil
+}
+
+func printConfig(opts *exportOptions) {
+	output.Debugf("Using storage path: %s", opts.storageHome)
+	output.Debugf("Overwrite: %t", opts.overwrite)
+	output.Debugf("Exporting %s", opts.modelRef.String())
 }

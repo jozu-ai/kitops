@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/content/oci"
@@ -47,6 +48,8 @@ func (opts *pushOptions) complete(ctx context.Context, flags *pushFlags, args []
 	}
 	opts.modelRef = modelRef
 	opts.usehttp = flags.UseHTTP
+
+	printConfig(opts)
 	return nil
 }
 
@@ -69,13 +72,12 @@ func runCommand(flags *pushFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		opts := &pushOptions{}
 		if err := opts.complete(cmd.Context(), flags, args); err != nil {
-			fmt.Printf("Failed to process arguments: %s", err)
+			output.Fatalf("Failed to process arguments: %s", err)
 		}
 
 		remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 		if opts.usehttp {
 			remoteRegistry.PlainHTTP = true
@@ -84,16 +86,19 @@ func runCommand(flags *pushFlags) func(*cobra.Command, []string) {
 		localStorePath := storage.LocalStorePath(opts.storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 
-		fmt.Printf("Pushing %s\n", opts.modelRef.String())
+		output.Infof("Pushing %s\n", opts.modelRef.String())
 		desc, err := PushModel(cmd.Context(), localStore, remoteRegistry, opts.modelRef)
 		if err != nil {
-			fmt.Printf("Failed to push: %s\n", err)
+			output.Fatalf("Failed to push: %s\n", err)
 			return
 		}
-		fmt.Printf("Pushed %s\n", desc.Digest)
+		output.Infof("Pushed %s\n", desc.Digest)
 	}
+}
+
+func printConfig(opts *pushOptions) {
+	output.Debugf("Using storage path: %s", opts.storageHome)
 }

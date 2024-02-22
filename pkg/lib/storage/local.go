@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 	"os"
 	"path/filepath"
 
@@ -119,14 +120,14 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (ocispec.D
 		return ocispec.DescriptorEmptyJSON, err
 	}
 	if exists {
-		fmt.Println("Model layer already saved: ", desc.Digest)
+		output.Infof("Model layer already saved: %s", desc.Digest)
 	} else {
 		// Does not exist in storage, need to push
 		err = store.storage.Push(ctx, desc, buf)
 		if err != nil {
 			return ocispec.DescriptorEmptyJSON, err
 		}
-		fmt.Println("Saved model layer: ", desc.Digest)
+		output.Infof("Saved model layer: %s", desc.Digest)
 	}
 
 	return desc, nil
@@ -154,6 +155,9 @@ func (store *LocalStore) saveConfigFile(model *artifact.KitFile) (ocispec.Descri
 		if err != nil {
 			return ocispec.DescriptorEmptyJSON, err
 		}
+		output.Infof("Saved configuration: %s", desc.Digest)
+	} else {
+		output.Infof("Configuration already exists in storage: %s", desc.Digest)
 	}
 
 	return desc, nil
@@ -168,9 +172,7 @@ func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, conf
 		Annotations: map[string]string{},
 	}
 	// Add the layers to the manifest
-	for _, layerDesc := range layerDescs {
-		manifest.Layers = append(manifest.Layers, layerDesc)
-	}
+	manifest.Layers = append(manifest.Layers, layerDescs...)
 
 	manifestBytes, err := json.Marshal(manifest)
 	if err != nil {
@@ -191,6 +193,9 @@ func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, conf
 		if err != nil {
 			return nil, err
 		}
+		output.Infof("Saved manifest to storage: %s", desc.Digest)
+	} else {
+		output.Infof("Manifest already exists in storage: %s", desc.Digest)
 	}
 
 	if tag != "" {
@@ -200,6 +205,7 @@ func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, conf
 		if err := store.storage.Tag(context.Background(), desc, tag); err != nil {
 			return nil, fmt.Errorf("failed to tag manifest: %w", err)
 		}
+		output.Debugf("Added tag to manifest: %s", tag)
 	}
 
 	return &desc, nil

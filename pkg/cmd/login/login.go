@@ -4,7 +4,7 @@ Copyright © 2024 Jozu.com
 package login
 
 import (
-	"fmt"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 )
@@ -20,7 +20,7 @@ func LoginCommand() *cobra.Command {
 	This application is a tool to generate the needed files
 	to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("login called")
+			output.Infoln("login called")
 		},
 	}
 

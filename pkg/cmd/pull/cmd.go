@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/content/oci"
@@ -48,6 +49,8 @@ func (opts *pullOptions) complete(ctx context.Context, flags *pullFlags, args []
 	}
 	opts.modelRef = modelRef
 	opts.usehttp = flags.useHTTP
+
+	printConfig(opts)
 	return nil
 }
 
@@ -70,12 +73,11 @@ func runCommand(flags *pullFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		opts := &pullOptions{}
 		if err := opts.complete(cmd.Context(), flags, args); err != nil {
-			fmt.Printf("Failed to process arguments: %s", err)
+			output.Fatalf("Failed to process arguments: %s", err)
 		}
 		remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 		if opts.usehttp {
 			remoteRegistry.PlainHTTP = true
@@ -84,16 +86,19 @@ func runCommand(flags *pullFlags) func(*cobra.Command, []string) {
 		localStorePath := storage.LocalStorePath(opts.storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
-			fmt.Println(err)
-			return
+			output.Fatalln(err)
 		}
 
-		fmt.Printf("Pulling %s\n", opts.modelRef.String())
+		output.Infof("Pulling %s", opts.modelRef.String())
 		desc, err := pullModel(cmd.Context(), remoteRegistry, localStore, opts.modelRef)
 		if err != nil {
-			fmt.Printf("Failed to pull: %s\n", err)
+			output.Fatalf("Failed to pull: %s", err)
 			return
 		}
-		fmt.Printf("Pulled %s\n", desc.Digest)
+		output.Infof("Pulled %s", desc.Digest)
 	}
+}
+
+func printConfig(opts *pullOptions) {
+	output.Debugf("Using storage path: %s", opts.storageHome)
 }
