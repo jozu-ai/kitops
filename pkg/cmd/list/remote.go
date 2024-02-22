@@ -1,4 +1,4 @@
-package models
+package list
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"oras.land/oras-go/v2/registry/remote"
 )
 
-func listRemoteModels(ctx context.Context, remoteRef *registry.Reference, useHttp bool) ([]string, error) {
+func listRemoteKits(ctx context.Context, remoteRef *registry.Reference, useHttp bool) ([]string, error) {
 	remoteRegistry, err := remote.NewRegistry(remoteRef.Registry)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read registry: %w", err)

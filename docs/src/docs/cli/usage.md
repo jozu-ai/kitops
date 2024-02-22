@@ -16,15 +16,15 @@ Available Commands:
 | `completion` | Generate the autocompletion script for the specified shell |
 | `help` | Help about any command |
 | `login` | A brief description of your command |
-| `models` | List models |
+| `list` | List model kits |
 | `pull` | Pull model from registry |
 | `push` | Push model to registry |
 | `version` | Display the version information for kit |
 
 ## Example
 
-To list your available models you can do:
+To list your available model kits you can do:
 
 ```sh
-$ ./kit models
+$ ./kit list
 ```

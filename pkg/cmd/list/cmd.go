@@ -1,4 +1,4 @@
-package models
+package list
 
 import (
 	"fmt"
@@ -13,27 +13,27 @@ import (
 )
 
 const (
-	shortDesc = `List models`
-	longDesc  = `List models TODO`
+	shortDesc = `List model kits in a repository`
+	longDesc  = `List model kits TODO`
 )
 
 var (
-	flags *ModelsFlags
-	opts  *ModelsOptions
+	flags *ListFlags
+	opts  *ListOptions
 )
 
-type ModelsFlags struct {
+type ListFlags struct {
 	UseHTTP bool
 }
 
-type ModelsOptions struct {
+type ListOptions struct {
 	configHome  string
 	storageHome string
 	remoteRef   *registry.Reference
 	usehttp     bool
 }
 
-func (opts *ModelsOptions) complete(flags *ModelsFlags, args []string) error {
+func (opts *ListOptions) complete(flags *ListFlags, args []string) error {
 	opts.configHome = viper.GetString("config")
 	opts.storageHome = path.Join(opts.configHome, "storage")
 	if len(args) > 0 {
@@ -50,17 +50,17 @@ func (opts *ModelsOptions) complete(flags *ModelsFlags, args []string) error {
 	return nil
 }
 
-func (opts *ModelsOptions) validate() error {
+func (opts *ListOptions) validate() error {
 	return nil
 }
 
-// ModelsCommand represents the models command
-func ModelsCommand() *cobra.Command {
-	flags = &ModelsFlags{}
-	opts = &ModelsOptions{}
+// ListCommand represents the models command
+func ListCommand() *cobra.Command {
+	flags = &ListFlags{}
+	opts = &ListOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "models [repository]",
+		Use:   "list [repository]",
 		Short: shortDesc,
 		Long:  longDesc,
 		Run:   RunCommand(opts),
@@ -71,7 +71,7 @@ func ModelsCommand() *cobra.Command {
 	return cmd
 }
 
-func RunCommand(options *ModelsOptions) func(*cobra.Command, []string) {
+func RunCommand(options *ListOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := options.complete(flags, args); err != nil {
 			fmt.Printf("Failed to parse argument: %s", err)
@@ -84,14 +84,14 @@ func RunCommand(options *ModelsOptions) func(*cobra.Command, []string) {
 
 		var allInfoLines []string
 		if opts.remoteRef == nil {
-			lines, err := listLocalModels(opts.storageHome)
+			lines, err := listLocalKits(opts.storageHome)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 			allInfoLines = lines
 		} else {
-			lines, err := listRemoteModels(cmd.Context(), opts.remoteRef, opts.usehttp)
+			lines, err := listRemoteKits(cmd.Context(), opts.remoteRef, opts.usehttp)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -106,7 +106,7 @@ func RunCommand(options *ModelsOptions) func(*cobra.Command, []string) {
 
 func printSummary(lines []string) {
 	tw := tabwriter.NewWriter(os.Stdout, 0, 2, 3, ' ', 0)
-	fmt.Fprintln(tw, ModelsTableHeader)
+	fmt.Fprintln(tw, listTableHeader)
 	for _, line := range lines {
 		fmt.Fprintln(tw, line)
 	}

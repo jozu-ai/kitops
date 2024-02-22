@@ -49,8 +49,8 @@ These flags run next to a command.
 
 ### Example
 
-`./kit models --help`
+`./kit list --help`
 
 or
 
-`./kit models -h`
+`./kit list -h`

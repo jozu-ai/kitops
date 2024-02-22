@@ -1,4 +1,4 @@
-package models
+package list
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListModels(t *testing.T) {
+func TestListKits(t *testing.T) {
 	tests := []struct {
 		testName              string
 		repo                  string
@@ -155,7 +155,7 @@ func TestListModels(t *testing.T) {
 				Index:     tt.index,
 				Repo:      tt.repo,
 			}
-			summaryLines, err := listModels(testStore)
+			summaryLines, err := listKits(testStore)
 			if tt.expectErrRegexp != "" {
 				// Should be error
 				assert.Empty(t, summaryLines, "Should not output summary on error")

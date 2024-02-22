@@ -6,8 +6,8 @@ package cmd
 import (
 	"kitops/pkg/cmd/build"
 	"kitops/pkg/cmd/export"
+	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
-	"kitops/pkg/cmd/models"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/version"
@@ -42,7 +42,7 @@ func init() {
 	rootCmd.AddCommand(login.NewCmdLogin())
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(push.PushCommand())
-	rootCmd.AddCommand(models.ModelsCommand())
+	rootCmd.AddCommand(list.ListCommand())
 	rootCmd.AddCommand(export.ExportCommand())
 	rootCmd.AddCommand(version.NewCmdVersion())
 }
