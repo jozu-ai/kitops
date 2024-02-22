@@ -4,6 +4,12 @@ Copyright © 2024 Jozu.com
 package cmd
 
 import (
+	"context"
+	"fmt"
+	"os"
+	"os/user"
+	"path/filepath"
+
 	"kitops/pkg/cmd/build"
 	"kitops/pkg/cmd/export"
 	"kitops/pkg/cmd/list"
@@ -11,22 +17,9 @@ import (
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/version"
-	"os"
-	"os/user"
-	"path/filepath"
+	"kitops/pkg/lib/constants"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-)
-
-type (
-	RootOptions struct {
-		ConfigHome string
-	}
-
-	RootFlags struct {
-		ConfigHome string
-	}
 )
 
 var (
@@ -34,68 +27,51 @@ var (
 	longDesc  = `KitOps is a tool to manage AI and ML models`
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = newRootCmd()
-
-func init() {
-	rootCmd.AddCommand(build.NewCmdBuild())
-	rootCmd.AddCommand(login.NewCmdLogin())
-	rootCmd.AddCommand(pull.PullCommand())
-	rootCmd.AddCommand(push.PushCommand())
-	rootCmd.AddCommand(list.ListCommand())
-	rootCmd.AddCommand(export.ExportCommand())
-	rootCmd.AddCommand(version.NewCmdVersion())
+type rootFlags struct {
+	configHome string
 }
 
-func newRootCmd() *cobra.Command {
-	flags := &RootFlags{}
+func RunCommand() *cobra.Command {
+	flags := &rootFlags{}
+
 	cmd := &cobra.Command{
 		Use:   "kit",
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			options, err := flags.ToOptions()
-			if err != nil {
-				panic(err)
+			configHome := flags.configHome
+			if configHome == "" {
+				currentUser, err := user.Current()
+				if err != nil {
+					fmt.Printf("Failed to resolve default storage path '$HOME/%s: could not get current user", constants.DefaultConfigSubdir)
+				}
+				configHome = filepath.Join(currentUser.HomeDir, constants.DefaultConfigSubdir)
 			}
-			err = options.Complete()
-			if err != nil {
-				panic(err)
-			}
+			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
+			cmd.SetContext(ctx)
 		},
 	}
-	flags.addFlags(cmd)
+
+	addSubcommands(cmd)
+	cmd.PersistentFlags().StringVar(&flags.configHome, "config", "", fmt.Sprintf("config file (default is $HOME/%s)", constants.DefaultConfigSubdir))
+
 	return cmd
 }
 
-func (f *RootFlags) addFlags(cmd *cobra.Command) {
-	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.kitops)")
-	viper.BindPFlag("config", cmd.PersistentFlags().Lookup("config"))
-}
-
-func (f *RootFlags) ToOptions() (*RootOptions, error) {
-	return &RootOptions{
-		ConfigHome: f.ConfigHome,
-	}, nil
-}
-
-func (o *RootOptions) Complete() error {
-	if o.ConfigHome == "" {
-		currentUser, err := user.Current()
-		if err != nil {
-			return err
-		}
-		configpath := filepath.Join(currentUser.HomeDir, ".kitops")
-		viper.Set("config", configpath)
-		o.ConfigHome = configpath
-	}
-	return nil
+func addSubcommands(rootCmd *cobra.Command) {
+	rootCmd.AddCommand(build.BuildCommand())
+	rootCmd.AddCommand(login.LoginCommand())
+	rootCmd.AddCommand(pull.PullCommand())
+	rootCmd.AddCommand(push.PushCommand())
+	rootCmd.AddCommand(list.ListCommand())
+	rootCmd.AddCommand(export.ExportCommand())
+	rootCmd.AddCommand(version.VersionCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
+	err := RunCommand().Execute()
 	if err != nil {
 		os.Exit(1)
 	}

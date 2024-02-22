@@ -1,11 +1,12 @@
 package push
 
 import (
+	"context"
 	"fmt"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
@@ -16,24 +17,23 @@ const (
 	longDesc  = `Push model to registry TODO`
 )
 
-var (
-	flags *PushFlags
-	opts  *PushOptions
-)
-
-type PushFlags struct {
+type pushFlags struct {
 	UseHTTP bool
 }
 
-type PushOptions struct {
+type pushOptions struct {
 	usehttp     bool
 	configHome  string
 	storageHome string
 	modelRef    *registry.Reference
 }
 
-func (opts *PushOptions) complete(args []string) error {
-	opts.configHome = viper.GetString("config")
+func (opts *pushOptions) complete(ctx context.Context, flags *pushFlags, args []string) error {
+	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
+	if !ok {
+		return fmt.Errorf("default config path not set on command context")
+	}
+	opts.configHome = configHome
 	opts.storageHome = storage.StorageHome(opts.configHome)
 	modelRef, extraTags, err := storage.ParseReference(args[0])
 	if err != nil {
@@ -50,19 +50,14 @@ func (opts *PushOptions) complete(args []string) error {
 	return nil
 }
 
-func (opts *PushOptions) validate() error {
-	return nil
-}
-
 func PushCommand() *cobra.Command {
-	opts = &PushOptions{}
-	flags = &PushFlags{}
+	flags := &pushFlags{}
 
 	cmd := &cobra.Command{
 		Use:   "push",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   runCommand(opts),
+		Run:   runCommand(flags),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -70,16 +65,13 @@ func PushCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *PushOptions) func(*cobra.Command, []string) {
+func runCommand(flags *pushFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if err := opts.complete(args); err != nil {
+		opts := &pushOptions{}
+		if err := opts.complete(cmd.Context(), flags, args); err != nil {
 			fmt.Printf("Failed to process arguments: %s", err)
 		}
-		err := opts.validate()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+
 		remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry)
 		if err != nil {
 			fmt.Println(err)

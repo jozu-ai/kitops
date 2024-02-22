@@ -1,14 +1,15 @@
 package list
 
 import (
+	"context"
 	"fmt"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
 	"os"
 	"path"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -17,24 +18,23 @@ const (
 	longDesc  = `List model kits TODO`
 )
 
-var (
-	flags *ListFlags
-	opts  *ListOptions
-)
-
-type ListFlags struct {
-	UseHTTP bool
+type listFlags struct {
+	useHTTP bool
 }
 
-type ListOptions struct {
+type listOptions struct {
 	configHome  string
 	storageHome string
 	remoteRef   *registry.Reference
 	usehttp     bool
 }
 
-func (opts *ListOptions) complete(flags *ListFlags, args []string) error {
-	opts.configHome = viper.GetString("config")
+func (opts *listOptions) complete(ctx context.Context, flags *listFlags, args []string) error {
+	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
+	if !ok {
+		return fmt.Errorf("default config path not set on command context")
+	}
+	opts.configHome = configHome
 	opts.storageHome = path.Join(opts.configHome, "storage")
 	if len(args) > 0 {
 		remoteRef, extraTags, err := storage.ParseReference(args[0])
@@ -46,39 +46,31 @@ func (opts *ListOptions) complete(flags *ListFlags, args []string) error {
 		}
 		opts.remoteRef = remoteRef
 	}
-	opts.usehttp = flags.UseHTTP
-	return nil
-}
-
-func (opts *ListOptions) validate() error {
+	opts.usehttp = flags.useHTTP
 	return nil
 }
 
 // ListCommand represents the models command
 func ListCommand() *cobra.Command {
-	flags = &ListFlags{}
-	opts = &ListOptions{}
+	flags := &listFlags{}
 
 	cmd := &cobra.Command{
 		Use:   "list [repository]",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   RunCommand(opts),
+		Run:   runCommand(flags),
 	}
 
 	cmd.Args = cobra.MaximumNArgs(1)
-	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
+	cmd.Flags().BoolVar(&flags.useHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	return cmd
 }
 
-func RunCommand(options *ListOptions) func(*cobra.Command, []string) {
+func runCommand(flags *listFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if err := options.complete(flags, args); err != nil {
+		opts := &listOptions{}
+		if err := opts.complete(cmd.Context(), flags, args); err != nil {
 			fmt.Printf("Failed to parse argument: %s", err)
-			return
-		}
-		if err := options.validate(); err != nil {
-			fmt.Println(err)
 			return
 		}
 

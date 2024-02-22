@@ -21,7 +21,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *ExportOptions) error {
+func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *exportOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("failed to resolve local reference: %w", err)
@@ -31,8 +31,8 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
-	if options.exportConf.ExportConfig {
-		if err := ExportConfig(config, options.exportDir, options.overwrite); err != nil {
+	if options.exportConf.exportConfig {
+		if err := exportConfig(config, options.exportDir, options.overwrite); err != nil {
 			return err
 		}
 	}
@@ -44,7 +44,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		layerDir := ""
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
-			if !options.exportConf.ExportModels {
+			if !options.exportConf.exportModels {
 				continue
 			}
 			modelEntry := config.Model
@@ -52,7 +52,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
 
 		case constants.CodeLayerMediaType:
-			if !options.exportConf.ExportCode {
+			if !options.exportConf.exportCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
@@ -61,7 +61,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
-			if !options.exportConf.ExportDatasets {
+			if !options.exportConf.exportDatasets {
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
@@ -69,7 +69,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
 			datasetIdx += 1
 		}
-		if err := ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
+		if err := exportLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
 			return err
 		}
 	}
@@ -77,7 +77,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	return nil
 }
 
-func ExportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
+func exportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
 	configPath := path.Join(exportDir, constants.DefaultModelFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
@@ -99,7 +99,7 @@ func ExportConfig(config *artifact.KitFile, exportDir string, overwrite bool) er
 	return nil
 }
 
-func ExportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string, overwrite bool) error {
+func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string, overwrite bool) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
