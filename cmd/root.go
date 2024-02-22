@@ -4,13 +4,13 @@ Copyright © 2024 Jozu.com
 package cmd
 
 import (
-	"jmm/pkg/cmd/build"
-	"jmm/pkg/cmd/export"
-	"jmm/pkg/cmd/login"
-	"jmm/pkg/cmd/models"
-	"jmm/pkg/cmd/pull"
-	"jmm/pkg/cmd/push"
-	"jmm/pkg/cmd/version"
+	"kitops/pkg/cmd/build"
+	"kitops/pkg/cmd/export"
+	"kitops/pkg/cmd/list"
+	"kitops/pkg/cmd/login"
+	"kitops/pkg/cmd/pull"
+	"kitops/pkg/cmd/push"
+	"kitops/pkg/cmd/version"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -30,8 +30,8 @@ type (
 )
 
 var (
-	shortDesc = `Jozu Model Manager`
-	longDesc  = `Jozu Model Manager is a tool to manage AI and ML models`
+	shortDesc = `KitOps model manager`
+	longDesc  = `KitOps is a tool to manage AI and ML models`
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -42,7 +42,7 @@ func init() {
 	rootCmd.AddCommand(login.NewCmdLogin())
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(push.PushCommand())
-	rootCmd.AddCommand(models.ModelsCommand())
+	rootCmd.AddCommand(list.ListCommand())
 	rootCmd.AddCommand(export.ExportCommand())
 	rootCmd.AddCommand(version.NewCmdVersion())
 }
@@ -50,7 +50,7 @@ func init() {
 func newRootCmd() *cobra.Command {
 	flags := &RootFlags{}
 	cmd := &cobra.Command{
-		Use:   "jmm",
+		Use:   "kit",
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -69,7 +69,7 @@ func newRootCmd() *cobra.Command {
 }
 
 func (f *RootFlags) addFlags(cmd *cobra.Command) {
-	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.jozu)")
+	cmd.PersistentFlags().StringVar(&f.ConfigHome, "config", "", "config file (default is $HOME/.kitops)")
 	viper.BindPFlag("config", cmd.PersistentFlags().Lookup("config"))
 }
 
@@ -85,7 +85,7 @@ func (o *RootOptions) Complete() error {
 		if err != nil {
 			return err
 		}
-		configpath := filepath.Join(currentUser.HomeDir, ".jozu")
+		configpath := filepath.Join(currentUser.HomeDir, ".kitops")
 		viper.Set("config", configpath)
 		o.ConfigHome = configpath
 	}

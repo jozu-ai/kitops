@@ -1,10 +1,10 @@
-package models
+package list
 
 import (
 	"fmt"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	internal "jmm/pkg/lib/testing"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	internal "kitops/pkg/lib/testing"
 	"testing"
 
 	"github.com/opencontainers/go-digest"
@@ -12,12 +12,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListModels(t *testing.T) {
+func TestListKits(t *testing.T) {
 	tests := []struct {
 		testName              string
 		repo                  string
 		manifests             map[digest.Digest]ocispec.Manifest
-		configs               map[digest.Digest]artifact.JozuFile
+		configs               map[digest.Digest]artifact.KitFile
 		index                 *ocispec.Index
 		expectedOutputRegexps []string
 		expectErrRegexp       string
@@ -39,7 +39,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configB", "layerB"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -57,7 +57,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configNotFound", "layerB"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -75,7 +75,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -93,7 +93,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -115,7 +115,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -137,7 +137,7 @@ func TestListModels(t *testing.T) {
 				"manifestA": Manifest("configA", "layerA"),
 				"manifestB": Manifest("configB", "layerB1", "layerB2", "layerB3"),
 			},
-			configs: map[digest.Digest]artifact.JozuFile{
+			configs: map[digest.Digest]artifact.KitFile{
 				"configA": Config("maintainerA", "formatA"),
 				"configB": Config("maintainerB", "formatB"),
 			},
@@ -155,7 +155,7 @@ func TestListModels(t *testing.T) {
 				Index:     tt.index,
 				Repo:      tt.repo,
 			}
-			summaryLines, err := listModels(testStore)
+			summaryLines, err := listKits(testStore)
 			if tt.expectErrRegexp != "" {
 				// Should be error
 				assert.Empty(t, summaryLines, "Should not output summary on error")
@@ -222,8 +222,8 @@ func Manifest(configDigest string, layerDigests ...string) ocispec.Manifest {
 	return manifest
 }
 
-func Config(maintainer, name string) artifact.JozuFile {
-	config := artifact.JozuFile{
+func Config(maintainer, name string) artifact.KitFile {
+	config := artifact.KitFile{
 		Package: artifact.Package{Authors: []string{maintainer}, Name: name},
 	}
 

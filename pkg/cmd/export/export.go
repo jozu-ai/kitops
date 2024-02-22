@@ -6,10 +6,10 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	"jmm/pkg/lib/filesystem"
-	"jmm/pkg/lib/repo"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/repo"
 	"os"
 	"path"
 	"path/filepath"
@@ -81,7 +81,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	return nil
 }
 
-func ExportConfig(config *artifact.JozuFile, exportDir string, overwrite bool) error {
+func ExportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
 	configPath := path.Join(exportDir, constants.DefaultModelFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {

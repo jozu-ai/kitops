@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	JozuFile struct {
+	KitFile struct {
 		ManifestVersion string         `json:"manifestVersion"`
 		Package         Package        `json:"package,omitempty"`
 		Code            []Code         `json:"code,omitempty"`
@@ -61,22 +61,21 @@ type (
 	}
 )
 
-func (jf *JozuFile) LoadModel(file *os.File) error {
+func (kf *KitFile) LoadModel(file *os.File) error {
 	// Read the file
 	data, err := io.ReadAll(file)
 	if err != nil {
 		return err
 	}
-	err = yaml.Unmarshal(data, jf)
+	err = yaml.Unmarshal(data, kf)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (jf *JozuFile) MarshalToJSON() ([]byte, error) {
-	// Marshal the JozuFile to JSON
-	jsonData, err := json.Marshal(jf)
+func (kf *KitFile) MarshalToJSON() ([]byte, error) {
+	jsonData, err := json.Marshal(kf)
 	if err != nil {
 		return nil, err
 	}

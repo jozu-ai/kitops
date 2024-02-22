@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/storage"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -24,7 +24,7 @@ type TestStore struct {
 	// Map of digest to Manifest, to simulate retrieval from e.g. disk
 	Manifests map[digest.Digest]ocispec.Manifest
 	// Map of digest to Config, to simulate retrieval from e.g. disk
-	Configs map[digest.Digest]artifact.JozuFile
+	Configs map[digest.Digest]artifact.KitFile
 	// Index for the store
 	Index *ocispec.Index
 }

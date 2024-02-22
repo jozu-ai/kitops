@@ -35,36 +35,36 @@ fi
 clear
 
 
-pe "./jmm version" 
+pe "./kit version" 
 
-# Let's check if there are any models locally
-pe "./jmm models"
+# Let's check if there are any model kits locally
+pe "./kit list"
 
-# clean the local models and check again
-pe "rm -rf ~/.jozu"
-pe "./jmm models"
+# clean the local model kits and check again
+pe "rm -rf ~/.kitops"
+pe "./kit list"
 
-pe "./jmm build --help"
+pe "./kit build --help"
 
 # Let's build the onnx model
-pe "./jmm build ../examples/onnx -t localhost:5050/test-repo:test-tag"
+pe "./kit build ../examples/onnx -t localhost:5050/test-repo:test-tag"
 
-# Let's check if the model is built
-pe "./jmm models"
+# Let's check if the model kit is built
+pe "./kit list"
 
 # run a local registry
 pe "$DOCKER run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry" 
 
 # Let's push the model to the local registry
-pe "./jmm push localhost:5050/test-repo:test-tag --http"
+pe "./kit push localhost:5050/test-repo:test-tag --http"
 # Let's check if the model is pushed
-pe "./jmm models localhost:5050/test-repo --http"
+pe "./kit list localhost:5050/test-repo --http"
 # clean the local models and check again
-pe "rm -rf ~/.jozu"
-pe "./jmm models"
+pe "rm -rf ~/.kitops"
+pe "./kit list"
 
-# Let's pull the model to the local registry
-pe "./jmm pull localhost:5050/test-repo:test-tag --http"
+# Let's pull the model kit to the local registry
+pe "./kit pull localhost:5050/test-repo:test-tag --http"
 
-pe "./jmm models"
+pe "./kit list"
 

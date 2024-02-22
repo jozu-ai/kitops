@@ -36,7 +36,7 @@ This will list all the commands you can use.
 You can get the Kit CLI sources from our [tagged versions](https://github.com/jozu-ai/kitops/tags).
 
 ```shell
-go build
+go build -o kit
 ```
 
 Then run the project:

@@ -1,4 +1,4 @@
-module jmm
+module kitops
 
 go 1.21.6
 

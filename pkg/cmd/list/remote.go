@@ -1,19 +1,19 @@
-package models
+package list
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
 )
 
-func listRemoteModels(ctx context.Context, remoteRef *registry.Reference, useHttp bool) ([]string, error) {
+func listRemoteKits(ctx context.Context, remoteRef *registry.Reference, useHttp bool) ([]string, error) {
 	remoteRegistry, err := remote.NewRegistry(remoteRef.Registry)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read registry: %w", err)
@@ -82,7 +82,7 @@ func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.R
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	config := &artifact.JozuFile{}
+	config := &artifact.KitFile{}
 	if err := json.Unmarshal(configBytes, config); err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}

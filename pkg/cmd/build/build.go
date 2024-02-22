@@ -8,10 +8,10 @@ import (
 	"os"
 	"path"
 
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	"jmm/pkg/lib/filesystem"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -20,12 +20,7 @@ import (
 
 var (
 	shortDesc = `Build a model`
-	longDesc  = `A longer description that spans multiple lines and likely contains examples
-	and usage of using your command. For example:
-	
-	Cobra is a CLI library for Go that empowers applications.
-	This application is a tool to generate the needed files
-	to quickly create a Cobra application.`
+	longDesc  = `Build a model TODO`
 )
 
 type BuildFlags struct {
@@ -99,17 +94,17 @@ func (options *BuildOptions) RunBuild() error {
 		return err
 	}
 	defer modelfile.Close()
-	jozufile := &artifact.JozuFile{}
-	if err = jozufile.LoadModel(modelfile); err != nil {
+	kitfile := &artifact.KitFile{}
+	if err = kitfile.LoadModel(modelfile); err != nil {
 		fmt.Println(err)
 		return err
 	}
 
 	model := &artifact.Model{}
-	model.Config = jozufile
+	model.Config = kitfile
 
 	// 2. package the Code
-	for _, code := range jozufile.Code {
+	for _, code := range kitfile.Code {
 		codePath, err := filesystem.VerifySubpath(options.ContextDir, code.Path)
 		if err != nil {
 			return err
@@ -121,7 +116,7 @@ func (options *BuildOptions) RunBuild() error {
 		model.Layers = append(model.Layers, *layer)
 	}
 	// 3. package the DataSets
-	for _, dataset := range jozufile.DataSets {
+	for _, dataset := range kitfile.DataSets {
 		datasetPath, err := filesystem.VerifySubpath(options.ContextDir, dataset.Path)
 		if err != nil {
 			return err
@@ -134,7 +129,7 @@ func (options *BuildOptions) RunBuild() error {
 	}
 
 	// 4. package the TrainedModels
-	for _, trainedModel := range jozufile.Models {
+	for _, trainedModel := range kitfile.Models {
 		modelPath, err := filesystem.VerifySubpath(options.ContextDir, trainedModel.Path)
 		if err != nil {
 			return err

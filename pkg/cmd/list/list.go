@@ -1,16 +1,16 @@
 /*
 Copyright © 2024 Jozu.com
 */
-package models
+package list
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"jmm/pkg/artifact"
-	"jmm/pkg/lib/constants"
-	"jmm/pkg/lib/storage"
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/storage"
 	"math"
 	"os"
 	"path/filepath"
@@ -20,11 +20,11 @@ import (
 )
 
 const (
-	ModelsTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tNAME\tSIZE\tDIGEST"
-	ModelsTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
+	listTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tNAME\tSIZE\tDIGEST"
+	listTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
 )
 
-func listLocalModels(storageRoot string) ([]string, error) {
+func listLocalKits(storageRoot string) ([]string, error) {
 	storeDirs, err := findRepos(storageRoot)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func listLocalModels(storageRoot string) ([]string, error) {
 	for _, storeDir := range storeDirs {
 		store := storage.NewLocalStore(storageRoot, storeDir)
 
-		infolines, err := listModels(store)
+		infolines, err := listKits(store)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +43,7 @@ func listLocalModels(storageRoot string) ([]string, error) {
 	return allInfoLines, nil
 }
 
-func listModels(store storage.Store) ([]string, error) {
+func listKits(store storage.Store) ([]string, error) {
 	index, err := store.ParseIndexJson()
 	if err != nil {
 		return nil, err
@@ -81,19 +81,19 @@ func getManifest(store storage.Store, manifestDesc ocispec.Descriptor) (*ocispec
 	return manifest, nil
 }
 
-func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artifact.JozuFile, error) {
+func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artifact.KitFile, error) {
 	configBytes, err := store.Fetch(context.Background(), manifest.Config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
-	config := &artifact.JozuFile{}
+	config := &artifact.KitFile{}
 	if err := json.Unmarshal(configBytes, config); err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
 	return config, nil
 }
 
-func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.JozuFile) string {
+func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.KitFile) string {
 	ref := desc.Annotations[ocispec.AnnotationRefName]
 	if ref == "" {
 		ref = "<none>"
@@ -111,7 +111,7 @@ func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec
 	}
 	sizeStr := formatBytes(size)
 
-	info := fmt.Sprintf(ModelsTableFmt, repo, ref, config.Package.Authors[0], config.Package.Name, sizeStr, desc.Digest)
+	info := fmt.Sprintf(listTableFmt, repo, ref, config.Package.Authors[0], config.Package.Name, sizeStr, desc.Digest)
 	return info
 }
 
