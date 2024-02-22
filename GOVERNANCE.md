@@ -6,7 +6,6 @@ The KitOps project is dedicated to creating tools that reduce friction in packag
 - [Maintainers](#maintainers)
 - [Becoming a Maintainer](#becoming-a-maintainer)
 - [Meetings](#meetings)
-- [CNCF Resources](#cncf-resources)
 - [Code of Conduct Enforcement](#code-of-conduct)
 - [Security Response Team](#security-response-team)
 - [Voting](#voting)
@@ -65,9 +64,9 @@ Depending on the reason for removal, a Maintainer may be converted to Emeritus s
 
 ## Meetings
 
-Time zones permitting, Maintainers are expected to participate in the KitOps office hours virtual meeting, which occurs weekly on Wednesday at 13:30ET / 10:30PT:
+Time zones permitting, Maintainers are expected to participate in the KitOps office hours virtual meeting, which occurs bi-weekly on Wednesday at 13:30ET / 10:30PT:
 
-### KitOps Public Office Hours (weekly)
+### KitOps Public Office Hours (bi-weekly)
 Wednesdays @ 13:30 – 14:00
 Time zone: America/Toronto
 Video call link: https://meet.google.com/zfq-uprp-csd
@@ -88,7 +87,7 @@ The Security Response Team is responsible for handling all reports of security h
 
 ## Voting
 
-While most business in KitOps is conducted by "[lazy consensus](https://community.apache.org/committers/lazyConsensus.html)", periodically the Maintainers may need to vote on specific actions or changes. A vote can be taken in the #general channel in the [KitOps Discord server](https://discord.gg/XzSmtPn3) or in the private Maintainers channel for security or conduct matters. Votes may also be taken at the weekly [KitOps Public Office Hours meeting](#kitops-public-office-hours-weekly). Any Maintainer may demand a vote be taken.
+While most business in KitOps is conducted by "[lazy consensus](https://community.apache.org/committers/lazyConsensus.html)", periodically the Maintainers may need to vote on specific actions or changes. A vote can be taken in the #general channel in the [KitOps Discord server](https://discord.gg/XzSmtPn3) or in the private Maintainers channel for security or conduct matters. Votes may also be taken at the bi-weekly [KitOps Public Office Hours meeting](#kitops-public-office-hours-bi-weekly). Any Maintainer may demand a vote be taken.
 
 Most votes require a simple majority of all Maintainers to succeed, except where otherwise noted.  Two-thirds majority votes mean at least two-thirds of all existing maintainers.
 
