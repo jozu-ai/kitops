@@ -224,7 +224,7 @@ func Manifest(configDigest string, layerDigests ...string) ocispec.Manifest {
 
 func Config(maintainer, name string) artifact.KitFile {
 	config := artifact.KitFile{
-		Package: artifact.Package{Authors: []string{maintainer}, Name: name},
+		Kit: artifact.ModelKit{Authors: []string{maintainer}, Name: name},
 	}
 
 	return config

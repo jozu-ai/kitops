@@ -10,14 +10,14 @@ import (
 
 type (
 	KitFile struct {
-		ManifestVersion string         `json:"manifestVersion"`
-		Package         Package        `json:"package,omitempty"`
-		Code            []Code         `json:"code,omitempty"`
-		DataSets        []DataSet      `json:"datasets,omitempty"`
-		Models          []TrainedModel `json:"models,omitempty"`
+		ManifestVersion string       `json:"manifestVersion"`
+		Kit             ModelKit     `json:"package,omitempty"`
+		Code            []Code       `json:"code,omitempty"`
+		DataSets        []DataSet    `json:"datasets,omitempty"`
+		Model           TrainedModel `json:"model,omitempty"`
 	}
 
-	Package struct {
+	ModelKit struct {
 		Name        string   `json:"name,omitempty"`
 		Version     string   `json:"version,omitempty"`
 		Description string   `json:"description,omitempty"`

@@ -128,18 +128,17 @@ func (options *BuildOptions) RunBuild() error {
 		model.Layers = append(model.Layers, *layer)
 	}
 
-	// 4. package the TrainedModels
-	for _, trainedModel := range kitfile.Models {
-		modelPath, err := filesystem.VerifySubpath(options.ContextDir, trainedModel.Path)
-		if err != nil {
-			return err
-		}
-		layer := &artifact.ModelLayer{
-			BaseDir:   modelPath,
-			MediaType: constants.ModelLayerMediaType,
-		}
-		model.Layers = append(model.Layers, *layer)
+	// 4. package the TrainedModel
+
+	modelPath, err := filesystem.VerifySubpath(options.ContextDir, kitfile.Model.Path)
+	if err != nil {
+		return err
 	}
+	layer := &artifact.ModelLayer{
+		BaseDir:   modelPath,
+		MediaType: constants.ModelLayerMediaType,
+	}
+	model.Layers = append(model.Layers, *layer)
 
 	modelStorePath := options.storageHome
 	repo := ""
