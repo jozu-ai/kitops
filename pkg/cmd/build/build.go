@@ -1,17 +1,16 @@
 package build
 
 import (
-	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 	"os"
 	"path"
 )
 
 func RunBuild(options *buildOptions) error {
-	fmt.Println("build called")
 	// 1. Read the model file
 	modelfile, err := os.Open(options.modelFile)
 	if err != nil {
@@ -20,7 +19,6 @@ func RunBuild(options *buildOptions) error {
 	defer modelfile.Close()
 	kitfile := &artifact.KitFile{}
 	if err = kitfile.LoadModel(modelfile); err != nil {
-		fmt.Println(err)
 		return err
 	}
 
@@ -39,6 +37,7 @@ func RunBuild(options *buildOptions) error {
 		}
 		model.Layers = append(model.Layers, *layer)
 	}
+
 	// 3. package the DataSets
 	for _, dataset := range kitfile.DataSets {
 		datasetPath, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
@@ -73,7 +72,6 @@ func RunBuild(options *buildOptions) error {
 	store := storage.NewLocalStore(modelStorePath, repo)
 	manifestDesc, err := store.SaveModel(model, tag)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 
@@ -83,7 +81,7 @@ func RunBuild(options *buildOptions) error {
 		}
 	}
 
-	fmt.Println("Model saved: ", manifestDesc.Digest)
+	output.Infof("Model saved: %s", manifestDesc.Digest)
 
 	return nil
 }

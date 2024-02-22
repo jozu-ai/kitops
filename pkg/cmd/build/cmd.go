@@ -7,9 +7,11 @@ import (
 	"context"
 	"fmt"
 	"path"
+	"strings"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -55,12 +57,12 @@ func runCommand(flags *buildFlags) func(cmd *cobra.Command, args []string) {
 		opts := &buildOptions{}
 		err := opts.complete(cmd.Context(), flags, args)
 		if err != nil {
-			fmt.Println(err)
+			output.Fatalf("Failed to process configuration: %s", err)
 			return
 		}
 		err = RunBuild(opts)
 		if err != nil {
-			fmt.Println(err)
+			output.Fatalf("Failed to build model kit: %s", err)
 			return
 		}
 	}
@@ -89,5 +91,20 @@ func (opts *buildOptions) complete(ctx context.Context, flags *buildFlags, args 
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs
 	}
+	printConfig(opts)
 	return nil
+}
+
+func printConfig(opts *buildOptions) {
+	output.Debugf("Using storage path: %s", opts.storageHome)
+	output.Debugf("Context dir: %s", opts.contextDir)
+	output.Debugf("Model file: %s", opts.modelFile)
+	if opts.modelRef != nil {
+		output.Debugf("Building %s", opts.modelRef.String())
+	} else {
+		output.Debugln("No tag or reference specified")
+	}
+	if len(opts.extraRefs) > 0 {
+		output.Debugf("Additional tags: %s", strings.Join(opts.extraRefs, ", "))
+	}
 }

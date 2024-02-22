@@ -1,7 +1,7 @@
 package version
 
 import (
-	"fmt"
+	"kitops/pkg/output"
 	"runtime"
 
 	"github.com/spf13/cobra"
@@ -26,7 +26,7 @@ including the current version of the tool, the Git commit that the version was b
 the build time, and the version of Go it was compiled with. This can be useful for debugging 
 or verifying that you are running the expected version of kit.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("Version: %s\nCommit: %s\nBuilt: %s\nGo version: %s\n", Version, GitCommit, BuildTime, GoVersion)
+			output.Infof("Version: %s\nCommit: %s\nBuilt: %s\nGo version: %s\n", Version, GitCommit, BuildTime, GoVersion)
 		},
 	}
 	return cmd

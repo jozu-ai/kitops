@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
+	"kitops/pkg/output"
 	"os"
 	"path"
 	"text/tabwriter"
@@ -70,29 +71,25 @@ func runCommand(flags *listFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		opts := &listOptions{}
 		if err := opts.complete(cmd.Context(), flags, args); err != nil {
-			fmt.Printf("Failed to parse argument: %s", err)
-			return
+			output.Fatalf("Failed to parse argument: %s", err)
 		}
 
 		var allInfoLines []string
 		if opts.remoteRef == nil {
 			lines, err := listLocalKits(opts.storageHome)
 			if err != nil {
-				fmt.Println(err)
-				return
+				output.Fatalln(err)
 			}
 			allInfoLines = lines
 		} else {
 			lines, err := listRemoteKits(cmd.Context(), opts.remoteRef, opts.usehttp)
 			if err != nil {
-				fmt.Println(err)
-				return
+				output.Fatalln(err)
 			}
 			allInfoLines = lines
 		}
 
 		printSummary(allInfoLines)
-
 	}
 }
 
@@ -103,4 +100,11 @@ func printSummary(lines []string) {
 		fmt.Fprintln(tw, line)
 	}
 	tw.Flush()
+}
+
+func printConfig(opts *listOptions) {
+	output.Debugf("Using storage path: %s", opts.storageHome)
+	if opts.remoteRef != nil {
+		output.Debugf("Listing remote model kits in %s", opts.remoteRef.String())
+	}
 }
