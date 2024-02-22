@@ -1,11 +1,12 @@
 package pull
 
 import (
+	"context"
 	"fmt"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
@@ -16,25 +17,25 @@ const (
 	longDesc  = `Pull model from registry TODO`
 )
 
-var (
-	flags *PullFlags
-	opts  *PullOptions
-)
-
-type PullFlags struct {
-	UseHTTP bool
+type pullFlags struct {
+	useHTTP bool
 }
 
-type PullOptions struct {
+type pullOptions struct {
 	usehttp     bool
 	configHome  string
 	storageHome string
 	modelRef    *registry.Reference
 }
 
-func (opts *PullOptions) complete(args []string) error {
-	opts.configHome = viper.GetString("config")
+func (opts *pullOptions) complete(ctx context.Context, flags *pullFlags, args []string) error {
+	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
+	if !ok {
+		return fmt.Errorf("default config path not set on command context")
+	}
+	opts.configHome = configHome
 	opts.storageHome = storage.StorageHome(opts.configHome)
+
 	modelRef, extraTags, err := storage.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
@@ -46,39 +47,30 @@ func (opts *PullOptions) complete(args []string) error {
 		return fmt.Errorf("reference cannot include multiple tags")
 	}
 	opts.modelRef = modelRef
-	opts.usehttp = flags.UseHTTP
-	return nil
-}
-
-func (opts *PullOptions) validate() error {
+	opts.usehttp = flags.useHTTP
 	return nil
 }
 
 func PullCommand() *cobra.Command {
-	opts = &PullOptions{}
-	flags = &PullFlags{}
+	flags := &pullFlags{}
 
 	cmd := &cobra.Command{
 		Use:   "pull",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   runCommand(opts),
+		Run:   runCommand(flags),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().BoolVar(&flags.UseHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
+	cmd.Flags().BoolVar(&flags.useHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
 	return cmd
 }
 
-func runCommand(opts *PullOptions) func(*cobra.Command, []string) {
+func runCommand(flags *pullFlags) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if err := opts.complete(args); err != nil {
+		opts := &pullOptions{}
+		if err := opts.complete(cmd.Context(), flags, args); err != nil {
 			fmt.Printf("Failed to process arguments: %s", err)
-		}
-		err := opts.validate()
-		if err != nil {
-			fmt.Println(err)
-			return
 		}
 		remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry)
 		if err != nil {
@@ -97,7 +89,7 @@ func runCommand(opts *PullOptions) func(*cobra.Command, []string) {
 		}
 
 		fmt.Printf("Pulling %s\n", opts.modelRef.String())
-		desc, err := PullModel(cmd.Context(), remoteRegistry, localStore, opts.modelRef)
+		desc, err := pullModel(cmd.Context(), remoteRegistry, localStore, opts.modelRef)
 		if err != nil {
 			fmt.Printf("Failed to pull: %s\n", err)
 			return

@@ -1,7 +1,10 @@
 package constants
 
+type ConfigKey struct{}
+
 const (
 	DefaultModelFileName = "Kitfile"
+	DefaultConfigSubdir  = ".kitops"
 
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"

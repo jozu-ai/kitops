@@ -16,7 +16,7 @@ var (
 	GoVersion = runtime.Version()
 )
 
-func NewCmdVersion() *cobra.Command {
+func VersionCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "version",
