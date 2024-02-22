@@ -70,9 +70,6 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			fmt.Printf("Exporting dataset %s to %s\n", datasetEntry.Name, layerDir)
 			datasetIdx += 1
 		}
-		if _, err := filesystem.VerifySubpath(options.exportDir, layerDir); err != nil {
-			return err
-		}
 		if err := ExportLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
 			return err
 		}
@@ -85,9 +82,9 @@ func ExportConfig(config *artifact.KitFile, exportDir string, overwrite bool) er
 	configPath := path.Join(exportDir, constants.DefaultModelFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
-			return fmt.Errorf("failed to export config: path %s already exists", exportDir)
+			return fmt.Errorf("failed to export config: path %s already exists", configPath)
 		} else if !fi.Mode().IsRegular() {
-			return fmt.Errorf("failed to export config: path %s exists and is not a regular file", exportDir)
+			return fmt.Errorf("failed to export config: path %s exists and is not a regular file", configPath)
 		}
 	}
 
@@ -168,7 +165,7 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 				}
 			}
 			fmt.Printf("Extracting file %s\n", outPath)
-			file, err := os.OpenFile(outPath, os.O_TRUNC|os.O_RDWR|os.O_EXCL, header.FileInfo().Mode())
+			file, err := os.OpenFile(outPath, os.O_CREATE|os.O_TRUNC|os.O_RDWR, header.FileInfo().Mode())
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
