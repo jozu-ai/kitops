@@ -39,7 +39,7 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for exporting
-	var modelIdx, codeIdx, datasetIdx int
+	var codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
 		layerDir := ""
 		switch layerDesc.MediaType {
@@ -47,10 +47,9 @@ func ExportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			if !options.exportConf.ExportModels {
 				continue
 			}
-			modelEntry := config.Models[modelIdx]
+			modelEntry := config.Model
 			layerDir = filepath.Join(options.exportDir, modelEntry.Path)
 			fmt.Printf("Exporting model %s to %s\n", modelEntry.Name, layerDir)
-			modelIdx += 1
 
 		case constants.CodeLayerMediaType:
 			if !options.exportConf.ExportCode {
