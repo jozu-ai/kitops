@@ -24,7 +24,7 @@ const (
 	listTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
 )
 
-func listLocalKits(storageRoot string) ([]string, error) {
+func listLocalKits(ctx context.Context, storageRoot string) ([]string, error) {
 	storeDirs, err := findRepos(storageRoot)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func listLocalKits(storageRoot string) ([]string, error) {
 	for _, storeDir := range storeDirs {
 		store := storage.NewLocalStore(storageRoot, storeDir)
 
-		infolines, err := listKits(store)
+		infolines, err := listKits(ctx, store)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +43,7 @@ func listLocalKits(storageRoot string) ([]string, error) {
 	return allInfoLines, nil
 }
 
-func listKits(store storage.Store) ([]string, error) {
+func listKits(ctx context.Context, store storage.Store) ([]string, error) {
 	index, err := store.ParseIndexJson()
 	if err != nil {
 		return nil, err
@@ -51,14 +51,14 @@ func listKits(store storage.Store) ([]string, error) {
 
 	var infolines []string
 	for _, manifestDesc := range index.Manifests {
-		manifest, err := getManifest(store, manifestDesc)
+		manifest, err := getManifest(ctx, store, manifestDesc)
 		if err != nil {
 			return nil, err
 		}
 		if manifest.Config.MediaType != constants.ModelConfigMediaType {
 			continue
 		}
-		manifestConf, err := readManifestConfig(store, manifest)
+		manifestConf, err := readManifestConfig(ctx, store, manifest)
 		if err != nil {
 			return nil, err
 		}
@@ -69,8 +69,8 @@ func listKits(store storage.Store) ([]string, error) {
 	return infolines, nil
 }
 
-func getManifest(store storage.Store, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, error) {
-	manifestBytes, err := store.Fetch(context.Background(), manifestDesc)
+func getManifest(ctx context.Context, store storage.Store, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, error) {
+	manifestBytes, err := store.Fetch(ctx, manifestDesc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read manifest %s: %w", manifestDesc.Digest, err)
 	}
@@ -81,8 +81,8 @@ func getManifest(store storage.Store, manifestDesc ocispec.Descriptor) (*ocispec
 	return manifest, nil
 }
 
-func readManifestConfig(store storage.Store, manifest *ocispec.Manifest) (*artifact.KitFile, error) {
-	configBytes, err := store.Fetch(context.Background(), manifest.Config)
+func readManifestConfig(ctx context.Context, store storage.Store, manifest *ocispec.Manifest) (*artifact.KitFile, error) {
+	configBytes, err := store.Fetch(ctx, manifest.Config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}

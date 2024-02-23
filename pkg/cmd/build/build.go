@@ -1,6 +1,7 @@
 package build
 
 import (
+	"context"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
@@ -10,7 +11,7 @@ import (
 	"path"
 )
 
-func RunBuild(options *buildOptions) error {
+func RunBuild(ctx context.Context, options *buildOptions) error {
 	// 1. Read the model file
 	modelfile, err := os.Open(options.modelFile)
 	if err != nil {
@@ -70,13 +71,13 @@ func RunBuild(options *buildOptions) error {
 		tag = options.modelRef.Reference
 	}
 	store := storage.NewLocalStore(modelStorePath, repo)
-	manifestDesc, err := store.SaveModel(model, tag)
+	manifestDesc, err := store.SaveModel(ctx, model, tag)
 	if err != nil {
 		return err
 	}
 
 	for _, tag := range options.extraRefs {
-		if err := store.TagModel(*manifestDesc, tag); err != nil {
+		if err := store.TagModel(ctx, *manifestDesc, tag); err != nil {
 			return err
 		}
 	}

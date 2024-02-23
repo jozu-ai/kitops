@@ -1,6 +1,7 @@
 package list
 
 import (
+	"context"
 	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
@@ -155,7 +156,7 @@ func TestListKits(t *testing.T) {
 				Index:     tt.index,
 				Repo:      tt.repo,
 			}
-			summaryLines, err := listKits(testStore)
+			summaryLines, err := listKits(context.Background(), testStore)
 			if tt.expectErrRegexp != "" {
 				// Should be error
 				assert.Empty(t, summaryLines, "Should not output summary on error")

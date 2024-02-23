@@ -76,7 +76,7 @@ func runCommand(flags *listFlags) func(*cobra.Command, []string) {
 
 		var allInfoLines []string
 		if opts.remoteRef == nil {
-			lines, err := listLocalKits(opts.storageHome)
+			lines, err := listLocalKits(cmd.Context(), opts.storageHome)
 			if err != nil {
 				output.Fatalln(err)
 			}

@@ -60,7 +60,7 @@ func runCommand(flags *buildFlags) func(cmd *cobra.Command, args []string) {
 			output.Fatalf("Failed to process configuration: %s", err)
 			return
 		}
-		err = RunBuild(opts)
+		err = RunBuild(cmd.Context(), opts)
 		if err != nil {
 			output.Fatalf("Failed to build model kit: %s", err)
 			return
