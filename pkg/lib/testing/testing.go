@@ -71,12 +71,12 @@ func (s *TestStore) ParseIndexJson() (*ocispec.Index, error) {
 	return nil, TestingNotFoundError
 }
 
-func (*TestStore) TagModel(ocispec.Descriptor, string) error {
+func (*TestStore) TagModel(context.Context, ocispec.Descriptor, string) error {
 	return fmt.Errorf("tag model is not implemented for testing")
 }
 
 // SaveModel is not yet implemented!
-func (*TestStore) SaveModel(*artifact.Model, string) (*ocispec.Descriptor, error) {
+func (*TestStore) SaveModel(context.Context, *artifact.Model, string) (*ocispec.Descriptor, error) {
 	return nil, fmt.Errorf("save model is not implemented for testing")
 }
 

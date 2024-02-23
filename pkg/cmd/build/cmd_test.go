@@ -38,7 +38,7 @@ func TestBuildOptions_RunBuild(t *testing.T) {
 		contextDir: "/path/to/context",
 	}
 
-	err := RunBuild(options)
+	err := RunBuild(context.Background(), options)
 
 	assert.NoError(t, err)
 }

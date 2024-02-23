@@ -43,33 +43,33 @@ func NewLocalStore(storeRoot, repo string) Store {
 	}
 }
 
-func (store *LocalStore) SaveModel(model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
-	configDesc, err := store.saveConfigFile(model.Config)
+func (store *LocalStore) SaveModel(ctx context.Context, model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
+	configDesc, err := store.saveConfigFile(ctx, model.Config)
 	if err != nil {
 		return nil, err
 	}
 	var layerDescs []ocispec.Descriptor
 	for _, layer := range model.Layers {
-		layerDesc, err := store.saveContentLayer(&layer)
+		layerDesc, err := store.saveContentLayer(ctx, &layer)
 		if err != nil {
 			return nil, err
 		}
 		layerDescs = append(layerDescs, layerDesc)
 	}
 
-	manifestDesc, err := store.saveModelManifest(layerDescs, configDesc, tag)
+	manifestDesc, err := store.saveModelManifest(ctx, layerDescs, configDesc, tag)
 	if err != nil {
 		return nil, err
 	}
 	return manifestDesc, nil
 }
 
-func (store *LocalStore) TagModel(manifestDesc ocispec.Descriptor, tag string) error {
+func (store *LocalStore) TagModel(ctx context.Context, manifestDesc ocispec.Descriptor, tag string) error {
 	if err := validateTag(tag); err != nil {
 		return err
 	}
 
-	if err := store.storage.Tag(context.Background(), manifestDesc, tag); err != nil {
+	if err := store.storage.Tag(ctx, manifestDesc, tag); err != nil {
 		return fmt.Errorf("failed to tag manifest: %w", err)
 	}
 
@@ -99,9 +99,7 @@ func (store *LocalStore) GetRepository() string {
 	return store.repo
 }
 
-func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (ocispec.Descriptor, error) {
-	ctx := context.Background()
-
+func (store *LocalStore) saveContentLayer(ctx context.Context, layer *artifact.ModelLayer) (ocispec.Descriptor, error) {
 	buf := &bytes.Buffer{}
 	err := layer.Apply(buf)
 	if err != nil {
@@ -133,8 +131,7 @@ func (store *LocalStore) saveContentLayer(layer *artifact.ModelLayer) (ocispec.D
 	return desc, nil
 }
 
-func (store *LocalStore) saveConfigFile(model *artifact.KitFile) (ocispec.Descriptor, error) {
-	ctx := context.Background()
+func (store *LocalStore) saveConfigFile(ctx context.Context, model *artifact.KitFile) (ocispec.Descriptor, error) {
 	modelBytes, err := model.MarshalToJSON()
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
@@ -163,8 +160,7 @@ func (store *LocalStore) saveConfigFile(model *artifact.KitFile) (ocispec.Descri
 	return desc, nil
 }
 
-func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, config ocispec.Descriptor, tag string) (*ocispec.Descriptor, error) {
-	ctx := context.Background()
+func (store *LocalStore) saveModelManifest(ctx context.Context, layerDescs []ocispec.Descriptor, config ocispec.Descriptor, tag string) (*ocispec.Descriptor, error) {
 	manifest := ocispec.Manifest{
 		Versioned:   specs.Versioned{SchemaVersion: 2},
 		Config:      config,
@@ -202,7 +198,7 @@ func (store *LocalStore) saveModelManifest(layerDescs []ocispec.Descriptor, conf
 		if err := validateTag(tag); err != nil {
 			return nil, err
 		}
-		if err := store.storage.Tag(context.Background(), desc, tag); err != nil {
+		if err := store.storage.Tag(ctx, desc, tag); err != nil {
 			return nil, fmt.Errorf("failed to tag manifest: %w", err)
 		}
 		output.Debugf("Added tag to manifest: %s", tag)
