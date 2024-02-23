@@ -7,8 +7,8 @@ We are committed to making participation in the project a harassment-free experi
 ## Scope
 
 This code of conduct applies:
-* within project and community spaces,
-* in other spaces when a project community participant's words or actions are directed at or are about the project, the project's community, or another participant in the project community.
+* Within project and community spaces
+* In other spaces when a project community participant's words or actions are directed at or are about the project, the project's community, or another participant in the project community
 
 ## Our Standards
 
