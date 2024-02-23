@@ -56,5 +56,3 @@ release:
   
   name_template: "{{.ProjectName}}-{{.Version}}"
   skip_upload: false
-sboms:
-  - artifacts: archive
