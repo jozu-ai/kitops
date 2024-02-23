@@ -36,7 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: next
-          name: 'Nightly Builds Download for KitOps CLI(kit)'
+          name: 'Nightly Builds Download for KitOps CLI (kit)'
           prerelease: true
           body: |
             Welcome to the cutting edge! Our nightly builds offer the most recent developments 
