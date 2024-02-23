@@ -1,4 +1,4 @@
-# KitOps AI/ML Packaging Manifest Format Reference
+# Kitfile AI/ML Packaging Manifest Format Reference
 
 The Kitfile manifest for AI/ML is a YAML file designed to encapsulate all the necessary information about the package, including code, datasets, model, and their metadata. This reference documentation outlines the structure and specifications of the manifest format.
 
@@ -59,13 +59,13 @@ This section provides general information about the AI/ML project.
 #### `model`
 
 - **Description**: Details of the trained models included in the package.
-- **Type**: Object Array
-  - `name`: Name of the model 
+- **Type**: Object
+  - `name`: Name of the model
   - `path`: Location of the model file or directory relative to the context
   - `framework`: AI/ML framework
   - `version`: Version of the model
   - `description`: Overview of the model
-  - `license`: SPDX license identifier for the dataset. 
+  - `license`: SPDX license identifier for the dataset.
   - `training`:
     - `dataset`: Name of the dataset
     - `parameters`: name value pairs
@@ -115,7 +115,7 @@ models:
 ```
 
 
-## Future Considerations 
+## Future Considerations
 
 This section is for collecting future ideas.
 
