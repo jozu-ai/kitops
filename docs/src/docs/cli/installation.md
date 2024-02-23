@@ -1,4 +1,4 @@
-# Installation Guide for `kit` 
+# Installation Guide for `kit` CLI 
 
 ## Installation from GitHub Releases 
 Welcome to the installation guide for the `kit`! This guide is designed to help you quickly and easily install the `kit` on your machine.
@@ -27,7 +27,7 @@ Depending on your operating system and its architecture, you will need to downlo
 
 ### Optional: Verifying the Checksum
 
-After downloading the `kit` and before proceeding with the installation, it's highly recommended to verify the checksum of the downloaded file. 
+After downloading the `kit` and before proceeding with the installation, it's highly recommended to verify the checksum of the downloaded file. By verifying the checksum, you can ensure the authenticity and integrity of your downloaded `kit cli` file before installation.
 
 Each release comes with a file that ends with `checksum.txt` that contains the SHA-256 hashes of the release files. Here's how to verify the checksum:
 
@@ -52,18 +52,9 @@ CertUtil -hashfile kitops-windows-x86_64.zip SHA256
 ```
 3. Compare the output of this command with the corresponding checksum in the `checksum.txt` file. A matching checksum confirms the file's integrity.
 
-By verifying the checksum, you can ensure the authenticity and integrity of your downloaded `kit cli` file before installation.
-
-
 ### Step 2: Installing `kit`
 
 Once you have downloaded the appropriate file for your system, follow these instructions to install the `kit`.
-
-#### For Windows Users:
-
-1. **Extract the Archive**: Right-click on the downloaded `.zip` file and select "Extract All..." to unzip the archive.
-
-2. **Move to Path**: Move the extracted `kit.exe` to a directory that is included in your system's PATH variable. This will allow you to run `kit` from any command prompt or terminal window.
 
 #### For macOS and Linux Users:
 
@@ -73,12 +64,19 @@ Once you have downloaded the appropriate file for your system, follow these inst
 tar -xzvf kitops-linux-x86_64.tar.gz
 ```
 
-2. **Move to Path**: Move the extracted `kit` executable to a location in your system's PATH. A common choice is `/usr/local/bin`. You can do this with the `mv` command, like so:
+2. **Move to Path**: Move the extracted `kit` executable to a location in your system's PATH. A common choice is `/usr/local/bin`. You can do this with the `mv` command:
 
 ```
 sudo mv kit /usr/local/bin/
 ```
 This step may require administrator privileges.
+
+#### For Windows Users:
+
+1. **Extract the Archive**: Right-click on the downloaded `.zip` file and select "Extract All..." to unzip the archive.
+
+2. **Move to Path**: Move the extracted `kit.exe` to a directory that is included in your system's PATH variable. This will allow you to run `kit` from any command prompt or terminal window.
+
 
 ### Verifying the Installation
 
@@ -91,7 +89,7 @@ kit version
 This command should display the version number of `kit` you have installed, indicating that the installation was successful.
 
 
-## Installation from source
+## Installation from Source
 
 For those who prefer or require building `kit` from the source code, this section will guide you through the necessary steps. 
 
