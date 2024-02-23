@@ -6,70 +6,43 @@ on:
     branches:
       - main
 
-concurrency: ${{ github.workflow }}
-
+permissions:
+  contents: write
 jobs:
+  nightly-build:
+    runs-on: ubuntu-latest
 
-    platfor-builds:
-        permissions:
-            contents: write
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                os: [linux, darwin, windows]
-                arch: [amd64, arm64]
-                exclude:
-                    - os: windows
-                      arch: arm64
-                include:
-                    - os: windows
-                      archive_ext: zip
-                    - os: linux
-                      archive_ext: tar.gz
-                    - os: darwin
-                      archive_ext: tar.gz
-                
-        name: "${{ matrix.os }}-${{ matrix.arch }}"
-        env:
-            GOOS: ${{ matrix.os }}
-            GOARCH: ${{ matrix.arch }}
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
        
-          - name: Setup Go
-            uses: actions/setup-go@v5
-            with:
-                go-version-file: 'go.mod'
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+            go-version-file: 'go.mod'
     
-          - name: Cross-compile
-            run: |
-                version="nightly"
-                gitCommit=$(git rev-parse HEAD)
-                buildTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-                binName="kit-$GOOS-$GOARCH"
-                if [ $GOOS == "windows" ]; then
-                    binName="${binName}.exe"
-                fi
-                go build -o "$binName" \
-                    -ldflags="-s -w -X 'kit/pkg/cmd/version.Version=${version}' -X 'kit/pkg/cmd/version.GitCommit=${gitCommit}' -X 'kit/pkg/cmd/version.BuildTime=${buildTime}'"
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          distribution: goreleaser
+          args: release --snapshot --skip-publish 
 
-          - name: Generate archive
-            run: |
-                if [ $GOOS == "windows" ]; then
-                    zip -9 -y -r -q "kit-${GOOS}-${GOARCH}.zip" "kit-${GOOS}-${GOARCH}.exe"
-                else
-                    tar -czvf "kit-${GOOS}-${GOARCH}.tar.gz" "kit-${GOOS}-${GOARCH}"
-                fi
-
-
-          - name: Upload artifacts
-            uses: WebFreak001/deploy-nightly@v3.0.0
-            with:
-                upload_url: https://uploads.github.com/repos/jozu-ai/kitops/releases/140709733/assets{?name,label}",
-                release_id: 140709733 
-                asset_path: kit-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.archive_ext }}
-                asset_name: kit-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.archive_ext }}
-                asset_content_type: application/zip 
-                max_releases: 2
-
+      - name: Update Nightly Release
+        uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: next
+          name: 'Nightly Builds Download for KitOps CLI(kit)'
+          prerelease: true
+          body: |
+            Welcome to the cutting edge! Our nightly builds offer the most recent developments 
+            in kit CLI, providing early access to new features, enhancements, and 
+            fixes that are on their way to the next stable release'
+          files: |
+            ./dist/*.txt
+            ./dist/*.zip
+            ./dist/*.tar.gz

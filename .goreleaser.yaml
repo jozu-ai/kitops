@@ -8,6 +8,8 @@
 
 version: 1
 
+project_name: kitops
+
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -20,13 +22,16 @@ builds:
       - linux
       - windows
       - darwin
+    binary: kit
+    
+    ldflags: "-s -w -X 'kit/pkg/cmd/version.Version={{.Version}}' -X 'kit/pkg/cmd/version.GitCommit={{.Commit}}' -X 'kit/pkg/cmd/version.BuildTime={{.Date}}'"
 
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
+      {{ .ProjectName }}-
+      {{- tolower .Os }}-
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
@@ -42,3 +47,7 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+git:
+  ignore_tags:
+    - "next"
