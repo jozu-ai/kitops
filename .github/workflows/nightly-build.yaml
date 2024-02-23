@@ -28,7 +28,7 @@ jobs:
         with:
           version: latest
           distribution: goreleaser
-          args: release --snapshot --skip-publish 
+          args: release --snapshot --skip=publish
 
       - name: Update Nightly Release
         uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
