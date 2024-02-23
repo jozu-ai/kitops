@@ -24,7 +24,8 @@ builds:
       - darwin
     binary: kit
     
-    ldflags: "-s -w -X 'kit/pkg/cmd/version.Version={{.Version}}' -X 'kit/pkg/cmd/version.GitCommit={{.Commit}}' -X 'kit/pkg/cmd/version.BuildTime={{.Date}}'"
+    ldflags: 
+      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.Date}}
 
 archives:
   - format: tar.gz
