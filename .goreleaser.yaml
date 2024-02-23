@@ -52,3 +52,18 @@ changelog:
 git:
   ignore_tags:
     - "next"
+
+release:
+  github:
+    owner: jozu-ai
+    name: kitops
+  header: |
+    ## Kitops Release {{.Version}} ({{ .Date }})
+
+  footer: |
+    Thanks for supporting Kitops.
+  
+  name_template: "{{.ProjectName}}-{{.Version}}"
+  skip_upload: false
+sboms:
+  - artifacts: archive
