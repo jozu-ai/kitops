@@ -28,7 +28,7 @@ func TestBuildOptions_Complete(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, args[0], options.contextDir)
-	assert.Equal(t, filepath.Join(args[0], constants.DefaultModelFileName), options.modelFile)
+	assert.Equal(t, filepath.Join(args[0], constants.DefaultKitFileName), options.modelFile)
 }
 
 func TestBuildOptions_RunBuild(t *testing.T) {

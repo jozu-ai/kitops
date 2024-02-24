@@ -6,10 +6,10 @@ package build
 import (
 	"context"
 	"fmt"
-	"path"
 	"strings"
 
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 
@@ -73,7 +73,7 @@ func (opts *buildOptions) complete(ctx context.Context, flags *buildFlags, args 
 
 	opts.modelFile = flags.modelFile
 	if opts.modelFile == "" {
-		opts.modelFile = path.Join(opts.contextDir, constants.DefaultModelFileName)
+		opts.modelFile = filesystem.FindKitfileInPath(opts.contextDir)
 	}
 
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
