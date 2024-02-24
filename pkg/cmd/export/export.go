@@ -81,7 +81,7 @@ func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 }
 
 func exportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
-	configPath := path.Join(exportDir, constants.DefaultModelFileName)
+	configPath := path.Join(exportDir, constants.DefaultKitFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
 			return fmt.Errorf("failed to export config: path %s already exists", configPath)
