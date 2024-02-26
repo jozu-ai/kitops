@@ -1,10 +1,15 @@
 package constants
 
+import "path/filepath"
+
 type ConfigKey struct{}
 
 const (
 	DefaultKitFileName  = "Kitfile"
 	DefaultConfigSubdir = ".kitops"
+
+	StorageSubpath     = "storage"
+	CredentialsSubpath = "credentials.json"
 
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
@@ -15,3 +20,11 @@ const (
 	// Media type for the model config (Kitfile)
 	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
 )
+
+func StoragePath(configBase string) string {
+	return filepath.Join(configBase, StorageSubpath)
+}
+
+func CredentialsPath(configBase string) string {
+	return filepath.Join(configBase, CredentialsSubpath)
+}
