@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"kitops/pkg/lib/constants"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -59,8 +58,8 @@ func FindKitfileInPath(contextDir string) string {
 	var defaultKitFileNames = []string{"Kitfile", "kitfile", ".kitfile"}
 	for _, fileName := range defaultKitFileNames {
 		if _, exists := PathExists(filepath.Join(contextDir, fileName)); exists {
-			return path.Join(contextDir, fileName)
+			return filepath.Join(contextDir, fileName)
 		}
 	}
-	return path.Join(contextDir, constants.DefaultKitFileName)
+	return filepath.Join(contextDir, constants.DefaultKitFileName)
 }
