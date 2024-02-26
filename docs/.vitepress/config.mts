@@ -43,7 +43,8 @@ export default defineConfig({
     // Top navigation
     nav: [
       { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
-      { text: 'Guides', activeMatch: `^/guides`, link: '/guides/index' }
+      { text: 'Guides', activeMatch: `^/guides`, link: '/guides/index' },
+      { text: 'Feed', activeMatch: `^/feed`, link: '/feed' },
     ],
 
     // Sidebar nav
