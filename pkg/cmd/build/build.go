@@ -8,7 +8,7 @@ import (
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 func RunBuild(ctx context.Context, options *buildOptions) error {
@@ -67,7 +67,7 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 	repo := ""
 	tag := ""
 	if options.modelRef != nil {
-		repo = path.Join(options.modelRef.Registry, options.modelRef.Repository)
+		repo = filepath.Join(options.modelRef.Registry, options.modelRef.Repository)
 		tag = options.modelRef.Reference
 	}
 	store := storage.NewLocalStore(modelStorePath, repo)

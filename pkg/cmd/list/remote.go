@@ -7,27 +7,30 @@ import (
 	"io"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"
-	"oras.land/oras-go/v2/registry/remote"
 )
 
-func listRemoteKits(ctx context.Context, remoteRef *registry.Reference, useHttp bool) ([]string, error) {
-	remoteRegistry, err := remote.NewRegistry(remoteRef.Registry)
+func listRemoteKits(ctx context.Context, opts *listOptions) ([]string, error) {
+	remoteRegistry, err := repo.NewRegistry(opts.remoteRef.Registry, &repo.RegistryOptions{
+		PlainHTTP:       opts.PlainHTTP,
+		SkipTLSVerify:   !opts.TlsVerify,
+		CredentialsPath: constants.CredentialsPath(opts.configHome),
+	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to read registry: %w", err)
+		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.remoteRef.Registry, err)
 	}
-	remoteRegistry.PlainHTTP = useHttp
 
-	repo, err := remoteRegistry.Repository(ctx, remoteRef.Repository)
+	repo, err := remoteRegistry.Repository(ctx, opts.remoteRef.Repository)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read repository: %w", err)
 	}
-	if remoteRef.Reference != "" {
-		return listImageTag(ctx, repo, remoteRef)
+	if opts.remoteRef.Reference != "" {
+		return listImageTag(ctx, repo, opts.remoteRef)
 	}
-	return listTags(ctx, repo, remoteRef)
+	return listTags(ctx, repo, opts.remoteRef)
 }
 
 func listTags(ctx context.Context, repo registry.Repository, ref *registry.Reference) ([]string, error) {

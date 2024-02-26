@@ -22,40 +22,35 @@ var (
 	longDesc  = `Build a model TODO`
 )
 
-type buildFlags struct {
-	modelFile  string
-	fullTagRef string
-}
-
 type buildOptions struct {
 	modelFile   string
 	contextDir  string
 	configHome  string
 	storageHome string
+	fullTagRef  string
 	modelRef    *registry.Reference
 	extraRefs   []string
 }
 
 func BuildCommand() *cobra.Command {
-	flags := &buildFlags{}
+	opts := &buildOptions{}
 
 	cmd := &cobra.Command{
 		Use:   "build",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   runCommand(flags),
+		Run:   runCommand(opts),
 	}
 
-	cmd.Flags().StringVarP(&flags.modelFile, "file", "f", "", "Path to the model file")
-	cmd.Flags().StringVarP(&flags.fullTagRef, "tag", "t", "", "Tag for the model. Example: -t registry/repository:tag1,tag2")
+	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Path to the model file")
+	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Tag for the model. Example: -t registry/repository:tag1,tag2")
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }
 
-func runCommand(flags *buildFlags) func(cmd *cobra.Command, args []string) {
+func runCommand(opts *buildOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		opts := &buildOptions{}
-		err := opts.complete(cmd.Context(), flags, args)
+		err := opts.complete(cmd.Context(), args)
 		if err != nil {
 			output.Fatalf("Failed to process configuration: %s", err)
 			return
@@ -68,10 +63,9 @@ func runCommand(flags *buildFlags) func(cmd *cobra.Command, args []string) {
 	}
 }
 
-func (opts *buildOptions) complete(ctx context.Context, flags *buildFlags, args []string) error {
+func (opts *buildOptions) complete(ctx context.Context, args []string) error {
 	opts.contextDir = args[0]
 
-	opts.modelFile = flags.modelFile
 	if opts.modelFile == "" {
 		opts.modelFile = filesystem.FindKitfileInPath(opts.contextDir)
 	}
@@ -81,12 +75,12 @@ func (opts *buildOptions) complete(ctx context.Context, flags *buildFlags, args 
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	opts.storageHome = storage.StorageHome(opts.configHome)
+	opts.storageHome = constants.StoragePath(opts.configHome)
 
-	if flags.fullTagRef != "" {
-		modelRef, extraRefs, err := storage.ParseReference(flags.fullTagRef)
+	if opts.fullTagRef != "" {
+		modelRef, extraRefs, err := storage.ParseReference(opts.fullTagRef)
 		if err != nil {
-			return fmt.Errorf("failed to parse reference %s: %w", flags.fullTagRef, err)
+			return fmt.Errorf("failed to parse reference %s: %w", opts.fullTagRef, err)
 		}
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs

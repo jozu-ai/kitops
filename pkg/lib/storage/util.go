@@ -2,7 +2,7 @@ package storage
 
 import (
 	"fmt"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"oras.land/oras-go/v2/registry"
@@ -26,10 +26,6 @@ func ParseReference(refString string) (ref *registry.Reference, extraTags []stri
 	return &baseRef, refAndTags[1:], nil
 }
 
-func StorageHome(configRoot string) string {
-	return path.Join(configRoot, "storage")
-}
-
 func LocalStorePath(storageRoot string, ref *registry.Reference) string {
-	return path.Join(storageRoot, ref.Registry, ref.Repository)
+	return filepath.Join(storageRoot, ref.Registry, ref.Repository)
 }

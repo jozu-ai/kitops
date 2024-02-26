@@ -3,11 +3,11 @@ package list
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 	"os"
-	"path"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
@@ -19,24 +19,18 @@ const (
 	longDesc  = `List model kits TODO`
 )
 
-type listFlags struct {
-	useHTTP bool
-}
-
 type listOptions struct {
-	configHome  string
-	storageHome string
-	remoteRef   *registry.Reference
-	usehttp     bool
+	options.NetworkOptions
+	configHome string
+	remoteRef  *registry.Reference
 }
 
-func (opts *listOptions) complete(ctx context.Context, flags *listFlags, args []string) error {
+func (opts *listOptions) complete(ctx context.Context, args []string) error {
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	opts.storageHome = path.Join(opts.configHome, "storage")
 	if len(args) > 0 {
 		remoteRef, extraTags, err := storage.ParseReference(args[0])
 		if err != nil {
@@ -47,42 +41,43 @@ func (opts *listOptions) complete(ctx context.Context, flags *listFlags, args []
 		}
 		opts.remoteRef = remoteRef
 	}
-	opts.usehttp = flags.useHTTP
+
+	printConfig(opts)
 	return nil
 }
 
 // ListCommand represents the models command
 func ListCommand() *cobra.Command {
-	flags := &listFlags{}
+	opts := &listOptions{}
 
 	cmd := &cobra.Command{
 		Use:   "list [repository]",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   runCommand(flags),
+		Run:   runCommand(opts),
 	}
 
 	cmd.Args = cobra.MaximumNArgs(1)
-	cmd.Flags().BoolVar(&flags.useHTTP, "http", false, "Use plain HTTP when connecting to remote registries")
+	opts.AddNetworkFlags(cmd)
+
 	return cmd
 }
 
-func runCommand(flags *listFlags) func(*cobra.Command, []string) {
+func runCommand(opts *listOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		opts := &listOptions{}
-		if err := opts.complete(cmd.Context(), flags, args); err != nil {
+		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Fatalf("Failed to parse argument: %s", err)
 		}
 
 		var allInfoLines []string
 		if opts.remoteRef == nil {
-			lines, err := listLocalKits(cmd.Context(), opts.storageHome)
+			lines, err := listLocalKits(cmd.Context(), opts)
 			if err != nil {
 				output.Fatalln(err)
 			}
 			allInfoLines = lines
 		} else {
-			lines, err := listRemoteKits(cmd.Context(), opts.remoteRef, opts.usehttp)
+			lines, err := listRemoteKits(cmd.Context(), opts)
 			if err != nil {
 				output.Fatalln(err)
 			}
@@ -103,7 +98,7 @@ func printSummary(lines []string) {
 }
 
 func printConfig(opts *listOptions) {
-	output.Debugf("Using storage path: %s", opts.storageHome)
+	output.Debugf("Using config path: %s", opts.configHome)
 	if opts.remoteRef != nil {
 		output.Debugf("Listing remote model kits in %s", opts.remoteRef.String())
 	}

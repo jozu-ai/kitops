@@ -20,11 +20,10 @@ func TestNewCmdBuild(t *testing.T) {
 
 func TestBuildOptions_Complete(t *testing.T) {
 	options := &buildOptions{}
-	flags := &buildFlags{}
 	ctx := context.WithValue(context.Background(), constants.ConfigKey{}, "/home/user/.kitops")
 	args := []string{"arg1"}
 
-	err := options.complete(ctx, flags, args)
+	err := options.complete(ctx, args)
 
 	assert.NoError(t, err)
 	assert.Equal(t, args[0], options.contextDir)

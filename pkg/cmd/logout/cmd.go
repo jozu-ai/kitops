@@ -23,19 +23,20 @@ type logoutOptions struct {
 }
 
 func LogoutCommand() *cobra.Command {
+	opts := &logoutOptions{}
+
 	cmd := &cobra.Command{
 		Use:   "logout [flags] registry",
 		Short: shortDesc,
 		Long:  longDesc,
-		Run:   runLogout(),
+		Run:   runLogout(opts),
 	}
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }
 
-func runLogout() func(cmd *cobra.Command, args []string) {
+func runLogout(opts *logoutOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		opts := &logoutOptions{}
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Fatalf("Failed to process flags: %s", err)
 		}
