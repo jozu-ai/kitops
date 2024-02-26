@@ -14,6 +14,7 @@ import (
 	"kitops/pkg/cmd/export"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
+	"kitops/pkg/cmd/logout"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/version"
@@ -66,6 +67,7 @@ func RunCommand() *cobra.Command {
 func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(build.BuildCommand())
 	rootCmd.AddCommand(login.LoginCommand())
+	rootCmd.AddCommand(logout.LogoutCommand())
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(push.PushCommand())
 	rootCmd.AddCommand(list.ListCommand())
