@@ -1,6 +1,6 @@
 // https://vitepress.dev/guide/custom-theme
 import { h, ref } from 'vue'
-import type { Theme } from 'vitepress'
+import { type Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
 import PlatformSnippet from './components/PlatformSnippet.vue'

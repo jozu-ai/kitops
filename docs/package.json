@@ -12,6 +12,7 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "@vueuse/core": "^10.7.2"
+    "@vueuse/core": "^10.7.2",
+    "cheerio": "1.0.0-rc.12"
   }
 }
