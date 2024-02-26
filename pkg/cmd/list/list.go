@@ -24,7 +24,8 @@ const (
 	listTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
 )
 
-func listLocalKits(ctx context.Context, storageRoot string) ([]string, error) {
+func listLocalKits(ctx context.Context, opts *listOptions) ([]string, error) {
+	storageRoot := constants.StoragePath(opts.configHome)
 	storeDirs, err := findRepos(storageRoot)
 	if err != nil {
 		return nil, err
