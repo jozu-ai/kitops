@@ -14,20 +14,21 @@ Available Commands:
 
 | Command |	Description |
 | ---- | --- |
-| `build` | Build a model |
+| `build` | Build a ModelKit |
 | `completion` | Generate the autocompletion script for the specified shell |
-| `dev` | ??? |
-| `export` | Extract only the model, dataset, code, or Kitfile from a ModelKit |
+| `dev` | Run the serialized model | <!-- starts a server on a given port and drops the model in there for inference -->
+| `fetch` | Updating the local respository for a ModelKit from the remote |
 | `help` | Help about any command |
-| `login` | ??? |
-| `list` | List model kits |
-| `pull` | Pull model from registry |
-| `push` | Push model to registry |
+| `login` | Login to the remote repository |
+| `logout` | Logout to the remote repository |
+| `list` | List ModelKits |
+| `pull` | Pull one or more of the model, dataset, code, and Kitfile into a destination folder |
+| `push` | Push ModelKit to respository |
 | `version` | Display the version information for Kit |
 
 ## Example
 
-To list your available model kits:
+To list your available ModelKit:
 
 ```sh
 $ ./kit list
@@ -45,27 +46,27 @@ Then you can push it to your registry:
 $ ./kit push localhost:5050/example-repo:example-tag --http
 ```
 
-After you finish calling all your friends and telling them about Kit they can pull your model and run it:
+After you finish calling all your friends and telling them about Kit they can fetch your ModelKit and run it:
 
 ```sh
-$ ./kit pull localhost:5050/test-repo:test-tag --http
+$ ./kit fetch localhost:5050/test-repo:test-tag --http
 $ ./kit dev
 ```
 
 Maybe one of your friends only wants the dataset you used:
 
 ```sh
-$ ./kit export dataset
+$ ./kit pull -filter dataset
 ```
 
 Another friend only needs the model so they can integrate it with their application:
 
 ```sh
-$ ./kit export model
+$ ./kit pull -filter model
 ```
 
 To see the Kitfile associated with a ModelKit:
 
 ```sh
-$ ./kit export kitfile
+$ ./kit pull -filter kitfile
 ```
