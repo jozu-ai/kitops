@@ -17,6 +17,7 @@ import (
 	"kitops/pkg/cmd/logout"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
+	"kitops/pkg/cmd/remove"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -72,6 +73,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(push.PushCommand())
 	rootCmd.AddCommand(list.ListCommand())
 	rootCmd.AddCommand(export.ExportCommand())
+	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(version.VersionCommand())
 }
 

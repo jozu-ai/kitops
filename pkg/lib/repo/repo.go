@@ -81,6 +81,20 @@ func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.De
 	return config, nil
 }
 
+func GetTagsForDescriptor(ctx context.Context, store LocalStorage, desc ocispec.Descriptor) ([]string, error) {
+	index, err := store.GetIndex()
+	if err != nil {
+		return nil, err
+	}
+	var tags []string
+	for _, manifest := range index.Manifests {
+		if manifest.Digest == desc.Digest {
+			tags = append(tags, manifest.Annotations[ocispec.AnnotationRefName])
+		}
+	}
+	return tags, nil
+}
+
 func ValidateTag(tag string) error {
 	if !validTagRegex.MatchString(tag) {
 		return fmt.Errorf("invalid tag")
