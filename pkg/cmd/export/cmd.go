@@ -7,7 +7,6 @@ import (
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
-	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -44,7 +43,7 @@ func (opts *exportOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	modelRef, extraTags, err := storage.ParseReference(args[0])
+	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
 	}
@@ -112,7 +111,7 @@ func runCommand(opts *exportOptions) func(*cobra.Command, []string) {
 
 func getStoreForRef(ctx context.Context, opts *exportOptions) (oras.Target, error) {
 	storageHome := constants.StoragePath(opts.configHome)
-	localStore, err := oci.New(storage.LocalStorePath(storageHome, opts.modelRef))
+	localStore, err := oci.New(repo.RepoPath(storageHome, opts.modelRef))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %s\n", err)
 	}

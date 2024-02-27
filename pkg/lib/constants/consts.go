@@ -28,3 +28,7 @@ func StoragePath(configBase string) string {
 func CredentialsPath(configBase string) string {
 	return filepath.Join(configBase, CredentialsSubpath)
 }
+
+func IndexJsonPath(configBase string) string {
+	return filepath.Join(configBase, "index.json")
+}

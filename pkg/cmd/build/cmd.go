@@ -10,7 +10,7 @@ import (
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
-	"kitops/pkg/lib/storage"
+	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -78,7 +78,7 @@ func (opts *buildOptions) complete(ctx context.Context, args []string) error {
 	opts.storageHome = constants.StoragePath(opts.configHome)
 
 	if opts.fullTagRef != "" {
-		modelRef, extraRefs, err := storage.ParseReference(opts.fullTagRef)
+		modelRef, extraRefs, err := repo.ParseReference(opts.fullTagRef)
 		if err != nil {
 			return fmt.Errorf("failed to parse reference %s: %w", opts.fullTagRef, err)
 		}

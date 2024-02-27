@@ -2,13 +2,14 @@ package build
 
 import (
 	"context"
+	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 	"os"
-	"path/filepath"
 )
 
 func RunBuild(ctx context.Context, options *buildOptions) error {
@@ -63,21 +64,23 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 	}
 	model.Layers = append(model.Layers, *layer)
 
-	modelStorePath := options.storageHome
-	repo := ""
 	tag := ""
 	if options.modelRef != nil {
-		repo = filepath.Join(options.modelRef.Registry, options.modelRef.Repository)
 		tag = options.modelRef.Reference
 	}
-	store := storage.NewLocalStore(modelStorePath, repo)
-	manifestDesc, err := store.SaveModel(ctx, model, tag)
+	storageHome := constants.StoragePath(options.configHome)
+	localStore, err := repo.NewLocalStore(storageHome, options.modelRef)
+	if err != nil {
+		return fmt.Errorf("failed to open local storage: %w", err)
+	}
+
+	manifestDesc, err := storage.SaveModel(ctx, localStore, model, tag)
 	if err != nil {
 		return err
 	}
 
 	for _, tag := range options.extraRefs {
-		if err := store.TagModel(ctx, *manifestDesc, tag); err != nil {
+		if err := localStore.Tag(ctx, *manifestDesc, tag); err != nil {
 			return err
 		}
 	}
