@@ -11,6 +11,7 @@ import (
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
+	"oras.land/oras-go/v2/content"
 	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 )
@@ -19,6 +20,8 @@ type LocalStorage interface {
 	GetRepo() string
 	GetIndex() (*ocispec.Index, error)
 	oras.Target
+	content.Deleter
+	content.Untagger
 }
 
 type LocalStore struct {
