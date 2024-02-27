@@ -47,9 +47,8 @@ func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			if !options.exportConf.exportModels {
 				continue
 			}
-			modelEntry := config.Model
-			layerDir = filepath.Join(options.exportDir, modelEntry.Path)
-			output.Infof("Exporting model %s to %s", modelEntry.Name, layerDir)
+			layerDir = filepath.Join(options.exportDir, config.Model.Path)
+			output.Infof("Exporting model to %s", layerDir)
 
 		case constants.CodeLayerMediaType:
 			if !options.exportConf.exportCode {
