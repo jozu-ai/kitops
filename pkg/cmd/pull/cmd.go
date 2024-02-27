@@ -6,7 +6,6 @@ import (
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
-	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -32,7 +31,7 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := storage.ParseReference(args[0])
+	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
 	}
@@ -78,7 +77,7 @@ func runCommand(opts *pullOptions) func(*cobra.Command, []string) {
 		}
 
 		storageHome := constants.StoragePath(opts.configHome)
-		localStorePath := storage.LocalStorePath(storageHome, opts.modelRef)
+		localStorePath := repo.RepoPath(storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
 			output.Fatalln(err)

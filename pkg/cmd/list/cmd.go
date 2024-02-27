@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/storage"
+	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 	"os"
 	"text/tabwriter"
@@ -32,7 +32,7 @@ func (opts *listOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 	if len(args) > 0 {
-		remoteRef, extraTags, err := storage.ParseReference(args[0])
+		remoteRef, extraTags, err := repo.ParseReference(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid reference: %w", err)
 		}
