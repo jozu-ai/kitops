@@ -24,6 +24,8 @@ Available Commands:
 | `list` | List ModelKits |
 | `pull` | Pull one or more of the model, dataset, code, and Kitfile into a destination folder |
 | `push` | Push ModelKit to respository |
+| `remove` | Removed the ModelKit from the local repository |
+| `tag` | Tags a ModelKit |
 | `version` | Display the version information for Kit |
 
 ## Example
