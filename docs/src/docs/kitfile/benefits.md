@@ -1,4 +1,4 @@
-# Building and running
+# Benefits
 
 Some introductory text here
 
