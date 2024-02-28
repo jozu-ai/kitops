@@ -38,7 +38,7 @@ func ParseReference(refString string) (ref *registry.Reference, extraTags []stri
 			Repository: DefaultRepository,
 			Reference:  refString,
 		}
-		return ref, nil, nil
+		return ref, []string{}, nil
 	}
 
 	// Handle registry, which may or may not be specified; if unspecified, use a default value for registry
