@@ -9,6 +9,8 @@ To begin, you will need to download the latest version of `kit`. You can find th
 
 [Download the latest `kit` release](https://github.com/jozu-ai/kitops/releases/latest)
 
+Or, if you're feeling frisky try the cutting edge [`next` release](https://github.com/jozu-ai/kitops/releases/latest). Just remember that's not fully tested so YMMV.
+
 #### Selecting the Correct Version for Your Platform
 
 Depending on your operating system and its architecture, you will need to download a specific build of `kit`. Below is a table to help you identify the correct file to download for your platform:

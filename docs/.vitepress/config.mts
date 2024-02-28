@@ -48,7 +48,9 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Overview', link: '/docs/overview' },
-          { text: 'Installation', link: '/docs/installation' },
+          { text: 'Installation', link: '/docs/cli/installation' },
+          { text: 'Use Cases', link: '/docs/use-cases' },
+          { text: 'Why KitOps?', link: '/docs/why-kitops' },
         ]
       },
       {
@@ -60,25 +62,21 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Manifest',
+        text: 'Kitfile',
         items: [
-          { text: 'Overview', link: '/docs/manifest/overview' },
-          { text: 'Structure', link: '/docs/manifest/overview' },
-          { text: 'Building and running', link: '/docs/manifest/building-running' },
-          { text: 'Creating a new model', link: '/' },
-          { text: 'Training a model', link: '/' },
-          { text: 'Strategies', link: '/' },
+          { text: 'Structure', link: '/docs/kitfile/structure' },
+          { text: 'Benefits', link: '/docs/kitfile/benefits' },
         ]
       },
       {
         text: 'MLOps with Kitfile',
         items: [
-          { text: 'Continuos integration and deployment', link: '/docs/mlops/ci-cd' },
-          { text: 'Monitoring and logging', link: '/docs/mlops/ci-cd' },
-          { text: 'Orchestration', link: '/docs/mlops/ci-cd' },
-          { text: 'Scalability and resources', link: '/docs/mlops/ci-cd' },
+          { text: 'Kit and CI/CD', link: '/docs/mlops/ci-cd' },
+          //{ text: 'Kit and model orchestration', link: '/docs/mlops/orchestration' },
+          //{ text: 'Kit and registries', link: '/docs/mlops/registries' },
         ]
       },
+      /*
       {
         text: 'Advanced',
         items: [
@@ -88,12 +86,14 @@ export default defineConfig({
           { text: 'Reinforcement and deep RL', link: '/docs/mlops/ci-cd' },
         ]
       },
+      */
       {
         text: 'Contribute',
         items: [
           { text: 'Contribute to KitOps docs', link: '/' }
         ]
       },
+      /*
       {
         text: 'Documentation Examples',
         items: [
@@ -101,6 +101,7 @@ export default defineConfig({
           { text: 'Runtime API Examples', link: '/api-examples' }
         ]
       }
+      */
     ],
 
     socialLinks: [
@@ -113,7 +114,6 @@ export default defineConfig({
         link: 'https://github.com/jozu-ai/kitops'
       },
     ],
-
     footer: {
       license: {
         text: 'MIT License',
