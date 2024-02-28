@@ -14,7 +14,7 @@ This is the documentation for [KitsOps](https://kitops.ml). You can read the doc
 
 ## Introduction
 
-This documentation has been built using [VitePress](https://vitepress.dev/). VitePress is a fast static site generator for building modern documentations using Vue.js. For more information please refer to the [VitePress Website](https://vitepress.dev/).
+This documentation has been built using [VitePress](https://vitepress.dev/).
 
 ## Development
 
@@ -51,11 +51,11 @@ The documentation should now be available at `http://localhost:5173`.
 
 ## Contributing Guidelines
 
-We welcome contributions from the community to help improve our project and documentation. Please follow these guidelines when contributing:
+We welcome contributions from the community to help improve our project and documentation. Please read our [Guide to Contributing](../CONTRIBUTING.md) and follow these guidelines:
 
 ### Reporting Bugs and Issues
 
-If you encounter any bugs or issues with the documentation, please report them in our [GitHub issue tracker](https://github.com/jozu-ai/kitops/issues). Be sure to provide clear details about the problem, including steps to reproduce if possible.
+If you encounter any bugs or issues with the documentation, please report them in our [GitHub issue tracker](https://github.com/jozu-ai/kitops/issues) and add the `docs` label. Be sure to provide clear details about the problem, including steps to reproduce if possible.
 
 ### Submitting Pull Requests
 
