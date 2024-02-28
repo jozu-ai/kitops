@@ -98,6 +98,7 @@ export default defineConfig({
           { text: 'Contribute to KitOps docs', link: '/' }
         ]
       },
+      /*
       {
         text: 'Documentation Examples',
         items: [
@@ -105,6 +106,7 @@ export default defineConfig({
           { text: 'Runtime API Examples', link: '/api-examples' }
         ]
       }
+      */
     ],
 
     socialLinks: [
@@ -120,7 +122,7 @@ export default defineConfig({
         ariaLabel: 'JOzu Website'
       }
     ],
-
+    /*
     footer: {
       license: {
         text: 'MIT License',
@@ -128,5 +130,6 @@ export default defineConfig({
       },
       copyright: `Copyright © ${new Date().getFullYear()} Jozu`
     }
+    */
   }
 })

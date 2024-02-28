@@ -13,15 +13,19 @@ We refer to the final package that the `kit` CLI builds based on the `kitfile` a
 
 Kit's aim is to streamline the end-to-end lifecycle of AI/ML model management, making it as effortless as managing containerized applications.
 
-## Running Kit with Binaries
+## Using Kit
 
-You can download the Kit CLI using one of our [tagged versions](https://github.com/jozu-ai/kitops/tags). Make sure you get the right binary for your platform:
+### Running Kit with Binaries
+
+You can download the Kit CLI using one of our [tagged versions](https://github.com/jozu-ai/kitops/tags). The `latest` tag is used for the latest tested and stable release. This is usually the best place to start. If you want to live on the cutting edge then `next` is the tag we use to for development builds.
+
+Make sure you get the right binary for your platform:
 
 * MacOS: TODO
 * Linux: TODO
 * Windows: TODO
 
-We suggest renaming the executable once it's downloaded to just `kit` (make sure it's in your path an executable).
+We suggest renaming the executable once it's downloaded to just `kit` then make sure it's in your path and executable.
 
 Run Kit by opening a terminal and typing:
 
@@ -31,9 +35,9 @@ Run Kit by opening a terminal and typing:
 
 This will list all the commands you can use.
 
-## Building and Running Kit from Source Code
+### Building and Running Kit from Source Code
 
-You can get the Kit CLI sources from our [tagged versions](https://github.com/jozu-ai/kitops/tags).
+You can get the Kit CLI sources from our [tagged versions](https://github.com/jozu-ai/kitops/tags). The `latest` tag is used for the latest tested and stable release. This is usually the best place to start. If you want to live on the cutting edge then `next` is the tag we use to for development builds.
 
 ```shell
 go build -o kit
