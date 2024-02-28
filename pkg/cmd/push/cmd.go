@@ -36,7 +36,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
 	}
 	if modelRef.Registry == "localhost" {
-		return fmt.Errorf("registry is required when pulling")
+		return fmt.Errorf("registry is required when pushing")
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("reference cannot include multiple tags")

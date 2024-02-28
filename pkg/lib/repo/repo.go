@@ -10,31 +10,77 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/content"
 	"oras.land/oras-go/v2/registry"
+)
+
+const (
+	DefaultRegistry   = "localhost"
+	DefaultRepository = "_"
 )
 
 var (
 	validTagRegex = regexp.MustCompile(`^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$`)
 )
 
-// ParseReference parses a reference string into a Reference struct. If the
-// reference does not include a registry (e.g. myrepo:mytag), the placeholder
-// 'localhost' is used. Additional tags can be specified in a comma-separated
-// list (e.g. myrepo:tag1,tag2,tag3)
+// ParseReference parses a reference string into a Reference struct. It attempts to make
+// references conform to an expected structure, with a defined registry and repository by filling
+// default values for registry and repository where appropriate. Where the first part of a reference
+// doesn't look like a registry URL, the default registry is used, turning e.g. testorg/testrepo into
+// localhost/testorg/testrepo.
 func ParseReference(refString string) (ref *registry.Reference, extraTags []string, err error) {
-	// References _must_ contain host; use localhost to mark local-only
-	if !strings.Contains(refString, "/") {
-		refString = fmt.Sprintf("localhost/%s", refString)
+	// Check if provided input is a plain digest
+	if _, err := digest.Parse(refString); err == nil {
+		ref := &registry.Reference{
+			Registry:   DefaultRegistry,
+			Repository: DefaultRepository,
+			Reference:  refString,
+		}
+		return ref, nil, nil
 	}
 
+	// Handle registry, which may or may not be specified; if unspecified, use a default value for registry
+	refParts := strings.Split(refString, "/")
+	if len(refParts) == 1 {
+		// Just a repo, need to add default registry
+		refString = fmt.Sprintf("%s/%s", DefaultRegistry, refString)
+	} else {
+		// Check if registry part "looks" like a URL; we're trying to distinguish between cases:
+		// a) testorg/testrepo --> should be localhost/testorg/testrepo
+		// b) registry.io/testrepo --> should be registry.io/testrepo
+		// c) localhost:5000/testrepo --> should be localhost:5000/testrepo
+		registry := refParts[0]
+		if !strings.Contains(registry, ":") && !strings.Contains(registry, ".") {
+			refString = fmt.Sprintf("%s/%s", DefaultRegistry, refString)
+		}
+	}
+
+	// Split off extra tags (e.g. repo:tag1,tag2,tag3)
 	refAndTags := strings.Split(refString, ",")
 	baseRef, err := registry.ParseReference(refAndTags[0])
 	if err != nil {
 		return nil, nil, err
 	}
 	return &baseRef, refAndTags[1:], nil
+}
+
+// DefaultReference returns a reference that can be used when no reference is supplied. It uses
+// the default registry and repository
+func DefaultReference() *registry.Reference {
+	return &registry.Reference{
+		Registry:   DefaultRegistry,
+		Repository: DefaultRepository,
+	}
+}
+
+// StripRepository removes default values from a repository string to avoid surfacing defaulted fields
+// when displaying references, which may be confusing.
+func StripRepository(repo string) string {
+	repo = strings.TrimPrefix(repo, DefaultRegistry+"/")
+	repo = strings.TrimPrefix(repo, DefaultRepository)
+	return repo
 }
 
 func RepoPath(storagePath string, ref *registry.Reference) string {

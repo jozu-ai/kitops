@@ -92,9 +92,13 @@ func runCommand(opts *exportOptions) func(*cobra.Command, []string) {
 			output.Fatalf("Failed to process arguments: %s", err)
 		}
 
+		if opts.modelRef.Reference == "" {
+			output.Fatalf("Invalid reference: exporting requires a tag or digest")
+		}
 		store, err := getStoreForRef(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalln(err)
+			ref := repo.StripRepository(opts.modelRef.String())
+			output.Fatalf("Failed to find reference %s: %s", ref, err)
 		}
 
 		exportTo := opts.exportDir
@@ -121,6 +125,9 @@ func getStoreForRef(ctx context.Context, opts *exportOptions) (oras.Target, erro
 		return localStore, nil
 	}
 
+	if opts.modelRef.Registry == repo.DefaultRegistry {
+		return nil, fmt.Errorf("not found")
+	}
 	// Not in local storage, check remote
 	remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
