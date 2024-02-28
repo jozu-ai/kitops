@@ -13,7 +13,7 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
-func removeModel(ctx context.Context, store repo.LocalStorage, ref *registry.Reference) (ocispec.Descriptor, error) {
+func removeModel(ctx context.Context, store repo.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
 	desc, err := oras.Resolve(ctx, store, ref.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
@@ -23,7 +23,7 @@ func removeModel(ctx context.Context, store repo.LocalStorage, ref *registry.Ref
 	}
 
 	// If reference passed in is a digest, remove the manifest ignoring any tags the manifest might have
-	if err := ref.ValidateReferenceAsDigest(); err == nil {
+	if err := ref.ValidateReferenceAsDigest(); err == nil || forceDelete {
 		output.Debugf("Deleting manifest with digest %s", ref.Reference)
 		if err := store.Delete(ctx, desc); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to delete model: %ws", err)
