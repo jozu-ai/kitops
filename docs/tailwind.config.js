@@ -20,7 +20,8 @@ module.exports = {
         cornflower: '#7A8CFF',
         ash: '#BED8D4',
         gray: {
-          '02': '#4D4D4F'
+          '02': '#4D4D4F',
+          '05': '#6A6A6A'
         }
       },
 

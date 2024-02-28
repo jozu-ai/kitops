@@ -11,21 +11,24 @@ export default defineConfig({
   description: 'Documentation for KitOps',
 
   head: [
-    // ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
+    ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
     ['link', { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicons/favicon-32x32.png"}],
     ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicons/favicon-16x16.png"}],
-    // ['link', { rel: "manifest", href: "/favicons/site.webmanifest"}],
-    // ['link', { rel: "mask-icon", href: "/favicons/safari-pinned-tab.svg", color: "#3a0839"}],
+    ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicons/favicon-16x16.png"}],
+    ['link', { rel: "manifest", href: "/favicons/site.webmanifest"}],
+    ['link', { rel: "mask-icon", href: "/favicons/safari-pinned-tab.svg", color: "#000000"}],
     ['link', { rel: "shortcut icon", href: "/favicon.ico"}],
-    // ['meta', { name: "msapplication-TileColor", content: "#3a0839"}],
-    // ['meta', { name: "msapplication-config", content: "/favicons/browserconfig.xml"}],
-    // ['meta', { name: "theme-color", content: "#ffffff"}],
+    ['meta', { name: "msapplication-TileColor", content: "#000000"}],
+    ['meta', { name: "msapplication-config", content: "/favicons/browserconfig.xml"}],
+    ['meta', { name: "theme-color", content: "#000000"}]
   ],
 
   lastUpdated: true,
 
   // https://vitepress.dev/reference/default-theme-config
   themeConfig: {
+    outline: [2, 4],
+
     logo: '/logo.svg',
 
     externalLinkIcon: true,
@@ -39,7 +42,7 @@ export default defineConfig({
       { text: 'Why KitOps?', activeMatch: `^/#whykitops`, link: '/#whykitops' },
       { text: 'How does it work?', activeMatch: `^/#howdoesitwork`, link: '/#howdoesitwork' },
       { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
-      // { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
+      { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
     ],
 
     // Sidebar nav

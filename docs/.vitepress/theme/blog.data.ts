@@ -3,6 +3,7 @@ import fs from 'node:fs'
 
 export type Post = {
   title: string,
+  author: string,
   description: string,
   url: string,
   published_time: string,
@@ -43,6 +44,7 @@ export default {
         return {
           url: post.url,
           tags,
+          author,
           title,
           description,
           published_time,
