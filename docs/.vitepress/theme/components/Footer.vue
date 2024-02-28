@@ -6,10 +6,6 @@ const { theme, frontmatter, page, site } = useData()
 const { hasSidebar } = useSidebar()
 const year = (new Date()).getFullYear()
 
-console.log(
-  page,
-  site
-)
 </script>
 
 <template>
