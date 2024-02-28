@@ -49,6 +49,23 @@ For local development, [pnpm](https://pnpm.io/) is preferred as package manager.
 
 The documentation should now be available at `http://localhost:5173`.
 
+### Building and previewing
+
+To build the docs (from .md to .html):
+
+```sh
+pnpm docs:build
+```
+
+And to serve the builds files (preview):
+
+```sh
+pnpm docs:preview
+```
+
+This will serve the just built files in port `4173`, so you go to `http://localhost:4173` to see exactly what will be served once built and deployed.
+
+
 ## Contributing Guidelines
 
 We welcome contributions from the community to help improve our project and documentation. Please read our [Guide to Contributing](../CONTRIBUTING.md) and follow these guidelines:

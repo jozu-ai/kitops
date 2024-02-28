@@ -30,7 +30,7 @@ const openPlatformSelector = () => {
 
   <p class="switch-info-text">
     This snippet is for <strong class="capitalize">{{ selectedPlatform }}</strong>.
-    <button @click="openPlatformSelector">
+    <button class="text-cornflower hocus:underline" @click="openPlatformSelector">
       Not your platform? click here to change it.
     </button>
   </p>
@@ -49,11 +49,6 @@ const openPlatformSelector = () => {
 .switch-info-text button {
   font-size: 10px;
   color: var(--vp-c-brand-1);
-}
-
-.switch-info-text button:hover,
-.switch-info-text button:focus {
-  color: var(--vp-c-brand-2);
 }
 
 .capitalize {

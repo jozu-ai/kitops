@@ -9,16 +9,17 @@ export type Post = {
   site_name: string,
   image: string,
   icon: string,
-  url: string
+  url: string,
+  tags: string[]
 }
 
 const postsUrls: string[] = require('./posts.json')
 
 export default {
   async load() {
-    const posts = postsUrls.map(async (url): Post[] => {
+    const posts = postsUrls.map(async (post): Post[] => {
       try {
-        const html = await (await fetch(url)).text()
+        const html = await (await fetch(post.url)).text()
 
         // Using cheerio to parse the html into actual dom nodes that we can interact.
         const $ = cheerio.load(html)
@@ -27,7 +28,7 @@ export default {
         const getMetaTag = (name) => (
           $(`meta[name=${name}]`).attr("content") ||
           $(`meta[property="og:${name}"]`).attr("content") ||
-          $(`meta[property="twitter${name}"]`).attr("content")
+          $(`meta[property="twitter${name}"]`).attr("content") || post[name]
         )
 
         const title = getMetaTag('title') || $('title').text()
@@ -36,10 +37,12 @@ export default {
         const image = getMetaTag('image') || $('meta[property="og:image:url"]').attr('content')
         const icon = $('link[rel="icon"]').attr('href') || $('link[rel="shortcut icon"]').attr('href') || $('link[rel="alternate icon"]').attr('href')
         const author = getMetaTag('author')
-        const published_time = $('meta[property="article:published_time"]').attr('content')
+        const published_time = $('meta[property="article:published_time"]').attr('content') || post.published_time
+        const tags = post.tags || []
 
         return {
-          url,
+          url: post.url,
+          tags,
           title,
           description,
           published_time,

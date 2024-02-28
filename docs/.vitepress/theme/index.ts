@@ -5,6 +5,8 @@ import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
 import PlatformSnippet from './components/PlatformSnippet.vue'
 import Layout from './Layout.vue'
+import './assets/css/fonts.css'
+import './assets/css/tailwind.css'
 import './style.css'
 
 const isPlatformModalOpen = ref(false)

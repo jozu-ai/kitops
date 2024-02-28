@@ -1,4 +1,7 @@
 [
-  "https://blog.vuejs.org/posts/vue-3-4",
-  "https://wordpress.com/blog/2024/02/22/wordpress-themes-february-24/"
+  {
+    "url": "https://www.gorkem-ercan.com/p/do-data-scientists-really-like-git",
+    "tags": ["thought leadership"],
+    "published_time": "2024-02-27"
+  }
 ]
