@@ -21,8 +21,9 @@ Description:
 
   The model to be removed may be specifed either by a tag or by a digest. If
   specified by digest, that modelkit will be removed along with any tags that
-  might refer to it. If specified by tag, the modelkit will only be removed if
-  no other tags refer to it; otherwise it is only untagged.`
+  might refer to it. If specified by tag (and the --force flag is not used),
+  the modelkit will only be removed if no other tags refer to it; otherwise
+  it is only untagged.`
 
 	examples = `  kit remove my-registry.com/my-org/my-repo:my-tag
   kit remove my-registry.com/my-org/my-repo@sha256:<digest>
@@ -30,9 +31,10 @@ Description:
 )
 
 type removeOptions struct {
-	configHome string
-	modelRef   *registry.Reference
-	extraTags  []string
+	configHome  string
+	forceDelete bool
+	modelRef    *registry.Reference
+	extraTags   []string
 }
 
 func (opts *removeOptions) complete(ctx context.Context, args []string) error {
@@ -63,6 +65,7 @@ func RemoveCommand() *cobra.Command {
 		Run:     runCommand(opts),
 	}
 	cmd.Args = cobra.ExactArgs(1)
+	cmd.Flags().BoolVarP(&opts.forceDelete, "force", "f", false, "remove manifest even if other tags refer to it")
 	return cmd
 }
 
@@ -76,7 +79,7 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 		if err != nil {
 			output.Fatalf("Failed to read local storage: %s", storageRoot)
 		}
-		desc, err := removeModel(cmd.Context(), localStore, opts.modelRef)
+		desc, err := removeModel(cmd.Context(), localStore, opts.modelRef, opts.forceDelete)
 		if err != nil {
 			output.Fatalf("Failed to remove: %s", err)
 		}
@@ -85,11 +88,12 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 		for _, tag := range opts.extraTags {
 			ref := *opts.modelRef
 			ref.Reference = tag
-			desc, err := removeModel(cmd.Context(), localStore, &ref)
+			desc, err := removeModel(cmd.Context(), localStore, &ref, opts.forceDelete)
 			if err != nil {
 				output.Errorf("Failed to remove: %s", err)
+			} else {
+				output.Infof("Removed %s (digest %s)", ref.String(), desc.Digest)
 			}
-			output.Infof("Removed %s (digest %s)", ref.String(), desc.Digest)
 		}
 	}
 }
