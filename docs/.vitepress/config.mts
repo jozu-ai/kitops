@@ -54,6 +54,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/docs/overview' },
           { text: 'Installation', link: '/docs/cli/installation' },
+          { text: 'Use Cases', link: '/docs/use-cases' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
         ]
       },
@@ -68,7 +69,7 @@ export default defineConfig({
       {
         text: 'Kitfile',
         items: [
-          { text: 'Structure', link: '/docs/kitfile/overview' },
+          { text: 'Structure', link: '/docs/kitfile/structure' },
           { text: 'Benefits', link: '/docs/kitfile/benefits' },
         ]
       },
