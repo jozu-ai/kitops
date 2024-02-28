@@ -1,0 +1,69 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .kit-button {
+    @apply inline-block appearance-none;
+    @apply px-6 py-4 relative;
+    @apply text-gold font-bold uppercase;
+    @apply hocus:text-white;
+
+    border: 2px solid var(--color-gold);
+    font-size: 14px;
+    line-height: normal;
+    letter-spacing: 2.1px;
+    transition: background 150ms, color 150ms;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,0) 10.1%, rgba(255,255,255,0) 100%);
+
+    @media screen(md) {
+      font-size: 16px;
+      letter-spacing: 2.4px;
+    }
+
+    @media screen(xl) {
+      font-size: 18px;
+      letter-spacing: 2.7px;
+    }
+
+    &:hover {
+      background-color: var(--color-gold);
+      background-size: 0% 0%;
+    }
+  }
+
+  .kit-button.kit-button-cornflower {
+    @apply text-cornflower;
+    @apply hocus:text-white hocus:bg-cornflower;
+    border: 2px solid var(--color-cornflower);
+  }
+
+  .kit-cards {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-2;
+
+    > .kit-card {
+      @apply border border-gray-02 p-8 xl:p-10;
+    }
+
+    .kit-card h4 {
+      @apply text-cornflower !font-bold;
+    }
+  }
+}

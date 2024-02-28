@@ -49,9 +49,9 @@
   --vp-c-default-3: var(--vp-c-gray-3);
   --vp-c-default-soft: var(--vp-c-gray-soft);
 
-  --vp-c-brand-1: #3febe0;
-  --vp-c-brand-2: #34C0B7;
-  --vp-c-brand-3: #065550;
+  --vp-c-brand-1: var(--color-cornflower);
+  --vp-c-brand-2: var(--color-cornflower);
+  --vp-c-brand-3: var(--color-cornflower);
   --vp-c-brand-soft: var(--vp-c-indigo-soft);
 
   --vp-c-tip-1: var(--vp-c-brand-1);
@@ -69,12 +69,19 @@
   --vp-c-danger-3: var(--vp-c-red-3);
   --vp-c-danger-soft: var(--vp-c-red-soft);
 
+  --vp-c-bg: var(--color-night);
+
   /* Custom jozu branding colors */
   --color-elevation-05: rgba(70, 70, 70, 0.14);
 }
 
 .dark {
   --vp-c-text-1: #ECECEC;
+}
+
+/* Hide the logo text */
+.VPNavBarTitle .title > span {
+  display: none;
 }
 
 /**
@@ -96,7 +103,7 @@
 /**
  * Component: Home
  * -------------------------------------------------------------------------- */
-
+/*
 :root {
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
@@ -123,7 +130,7 @@
   :root {
     --vp-home-hero-image-filter: blur(68px);
   }
-}
+} */
 
 /**
  * Component: Custom Block
@@ -144,11 +151,11 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
-.dark h1,
+/* .dark h1,
 .dark h2,
 .dark h3 {
   color: #FFF;
-}
+} */
 
 *:focus-visible {
   outline-color: var(--vp-c-brand-1);

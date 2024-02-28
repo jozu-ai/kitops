@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Post } from '@theme/feed.data'
+import { type Post } from '@theme/blog.data'
 
 defineProps<{
   posts: Post[]
@@ -8,14 +8,12 @@ defineProps<{
 function formatDate(raw: string) {
   const date = new Date(raw)
   date.setUTCHours(12)
-  return {
-    time: +date,
-    string: date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
 }
 
 </script>
@@ -24,7 +22,7 @@ function formatDate(raw: string) {
 <section>
   <article v-for="post in posts" :key="post.url">
     <h2>{{ post.title }}</h2>
-    <time :datetime="post.published_time" v-if="post.published_time">{{ formatDate(post.published_time).string }}</time>
+    <time :datetime="post.published_time" v-if="post.published_time">{{ formatDate(post.published_time) }}</time>
 
     <img :src="post.image" />
 
@@ -73,3 +71,4 @@ time {
   color: #999;
 }
 </style>
+@theme/blog.data
