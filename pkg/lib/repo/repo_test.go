@@ -30,13 +30,53 @@ func TestParseReference(t *testing.T) {
 		},
 		{
 			input:        "test-repository:test-tag,extraTag1,extraTag2",
-			expectedRef:  reference("localhost", "test-repository", "test-tag"),
+			expectedRef:  reference(DefaultRegistry, "test-repository", "test-tag"),
 			expectedTags: []string{"extraTag1", "extraTag2"},
 		},
 		{
 			input:        "localhost:5000/test-organization/test-repository:test-tag,extraTag1,extraTag2",
 			expectedRef:  reference("localhost:5000", "test-organization/test-repository", "test-tag"),
 			expectedTags: []string{"extraTag1", "extraTag2"},
+		},
+		{
+			input:        "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+			expectedRef:  reference(DefaultRegistry, DefaultRepository, "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"),
+			expectedTags: []string{},
+		},
+		{
+			input:        "test-organization/test-repository:test-tag,extraTag1,extraTag2",
+			expectedRef:  reference("localhost", "test-organization/test-repository", "test-tag"),
+			expectedTags: []string{"extraTag1", "extraTag2"},
+		},
+		{
+			input:        "a/b/c/d",
+			expectedRef:  reference("localhost", "a/b/c/d", ""),
+			expectedTags: []string{},
+		},
+		{
+			input:        "test.io/a/b/c/d",
+			expectedRef:  reference("test.io", "a/b/c/d", ""),
+			expectedTags: []string{},
+		},
+		{
+			input:        "testrepo@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+			expectedRef:  reference(DefaultRegistry, "testrepo", "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"),
+			expectedTags: []string{},
+		},
+		{
+			input:        "testrepo:ignoredtag@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+			expectedRef:  reference(DefaultRegistry, "testrepo", "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"),
+			expectedTags: []string{},
+		},
+		{
+			input:        "testorg/testrepo@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+			expectedRef:  reference(DefaultRegistry, "testorg/testrepo", "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"),
+			expectedTags: []string{},
+		},
+		{
+			input:        "testorg.com/testrepo@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+			expectedRef:  reference("testorg.com", "testrepo", "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"),
+			expectedTags: []string{},
 		},
 	}
 
