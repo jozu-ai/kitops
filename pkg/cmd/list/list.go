@@ -10,7 +10,6 @@ import (
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"math"
-	"strings"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
@@ -57,16 +56,16 @@ func listKits(ctx context.Context, store repo.LocalStorage) ([]string, error) {
 	return infolines, nil
 }
 
-func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.KitFile) string {
+func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *ocispec.Manifest, config *artifact.KitFile) string {
 	ref := desc.Annotations[ocispec.AnnotationRefName]
 	if ref == "" {
 		ref = "<none>"
 	}
 
 	// Strip localhost from repo if present, since we added it
-	repo = strings.TrimPrefix(repo, "localhost/")
-	if repo == "" {
-		repo = "<none>"
+	repository = repo.StripRepository(repository)
+	if repository == "" {
+		repository = "<none>"
 	}
 
 	var size int64
@@ -81,7 +80,7 @@ func getManifestInfoLine(repo string, desc ocispec.Descriptor, manifest *ocispec
 		author = "<none>"
 	}
 
-	info := fmt.Sprintf(listTableFmt, repo, ref, author, config.Kit.Name, sizeStr, desc.Digest)
+	info := fmt.Sprintf(listTableFmt, repository, ref, author, config.Kit.Name, sizeStr, desc.Digest)
 	return info
 }
 

@@ -84,6 +84,8 @@ func (opts *buildOptions) complete(ctx context.Context, args []string) error {
 		}
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs
+	} else {
+		opts.modelRef = repo.DefaultReference()
 	}
 	printConfig(opts)
 	return nil
