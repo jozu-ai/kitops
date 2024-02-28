@@ -69,13 +69,7 @@ const filteredPostsByTag = computed(() => {
     </ul>
   </div>
 
-  <TransitionGroup
-    tag="div"
-    leave-active-class="transition origin-top"
-    enter-active-class="transition origin-top"
-    leave-to-class="scale-90 opacity-0"
-    enter-from-class="scale-90 opacity-100"
-    class="space-y-10">
+  <div class="space-y-10">
     <a
       v-for="post in filteredPostsByTag" :key="post.url"
       class="block p-10 border border-gray-02 transition hocus:border-cornflower"
@@ -95,7 +89,7 @@ const filteredPostsByTag = computed(() => {
 
       <div class="font-bold p2 mt-10">{{ post.author }}</div>
     </a>
-  </TransitionGroup>
+  </div>
 </section>
 </template>
 

@@ -27,9 +27,10 @@ export default {
 
         // Tiny helper
         const getMetaTag = (name) => (
+          post[name] ||
           $(`meta[name=${name}]`).attr("content") ||
           $(`meta[property="og:${name}"]`).attr("content") ||
-          $(`meta[property="twitter${name}"]`).attr("content") || post[name]
+          $(`meta[property="twitter${name}"]`).attr("content")
         )
 
         const title = getMetaTag('title') || $('title').text()
