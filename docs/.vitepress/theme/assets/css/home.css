@@ -11,7 +11,8 @@
   @apply text-gold;
 }
 
-.VPHome h4 {
+.VPHome h4,
+.VPHome .h4 {
   @apply font-heading text-salmon;
 }
 

@@ -19,6 +19,12 @@ module.exports = {
         salmon: '#FFA3AF',
         cornflower: '#7A8CFF',
         ash: '#BED8D4',
+        aero: '#00C3E2',
+        lavender: '#BC7EFF',
+        mustard: '#D4BF40',
+        redish: '#DB636A',
+        zomp: '#659E8B',
+        tea: '#DEF2C8',
         gray: {
           '02': '#4D4D4F',
           '05': '#6A6A6A'
