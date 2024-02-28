@@ -18,6 +18,7 @@ import (
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/remove"
+	"kitops/pkg/cmd/tag"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -75,6 +76,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(export.ExportCommand())
 	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(version.VersionCommand())
+	rootCmd.AddCommand(tag.TagCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
