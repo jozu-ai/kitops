@@ -1,4 +1,4 @@
-package storage
+package repo
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
-func TestStringToReference(t *testing.T) {
+func TestParseReference(t *testing.T) {
 	tests := []struct {
 		input        string
 		expectedRef  *registry.Reference

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// VerifySubpath checks that path.Join(context, subDir) is a subdirectory of context, following
+// VerifySubpath checks that filepath.Join(context, subDir) is a subdirectory of context, following
 // symlinks if present.
 func VerifySubpath(context, subDir string) (absPath string, err error) {
 	// Get absolute path for context and context + subDir

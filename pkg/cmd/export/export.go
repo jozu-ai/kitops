@@ -12,7 +12,6 @@ import (
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 	"os"
-	"path"
 	"path/filepath"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -48,9 +47,8 @@ func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			if !options.exportConf.exportModels {
 				continue
 			}
-			modelEntry := config.Model
-			layerDir = filepath.Join(options.exportDir, modelEntry.Path)
-			output.Infof("Exporting model %s to %s", modelEntry.Name, layerDir)
+			layerDir = filepath.Join(options.exportDir, config.Model.Path)
+			output.Infof("Exporting model to %s", layerDir)
 
 		case constants.CodeLayerMediaType:
 			if !options.exportConf.exportCode {
@@ -81,7 +79,7 @@ func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 }
 
 func exportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
-	configPath := path.Join(exportDir, constants.DefaultKitFileName)
+	configPath := filepath.Join(exportDir, constants.DefaultKitFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
 			return fmt.Errorf("failed to export config: path %s already exists", configPath)
@@ -140,7 +138,7 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 		if err != nil {
 			return err
 		}
-		outPath := path.Join(dir, header.Name)
+		outPath := filepath.Join(dir, header.Name)
 
 		switch header.Typeflag {
 		case tar.TypeDir:

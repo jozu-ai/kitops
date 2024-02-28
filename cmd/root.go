@@ -14,6 +14,7 @@ import (
 	"kitops/pkg/cmd/export"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
+	"kitops/pkg/cmd/logout"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/version"
@@ -28,20 +29,20 @@ var (
 	longDesc  = `KitOps is a tool to manage AI and ML models`
 )
 
-type rootFlags struct {
+type rootOptions struct {
 	configHome string
 	verbose    bool
 }
 
 func RunCommand() *cobra.Command {
-	flags := &rootFlags{}
+	opts := &rootOptions{}
 
 	cmd := &cobra.Command{
 		Use:   "kit",
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			configHome := flags.configHome
+			configHome := opts.configHome
 			if configHome == "" {
 				currentUser, err := user.Current()
 				if err != nil {
@@ -49,7 +50,7 @@ func RunCommand() *cobra.Command {
 				}
 				configHome = filepath.Join(currentUser.HomeDir, constants.DefaultConfigSubdir)
 			}
-			if flags.verbose {
+			if opts.verbose {
 				output.SetDebug(true)
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
@@ -58,14 +59,15 @@ func RunCommand() *cobra.Command {
 	}
 
 	addSubcommands(cmd)
-	cmd.PersistentFlags().StringVar(&flags.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
-	cmd.PersistentFlags().BoolVarP(&flags.verbose, "verbose", "v", false, "Include additional information in output (default false)")
+	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
+	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
 	return cmd
 }
 
 func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(build.BuildCommand())
 	rootCmd.AddCommand(login.LoginCommand())
+	rootCmd.AddCommand(logout.LogoutCommand())
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(push.PushCommand())
 	rootCmd.AddCommand(list.ListCommand())
