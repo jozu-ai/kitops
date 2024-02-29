@@ -64,7 +64,8 @@ export default defineConfig({
       {
         text: 'Kitfile',
         items: [
-          { text: 'Structure', link: '/docs/kitfile/structure' },
+          { text: 'Overview', link: '/docs/kitfile/kf-overview' },
+          { text: 'Format', link: '../pkg/artifact/kit-file.md' },
           { text: 'Benefits', link: '/docs/kitfile/benefits' },
         ]
       },
