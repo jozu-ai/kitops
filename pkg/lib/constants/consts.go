@@ -37,7 +37,9 @@ const (
 	DefaultConfigSubdir = "kitops"
 	StorageSubpath      = "storage"
 	CredentialsSubpath  = "credentials.json"
-
+	HarnessSubpath	    = "harness"
+	HarnessProcessFile  = "process.pid"
+	
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
 	// Media type for the dataset layer
@@ -94,6 +96,10 @@ func DefaultConfigPath() (string, error) {
 
 func StoragePath(configBase string) string {
 	return filepath.Join(configBase, StorageSubpath)
+}
+
+func HarnessPath(configBase string) string {
+	return filepath.Join(configBase, HarnessSubpath)
 }
 
 func CredentialsPath(configBase string) string {
