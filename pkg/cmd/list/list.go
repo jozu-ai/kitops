@@ -63,7 +63,7 @@ func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *o
 	}
 
 	// Strip localhost from repo if present, since we added it
-	repository = repo.StripRepository(repository)
+	repository = repo.FormatRepositoryForDisplay(repository)
 	if repository == "" {
 		repository = "<none>"
 	}

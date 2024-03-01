@@ -75,9 +75,9 @@ func DefaultReference() *registry.Reference {
 	}
 }
 
-// StripRepository removes default values from a repository string to avoid surfacing defaulted fields
+// FormatRepositoryForDisplay removes default values from a repository string to avoid surfacing defaulted fields
 // when displaying references, which may be confusing.
-func StripRepository(repo string) string {
+func FormatRepositoryForDisplay(repo string) string {
 	repo = strings.TrimPrefix(repo, DefaultRegistry+"/")
 	repo = strings.TrimPrefix(repo, DefaultRepository)
 	return repo
