@@ -97,7 +97,7 @@ func runCommand(opts *exportOptions) func(*cobra.Command, []string) {
 		}
 		store, err := getStoreForRef(cmd.Context(), opts)
 		if err != nil {
-			ref := repo.StripRepository(opts.modelRef.String())
+			ref := repo.FormatRepositoryForDisplay(opts.modelRef.String())
 			output.Fatalf("Failed to find reference %s: %s", ref, err)
 		}
 
