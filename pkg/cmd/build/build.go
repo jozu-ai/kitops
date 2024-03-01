@@ -9,18 +9,12 @@ import (
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
-	"os"
 )
 
 func RunBuild(ctx context.Context, options *buildOptions) error {
 	// 1. Read the model file
-	modelfile, err := os.Open(options.modelFile)
-	if err != nil {
-		return err
-	}
-	defer modelfile.Close()
 	kitfile := &artifact.KitFile{}
-	if err = kitfile.LoadModel(modelfile); err != nil {
+	if err := kitfile.LoadModel(options.modelFile); err != nil {
 		return err
 	}
 
@@ -54,15 +48,17 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 	}
 
 	// 4. package the TrainedModel
-	modelPath, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
-	if err != nil {
-		return err
+	if kitfile.Model != nil {
+		modelPath, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
+		if err != nil {
+			return err
+		}
+		layer := &artifact.ModelLayer{
+			BaseDir:   modelPath,
+			MediaType: constants.ModelLayerMediaType,
+		}
+		model.Layers = append(model.Layers, *layer)
 	}
-	layer := &artifact.ModelLayer{
-		BaseDir:   modelPath,
-		MediaType: constants.ModelLayerMediaType,
-	}
-	model.Layers = append(model.Layers, *layer)
 
 	tag := ""
 	if options.modelRef != nil {

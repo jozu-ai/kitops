@@ -10,11 +10,11 @@ import (
 
 type (
 	KitFile struct {
-		ManifestVersion string       `json:"manifestVersion"`
-		Kit             ModelKit     `json:"package,omitempty"`
-		Code            []Code       `json:"code,omitempty"`
-		DataSets        []DataSet    `json:"datasets,omitempty"`
-		Model           TrainedModel `json:"model,omitempty"`
+		ManifestVersion string        `json:"manifestVersion"`
+		Kit             ModelKit      `json:"package,omitempty"`
+		Code            []Code        `json:"code,omitempty"`
+		DataSets        []DataSet     `json:"datasets,omitempty"`
+		Model           *TrainedModel `json:"model,omitempty"`
 	}
 
 	ModelKit struct {
@@ -61,9 +61,14 @@ type (
 	}
 )
 
-func (kf *KitFile) LoadModel(file *os.File) error {
+func (kf *KitFile) LoadModel(filePath string) error {
+	modelfile, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer modelfile.Close()
 	// Read the file
-	data, err := io.ReadAll(file)
+	data, err := io.ReadAll(modelfile)
 	if err != nil {
 		return err
 	}
