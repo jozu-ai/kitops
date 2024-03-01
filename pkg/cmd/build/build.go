@@ -28,7 +28,7 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 			return err
 		}
 		layer := &artifact.ModelLayer{
-			BaseDir:   codePath,
+			Path:      codePath,
 			MediaType: constants.CodeLayerMediaType,
 		}
 		model.Layers = append(model.Layers, *layer)
@@ -41,7 +41,7 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 			return err
 		}
 		layer := &artifact.ModelLayer{
-			BaseDir:   datasetPath,
+			Path:      datasetPath,
 			MediaType: constants.DataSetLayerMediaType,
 		}
 		model.Layers = append(model.Layers, *layer)
@@ -54,7 +54,7 @@ func RunBuild(ctx context.Context, options *buildOptions) error {
 			return err
 		}
 		layer := &artifact.ModelLayer{
-			BaseDir:   modelPath,
+			Path:      modelPath,
 			MediaType: constants.ModelLayerMediaType,
 		}
 		model.Layers = append(model.Layers, *layer)
