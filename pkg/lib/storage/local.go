@@ -9,6 +9,7 @@ import (
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
+	"os"
 
 	"github.com/opencontainers/go-digest"
 	specs "github.com/opencontainers/image-spec/specs-go"
@@ -39,34 +40,36 @@ func SaveModel(ctx context.Context, store oras.Target, model *artifact.Model, ta
 }
 
 func saveContentLayer(ctx context.Context, store oras.Target, layer *artifact.ModelLayer) (ocispec.Descriptor, error) {
-	buf := &bytes.Buffer{}
-	err := layer.Apply(buf)
+	// We want to store a gzipped tar file in store, but to do so we need a descriptor, so we have to compress
+	// to a temporary file. Ideally, we'd also add this to the internal store by moving the file to avoid
+	// copying if possible.
+	tempPath, desc, err := compressLayer(layer)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-
-	// Create a descriptor for the layer
-	desc := ocispec.Descriptor{
-		MediaType: layer.MediaType,
-		Digest:    digest.FromBytes(buf.Bytes()),
-		Size:      int64(buf.Len()),
-	}
-
-	exists, err := store.Exists(ctx, desc)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, err
-	}
-	if exists {
-		output.Infof("Model layer already saved: %s", desc.Digest)
-	} else {
-		// Does not exist in storage, need to push
-		err = store.Push(ctx, desc, buf)
-		if err != nil {
-			return ocispec.DescriptorEmptyJSON, err
+	defer func() {
+		if err := os.Remove(tempPath); err != nil {
+			output.Errorf("Failed to remove temporary file %s: %s", tempPath, err)
 		}
-		output.Infof("Saved model layer: %s", desc.Digest)
+	}()
+
+	if exists, err := store.Exists(ctx, desc); err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	} else if exists {
+		output.Infof("Already saved %s layer: %s", layer.Type(), desc.Digest)
+		return desc, nil
 	}
 
+	file, err := os.Open(tempPath)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to open temporary file: %s", err)
+	}
+	defer file.Close()
+
+	if err := store.Push(ctx, desc, file); err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+	output.Infof("Saved %s layer: %s", layer.Type(), desc.Digest)
 	return desc, nil
 }
 

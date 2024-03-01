@@ -100,7 +100,7 @@ func exportConfig(config *artifact.KitFile, exportDir string, overwrite bool) er
 	return nil
 }
 
-func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportDir string, overwrite bool) error {
+func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportPath string, overwrite bool) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
@@ -114,14 +114,13 @@ func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer gzr.Close()
 	tr := tar.NewReader(gzr)
 
-	if fi, exists := filesystem.PathExists(exportDir); exists {
+	if _, exists := filesystem.PathExists(exportPath); exists {
 		if !overwrite {
-			return fmt.Errorf("failed to export: path %s already exists", exportDir)
-		} else if !fi.IsDir() {
-			return fmt.Errorf("failed to export: path %s exists and is not a directory", exportDir)
+			return fmt.Errorf("failed to export: path %s already exists", exportPath)
 		}
-		output.Debugf("Directory %s already exists", exportDir)
+		output.Debugf("Directory %s already exists", exportPath)
 	}
+	exportDir := filepath.Dir(exportPath)
 	if err := os.MkdirAll(exportDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", exportDir, err)
 	}
