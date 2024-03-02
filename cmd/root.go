@@ -27,8 +27,10 @@ import (
 )
 
 var (
-	shortDesc = `KitOps model manager`
-	longDesc  = `KitOps is a tool to manage AI and ML models`
+	shortDesc = `Streamline the lifecycle of AI/ML models`
+	longDesc  = `Kit is a tool for efficient AI/ML model lifecycle management.
+     
+   Find more information at: http://kitops.ml`
 )
 
 type rootOptions struct {
@@ -40,7 +42,7 @@ func RunCommand() *cobra.Command {
 	opts := &rootOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "kit",
+		Use:   `kit`,
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
