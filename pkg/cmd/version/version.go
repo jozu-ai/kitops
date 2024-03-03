@@ -21,7 +21,7 @@ func VersionCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "Display the version information for the CLI",
-		Long: `The version command prints detailed version information for the kit CLI tool,
+		Long: `The version command prints detailed version information for the kit CLI
 including the current version of the tool, the Git commit that the version was built from, 
 the build time, and the version of Go it was compiled with. This can be useful for debugging 
 or verifying that you are running the expected version of kit.`,

@@ -17,8 +17,23 @@ import (
 )
 
 const (
-	shortDesc = `Export model from registry`
-	longDesc  = `Export model from registry TODO`
+	shortDesc = `Produce the components from a modelkit on the local filesystem`
+	longDesc  = `Produces all or selected components of a modelkit on the local filesystem.
+	
+This command exports of a modelkit's components, including models, code, datasets, and configuration files,
+to a specified directory on the local filesystem. By default, it attempts to find the modelkit in local storage;
+if not found, it searches the remote registry and retrieves it. This process ensures that the necessary components
+are always available for export, optimizing for efficiency by fetching only specified components from the remote 
+registry when necessary`
+
+	example = `  # Export all components of a modelkit to the current directory
+  kit export myrepo/my-model:latest -d /path/to/export
+
+  # Export only the model and datasets of a modelkit to a specified directory
+  kit export myrepo/my-model:latest --model --datasets -d /path/to/export
+
+  # Export a modelkit from a remote registry with overwrite enabled
+  kit export registry.example.com/myrepo/my-model:latest -o -d /path/to/export`
 )
 
 type exportOptions struct {
@@ -68,17 +83,18 @@ func ExportCommand() *cobra.Command {
 	opts := &exportOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "export",
-		Short: shortDesc,
-		Long:  longDesc,
-		Run:   runCommand(opts),
+		Use:     "export [registry/]repository[:tag|@digest]",
+		Short:   shortDesc,
+		Long:    longDesc,
+		Example: example,
+		Run:     runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().StringVarP(&opts.exportDir, "dir", "d", "", "Directory to export into. Will be created if it does not exist")
-	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrite existing files and directories in the export dir")
+	cmd.Flags().StringVarP(&opts.exportDir, "dir", "d", "", "The target directory to export components into. This directory will be created if it does not exist")
+	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrites existing files and directories in the target export directory without prompting")
 	cmd.Flags().BoolVar(&opts.exportConf.exportConfig, "config", false, "Export only config file")
-	cmd.Flags().BoolVar(&opts.exportConf.exportModels, "models", false, "Export only models")
+	cmd.Flags().BoolVar(&opts.exportConf.exportModels, "model", false, "Export only model")
 	cmd.Flags().BoolVar(&opts.exportConf.exportCode, "code", false, "Export only code")
 	cmd.Flags().BoolVar(&opts.exportConf.exportDatasets, "datasets", false, "Export only datasets")
 	opts.AddNetworkFlags(cmd)

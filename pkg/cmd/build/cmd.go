@@ -18,11 +18,11 @@ import (
 )
 
 var (
-	shortDesc = `Builds a ModelKit`
-	longDesc  = `Build a ModelKit from a Kitfile using the given context directory. 
+	shortDesc = `Builds a modelkit`
+	longDesc  = `Build a modelkit from a kitfile using the given context directory. 
 
   The build process involves taking the configuration and resources defined in your 
-  Kitfile and using them to create a ModelKit. This ModelKit is then stored in your 
+  kitfile and using them to create a modelkit. This modelkit is then stored in your 
   local registry, making it readily available for further actions such as pushing 
   to a remote registry for collaboration.
 
@@ -30,10 +30,10 @@ var (
   of the provided context directory. Any relative paths defined within the Kitfile are 
   interpreted as being relative to this context directory.`
 
-	examples = `  # Build a ModelKit using the Kitfile in the current directory
+	examples = `  # Build a modelkit using the kitfile in the current directory
   kit build .
 
-  # Build a ModelKit with a specific Kitfile and tag
+  # Build a modelkit with a specific kitfile and tag
   kit build . -f /path/to/your/Kitfile -t registry/repository:modelv1`
 )
 
@@ -59,7 +59,7 @@ func BuildCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile if it's not located at the root of the context directory")
-	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built ModelKit. Example: -t registry/repository:tag1,tag2")
+	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }

@@ -14,8 +14,11 @@ import (
 )
 
 const (
-	shortDesc = `Pull model from registry`
-	longDesc  = `Pull model from registry TODO`
+	shortDesc = `Retrieve modelkits from a remote registry to your local environment.`
+	longDesc  = `Downloads modelkits from a specified registry. The downloaded 
+modelkits are stored in the local registry.`
+	example = ` # Pull the latest version of a modelkit from a remote registry
+  kit pull registry.example.com/my-model:latest`
 )
 
 type pullOptions struct {
@@ -50,10 +53,11 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 func PullCommand() *cobra.Command {
 	opts := &pullOptions{}
 	cmd := &cobra.Command{
-		Use:   "pull",
-		Short: shortDesc,
-		Long:  longDesc,
-		Run:   runCommand(opts),
+		Use:     "pull registry/repository[:tag|@digest]",
+		Short:   shortDesc,
+		Long:    longDesc,
+		Example: example,
+		Run:     runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
