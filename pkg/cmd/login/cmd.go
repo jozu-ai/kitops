@@ -21,8 +21,10 @@ import (
 )
 
 const (
-	shortDesc = `Log in to a registry`
-	longDesc  = `Log in to a registry TODO`
+	shortDesc = `Log in to an OCI registry`
+	longDesc  = `Log in to an OCI registry`
+	example   = `  # Login to ghcr.io
+  kit login ghcr.io -u github_user -p personal_token`
 )
 
 type loginOptions struct {
@@ -39,10 +41,11 @@ func LoginCommand() *cobra.Command {
 	opts := &loginOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "login [flags] registry",
-		Short: shortDesc,
-		Long:  longDesc,
-		Run:   runLogin(opts),
+		Use:     "login [flags] registry",
+		Short:   shortDesc,
+		Long:    longDesc,
+		Example: example,
+		Run:     runLogin(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
