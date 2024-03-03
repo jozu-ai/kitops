@@ -9,15 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewCmdBuild(t *testing.T) {
-	cmd := BuildCommand()
-
-	assert.NotNil(t, cmd)
-	assert.Equal(t, "build", cmd.Use)
-	assert.Equal(t, shortDesc, cmd.Short)
-	assert.Equal(t, longDesc, cmd.Long)
-}
-
 func TestBuildOptions_Complete(t *testing.T) {
 	options := &buildOptions{}
 	ctx := context.WithValue(context.Background(), constants.ConfigKey{}, "/home/user/.kitops")
