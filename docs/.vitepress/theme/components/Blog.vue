@@ -54,7 +54,7 @@ const filteredPostsByTag = computed(() => {
   })
 })
 
-const getColorForTag = (tag) => {
+const getColorForTag = (tag: string) => {
   return tagsColorsMap[
     tagsByIndex[tag] % tagsColorsMap.length
   ]
@@ -85,10 +85,10 @@ watchEffect(() => {
       <li v-for="tag in allTags" :key="tag">
         <button
           class="tag"
-          :class="[
-            getColorForTag(tag).normal,
-            { [getColorForTag(tag).selected]: selectedTag === tag }
-          ]"
+          :class="{
+            [getColorForTag(tag).normal]: selectedTag !== tag,
+            [getColorForTag(tag).selected]: selectedTag === tag
+          }"
           @click="filterByTag(tag)">
           {{ tag }}
         </button>
