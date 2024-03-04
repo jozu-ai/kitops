@@ -15,8 +15,8 @@ import (
 const (
 	shortDesc = `Log out from an OCI registry`
 	longDesc  = `Log out from an OCI registry`
-	example   = `  # Log out from ghcr.io
-  kit logout ghcr.io`
+	example   = `# Log out from ghcr.io
+kit logout ghcr.io`
 )
 
 type logoutOptions struct {
@@ -28,7 +28,7 @@ func LogoutCommand() *cobra.Command {
 	opts := &logoutOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "logout [flags] registry",
+		Use:     "logout registry",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

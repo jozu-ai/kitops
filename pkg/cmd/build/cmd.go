@@ -17,24 +17,24 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
-var (
+const (
 	shortDesc = `Builds a modelkit`
 	longDesc  = `Build a modelkit from a kitfile using the given context directory. 
 
-  The build process involves taking the configuration and resources defined in your 
-  kitfile and using them to create a modelkit. This modelkit is then stored in your 
-  local registry, making it readily available for further actions such as pushing 
-  to a remote registry for collaboration.
+The build process involves taking the configuration and resources defined in 
+your kitfile and using them to create a modelkit. This modelkit is then stored
+in your local registry, making it readily available for further actions such 
+as pushing to a remote registry for collaboration.
 
-  Unless a different location is specified, this command looks for the Kitfile at the root
-  of the provided context directory. Any relative paths defined within the Kitfile are 
-  interpreted as being relative to this context directory.`
+Unless a different location is specified, this command looks for the Kitfile 
+at the root of the provided context directory. Any relative paths defined 
+within the Kitfile are interpreted as being relative to this context directory.`
 
-	examples = `  # Build a modelkit using the kitfile in the current directory
-  kit build .
+	examples = `# Build a modelkit using the kitfile in the current directory
+kit build .
 
-  # Build a modelkit with a specific kitfile and tag
-  kit build . -f /path/to/your/Kitfile -t registry/repository:modelv1`
+# Build a modelkit with a specific kitfile and tag
+kit build . -f /path/to/your/Kitfile -t registry/repository:modelv1`
 )
 
 type buildOptions struct {
