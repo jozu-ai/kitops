@@ -104,26 +104,34 @@
   <h2>WhAt’s suppoRted<span class="font-heading font-extralight">?</span></h2>
   <p class="p1 mt-8">Kit was designed to work with the tools your team already uses.</p>
 
-  <ul class="mt-22 flex flex-wrap md:flex-nowrap xs:gap-x-8 xs:gap-y-4 items-center justify-center md:justify-between">
-    <li>
-      <img src="/images/logos/jupyter.svg" alt="Jupyter logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-    <li>
-      <img src="/images/logos/mlflow.svg" alt="MLflow logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-    <li>
-      <img src="/images/logos/rest-api.svg" alt="Rest api icon" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-    <li>
-      <img src="/images/logos/github.svg" alt="Github logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-    <li>
-      <img src="/images/logos/docker.svg" alt="Docker logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-    <li>
-      <img src="/images/logos/kubernetes.svg" alt="Kubernetes logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
-    </li>
-  </ul>
+  <marquee behavior="" direction="">
+    <ul class="mt-22 flex flex-wrap md:flex-nowrap xs:gap-x-8 xs:gap-y-4 items-center justify-center md:justify-between">
+      <li>
+        <img src="/images/logos/jupyter@2x.png" alt="jupyter logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/docker@2x.png" alt="docker logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/dvc@2x.png" alt="dvc logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/huggingface@2x.png" alt="huggingface logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/github@2x.png" alt="github logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/gitlab@2x.png" alt="gitlab logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/jfrog@2x.png" alt="jfrog logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+      <li>
+        <img src="/images/logos/azureml@2x.png" alt="azureml logo" class="opacity-65 hocus:opacity-100 h-6 md:h-7 xl:h-8">
+      </li>
+    </ul>
+  </marquee>
 
   <button class="kit-button mt-22">SEE FULL LIST</button>
 </div>
