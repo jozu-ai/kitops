@@ -1,5 +1,5 @@
 import { URL, fileURLToPath } from 'node:url'
-
+import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
@@ -136,6 +136,14 @@ export default defineConfig({
           replacement: fileURLToPath(
             new URL('./theme/components/Footer.vue', import.meta.url)
           )
+        },
+        {
+          find: '@',
+          replacement: resolve(__dirname, '../src'),
+        },
+        {
+          find: '$public',
+          replacement: resolve(__dirname, '../src/public')
         }
       ]
     }
