@@ -132,8 +132,8 @@
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 
   <div class="space-y-6 w-fit mx-auto mt-22">
-    <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Join the KitOps Discord</div>
+    <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Join the KitOps Discord</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="43" height="32" viewBox="0 0 43 32" fill="none">
         <g clip-path="url(#clip0_8_909)">
@@ -147,16 +147,16 @@
       </svg>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Contribute to Kit</div>
+    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Contribute to Kit</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
         <path d="M32.3432 21.9998L21.6152 11.2718L24.4436 8.44336L40 23.9998L24.4436 39.556L21.6152 36.7276L32.3432 25.9998H8V21.9998H32.3432Z" fill="#ECECEC"/>
       </svg>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Star the repo on GitHub</div>
+    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Star the repo on GitHub</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
         <g clip-path="url(#clip0_79_2469)">
