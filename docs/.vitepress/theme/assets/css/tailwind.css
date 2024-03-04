@@ -94,14 +94,13 @@
 
     /* Fonts/Mobile/H4 */
     font-size: 24px;
-    font-weight: 275;
+    font-weight: 200;
     line-height: 30px; /* 125% */
     letter-spacing: -0.6px;
 
     @media screen(md) {
       /* Fonts/Tablet/H4 */
       font-size: 28px;
-      font-weight: 275;
       line-height: 34px; /* 121.429% */
       letter-spacing: -0.6px;
     }
@@ -109,7 +108,6 @@
     @media screen(xl) {
       /* Fonts/Desktop/H4 */
       font-size: 32px;
-      font-weight: 275;
       line-height: 48px; /* 150% */
       letter-spacing: -0.6px;
     }
@@ -204,6 +202,12 @@
     @apply text-cornflower;
     @apply hocus:text-white hocus:bg-cornflower;
     border: 2px solid var(--color-cornflower);
+  }
+
+  .kit-button.kit-button-salmon {
+    @apply text-salmon;
+    @apply hocus:text-white hocus:bg-salmon;
+    border: 2px solid var(--color-salmon);
   }
 
   .kit-cards {
