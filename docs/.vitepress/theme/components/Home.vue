@@ -1,13 +1,16 @@
 <template>
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 space-y-22 text-center">
-  <h1>Package, reproduce, and collaborate on your models</h1>
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center">
+  <p class="h4 !font-normal !text-off-white">Share and run your models anywhere</p>
+  <h1 class="mt-4">Bridge the gap between ML and Application teams</h1>
 
-  <a href="/docs/installation" class="kit-button">Install</a>
+  <a href="/docs/installation" class="kit-button mt-10 md:mt-14 xl:mt-22">Install</a>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center max-w-[1152px] mx-auto">
-  <h2>Kit lets You sHaRe And Run YouR Models anyWHeRe, just liKe Application code</h2>
-  <div class="p1 mt-8 mx-8">Data scientists and developers can leverage their preferred tools while Kit packages everything for safe and reliable collaboration.</div>
+  <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
+  <div class="p1 mt-8 mx-8">
+    Kit is an open source MLOps project that packages your model, datasets, code, and configuration so data scientists and developers can use their preferred tools while collaborating effortlessly.
+  </div>
 
   <img src="/images/cli-screenshot.png" class="mt-22 mx-auto w-[1050px]" alt="screenshot of the kit cli tool" />
 </div>
@@ -15,12 +18,11 @@
 <div class="mt-32 md:mt-40 xl:mt-60 px-6">
   <div class="kit-cards md:!grid-cols-2 w-fit mx-auto">
     <div class="kit-card max-w-[370px] flex flex-col">
-      <h3>Model Kit</h3>
+      <h3>ModelKit</h3>
 
-      <div class="flex-1">
-        <p class="p2 mt-8">
-          The ModelKit is an OCI compliant package that contains everything an SRE team would need to quickly and safely integrate or deploy an AI/ML model into production infrastructure. It tracks models, datasets, hyperparameters, input/output requirements, and validation criteria. ModelKits include everything ModelKits include everything your teams need in a modular and lightweight package to run locally or deploy to production.
-        </p>
+      <div class="flex-1 mt-8 space-y-4">
+        <p class="p2">The ModelKit is an OCI compliant package that contains everything needed to integrate with a model, or deploy it to production. </p>
+        <p class="p2">The ModelKit holds the serialized model, dataset, hyperparameters, input / output structure, and validation criteria. Kitfiles define a ModelKit in a modular and easy-to-understand way.</p>
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" class="mt-10 md:mt-16 xl:mt-20">
@@ -30,9 +32,10 @@
     <div class="kit-card max-w-[370px] flex flex-col">
       <h3 class="!text-cornflower">Kit cli</h3>
 
-      <p class="p2 mt-8 flex-1">
-        Kit CLI is an open source command line interface (CLI) that performs actions on the packaged model. With Kit CLI, you can package everything your data science, application, and SRE teams need to integrate models and applications, push to or pull from a model registry, and run the model locally, in dev, staging, or production.
-      </p>
+      <div class="flex-1 mt-8 space-y-4">
+        <p class="p2">The Kit CLI is a command line interface (CLI) that performs actions on ModelKits.</p>
+        <p class="p2">You can: build and version ModelKits; push or pull them from a model registry; run them locally with a RESTful API we generate for your model automatically, and deploy them to staging or production.</p>
+      </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="32" viewBox="0 0 48 32" fill="none" class="mt-10 md:mt-16 xl:mt-20">
         <path d="M36.1238 25.0052H54.7501" class="stroke-cornflower" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
@@ -43,56 +46,62 @@
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6" id="whykitops">
-  <h2 class="text-center">Why Kitops<span class="font-heading font-extralight">?</span></h2>
+  <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
 
   <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
-    <h4>Handing off models</h4>
-    <div class="p2">
-      <p>Between ML scientists and software engineers is painful. Moving a model from a Jupyter notebook to a development server, then to Kubernetes or other production servers is difficult because each tool uses its own packaging mechanism for the model, and requires that engineers repackage the model based on where it came from, and the runtime target.</p>
-      <p>During these repackagings metadata that can help production operations teams understand the model’s readiness to deploy, the ideal configuration of the model, and deployed faster and safer, with a reduced chance of human error.</p>
-      <p>Kit was built to standardize the way we package, reproduce, deploy, and track an AI / ML model, its assets, and configuration so it can be run anywhere, just like application code. Kit solves two big problems:</p>
+    <div class="h4">Model handoffs are hard.</div>
+    <div class="p2 space-y-4">
+      <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
+      <p>Kit is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
+      <p>Kit solves two big problems:</p>
     </div>
 
-    <h4 class="xs:mt-12">First, model traceability and reproducibility–</h4>
-    <div class="p2">
-      <p>Unlike Dockerfiles, Kitfiles let you package up models, datasets, in a modular package - pull just the model, or the model and dataset, or pull the whole thing with one simple command. </p>
-      <p>Storing ModelKits in your existing registry provides a history of meaningful state changes to the model so issues can be back-traced to where they were introduced for security and audit purposes.</p>
+    <div class="h4 xs:mt-12">Collaboration–</div>
+    <div class="p2 space-y-4">
+      <p>By building ModelKits on industry standards, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating models with their application, experimenting with them locally, or deploying them to production.</p>
+      <p>ModelKits and Kitfiles work with the tools your team is already using, so you can use the same deployment pipelines and endpoints you’ve hardened with your application development process.</p>
     </div>
 
-    <h4 class="xs:mt-12">Second, collaboration–</h4>
-    <div class="p2">
-      <p>By building ModelKits on the OCI-standard, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating it with their application, running it locally, or deploying it to production. </p>
-      <p>ModelKits and Kitfiles work with the tools your team is already using, allowing you to leverage the same deployment pipelines and endpoints you’ve proven in your application development process.</p>
+    <div class="h4 xs:mt-12">Model traceability and reproducibility–</div>
+    <div class="p2 space-y-4">
+      <p>Unlike Dockerfiles, Kitfiles are a modular package - pull just a part of the ModelKit, like the model or dataset, or pull the whole package with one simple command.</p>
+      <p>Storing ModelKits in your organization’s registry provides a history of meaningful state changes for auditing. ModelKits are immutable so are perfect for a secure bill-of-materials (SBOM) initiative.</p>
     </div>
   </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6" id="howdoesitwork">
-  <h2 class="text-center">HoW Does it WorK<span class="font-heading font-extralight">?</span></h2>
+  <h2 class="text-center">Get stArted</h2>
 
   <div class="kit-cards mt-22 min-h-[32.5rem]">
     <div class="kit-card flex flex-col">
-      <h4 class="!text-cornflower">1</h4>
+      <div class="h4 font-bold !text-cornflower">1</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Download and install the CLI.</p>
-        <a href="/docs/installation" class="kit-button kit-button-cornflower md:w-fit mt-6">INSTALL</a>
+        <p class="p2">Download and install Kit CLI.</p>
+        <a href="/docs/installation" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
       </div>
     </div>
 
-    <div class="kit-card">
-      <h4 class="!text-cornflower">2</h4>
-      <p class="p2 mt-8">Create a simple configuration file that we call a Kitfile to tell about your model, dataset and code.</p>
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-cornflower">2</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
+        <a href="/docs/installation" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
+      </div>
     </div>
 
-    <div class="kit-card">
-      <h4 class="!text-cornflower">3</h4>
-      <p class="p2 mt-8">When you’re ready to share your image, simply run a build and push command in the CLI.</p>
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-cornflower">3</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Pull the ModelKit into your pipeline, or use kit dev to start working with the model.</p>
+        <a href="/docs/installation" class="kit-button md:w-fit mt-6">USE CASES</a>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center">
-  <h2>WhAt’s sUppoRted<span class="font-heading font-extralight">?</span></h2>
+  <h2>WhAt’s suppoRted<span class="font-heading font-extralight">?</span></h2>
   <p class="p1 mt-8">Kit was designed to work with the tools your team already uses.</p>
 
   <ul class="mt-22 flex flex-wrap md:flex-nowrap xs:gap-x-8 xs:gap-y-4 items-center justify-center md:justify-between">
@@ -115,14 +124,16 @@
       <img src="/images/logos/kubernetes.svg" alt="Kubernetes logo" class="opacity-65 hocus:opacity-100 h-12 xl:h-16">
     </li>
   </ul>
+
+  <button class="kit-button mt-22">SEE FULL LIST</button>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6">
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 
   <div class="space-y-6 w-fit mx-auto mt-22">
-    <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Join the KitOps Discord</div>
+    <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Join the KitOps Discord</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="43" height="32" viewBox="0 0 43 32" fill="none">
         <g clip-path="url(#clip0_8_909)">
@@ -136,16 +147,16 @@
       </svg>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Contribute to Kit</div>
+    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Contribute to Kit</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
         <path d="M32.3432 21.9998L21.6152 11.2718L24.4436 8.44336L40 23.9998L24.4436 39.556L21.6152 36.7276L32.3432 25.9998H8V21.9998H32.3432Z" fill="#ECECEC"/>
       </svg>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Checkout our roadmap on GitHub</div>
+    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+      <div class="p1">Star the repo on GitHub</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
         <g clip-path="url(#clip0_79_2469)">
