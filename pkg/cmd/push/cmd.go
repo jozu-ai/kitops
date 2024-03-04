@@ -15,15 +15,16 @@ import (
 
 const (
 	shortDesc = `Uploads modelkits to a specified registry`
-	longDesc  = `This command pushes modelkits to a remote registry, facilitating
-collaboration and distribution. The modelkits should be tagged with the target 
-registry and repository before they can be pushed`
+	longDesc  = `This command pushes modelkits to a remote registry.
 
-	example = `  # Push the latest modelkits to a remote registry
-  kit push registry.example.com/my-model:latest
+The modelkits should be tagged with the target registry and repository before 
+they can be pushed`
 
-  # Push a specific version of a modelkits using a tag:
-  kit push registry.example.com/my-model:1.0.0`
+	example = `# Push the latest modelkits to a remote registry
+kit push registry.example.com/my-model:latest
+
+# Push a specific version of a modelkits using a tag:
+kit push registry.example.com/my-model:1.0.0`
 )
 
 type pushOptions struct {
