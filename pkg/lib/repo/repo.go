@@ -60,6 +60,9 @@ func ParseReference(refString string) (ref *registry.Reference, extraTags []stri
 	// Split off extra tags (e.g. repo:tag1,tag2,tag3)
 	refAndTags := strings.Split(refString, ",")
 	baseRef, err := registry.ParseReference(refAndTags[0])
+
+	// Set default tag 'latest' if no tag is present, for convenience
+	baseRef.Reference = baseRef.ReferenceOrDefault()
 	if err != nil {
 		return nil, nil, err
 	}
