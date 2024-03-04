@@ -30,7 +30,7 @@ var (
 	shortDesc = `Streamline the lifecycle of AI/ML models`
 	longDesc  = `Kit is a tool for efficient AI/ML model lifecycle management.
      
-   Find more information at: http://kitops.ml`
+Find more information at: http://kitops.ml`
 )
 
 type rootOptions struct {

@@ -28,7 +28,7 @@ func LogoutCommand() *cobra.Command {
 	opts := &logoutOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "logout registry",
+		Use:     "logout <registry>",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

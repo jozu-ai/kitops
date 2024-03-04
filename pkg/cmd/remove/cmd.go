@@ -14,9 +14,7 @@ import (
 
 const (
 	shortDesc = `Remove a modelkit from local storage`
-	longDesc  = `Remove a modelkit from local storage.
-
-Removes a modelkit from storage on the local disk.
+	longDesc  = `Removes a modelkit from storage on the local disk.
 
 The model to be removed may be specifed either by a tag or by a digest. If
 specified by digest, that modelkit will be removed along with any tags that

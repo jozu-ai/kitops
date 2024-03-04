@@ -26,9 +26,9 @@ your kitfile and using them to create a modelkit. This modelkit is then stored
 in your local registry, making it readily available for further actions such 
 as pushing to a remote registry for collaboration.
 
-Unless a different location is specified, this command looks for the Kitfile 
+Unless a different location is specified, this command looks for the k	itfile 
 at the root of the provided context directory. Any relative paths defined 
-within the Kitfile are interpreted as being relative to this context directory.`
+within the kitfile are interpreted as being relative to this context directory.`
 
 	examples = `# Build a modelkit using the kitfile in the current directory
 kit build .

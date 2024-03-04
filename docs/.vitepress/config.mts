@@ -60,8 +60,7 @@ export default defineConfig({
         text: 'CLI',
         items: [
           { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Usage', link: '/docs/cli/usage' },
-          { text: 'Flags', link: '/docs/cli/flags' },
+          { text: 'Command Reference', link: '/docs/cli/kit' },
         ]
       },
       {
