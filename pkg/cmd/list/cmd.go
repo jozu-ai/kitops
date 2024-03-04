@@ -72,7 +72,7 @@ func ListCommand() *cobra.Command {
 	opts := &listOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "list [repository/registry]",
+		Use:     "list [registry/repository]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
