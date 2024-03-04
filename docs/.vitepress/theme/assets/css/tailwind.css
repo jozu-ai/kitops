@@ -15,6 +15,157 @@
   h4 {
     @apply font-heading;
   }
+
+  h1 {
+    @apply font-extralight;
+
+    /* Fonts/Mobile/H1 */
+    font-size: 48px;
+    line-height: 54px; /* 112.5% */
+    letter-spacing: -0.6px;
+
+    /* Fonts/Tablet/H1 */
+    @media screen(md) {
+      font-size: 72px;
+      line-height: 82px; /* 113.889% */
+      letter-spacing: -0.6px;
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/H1 */
+      font-size: 96px;
+      line-height: 122px; /* 127.083% */
+      letter-spacing: -0.6px;
+    }
+  }
+
+  h2 {
+    @apply font-normal;
+
+    /* Fonts/Mobile/H2 */
+    font-size: 30px;
+    line-height: 37px; /* 123.333% */
+    letter-spacing: -0.6px;
+
+    @media screen(md) {
+      /* Fonts/Tablet/H2 */
+      font-size: 40px;
+      line-height: 54px; /* 135% */
+      letter-spacing: -0.6px;
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/H2 */
+      font-size: 48px;
+      line-height: 68px; /* 141.667% */
+      letter-spacing: -0.6px;
+    }
+  }
+
+  h3 {
+    @apply font-normal;
+
+    /* Fonts/Mobile/H3 */
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 38px; /* 135.714% */
+    letter-spacing: -0.6px;
+
+    @media screen(md) {
+      /* Fonts/Tablet/H3 */
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 38px; /* 118.75% */
+      letter-spacing: -0.6px;
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/H3 */
+      font-size: 38px;
+      font-weight: 400;
+      line-height: 46px; /* 121.053% */
+      letter-spacing: -0.6px;
+    }
+  }
+
+  h4,
+  .h4 {
+    @apply font-normal;
+
+    /* Fonts/Mobile/H4 */
+    font-size: 24px;
+    font-weight: 275;
+    line-height: 30px; /* 125% */
+    letter-spacing: -0.6px;
+
+    @media screen(md) {
+      /* Fonts/Tablet/H4 */
+      font-size: 28px;
+      font-weight: 275;
+      line-height: 34px; /* 121.429% */
+      letter-spacing: -0.6px;
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/H4 */
+      font-size: 32px;
+      font-weight: 275;
+      line-height: 48px; /* 150% */
+      letter-spacing: -0.6px;
+    }
+  }
+
+  .p1 {
+    @apply text-off-white;
+
+    /* Fonts/Mobile/P1 */
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px; /* 155.556% */
+
+    @media screen(md) {
+      /* Fonts/Tablet/P1 */
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 32px; /* 145.455% */
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/P1 */
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 36px; /* 150% */
+    }
+  }
+
+  .p2 {
+    @apply text-off-white;
+
+    /* Fonts/Mobile/P2 */
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 133.333% */
+
+    @media screen(md) {
+      /* Fonts/Tablet/P2 */
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28px; /* 164.706% */
+    }
+
+    @media screen(xl) {
+      /* Fonts/Desktop/P2 */
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 32px; /* 160% */
+    }
+  }
 }
 
 @layer components {

@@ -1,13 +1,13 @@
 <template>
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 space-y-22 text-center">
-  <h1>Simplified cross-team ML development & deployment</h1>
+  <h1>Package, reproduce, and collaborate on your models</h1>
 
-  <button class="kit-button">DOWNLOAD</button>
+  <a href="/docs/installation" class="kit-button">Install</a>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center max-w-[1152px] mx-auto">
-  <h2>Kitops creAtes a bRidGe betWeeN DeVops & Mlops WorKfloWs</h2>
-  <div class="p1 mt-8 mx-8">Data scientists and ML engineers can leverage their preferred tools while Kit packages everything for safe and reliable pipeline deployments.</div>
+  <h2>Kit lets You sHaRe And Run YouR Models anyWHeRe, just liKe Application code</h2>
+  <div class="p1 mt-8 mx-8">Data scientists and developers can leverage their preferred tools while Kit packages everything for safe and reliable collaboration.</div>
 
   <img src="/images/cli-screenshot.png" class="mt-22 mx-auto w-[1050px]" alt="screenshot of the kit cli tool" />
 </div>
@@ -15,16 +15,11 @@
 <div class="mt-32 md:mt-40 xl:mt-60 px-6">
   <div class="kit-cards md:!grid-cols-2 w-fit mx-auto">
     <div class="kit-card max-w-[370px] flex flex-col">
-      <h3>ModelKits</h3>
+      <h3>Model Kit</h3>
 
       <div class="flex-1">
         <p class="p2 mt-8">
-          The ModelKit is a package that contains everything an SRE team would need to quickly and safely integrate or deploy an AI/ML model into production infrastructure.
-          It tracks models, datasets, hyperparameters, input/output requirements, and validation criteria.
-        </p>
-
-        <p class="p2 mt-4">
-          ModelKits let you deploy to any infrastructure while maintaining traceability and provenance for the datasets, models, and applications.
+          The ModelKit is an OCI compliant package that contains everything an SRE team would need to quickly and safely integrate or deploy an AI/ML model into production infrastructure. It tracks models, datasets, hyperparameters, input/output requirements, and validation criteria. ModelKits include everything ModelKits include everything your teams need in a modular and lightweight package to run locally or deploy to production.
         </p>
       </div>
 
@@ -33,10 +28,10 @@
       </svg>
     </div>
     <div class="kit-card max-w-[370px] flex flex-col">
-      <h3 class="text-cornflower">Kit cli</h3>
+      <h3 class="!text-cornflower">Kit cli</h3>
 
       <p class="p2 mt-8 flex-1">
-        CLI is an open source command line interface (CLI) that performs actions on the packaged model. With CLI, you can package everything your data scientist and ML engineering teams need to integrate models and applications, push to or pull from a model registry, and run the model locally, in dev, staging, or production.
+        Kit CLI is an open source command line interface (CLI) that performs actions on the packaged model. With Kit CLI, you can package everything your data science, application, and SRE teams need to integrate models and applications, push to or pull from a model registry, and run the model locally, in dev, staging, or production.
       </p>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="32" viewBox="0 0 48 32" fill="none" class="mt-10 md:mt-16 xl:mt-20">
@@ -51,21 +46,24 @@
   <h2 class="text-center">Why Kitops<span class="font-heading font-extralight">?</span></h2>
 
   <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
-    <h4>For the last 10-years</h4>
+    <h4>Handing off models</h4>
     <div class="p2">
-      <p>Data scientists and machine learning engineers have been struggling to build a cohesive deployment pipeline that meets the needs of models and applications, resulting in two separate development and deployment toolchains.</p>
-      <p>In a world where AI and ML was an outlier, this wasn’t a major problem, but times have changed. We now live in a world where almost every application will integrate with ML, and having two separate toolchains doesn’t make sense. </p>
-      <p>KitOps was built to standardize the way we package, reproduce, deploy, and track an AI / ML model, its assets, and configuration so it can be run anywhere, just like application code. KitOps solve two big problems:</p>
+      <p>Between ML scientists and software engineers is painful. Moving a model from a Jupyter notebook to a development server, then to Kubernetes or other production servers is difficult because each tool uses its own packaging mechanism for the model, and requires that engineers repackage the model based on where it came from, and the runtime target.</p>
+      <p>During these repackagings metadata that can help production operations teams understand the model’s readiness to deploy, the ideal configuration of the model, and deployed faster and safer, with a reduced chance of human error.</p>
+      <p>Kit was built to standardize the way we package, reproduce, deploy, and track an AI / ML model, its assets, and configuration so it can be run anywhere, just like application code. Kit solves two big problems:</p>
     </div>
 
     <h4 class="xs:mt-12">First, model traceability and reproducibility–</h4>
     <div class="p2">
-      <p>Unlike Dockerfiles, Kitfiles let you package up models, datasets, and all the metadata, but selectively run only the model or extract only the dataset.</p>
-      <p>They provide a history of meaningful state changes to the model so issues can be back-traced to where they were introduced for security and audit purposes.</p>
+      <p>Unlike Dockerfiles, Kitfiles let you package up models, datasets, in a modular package - pull just the model, or the model and dataset, or pull the whole thing with one simple command. </p>
+      <p>Storing ModelKits in your existing registry provides a history of meaningful state changes to the model so issues can be back-traced to where they were introduced for security and audit purposes.</p>
     </div>
 
     <h4 class="xs:mt-12">Second, collaboration–</h4>
-    <p class="p2">By building Kitfiles on the OCI-standard, anyone (not just data scientists) can participate in the model development lifecycle and run or experiment with models throughout. Kitfiles work with the tools your team is already using, allowing you to leverage the same deployment pipelines and endpoints you use in your application development process.</p>
+    <div class="p2">
+      <p>By building ModelKits on the OCI-standard, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating it with their application, running it locally, or deploying it to production. </p>
+      <p>ModelKits and Kitfiles work with the tools your team is already using, allowing you to leverage the same deployment pipelines and endpoints you’ve proven in your application development process.</p>
+    </div>
   </div>
 </div>
 
@@ -74,28 +72,28 @@
 
   <div class="kit-cards mt-22 min-h-[32.5rem]">
     <div class="kit-card flex flex-col">
-      <h4>1</h4>
+      <h4 class="!text-cornflower">1</h4>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Download and install the CLI.</p>
-        <button class="kit-button kit-button-cornflower md:w-fit mt-6">DOWNLOAD</button>
+        <a href="/docs/installation" class="kit-button kit-button-cornflower md:w-fit mt-6">INSTALL</a>
       </div>
     </div>
 
     <div class="kit-card">
-      <h4>2</h4>
-      <p class="p2 mt-8">As you run experiments, the manifest file pulls the inputs from the end of the experimentation phase and packages that with what’s needed for deployment as an OCI image.</p>
+      <h4 class="!text-cornflower">2</h4>
+      <p class="p2 mt-8">Create a simple configuration file that we call a Kitfile to tell about your model, dataset and code.</p>
     </div>
 
     <div class="kit-card">
-      <h4>3</h4>
-      <p class="p2 mt-8">When you’re ready to share your image, simply run name-command in the CLI, and then anyone can Pull the image from the repository and either run it locally or deploy it through their normal CI/CD pipelines.</p>
+      <h4 class="!text-cornflower">3</h4>
+      <p class="p2 mt-8">When you’re ready to share your image, simply run a build and push command in the CLI.</p>
     </div>
   </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center">
   <h2>WhAt’s sUppoRted<span class="font-heading font-extralight">?</span></h2>
-  <p class="p1 mt-8">KitOps was designed to work with the tools your team already uses.</p>
+  <p class="p1 mt-8">Kit was designed to work with the tools your team already uses.</p>
 
   <ul class="mt-22 flex flex-wrap md:flex-nowrap xs:gap-x-8 xs:gap-y-4 items-center justify-center md:justify-between">
     <li>
@@ -124,7 +122,7 @@
 
   <div class="space-y-6 w-fit mx-auto mt-22">
     <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Join the discord</div>
+      <div class="p1 group-hover:text-night">Join the KitOps Discord</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="43" height="32" viewBox="0 0 43 32" fill="none">
         <g clip-path="url(#clip0_8_909)">
@@ -138,8 +136,8 @@
       </svg>
     </a>
 
-    <a href="https://discord.gg/XzSmtPn3" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
-      <div class="p1 group-hover:text-night">Contribute to ML</div>
+    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:bg-gold group transition-colors">
+      <div class="p1 group-hover:text-night">Contribute to Kit</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
         <path d="M32.3432 21.9998L21.6152 11.2718L24.4436 8.44336L40 23.9998L24.4436 39.556L21.6152 36.7276L32.3432 25.9998H8V21.9998H32.3432Z" fill="#ECECEC"/>

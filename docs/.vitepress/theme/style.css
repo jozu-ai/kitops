@@ -81,7 +81,26 @@
 
 /* Hide the logo text */
 .VPNavBarTitle .title > span {
-  display: none;
+  /* Taken from tailwindcss/sr-only */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Vitepress only come with support up to h3 */
+.VPDoc h4 {
+  font-size: inherit;
+  margin: 32px 0 0;
+}
+
+.VPSidebarItem h2 {
+  letter-spacing: normal;
 }
 
 /**

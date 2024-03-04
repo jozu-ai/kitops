@@ -3,6 +3,7 @@ import fs from 'node:fs'
 
 export type Post = {
   title: string,
+  author: string,
   description: string,
   url: string,
   published_time: string,
@@ -26,9 +27,10 @@ export default {
 
         // Tiny helper
         const getMetaTag = (name) => (
+          post[name] ||
           $(`meta[name=${name}]`).attr("content") ||
           $(`meta[property="og:${name}"]`).attr("content") ||
-          $(`meta[property="twitter${name}"]`).attr("content") || post[name]
+          $(`meta[property="twitter${name}"]`).attr("content")
         )
 
         const title = getMetaTag('title') || $('title').text()
@@ -43,6 +45,7 @@ export default {
         return {
           url: post.url,
           tags,
+          author,
           title,
           description,
           published_time,
