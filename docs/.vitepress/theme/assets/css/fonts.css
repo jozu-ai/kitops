@@ -3,7 +3,7 @@
   font-weight: 200;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-ExtraLight.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-ExtraLight.ttf) format('truetype');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-weight: 200;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-ExtraLightItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-ExtraLightItalic.ttf) format('truetype');
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-Light.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-Light.ttf) format('truetype');
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   font-weight: 300;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-LightItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-LightItalic.ttf) format('truetype');
 }
 
 @font-face {
@@ -35,7 +35,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-Regular.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-Regular.ttf) format('truetype');
 }
 
 @font-face {
@@ -43,7 +43,7 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-Italic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-Italic.ttf) format('truetype');
 }
 
 @font-face {
@@ -51,14 +51,14 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-SemiBold.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-SemiBold.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Titillium Web';
   font-weight: 600;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-SemiBoldItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-SemiBoldItalic.ttf) format('truetype');
 }
 
 @font-face {
@@ -66,29 +66,14 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-Bold.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-Bold.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Titillium Web';
   font-weight: 700;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-BoldItalic.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Titillium Web';
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-ExtraBold.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Titillium Web';
-  font-weight: 800;
-  font-style: italic;
-  font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-ExtraBoldItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-BoldItalic.ttf) format('truetype');
 }
 
 @font-face {
@@ -96,15 +81,7 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-Black.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Titillium Web';
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-  src: local('Rubik'), url(/fonts/titillium-web/TitilliumWeb-BlackItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/titillium-web/TitilliumWeb-Black.ttf) format('truetype');
 }
 
 @font-face {
@@ -112,7 +89,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf) format('truetype');
 }
 
 @font-face {
@@ -120,7 +97,7 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Italic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Italic.ttf) format('truetype');
 }
 
 @font-face {
@@ -128,7 +105,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Bold.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Bold.ttf) format('truetype');
 }
 
 @font-face {
@@ -136,7 +113,7 @@
   font-weight: 700;
   font-style: italic;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-BoldItalic.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-BoldItalic.ttf) format('truetype');
 }
 
 @font-face {
@@ -144,5 +121,5 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: local('Rubik'), url(/fonts/major-mono-display/MajorMonoDisplay-Regular.ttf) format('truetype');
+  src: local('Rubik'), url($public/fonts/major-mono-display/MajorMonoDisplay-Regular.ttf) format('truetype');
 }

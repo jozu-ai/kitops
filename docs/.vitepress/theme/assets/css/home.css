@@ -16,3 +16,7 @@
   @apply font-heading text-salmon;
 }
 
+.marquee-gradients {
+  @apply before:absolute before:inset-y-0 before:left-0 before:w-16 before:z-10 before:bg-gradient-to-r before:from-night before:to-transparent;
+  @apply after:absolute after:inset-y-0 after:right-0 after:w-16 after:z-10 after:bg-gradient-to-l after:from-night after:to-transparent;
+}
