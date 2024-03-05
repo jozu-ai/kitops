@@ -15,8 +15,8 @@ builds:
       - windows
       - darwin
     binary: kit
-    
-    ldflags: 
+
+    ldflags:
       - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.Date}}
 
 archives:
@@ -53,6 +53,6 @@ release:
 
   footer: |
     Thanks for supporting Kitops.
-  
+
   name_template: "{{.ProjectName}}-{{.Version}}"
   skip_upload: false

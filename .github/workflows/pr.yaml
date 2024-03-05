@@ -55,3 +55,12 @@ jobs:
             echo "Run docs/src/docs/cli/generate.sh and commit the result"
             exit 1
           fi
+
+      - name: Check for trailing whitespace
+        run: |
+          files=$(grep -E -lI --exclude '*.svg' --exclude 'docs/*' " +$" $(git ls-files) || true)
+          if [ ! -z $files ]; then
+            echo "Trailing whitespace in files:"
+            echo "$files"
+            exit 1
+          fi

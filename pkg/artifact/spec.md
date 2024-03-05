@@ -8,7 +8,7 @@ A **ModelKit** represents a comprehensive bundle of AI/ML artifacts, including m
 
 **Artifacts:** The building blocks of a ModelKit. Artifacts can be models, datasets, or code, each stored and addressed individually. This modular approach facilitates direct access via tools. Artifact metadata is encapsulated within the kitfile, ensuring comprehensive documentation of each component.
 
-The artifacts and their media types are 
+The artifacts and their media types are
 * Serialized Model: `application/vnd.kitops.modelkit.model.v1.tar+gzip`
 * Datasets:  `application/vnd.kitops.modelkit.dataset.v1.tar+gzip`
 * Code: `application/vnd.kitops.modelkit.code.v1.tar+gzip`
@@ -28,7 +28,7 @@ The artifacts and their media types are
 
 ## ModelKit Manifest Example
 
-Example of a ModelKit manifest with a single serialized model and kitfile. 
+Example of a ModelKit manifest with a single serialized model and kitfile.
 
 ```JSON
 {
