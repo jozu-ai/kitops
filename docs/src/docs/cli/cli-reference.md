@@ -1,105 +1,5 @@
 # Kit CLI Reference
 
-## kit build
-
-Build a modelkit
-
-### Synopsis
-
-Build a modelkit from a kitfile using the given context directory.
-
-The build process involves taking the configuration and resources defined in
-your kitfile and using them to create a modelkit. This modelkit is then stored
-in your local registry, making it readily available for further actions such
-as pushing to a remote registry for collaboration.
-
-Unless a different location is specified, this command looks for the kitfile
-at the root of the provided context directory. Any relative paths defined
-within the kitfile are interpreted as being relative to this context
-directory.
-
-```
-kit build [flags] DIRECTORY
-```
-
-### Examples
-
-```
-# Build a modelkit using the kitfile in the current directory
-kit build .
-
-# Build a modelkit with a specific kitfile and tag
-kit build . -f /path/to/your/Kitfile -t registry/repository:modelv1
-```
-
-### Options
-
-```
-  -f, --file string   Specifies the path to the Kitfile if it's not located at the root of the context directory
-  -h, --help          help for build
-  -t, --tag string    Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
-```
-
-### Options inherited from parent commands
-
-```
-      --config string   Config file (default $HOME/.kitops)
-  -v, --verbose         Include additional information in output (default false)
-```
-
-## kit export
-
-Produce the components from a modelkit on the local filesystem
-
-### Synopsis
-
-Produces all or selected components of a modelkit on the local filesystem.
-
-This command exports a modelkit's components, including models, code,
-datasets, and configuration files, to a specified directory on the local
-filesystem. By default, it attempts to find the modelkit in local storage; if
-not found, it searches the remote registry and retrieves it. This process
-ensures that the necessary components are always available for export,
-optimizing for efficiency by fetching only specified components from the
-remote registry when necessary
-
-```
-kit export [flags] [registry/]repository[:tag|@digest]
-```
-
-### Examples
-
-```
-# Export all components of a modelkit to the current directory
-kit export myrepo/my-model:latest -d /path/to/export
-
-# Export only the model and datasets of a modelkit to a specified directory
-kit export myrepo/my-model:latest --model --datasets -d /path/to/export
-
-# Export a modelkit from a remote registry with overwrite enabled
-kit export registry.example.com/myrepo/my-model:latest -o -d /path/to/export
-```
-
-### Options
-
-```
-      --code         Export only code
-      --config       Export only config file
-      --datasets     Export only datasets
-  -d, --dir string   The target directory to export components into. This directory will be created if it does not exist
-  -h, --help         help for export
-      --model        Export only model
-  -o, --overwrite    Overwrites existing files and directories in the target export directory without prompting
-      --plain-http   Use plain HTTP when connecting to remote registries
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
-```
-
-### Options inherited from parent commands
-
-```
-  -v, --verbose   Include additional information in output (default false)
-```
-
 ## kit list
 
 List modelkits in a repository
@@ -214,6 +114,53 @@ kit logout ghcr.io
 
 ```
   -h, --help   help for logout
+```
+
+### Options inherited from parent commands
+
+```
+      --config string   Config file (default $HOME/.kitops)
+  -v, --verbose         Include additional information in output (default false)
+```
+
+## kit pack
+
+Pack a modelkit
+
+### Synopsis
+
+Pack a modelkit from a kitfile using the given context directory.
+
+The packing process involves taking the configuration and resources defined in
+your kitfile and using them to create a modelkit. This modelkit is then stored
+in your local registry, making it readily available for further actions such
+as pushing to a remote registry for collaboration.
+
+Unless a different location is specified, this command looks for the kitfile
+at the root of the provided context directory. Any relative paths defined
+within the kitfile are interpreted as being relative to this context
+directory.
+
+```
+kit pack [flags] DIRECTORY
+```
+
+### Examples
+
+```
+# Pack a modelkit using the kitfile in the current directory
+kit pack .
+
+# Pack a modelkit with a specific kitfile and tag
+kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
+```
+
+### Options
+
+```
+  -f, --file string   Specifies the path to the Kitfile if it's not located at the root of the context directory
+  -h, --help          help for pack
+  -t, --tag string    Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
 ```
 
 ### Options inherited from parent commands
@@ -400,6 +347,59 @@ kit tag myregistry.com/myrepo/mykit:latest myregistry.com/myrepo/mykit:v1.0.0
 ```
       --config string   Config file (default $HOME/.kitops)
   -v, --verbose         Include additional information in output (default false)
+```
+
+## kit unpack
+
+Produce the components from a modelkit on the local filesystem
+
+### Synopsis
+
+Produces all or selected components of a modelkit on the local filesystem.
+
+This command unpacks a modelkit's components, including models, code,
+datasets, and configuration files, to a specified directory on the local
+filesystem. By default, it attempts to find the modelkit in local storage; if
+not found, it searches the remote registry and retrieves it. This process
+ensures that the necessary components are always available for unpacking,
+optimizing for efficiency by fetching only specified components from the
+remote registry when necessary
+
+```
+kit unpack [flags] [registry/]repository[:tag|@digest]
+```
+
+### Examples
+
+```
+# Unpack all components of a modelkit to the current directory
+kit unpack myrepo/my-model:latest -d /path/to/unpacked
+
+# Unpack only the model and datasets of a modelkit to a specified directory
+kit unpack myrepo/my-model:latest --model --datasets -d /path/to/unpacked
+
+# Unpack a modelkit from a remote registry with overwrite enabled
+kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
+```
+
+### Options
+
+```
+      --code         Unpack only code
+      --config       Unpack only config file
+      --datasets     Unpack only datasets
+  -d, --dir string   The target directory to unpack components into. This directory will be created if it does not exist
+  -h, --help         help for unpack
+      --model        Unpack only model
+  -o, --overwrite    Overwrites existing files and directories in the target unpack directory without prompting
+      --plain-http   Use plain HTTP when connecting to remote registries
+      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+```
+
+### Options inherited from parent commands
+
+```
+  -v, --verbose   Include additional information in output (default false)
 ```
 
 ## kit version
