@@ -33,7 +33,7 @@ multiple times in the list, distinguished by their DIGEST.
 The SIZE displayed for each modelkit represents the total storage space occupied
 by all its components.`
 
-	example = `## List local modelkits
+	example = `# List local modelkits
 kit list
 
 # List modelkits from a remote repository
