@@ -77,7 +77,7 @@ function getItems(path: string, options: ScanOptions) {
       // If is a folder, recursively handle it.
       return {
         text,
-        items: getItems(newPath),
+        items: getItems(newPath, options),
         collapsible: true,
       }
     }
