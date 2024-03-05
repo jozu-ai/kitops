@@ -46,3 +46,12 @@ jobs:
             echo "Project tests failed"
             exit 1
           fi
+
+      - name: Check CLI docs generation
+        run: |
+          docs/src/docs/cli/generate.sh > /dev/null
+          if [[ ! -z $(git status -s) ]]; then
+            echo "CLI documentation is out of date"
+            echo "Run docs/src/docs/cli/generate.sh and commit the result"
+            exit 1
+          fi
