@@ -35,7 +35,7 @@ jobs:
 
       - name: Check build
         run: |
-          if ! go build; then
+          if ! go build -o kit; then
             echo "Project does not build"
             exit 1
           fi
