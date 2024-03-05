@@ -57,10 +57,9 @@ export default defineConfig({
         ]
       },
       {
-        text: 'CLI',
+        text: 'ModelKit',
         items: [
-          { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Command Reference', link: '/docs/cli/kit' },
+          { text: 'Introduction', link: '/docs/modelkit/intro' },
         ]
       },
       {
@@ -69,6 +68,13 @@ export default defineConfig({
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
           { text: 'Format', link: '../pkg/artifact/kit-file.md' },
           { text: 'Benefits', link: '/docs/kitfile/benefits' },
+        ]
+      },
+      {
+        text: 'CLI',
+        items: [
+          { text: 'Download & Install', link: '/docs/cli/installation' },
+          { text: 'Command Reference', link: '/docs/cli/kit' },
         ]
       },
       {
