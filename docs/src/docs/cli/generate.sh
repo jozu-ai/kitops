@@ -17,7 +17,7 @@ find "$DOCS_DIR/" -name "kit*.md"
 echo ""
 
 # Truncate cli-reference doc and insert header
-cat "$DOCS_DIR/cli-reference-header.md" > "$DOCS_DIR/cli-reference.md"
+cat "$DOCS_DIR/cli-reference.header" > "$DOCS_DIR/cli-reference.md"
 
 echo "Building cli-reference.md"
 for file in $(find "$DOCS_DIR/" -name "kit_*.md" | sort); do
