@@ -1,4 +1,4 @@
-package export
+package unpack
 
 import (
 	"archive/tar"
@@ -21,7 +21,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *exportOptions) error {
+func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("failed to resolve local reference: %w", err)
@@ -31,76 +31,76 @@ func exportModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
-	if options.exportConf.exportConfig {
-		if err := exportConfig(config, options.exportDir, options.overwrite); err != nil {
+	if options.unpackConf.unpackConfig {
+		if err := unpackConfig(config, options.unpackDir, options.overwrite); err != nil {
 			return err
 		}
 	}
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
-	// through the config's relevant field to get the correct path for exporting
+	// through the config's relevant field to get the correct path for unpacking
 	var codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
 		layerDir := ""
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
-			if !options.exportConf.exportModels {
+			if !options.unpackConf.unpackModels {
 				continue
 			}
-			layerDir = filepath.Join(options.exportDir, config.Model.Path)
-			output.Infof("Exporting model to %s", layerDir)
+			layerDir = filepath.Join(options.unpackDir, config.Model.Path)
+			output.Infof("Unpacking model to %s", layerDir)
 
 		case constants.CodeLayerMediaType:
-			if !options.exportConf.exportCode {
+			if !options.unpackConf.unpackCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir = filepath.Join(options.exportDir, codeEntry.Path)
-			output.Infof("Exporting code to %s", layerDir)
+			layerDir = filepath.Join(options.unpackDir, codeEntry.Path)
+			output.Infof("Unpacking code to %s", layerDir)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
-			if !options.exportConf.exportDatasets {
+			if !options.unpackConf.unpackDatasets {
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir = filepath.Join(options.exportDir, datasetEntry.Path)
-			output.Infof("Exporting dataset %s to %s", datasetEntry.Name, layerDir)
+			layerDir = filepath.Join(options.unpackDir, datasetEntry.Path)
+			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, layerDir)
 			datasetIdx += 1
 		}
-		if err := exportLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
+		if err := unpackLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
 			return err
 		}
 	}
-	output.Debugf("Exported %d code layers", codeIdx)
-	output.Debugf("Exported %d dataset layers", datasetIdx)
+	output.Debugf("Unpacked %d code layers", codeIdx)
+	output.Debugf("Unpacked %d dataset layers", datasetIdx)
 
 	return nil
 }
 
-func exportConfig(config *artifact.KitFile, exportDir string, overwrite bool) error {
-	configPath := filepath.Join(exportDir, constants.DefaultKitFileName)
+func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) error {
+	configPath := filepath.Join(unpackDir, constants.DefaultKitFileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
-			return fmt.Errorf("failed to export config: path %s already exists", configPath)
+			return fmt.Errorf("failed to unpack config: path %s already exists", configPath)
 		} else if !fi.Mode().IsRegular() {
-			return fmt.Errorf("failed to export config: path %s exists and is not a regular file", configPath)
+			return fmt.Errorf("failed to unpack config: path %s exists and is not a regular file", configPath)
 		}
 	}
 
 	configBytes, err := yaml.Marshal(config)
 	if err != nil {
-		return fmt.Errorf("failed to export config: %w", err)
+		return fmt.Errorf("failed to unpack config: %w", err)
 	}
 
-	output.Infof("Exporting config to %s", configPath)
+	output.Infof("Unpacking config to %s", configPath)
 	if err := os.WriteFile(configPath, configBytes, 0644); err != nil {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 	return nil
 }
 
-func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, exportPath string, overwrite bool) error {
+func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, unpackPath string, overwrite bool) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
@@ -114,18 +114,18 @@ func exportLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer gzr.Close()
 	tr := tar.NewReader(gzr)
 
-	if _, exists := filesystem.PathExists(exportPath); exists {
+	if _, exists := filesystem.PathExists(unpackPath); exists {
 		if !overwrite {
-			return fmt.Errorf("failed to export: path %s already exists", exportPath)
+			return fmt.Errorf("failed to unpack: path %s already exists", unpackPath)
 		}
-		output.Debugf("Directory %s already exists", exportPath)
+		output.Debugf("Directory %s already exists", unpackPath)
 	}
-	exportDir := filepath.Dir(exportPath)
-	if err := os.MkdirAll(exportDir, 0755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", exportDir, err)
+	unpackDir := filepath.Dir(unpackPath)
+	if err := os.MkdirAll(unpackDir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %w", unpackDir, err)
 	}
 
-	return extractTar(tr, exportDir, overwrite)
+	return extractTar(tr, unpackDir, overwrite)
 }
 
 func extractTar(tr *tar.Reader, dir string, overwrite bool) error {

@@ -14,7 +14,7 @@ Available Commands:
 
 | Command |	Description |
 | ---- | --- |
-| `build` | Build a ModelKit |
+| `pack` | Build a ModelKit |
 | `completion` | Generate the autocompletion script for the specified shell |
 | `dev` | Run the serialized model | <!-- starts a server on a given port and drops the model in there for inference -->
 | `fetch` | Updating the local respository for a ModelKit from the remote |
@@ -39,7 +39,7 @@ $ ./kit list
 To build a ModelKit for your model and tag it with `example-tag`:
 
 ```sh
-$ ./kit build ../examples/onnx -t localhost:5050/example-repo:example-tag"
+$ ./kit pack ../examples/onnx -t localhost:5050/example-repo:example-tag"
 ```
 
 Then you can push it to your registry:

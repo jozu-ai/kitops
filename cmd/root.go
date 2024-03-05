@@ -10,15 +10,15 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"kitops/pkg/cmd/build"
-	"kitops/pkg/cmd/export"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
 	"kitops/pkg/cmd/logout"
+	"kitops/pkg/cmd/pack"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/remove"
 	"kitops/pkg/cmd/tag"
+	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -75,16 +75,16 @@ func RunCommand() *cobra.Command {
 }
 
 func addSubcommands(rootCmd *cobra.Command) {
-	rootCmd.AddCommand(build.BuildCommand())
+	rootCmd.AddCommand(pack.PackCommand())
+	rootCmd.AddCommand(unpack.UnpackCommand())
+	rootCmd.AddCommand(push.PushCommand())
+	rootCmd.AddCommand(pull.PullCommand())
+	rootCmd.AddCommand(tag.TagCommand())
+	rootCmd.AddCommand(list.ListCommand())
+	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(login.LoginCommand())
 	rootCmd.AddCommand(logout.LogoutCommand())
-	rootCmd.AddCommand(pull.PullCommand())
-	rootCmd.AddCommand(push.PushCommand())
-	rootCmd.AddCommand(list.ListCommand())
-	rootCmd.AddCommand(export.ExportCommand())
-	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(version.VersionCommand())
-	rootCmd.AddCommand(tag.TagCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
