@@ -1,6 +1,7 @@
 import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
+import { getSidebarItemsFromMdFiles } from './utils.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -59,8 +60,9 @@ export default defineConfig({
       {
         text: 'CLI',
         items: [
-          { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Command Reference', link: '/docs/cli/kit' },
+          ...getSidebarItemsFromMdFiles('docs/cli', {
+            textFormat: (text) => text.replaceAll('kit_', '')
+          })
         ]
       },
       {

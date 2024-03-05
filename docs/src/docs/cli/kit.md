@@ -5,7 +5,7 @@ Streamline the lifecycle of AI/ML models
 ### Synopsis
 
 Kit is a tool for efficient AI/ML model lifecycle management.
-     
+
 Find more information at: http://kitops.ml
 
 ### Options
