@@ -5,15 +5,15 @@ Builds a modelkit
 
 ### Synopsis
 
-Build a modelkit from a kitfile using the given context directory. 
+Build a modelkit from a kitfile using the given context directory.
 
-The build process involves taking the configuration and resources defined in 
+The build process involves taking the configuration and resources defined in
 your kitfile and using them to create a modelkit. This modelkit is then stored
-in your local registry, making it readily available for further actions such 
+in your local registry, making it readily available for further actions such
 as pushing to a remote registry for collaboration.
 
-Unless a different location is specified, this command looks for the k	itfile 
-at the root of the provided context directory. Any relative paths defined 
+Unless a different location is specified, this command looks for the k	itfile
+at the root of the provided context directory. Any relative paths defined
 within the kitfile are interpreted as being relative to this context directory.
 
 ```
@@ -52,12 +52,12 @@ Produce the components from a modelkit on the local filesystem
 ### Synopsis
 
 Produces all or selected components of a modelkit on the local filesystem.
-	
-This command exports a modelkit's components, including models, code, datasets, 
-and configuration files, to a specified directory on the local filesystem. 
-By default, it attempts to find the modelkit in local storage; if not found, it 
-searches the remote registry and retrieves it. This process ensures that the 
-necessary components are always available for export, optimizing for efficiency 
+
+This command exports a modelkit's components, including models, code, datasets,
+and configuration files, to a specified directory on the local filesystem.
+By default, it attempts to find the modelkit in local storage; if not found, it
+searches the remote registry and retrieves it. This process ensures that the
+necessary components are always available for export, optimizing for efficiency
 by fetching only specified components from the remote registry when necessary
 
 ```
@@ -105,16 +105,16 @@ List modelkits in a repository
 
 Displays a list of modelkits available in a repository.
 
-This command provides an overview of modelkits stored either in the local 
-repository or a specified remote repository. It displays each modelkit along 
-with its associated tags and the cumulative size of its contents. Modelkits 
+This command provides an overview of modelkits stored either in the local
+repository or a specified remote repository. It displays each modelkit along
+with its associated tags and the cumulative size of its contents. Modelkits
 comprise multiple artifacts, including models, datasets, code, and configuration,
 designed to enhance reusability and modularity. However, this command focuses on
 the aggregate rather than listing individual artifacts.
 
 Each modelkit entry includes its DIGEST, a unique identifier that ensures
-distinct versions of a modelkit are easily recognizable, even if they share the 
-same name or tags. Modelkits with multiple tags or repository names will appear 
+distinct versions of a modelkit are easily recognizable, even if they share the
+same name or tags. Modelkits with multiple tags or repository names will appear
 multiple times in the list, distinguished by their DIGEST.
 
 The SIZE displayed for each modelkit represents the total storage space occupied
@@ -224,7 +224,7 @@ Retrieve modelkits from a remote registry to your local environment.
 
 ### Synopsis
 
-Downloads modelkits from a specified registry. The downloaded 
+Downloads modelkits from a specified registry. The downloaded
 modelkits are stored in the local registry.
 
 ```
@@ -261,7 +261,7 @@ Uploads modelkits to a specified registry
 
 This command pushes modelkits to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before 
+The modelkits should be tagged with the target registry and repository before
 they can be pushed
 
 ```
@@ -341,37 +341,37 @@ Create a tag that refers to a modelkit
 
 Create or update a tag <target-modelkit> that refers to <source-modelkit>
 
-This command assigns a new tag to an existing modelkit (source-modelkit) or 
-updates an existing tag, effectively renaming or categorizing modelkits for 
+This command assigns a new tag to an existing modelkit (source-modelkit) or
+updates an existing tag, effectively renaming or categorizing modelkits for
 better organization and version control. Tags are identifiers linked to specific
 modelkit versions within a repository.
 
-A full modelkit reference has the following format: 
+A full modelkit reference has the following format:
 
 [HOST[:PORT_NUMBER]/][NAMESPACE/]REPOSITORY[:TAG]
 
  * HOST: Optional. The registry hostname where the ModelKit is located. Defaults
-   to localhost if unspecified. Must follow standard DNS rules 
+   to localhost if unspecified. Must follow standard DNS rules
    (excluding underscores).
 
- * PORT_NUMBER: Optional. Specifies the registry's port number if a hostname is 
+ * PORT_NUMBER: Optional. Specifies the registry's port number if a hostname is
    provided.
 
- * NAMESPACE: Represents a user or organization's namespace, consisting of 
-   slash-separated components that may include lowercase letters, digits, and 
+ * NAMESPACE: Represents a user or organization's namespace, consisting of
+   slash-separated components that may include lowercase letters, digits, and
    specific separators (periods, underscores, hyphens).
- 
- * REPOSITORY: The name of the repository, typically corresponding to the 
+
+ * REPOSITORY: The name of the repository, typically corresponding to the
    modelkit's name.
 
- * TAG: A human-readable identifier for the modelkit version or variant. Valid 
+ * TAG: A human-readable identifier for the modelkit version or variant. Valid
    ASCII characters include lowercase and uppercase letters, digits, underscores,
-   periods, and hyphens. It cannot start with a period or hyphen and is limited 
+   periods, and hyphens. It cannot start with a period or hyphen and is limited
    to 128 characters.
 
 Tagging is a powerful way to manage different versions or configurations of your
-modelkits, making it easier to organize, retrieve, and deploy specific 
-iterations. Ensure tags are meaningful and consistent across your team or 
+modelkits, making it easier to organize, retrieve, and deploy specific
+iterations. Ensure tags are meaningful and consistent across your team or
 organization to maintain clarity and avoid confusion.
 
 ```
@@ -405,8 +405,8 @@ Display the version information for the CLI
 
 The version command prints detailed version information.
 
-This information includes the current version of the tool, the Git commit that 
-the version was built from, the build time, and the version of Go it was 
+This information includes the current version of the tool, the Git commit that
+the version was built from, the build time, and the version of Go it was
 compiled with.
 
 ```

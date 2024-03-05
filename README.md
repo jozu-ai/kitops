@@ -49,7 +49,7 @@ Then run the project:
 ./kit
 ```
 
-Alternatively 
+Alternatively
 
 ```shell
 go run kit

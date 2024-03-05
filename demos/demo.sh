@@ -35,7 +35,7 @@ fi
 clear
 
 
-pe "./kit version" 
+pe "./kit version"
 
 # Let's check if there are any model kits locally
 pe "./kit list"
@@ -53,7 +53,7 @@ pe "./kit build ../examples/onnx -t localhost:5050/test-repo:test-tag"
 pe "./kit list"
 
 # run a local registry
-pe "$DOCKER run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry" 
+pe "$DOCKER run --name registry --rm -d -p 5050:5050 -e REGISTRY_HTTP_ADDR=:5050 registry"
 
 # Let's push the model to the local registry
 pe "./kit push localhost:5050/test-repo:test-tag --http"

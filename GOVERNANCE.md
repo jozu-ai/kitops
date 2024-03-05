@@ -47,7 +47,7 @@ To become a Maintainer you need to demonstrate the following:
   * Ability to collaborate with the team
   * Understanding of how the team works (policies, processes for testing and code review, etc)
   * Understanding of the project's code base and coding and documentation style
-  
+
 A new Maintainer must be proposed by an existing maintainer by sending a message in the #general channel in the [KitOps Discord server](https://discord.gg/XzSmtPn3). A simple majority vote of existing Maintainers approves the application.  Maintainers nominations will be evaluated without prejudice to employer or demographics.
 
 Maintainers who are selected will be granted the necessary GitHub rights, and invited to the private Maintainers Discord channel.

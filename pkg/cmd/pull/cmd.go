@@ -15,7 +15,7 @@ import (
 
 const (
 	shortDesc = `Retrieve modelkits from a remote registry to your local environment.`
-	longDesc  = `Downloads modelkits from a specified registry. The downloaded 
+	longDesc  = `Downloads modelkits from a specified registry. The downloaded
 modelkits are stored in the local registry.`
 	example = `# Pull the latest version of a modelkit from a remote registry
 kit pull registry.example.com/my-model:latest`

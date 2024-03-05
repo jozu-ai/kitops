@@ -17,12 +17,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-       
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
             go-version-file: 'go.mod'
-    
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
@@ -39,8 +39,8 @@ jobs:
           name: 'Nightly Builds Download for KitOps CLI (kit)'
           prerelease: true
           body: |
-            Welcome to the cutting edge! Our nightly builds offer the most recent developments 
-            in kit CLI, providing early access to new features, enhancements, and 
+            Welcome to the cutting edge! Our nightly builds offer the most recent developments
+            in kit CLI, providing early access to new features, enhancements, and
             fixes that are on their way to the next stable release'
           files: |
             ./dist/*.txt

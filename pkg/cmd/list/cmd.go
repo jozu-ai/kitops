@@ -18,16 +18,16 @@ const (
 	shortDesc = `List modelkits in a repository`
 	longDesc  = `Displays a list of modelkits available in a repository.
 
-This command provides an overview of modelkits stored either in the local 
-repository or a specified remote repository. It displays each modelkit along 
-with its associated tags and the cumulative size of its contents. Modelkits 
+This command provides an overview of modelkits stored either in the local
+repository or a specified remote repository. It displays each modelkit along
+with its associated tags and the cumulative size of its contents. Modelkits
 comprise multiple artifacts, including models, datasets, code, and configuration,
 designed to enhance reusability and modularity. However, this command focuses on
 the aggregate rather than listing individual artifacts.
 
 Each modelkit entry includes its DIGEST, a unique identifier that ensures
-distinct versions of a modelkit are easily recognizable, even if they share the 
-same name or tags. Modelkits with multiple tags or repository names will appear 
+distinct versions of a modelkit are easily recognizable, even if they share the
+same name or tags. Modelkits with multiple tags or repository names will appear
 multiple times in the list, distinguished by their DIGEST.
 
 The SIZE displayed for each modelkit represents the total storage space occupied
