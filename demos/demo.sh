@@ -44,10 +44,10 @@ pe "./kit list"
 pe "rm -rf ~/.kitops"
 pe "./kit list"
 
-pe "./kit build --help"
+pe "./kit pack --help"
 
-# Let's build the onnx model
-pe "./kit build ../examples/onnx -t localhost:5050/test-repo:test-tag"
+# Let's pack the onnx model
+pe "./kit pack ../examples/onnx -t localhost:5050/test-repo:test-tag"
 
 # Let's check if the model kit is built
 pe "./kit list"

@@ -27,7 +27,7 @@ Rajat is working on tuning an open source foundational model for his company. Af
 Rajat adds two lines to the end of his Jupyter notebook to create a ModelKit for that will include the model, the datasets used for training and validation, the Jupyter notebook file with the code and context, and the Kitfile manifest and metadata:
 
 ```sh
-$ ./kit build -t corp-registry/app-model:challenger
+$ ./kit pack -t corp-registry/app-model:challenger
 $ ./kit push  --http corp-registry/app-model:challenger
 ```
 
@@ -95,8 +95,8 @@ Angel leads an internal data science team that builds models to help Weyland-Yut
 After a few days work, Angel's team is done. They build a ModelKit so their new model can easily be deployed:
 
 ```sh
-$ ./kit build -t corp-registry/churn-model:beta
-$ ./kit push  --http corp-registry/churn-model:beta
+$ ./kit pack -t corp-registry/churn-model:beta
+$ ./kit push --plain-http corp-registry/churn-model:beta
 ```
 
 Angel is experienced with Weyland-Yutani's GitOps process so they issue a PR with a reference to the ModelKit in the company's private repository. Annika reviews the PR and approves and merges it once all the automated tests pass.

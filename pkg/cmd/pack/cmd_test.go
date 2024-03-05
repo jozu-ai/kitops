@@ -1,4 +1,4 @@
-package build
+package pack
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBuildOptions_Complete(t *testing.T) {
-	options := &buildOptions{}
+func TestPackOptions_Complete(t *testing.T) {
+	options := &packOptions{}
 	ctx := context.WithValue(context.Background(), constants.ConfigKey{}, "/home/user/.kitops")
 	args := []string{"arg1"}
 
@@ -21,14 +21,14 @@ func TestBuildOptions_Complete(t *testing.T) {
 	assert.Equal(t, filepath.Join(args[0], constants.DefaultKitFileName), options.modelFile)
 }
 
-func TestBuildOptions_RunBuild(t *testing.T) {
+func TestPackOptions_RunPack(t *testing.T) {
 	t.Skip("Skipping test for now")
-	options := &buildOptions{
+	options := &packOptions{
 		modelFile:  "Kitfile",
 		contextDir: "/path/to/context",
 	}
 
-	err := RunBuild(context.Background(), options)
+	err := RunPack(context.Background(), options)
 
 	assert.NoError(t, err)
 }

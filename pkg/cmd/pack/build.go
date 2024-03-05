@@ -1,4 +1,4 @@
-package build
+package pack
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"kitops/pkg/output"
 )
 
-func RunBuild(ctx context.Context, options *buildOptions) error {
+func RunPack(ctx context.Context, options *packOptions) error {
 	// 1. Read the model file
 	kitfile := &artifact.KitFile{}
 	if err := kitfile.LoadModel(options.modelFile); err != nil {

@@ -1,4 +1,4 @@
-package export
+package unpack
 
 import (
 	"context"
@@ -20,41 +20,41 @@ const (
 	shortDesc = `Produce the components from a modelkit on the local filesystem`
 	longDesc  = `Produces all or selected components of a modelkit on the local filesystem.
 
-This command exports a modelkit's components, including models, code,
+This command unpacks a modelkit's components, including models, code,
 datasets, and configuration files, to a specified directory on the local
 filesystem. By default, it attempts to find the modelkit in local storage; if
 not found, it searches the remote registry and retrieves it. This process
-ensures that the necessary components are always available for export,
+ensures that the necessary components are always available for unpacking,
 optimizing for efficiency by fetching only specified components from the
 remote registry when necessary`
 
-	example = `# Export all components of a modelkit to the current directory
-kit export myrepo/my-model:latest -d /path/to/export
+	example = `# Unpack all components of a modelkit to the current directory
+kit unpack myrepo/my-model:latest -d /path/to/unpacked
 
-# Export only the model and datasets of a modelkit to a specified directory
-kit export myrepo/my-model:latest --model --datasets -d /path/to/export
+# Unpack only the model and datasets of a modelkit to a specified directory
+kit unpack myrepo/my-model:latest --model --datasets -d /path/to/unpacked
 
-# Export a modelkit from a remote registry with overwrite enabled
-kit export registry.example.com/myrepo/my-model:latest -o -d /path/to/export`
+# Unpack a modelkit from a remote registry with overwrite enabled
+kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked`
 )
 
-type exportOptions struct {
+type unpackOptions struct {
 	options.NetworkOptions
 	configHome string
-	exportDir  string
-	exportConf exportConf
+	unpackDir  string
+	unpackConf unpackConf
 	modelRef   *registry.Reference
 	overwrite  bool
 }
 
-type exportConf struct {
-	exportConfig   bool
-	exportModels   bool
-	exportCode     bool
-	exportDatasets bool
+type unpackConf struct {
+	unpackConfig   bool
+	unpackModels   bool
+	unpackCode     bool
+	unpackDatasets bool
 }
 
-func (opts *exportOptions) complete(ctx context.Context, args []string) error {
+func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
 		return fmt.Errorf("default config path not set on command context")
@@ -65,27 +65,27 @@ func (opts *exportOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
 	}
 	if len(extraTags) > 0 {
-		return fmt.Errorf("can not export multiple tags")
+		return fmt.Errorf("can not unpack multiple tags")
 	}
 	opts.modelRef = modelRef
 
-	conf := opts.exportConf
-	if !conf.exportConfig && !conf.exportModels && !conf.exportCode && !conf.exportDatasets {
-		opts.exportConf.exportConfig = true
-		opts.exportConf.exportModels = true
-		opts.exportConf.exportCode = true
-		opts.exportConf.exportDatasets = true
+	conf := opts.unpackConf
+	if !conf.unpackConfig && !conf.unpackModels && !conf.unpackCode && !conf.unpackDatasets {
+		opts.unpackConf.unpackConfig = true
+		opts.unpackConf.unpackModels = true
+		opts.unpackConf.unpackCode = true
+		opts.unpackConf.unpackDatasets = true
 	}
 
 	printConfig(opts)
 	return nil
 }
 
-func ExportCommand() *cobra.Command {
-	opts := &exportOptions{}
+func UnpackCommand() *cobra.Command {
+	opts := &unpackOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "export [flags] [registry/]repository[:tag|@digest]",
+		Use:     "unpack [flags] [registry/]repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
@@ -93,25 +93,25 @@ func ExportCommand() *cobra.Command {
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().StringVarP(&opts.exportDir, "dir", "d", "", "The target directory to export components into. This directory will be created if it does not exist")
-	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrites existing files and directories in the target export directory without prompting")
-	cmd.Flags().BoolVar(&opts.exportConf.exportConfig, "config", false, "Export only config file")
-	cmd.Flags().BoolVar(&opts.exportConf.exportModels, "model", false, "Export only model")
-	cmd.Flags().BoolVar(&opts.exportConf.exportCode, "code", false, "Export only code")
-	cmd.Flags().BoolVar(&opts.exportConf.exportDatasets, "datasets", false, "Export only datasets")
+	cmd.Flags().StringVarP(&opts.unpackDir, "dir", "d", "", "The target directory to unpack components into. This directory will be created if it does not exist")
+	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrites existing files and directories in the target unpack directory without prompting")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackConfig, "config", false, "Unpack only config file")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
 	opts.AddNetworkFlags(cmd)
 
 	return cmd
 }
 
-func runCommand(opts *exportOptions) func(*cobra.Command, []string) {
+func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Fatalf("Failed to process arguments: %s", err)
 		}
 
 		if opts.modelRef.Reference == "" {
-			output.Fatalf("Invalid reference: exporting requires a tag or digest")
+			output.Fatalf("Invalid reference: unpacking requires a tag or digest")
 		}
 		store, err := getStoreForRef(cmd.Context(), opts)
 		if err != nil {
@@ -119,19 +119,19 @@ func runCommand(opts *exportOptions) func(*cobra.Command, []string) {
 			output.Fatalf("Failed to find reference %s: %s", ref, err)
 		}
 
-		exportTo := opts.exportDir
-		if exportTo == "" {
-			exportTo = "current directory"
+		unpackTo := opts.unpackDir
+		if unpackTo == "" {
+			unpackTo = "current directory"
 		}
-		output.Infof("Exporting to %s", exportTo)
-		err = exportModel(cmd.Context(), store, opts.modelRef, opts)
+		output.Infof("Unpacking to %s", unpackTo)
+		err = unpackModel(cmd.Context(), store, opts.modelRef, opts)
 		if err != nil {
 			output.Fatalln(err)
 		}
 	}
 }
 
-func getStoreForRef(ctx context.Context, opts *exportOptions) (oras.Target, error) {
+func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, error) {
 	storageHome := constants.StoragePath(opts.configHome)
 	localStore, err := oci.New(repo.RepoPath(storageHome, opts.modelRef))
 	if err != nil {
@@ -170,8 +170,8 @@ func getStoreForRef(ctx context.Context, opts *exportOptions) (oras.Target, erro
 	return repo, nil
 }
 
-func printConfig(opts *exportOptions) {
+func printConfig(opts *unpackOptions) {
 	output.Debugf("Using config path: %s", opts.configHome)
 	output.Debugf("Overwrite: %t", opts.overwrite)
-	output.Debugf("Exporting %s", opts.modelRef.String())
+	output.Debugf("Unpacking %s", opts.modelRef.String())
 }
