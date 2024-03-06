@@ -43,7 +43,7 @@ func LoginCommand() *cobra.Command {
 	opts := &loginOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "login <registry>",
+		Use:     "login [flags] [REGISTRY]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

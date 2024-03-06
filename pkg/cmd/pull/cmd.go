@@ -54,7 +54,7 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 func PullCommand() *cobra.Command {
 	opts := &pullOptions{}
 	cmd := &cobra.Command{
-		Use:     "pull registry/repository[:tag|@digest]",
+		Use:     "pull [flags] registry/repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

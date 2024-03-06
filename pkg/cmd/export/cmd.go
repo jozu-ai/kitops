@@ -85,7 +85,7 @@ func ExportCommand() *cobra.Command {
 	opts := &exportOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "export [registry/]repository[:tag|@digest]",
+		Use:     "export [flags] [registry/]repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
