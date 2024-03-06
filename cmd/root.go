@@ -61,10 +61,16 @@ func RunCommand() *cobra.Command {
 			cmd.SetContext(ctx)
 		},
 	}
-
 	addSubcommands(cmd)
 	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
 	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
+
+	cmd.SetHelpTemplate(helpTemplate)
+	cmd.SetUsageTemplate(usageTemplate)
+	cobra.AddTemplateFunc("indent", indentBlock)
+	cobra.AddTemplateFunc("sectionHead", sectionHead)
+	cobra.AddTemplateFunc("ensureTrailingNewline", ensureTrailingNewline)
+
 	return cmd
 }
 
