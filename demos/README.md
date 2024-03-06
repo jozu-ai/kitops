@@ -6,7 +6,7 @@ Follow these steps to run the demo scripts successfully:
 
 2. **Navigate to the Demo Directory:** Change your current working directory to the demo's directory by using the `cd` command followed by the path to the directory. For example:
 
-```shell 
+```shell
 cd  kitops/demo/
 ```
 
@@ -28,4 +28,4 @@ Make sure that `my-demo.sh` is the correct name of the demo script you intend to
 chmod +x my-demo.sh
 ```
 
-Before running these steps, ensure that you have any dependencies or environmental requirements satisfied which are usually recorded as comments on the `.sh` file. 
+Before running these steps, ensure that you have any dependencies or environmental requirements satisfied which are usually recorded as comments on the `.sh` file.

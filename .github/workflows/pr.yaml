@@ -35,7 +35,7 @@ jobs:
 
       - name: Check build
         run: |
-          if ! go build; then
+          if ! go build -o kit; then
             echo "Project does not build"
             exit 1
           fi
@@ -44,5 +44,23 @@ jobs:
         run: |
           if ! go test ./... -v; then
             echo "Project tests failed"
+            exit 1
+          fi
+
+      - name: Check CLI docs generation
+        run: |
+          docs/src/docs/cli/generate.sh > /dev/null
+          if [[ ! -z $(git status -s) ]]; then
+            echo "CLI documentation is out of date"
+            echo "Run docs/src/docs/cli/generate.sh and commit the result"
+            exit 1
+          fi
+
+      - name: Check for trailing whitespace
+        run: |
+          files=$(grep -E -lI --exclude '*.svg' --exclude 'docs/*' " +$" $(git ls-files) || true)
+          if [ ! -z $files ]; then
+            echo "Trailing whitespace in files:"
+            echo "$files"
             exit 1
           fi

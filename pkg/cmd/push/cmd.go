@@ -17,7 +17,7 @@ const (
 	shortDesc = `Uploads modelkits to a specified registry`
 	longDesc  = `This command pushes modelkits to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before 
+The modelkits should be tagged with the target registry and repository before
 they can be pushed`
 
 	example = `# Push the latest modelkits to a remote registry

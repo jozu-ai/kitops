@@ -11,8 +11,8 @@ const (
 	shortDesc = `Display the version information for the CLI`
 	longDesc  = `The version command prints detailed version information.
 
-This information includes the current version of the tool, the Git commit that 
-the version was built from, the build time, and the version of Go it was 
+This information includes the current version of the tool, the Git commit that
+the version was built from, the build time, and the version of Go it was
 compiled with.`
 )
 

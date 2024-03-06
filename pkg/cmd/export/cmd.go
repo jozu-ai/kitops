@@ -19,12 +19,12 @@ import (
 const (
 	shortDesc = `Produce the components from a modelkit on the local filesystem`
 	longDesc  = `Produces all or selected components of a modelkit on the local filesystem.
-	
-This command exports a modelkit's components, including models, code, datasets, 
-and configuration files, to a specified directory on the local filesystem. 
-By default, it attempts to find the modelkit in local storage; if not found, it 
-searches the remote registry and retrieves it. This process ensures that the 
-necessary components are always available for export, optimizing for efficiency 
+
+This command exports a modelkit's components, including models, code, datasets,
+and configuration files, to a specified directory on the local filesystem.
+By default, it attempts to find the modelkit in local storage; if not found, it
+searches the remote registry and retrieves it. This process ensures that the
+necessary components are always available for export, optimizing for efficiency
 by fetching only specified components from the remote registry when necessary`
 
 	example = `# Export all components of a modelkit to the current directory
