@@ -48,7 +48,7 @@ Then you can push it to your registry:
 $ ./kit push localhost:5050/example-repo:example-tag --http
 ```
 
-After you finish calling all your friends and telling them about Kit, they will want to fetch your ModelKit and run it. The `fetch` command is used to bring everything in the ModelKit to your local machine - the model, dataset(s), code, and the [Kitfile](../kitfile/overview.md) manifest.
+After you finish calling all your friends and telling them about Kit, they will want to fetch your ModelKit and run it. The `fetch` command is used to bring everything in the ModelKit to your local machine - the model, dataset(s), code, and the [Kitfile](../kitfile/kf-overview.md) manifest.
 
 ```sh
 $ ./kit fetch localhost:5050/test-repo:test-tag --http

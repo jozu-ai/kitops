@@ -1,13 +1,13 @@
 import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
+import { getSidebarItemsFromMdFiles } from './utils.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  titleTemplate: 'KitOps',
   description: 'Documentation for KitOps',
 
   head: [
@@ -51,7 +51,6 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Overview', link: '/docs/overview' },
-          { text: 'Installation', link: '/docs/cli/installation' },
           { text: 'Use Cases', link: '/docs/use-cases' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
         ]
@@ -72,10 +71,13 @@ export default defineConfig({
       },
       {
         text: 'CLI',
-        items: [
-          { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Command Reference', link: '/docs/cli/kit' },
-        ]
+        items: getSidebarItemsFromMdFiles('docs/cli', {
+            replacements: {
+              'cli-reference': 'Command Reference' ,
+              'installation': 'Download & Install'
+            },
+            textFormat: (text) => text.replaceAll('cli-', '')
+          })
       },
       {
         text: 'MLOps with Kitfile',

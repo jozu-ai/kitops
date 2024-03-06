@@ -8,7 +8,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   <p class="h4 !font-normal !text-off-white">Share and run your models anywhere</p>
   <h1 class="mt-4">Bridge the gap between ML and Application teams</h1>
 
-  <a href="/docs/installation" class="kit-button mt-10 md:mt-14 xl:mt-22">Install</a>
+  <a href="/docs/cli/installation" class="kit-button mt-10 md:mt-14 xl:mt-22">Install</a>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center max-w-[1152px] mx-auto">
@@ -83,7 +83,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
       <div class="h4 font-bold !text-cornflower">1</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/installation" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+        <a href="/docs/cli/installation" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
       </div>
     </div>
 
@@ -91,7 +91,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
       <div class="h4 font-bold !text-cornflower">2</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
-        <a href="/docs/installation" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
+        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
       </div>
     </div>
 
@@ -99,7 +99,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
       <div class="h4 font-bold !text-cornflower">3</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Pull the ModelKit into your pipeline, or use kit dev to start working with the model.</p>
-        <a href="/docs/installation" class="kit-button md:w-fit mt-6">USE CASES</a>
+        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
       </div>
     </div>
   </div>

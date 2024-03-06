@@ -340,7 +340,7 @@ Create a tag that refers to a modelkit
 
 ### Synopsis
 
-Create or update a tag <target-modelkit> that refers to <source-modelkit>
+Create or update a tag {target-modelkit} that refers to {source-modelkit}
 
 This command assigns a new tag to an existing modelkit (source-modelkit) or
 updates an existing tag, effectively renaming or categorizing modelkits for
