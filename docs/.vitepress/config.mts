@@ -66,7 +66,7 @@ export default defineConfig({
         text: 'Kitfile',
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '../pkg/artifact/kit-file.md' },
+          { text: 'Format', link: '/docs/kitfile/format.md' },
           { text: 'Benefits', link: '/docs/kitfile/benefits' },
         ]
       },
@@ -81,39 +81,11 @@ export default defineConfig({
           })
       },
       {
-        text: 'MLOps with Kitfile',
-        items: [
-          { text: 'Kit and CI/CD', link: '/docs/mlops/ci-cd' },
-          //{ text: 'Kit and model orchestration', link: '/docs/mlops/orchestration' },
-          //{ text: 'Kit and registries', link: '/docs/mlops/registries' },
-        ]
-      },
-      /*
-      {
-        text: 'Advanced',
-        items: [
-          { text: 'Fine-tuning', link: '/docs/mlops/ci-cd' },
-          { text: 'Multi-models and Multi-tasking', link: '/docs/mlops/ci-cd' },
-          { text: 'Parallel training', link: '/docs/mlops/ci-cd' },
-          { text: 'Reinforcement and deep RL', link: '/docs/mlops/ci-cd' },
-        ]
-      },
-      */
-      {
         text: 'Contribute',
         items: [
-          { text: 'Contribute to KitOps docs', link: '/' }
+          { text: 'Contribute to KitOps docs', link: '/contributing' }
         ]
       },
-      /*
-      {
-        text: 'Documentation Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-      */
     ],
 
     socialLinks: [
