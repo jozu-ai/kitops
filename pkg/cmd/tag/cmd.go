@@ -80,7 +80,7 @@ func (opts *tagOptions) complete(ctx context.Context, args []string) error {
 func TagCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "tag <source-modelkit>[:TAG] <target-modelkit>[:TAG]",
+		Use:     "tag SOURCE_MODELKIT[:TAG] TARGET_MODELKIT[:TAG]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

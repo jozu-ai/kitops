@@ -55,7 +55,7 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 func RemoveCommand() *cobra.Command {
 	opts := &removeOptions{}
 	cmd := &cobra.Command{
-		Use:     "remove registry/repository[:tag|@digest]",
+		Use:     "remove [flags] registry/repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: examples,

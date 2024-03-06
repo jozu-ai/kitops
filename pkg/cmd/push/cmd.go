@@ -59,7 +59,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 func PushCommand() *cobra.Command {
 	opts := &pushOptions{}
 	cmd := &cobra.Command{
-		Use:     "push registry/repository[:tag|@digest]",
+		Use:     "push [flags] registry/repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
