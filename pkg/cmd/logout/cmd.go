@@ -14,8 +14,10 @@ import (
 
 const (
 	shortDesc = `Log out from an OCI registry`
-	longDesc  = `Log out from an OCI registry`
-	example   = `# Log out from ghcr.io
+	longDesc  = `Log out from a specified OCI-compatible registry. Any saved credentials are
+removed from storage.`
+
+	example = `# Log out from ghcr.io
 kit logout ghcr.io`
 )
 

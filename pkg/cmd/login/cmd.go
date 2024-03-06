@@ -22,8 +22,10 @@ import (
 
 const (
 	shortDesc = `Log in to an OCI registry`
-	longDesc  = `Log in to an OCI registry`
-	example   = `# Login to ghcr.io
+	longDesc  = `Log in to a specified OCI-compatible registry. Credentials are saved and used
+automatically for future CLI operations`
+
+	example = `# Login to ghcr.io
 kit login ghcr.io -u github_user -p personal_token`
 )
 
