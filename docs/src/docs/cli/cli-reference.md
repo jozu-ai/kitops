@@ -2,7 +2,7 @@
 
 ## kit build
 
-Builds a modelkit
+Build a modelkit
 
 ### Synopsis
 
@@ -13,12 +13,13 @@ your kitfile and using them to create a modelkit. This modelkit is then stored
 in your local registry, making it readily available for further actions such
 as pushing to a remote registry for collaboration.
 
-Unless a different location is specified, this command looks for the k	itfile
+Unless a different location is specified, this command looks for the kitfile
 at the root of the provided context directory. Any relative paths defined
-within the kitfile are interpreted as being relative to this context directory.
+within the kitfile are interpreted as being relative to this context
+directory.
 
 ```
-kit build DIRECTORY [flags]
+kit build [flags] DIRECTORY
 ```
 
 ### Examples
@@ -54,15 +55,16 @@ Produce the components from a modelkit on the local filesystem
 
 Produces all or selected components of a modelkit on the local filesystem.
 
-This command exports a modelkit's components, including models, code, datasets,
-and configuration files, to a specified directory on the local filesystem.
-By default, it attempts to find the modelkit in local storage; if not found, it
-searches the remote registry and retrieves it. This process ensures that the
-necessary components are always available for export, optimizing for efficiency
-by fetching only specified components from the remote registry when necessary
+This command exports a modelkit's components, including models, code,
+datasets, and configuration files, to a specified directory on the local
+filesystem. By default, it attempts to find the modelkit in local storage; if
+not found, it searches the remote registry and retrieves it. This process
+ensures that the necessary components are always available for export,
+optimizing for efficiency by fetching only specified components from the
+remote registry when necessary
 
 ```
-kit export [registry/]repository[:tag|@digest] [flags]
+kit export [flags] [registry/]repository[:tag|@digest]
 ```
 
 ### Examples
@@ -109,20 +111,20 @@ Displays a list of modelkits available in a repository.
 This command provides an overview of modelkits stored either in the local
 repository or a specified remote repository. It displays each modelkit along
 with its associated tags and the cumulative size of its contents. Modelkits
-comprise multiple artifacts, including models, datasets, code, and configuration,
-designed to enhance reusability and modularity. However, this command focuses on
-the aggregate rather than listing individual artifacts.
+comprise multiple artifacts, including models, datasets, code, and
+configuration, designed to enhance reusability and modularity. However, this
+command focuses on the aggregate rather than listing individual artifacts.
 
 Each modelkit entry includes its DIGEST, a unique identifier that ensures
-distinct versions of a modelkit are easily recognizable, even if they share the
-same name or tags. Modelkits with multiple tags or repository names will appear
-multiple times in the list, distinguished by their DIGEST.
+distinct versions of a modelkit are easily recognizable, even if they share
+the same name or tags. Modelkits with multiple tags or repository names will
+appear multiple times in the list, distinguished by their DIGEST.
 
-The SIZE displayed for each modelkit represents the total storage space occupied
-by all its components.
+The SIZE displayed for each modelkit represents the total storage space
+occupied by all its components.
 
 ```
-kit list [registry/repository] [flags]
+kit list [flags] [REPOSITORY]
 ```
 
 ### Examples
@@ -132,7 +134,7 @@ kit list [registry/repository] [flags]
 kit list
 
 # List modelkits from a remote repository
-kit list registry.example.com/my-model
+kit list registry.example.com/my-namespace/my-model
 ```
 
 ### Options
@@ -156,10 +158,11 @@ Log in to an OCI registry
 
 ### Synopsis
 
-Log in to an OCI registry
+Log in to a specified OCI-compatible registry. Credentials are saved and used
+automatically for future CLI operations
 
 ```
-kit login <registry> [flags]
+kit login [flags] [REGISTRY]
 ```
 
 ### Examples
@@ -193,10 +196,11 @@ Log out from an OCI registry
 
 ### Synopsis
 
-Log out from an OCI registry
+Log out from a specified OCI-compatible registry. Any saved credentials are
+removed from storage.
 
 ```
-kit logout <registry> [flags]
+kit logout [flags] REGISTRY
 ```
 
 ### Examples
@@ -225,11 +229,11 @@ Retrieve modelkits from a remote registry to your local environment.
 
 ### Synopsis
 
-Downloads modelkits from a specified registry. The downloaded
-modelkits are stored in the local registry.
+Downloads modelkits from a specified registry. The downloaded modelkits
+are stored in the local registry.
 
 ```
-kit pull registry/repository[:tag|@digest] [flags]
+kit pull [flags] registry/repository[:tag|@digest]
 ```
 
 ### Examples
@@ -256,7 +260,7 @@ kit pull registry.example.com/my-model:latest
 
 ## kit push
 
-Uploads modelkits to a specified registry
+Upload a modelkit to a specified registry
 
 ### Synopsis
 
@@ -266,7 +270,7 @@ The modelkits should be tagged with the target registry and repository before
 they can be pushed
 
 ```
-kit push registry/repository[:tag|@digest] [flags]
+kit push [flags] registry/repository[:tag|@digest]
 ```
 
 ### Examples
@@ -309,7 +313,7 @@ the modelkit will only be removed if no other tags refer to it; otherwise
 it is only untagged.
 
 ```
-kit remove registry/repository[:tag|@digest] [flags]
+kit remove [flags] registry/repository[:tag|@digest]
 ```
 
 ### Examples
@@ -344,39 +348,39 @@ Create or update a tag {target-modelkit} that refers to {source-modelkit}
 
 This command assigns a new tag to an existing modelkit (source-modelkit) or
 updates an existing tag, effectively renaming or categorizing modelkits for
-better organization and version control. Tags are identifiers linked to specific
-modelkit versions within a repository.
+better organization and version control. Tags are identifiers linked to
+specific modelkit versions within a repository.
 
 A full modelkit reference has the following format:
 
 [HOST[:PORT_NUMBER]/][NAMESPACE/]REPOSITORY[:TAG]
 
- * HOST: Optional. The registry hostname where the ModelKit is located. Defaults
-   to localhost if unspecified. Must follow standard DNS rules
-   (excluding underscores).
+  * HOST: Optional. The registry hostname where the ModelKit is located.
+    Defaults to localhost if unspecified. Must follow standard DNS rules
+    (excluding underscores).
 
- * PORT_NUMBER: Optional. Specifies the registry's port number if a hostname is
-   provided.
+  * PORT_NUMBER: Optional. Specifies the registry's port number if a hostname
+    is provided.
 
- * NAMESPACE: Represents a user or organization's namespace, consisting of
-   slash-separated components that may include lowercase letters, digits, and
-   specific separators (periods, underscores, hyphens).
+  * NAMESPACE: Represents a user or organization's namespace, consisting of
+    slash-separated components that may include lowercase letters, digits, and
+    specific separators (periods, underscores, hyphens).
 
- * REPOSITORY: The name of the repository, typically corresponding to the
-   modelkit's name.
+  * REPOSITORY: The name of the repository, typically corresponding to the
+    modelkit's name.
 
- * TAG: A human-readable identifier for the modelkit version or variant. Valid
-   ASCII characters include lowercase and uppercase letters, digits, underscores,
-   periods, and hyphens. It cannot start with a period or hyphen and is limited
-   to 128 characters.
+  * TAG: A human-readable identifier for the modelkit version or variant.
+    Valid ASCII characters include lowercase and uppercase letters, digits,
+    underscores, periods, and hyphens. It cannot start with a period or hyphen
+    and is limited to 128 characters.
 
-Tagging is a powerful way to manage different versions or configurations of your
-modelkits, making it easier to organize, retrieve, and deploy specific
+Tagging is a powerful way to manage different versions or configurations of
+your modelkits, making it easier to organize, retrieve, and deploy specific
 iterations. Ensure tags are meaningful and consistent across your team or
 organization to maintain clarity and avoid confusion.
 
 ```
-kit tag <source-modelkit>[:TAG] <target-modelkit>[:TAG] [flags]
+kit tag SOURCE_MODELKIT[:TAG] TARGET_MODELKIT[:TAG] [flags]
 ```
 
 ### Examples
