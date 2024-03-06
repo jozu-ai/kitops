@@ -4,7 +4,7 @@ A **ModelKit** represents a comprehensive bundle of AI/ML artifacts, including m
 
 ## Terminology and Structure
 
-![ModelKit](../../docs/src/docs/manifest/model-kit.excalidraw.svg)
+
 
 **Artifacts:** The building blocks of a ModelKit. Artifacts can be models, datasets, or code, each stored and addressed individually. This modular approach facilitates direct access via tools. Artifact metadata is encapsulated within the kitfile, ensuring comprehensive documentation of each component.
 
