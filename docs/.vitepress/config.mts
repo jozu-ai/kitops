@@ -52,7 +52,6 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Overview', link: '/docs/overview' },
-          { text: 'Installation', link: '/docs/cli/installation' },
           { text: 'Use Cases', link: '/docs/use-cases' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
         ]
@@ -73,13 +72,13 @@ export default defineConfig({
       },
       {
         text: 'CLI',
-        items: [
-          { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Command Reference', link: '/docs/cli/kit' },
-          ...getSidebarItemsFromMdFiles('docs/cli', {
-            textFormat: (text) => text.replaceAll('kit_', '')
+        items: getSidebarItemsFromMdFiles('docs/cli', {
+            replacements: {
+              'cli-reference': 'Command Reference' ,
+              'installation': 'Download & Install'
+            },
+            textFormat: (text) => text.replaceAll('cli-', '')
           })
-        ]
       },
       {
         text: 'MLOps with Kitfile',

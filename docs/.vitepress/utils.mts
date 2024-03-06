@@ -3,7 +3,8 @@ import * as fs from 'fs'
 import { resolve } from 'path'
 
 type ScanOptions = {
-  capitalize: string,
+  capitalize?: boolean,
+  replacements?: Record<string, string>,
   textFormat: (text: string) => string
 }
 
@@ -25,10 +26,10 @@ function capitalize(text: string) {
  * @param options The options
  * @returns {Array}
  */
-export function getSidebarItemsFromMdFiles(pathName: string, options: ScanOptions) {
+export function getSidebarItemsFromMdFiles(pathName: string, options: Partial<ScanOptions>) {
   const defaults: ScanOptions = {
     capitalize: true,
-    textFormat: (text) => text.replaceAll('_', ' ')
+    textFormat: (text) => text.replace(/[-_]/g, ' ')
   }
 
 	const path = resolve(BASE_PATH, `../src/${pathName}`)
@@ -40,8 +41,8 @@ export function getSidebarItemsFromMdFiles(pathName: string, options: ScanOption
 }
 
 // Read the folder and return the `{ text, items }` array.
-function getItems(path: string, options: ScanOptions) {
-	let content = fs.readdirSync(path).filter(item => String(item) !== '.DS_Store')
+function getItems(path: string, options: Partial<ScanOptions>) {
+	let content = fs.readdirSync(path).filter(item => !item.startsWith('.'))
 
 	if (!content) {
     return;
@@ -50,6 +51,11 @@ function getItems(path: string, options: ScanOptions) {
   const getFormattedText = (text: string) => {
     let formattedText = options.textFormat(text)
 
+    // If a custom label was provided, use that as-is and don't capitalize it to respect custom values.
+    if (options.replacements && options.replacements[text]) {
+      formattedText = options.replacements[text]
+    } else
+    // Otherwise, just check the `capitalize` flag.
     if (options.capitalize) {
       formattedText = capitalize(formattedText)
     }
