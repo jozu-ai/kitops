@@ -8,7 +8,6 @@ export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  titleTemplate: 'KitOps',
   description: 'Documentation for KitOps',
 
   head: [
