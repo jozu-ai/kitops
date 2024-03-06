@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	shortDesc = `Builds a modelkit`
+	shortDesc = `Build a modelkit`
 	longDesc  = `Build a modelkit from a kitfile using the given context directory.
 
 The build process involves taking the configuration and resources defined in
@@ -28,7 +28,8 @@ as pushing to a remote registry for collaboration.
 
 Unless a different location is specified, this command looks for the kitfile
 at the root of the provided context directory. Any relative paths defined
-within the kitfile are interpreted as being relative to this context directory.`
+within the kitfile are interpreted as being relative to this context
+directory.`
 
 	examples = `# Build a modelkit using the kitfile in the current directory
 kit build .

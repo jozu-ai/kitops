@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	shortDesc = `Uploads modelkits to a specified registry`
+	shortDesc = `Upload a modelkit to a specified registry`
 	longDesc  = `This command pushes modelkits to a remote registry.
 
 The modelkits should be tagged with the target registry and repository before
