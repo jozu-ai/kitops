@@ -59,6 +59,7 @@ export default defineConfig({
         text: 'ModelKit',
         items: [
           { text: 'Introduction', link: '/docs/modelkit/intro' },
+          { text: 'Specification', link: 'docs/modelkit/spec.md' },
         ]
       },
       {
