@@ -197,7 +197,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
     </VueMarqueeSlider>
   </div>
 
-  <button class="kit-button mt-22">SEE FULL LIST</button>
+  <a href="/docs/compatibility.html" class="kit-button mt-22">SEE FULL LIST</a>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6">
