@@ -67,7 +67,6 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
           { text: 'Format', link: '/docs/kitfile/format.md' },
-          { text: 'Benefits', link: '/docs/kitfile/benefits' },
         ]
       },
       {
