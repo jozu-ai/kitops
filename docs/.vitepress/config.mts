@@ -59,14 +59,15 @@ export default defineConfig({
         text: 'ModelKit',
         items: [
           { text: 'Introduction', link: '/docs/modelkit/intro' },
-          { text: 'Specification', link: 'docs/modelkit/spec.md' },
+          { text: 'Specification', link: '/docs/modelkit/spec' },
+          { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
       },
       {
         text: 'Kitfile',
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '/docs/kitfile/format.md' },
+          { text: 'Format', link: '/docs/kitfile/format' },
         ]
       },
       {
