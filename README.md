@@ -1,72 +1,79 @@
-# KitOps
+# Welcome to KitOps 🚀
 
-## Description
+## Unleashing the Power of Streamlined Collaboration for AI/ML Projects
 
-The KitOps project provides tools for building, packaging, and deploying / running all kinds of ML models. The KitOps project enables data scientists and AI/ML developers to encapsulate their models along with all necessary dependencies, configurations, and environments into a standardized, portable format. This facilitates easy sharing and deployment across diverse computing environments, ensuring that models are readily usable without compatibility issues.
+KitOps is your ultimate toolkit for transforming how you build, package, and deploy AI/ML models. Designed to enhance collaboration among data scientists, application developers, and SREs working on developing, integrating or managing self-hosted AI/ML models. KitOps simplifies bundling models with their dependencies, configurations, and environments into a standardized, portable package. Say goodbye to compatibility concerns and hello to smooth model sharing.
 
-The project is composed of two main components:
+### What is in the box?
 
-* A `kitfile` manifest that lists a model, its dataset(s), code, and metadata - everything required to build, deploy, or run that model
-* The `kit` command-line interface (CLI) tool designed to simplify the packaging, versioning, and distribution of AI/ML models as OCI (Open Container Initiative) artifacts
+**ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
 
-We refer to the final package that the `kit` CLI builds based on the `kitfile` as a **Model Kit**. Model Kits can be run in a Jupyter Notebook, or packaged as a Docker container that can be run anywhere. Kit supports a wide range of AI/ML frameworks, offers robust version control for model iterations, integrates security practices for safe distribution, and provides a seamless connection to model repositories for storing and retrieving models.
+**Kitfile:** Complementing the ModelKit is the Kitfile, AI/ML project's blueprint, a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. The Kitfile is designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
 
-Kit's aim is to streamline the end-to-end lifecycle of AI/ML model management, making it as effortless as managing containerized applications.
+**Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI is a powerful tool that enables users to create, manage, run, and deploy ModelKits using Kitfiles. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the necessary commands and functionalities to streamline your workflow.
 
-## Using Kit
+KitOps enhances the end-to-end lifecycle of AI/ML model management, making it as streamlined as managing containerized applications. It's about enhancing collaboration, streamlining processes, and unlocking a world of possibilities for AI/ML innovation.
 
-### Running Kit with Binaries
+## Quick Start with Kit
 
-You can download the Kit CLI using one of our [tagged versions](https://github.com/jozu-ai/kitops/tags). The `latest` tag is used for the latest tested and stable release. This is usually the best place to start. If you want to live on the cutting edge then `next` is the tag we use to for development builds.
+Dive into the world of KitOps with ease! Whether you're looking to streamline your AI/ML workflows or explore the power of ModelKits, getting started with Kit is straightforward.
 
-Make sure you get the right binary for your platform:
+### Running Kit with Pre-built Binaries
 
-* MacOS: TODO
-* Linux: TODO
-* Windows: TODO
 
-We suggest renaming the executable once it's downloaded to just `kit` then make sure it's in your path and executable.
+Get started with the Kit CLI by downloading a pre-built binary. Choose the `latest` [tagged version](https://github.com/jozu-ai/kitops/tags) for the most stable release, or explore the `next` tag for our development builds.
 
-Run Kit by opening a terminal and typing:
+For installation instructions and selecting the right binary for your platform, please refer to our [Installation Guide](./docs/src/docs/cli/installation.md).
+
+To launch Kit, simply open a terminal and type:
 
 ```shell
-./kit
+kit
+```
+This command will display a list of available actions to supercharge your AI/ML projects.
+
+### Building Kit from Source
+
+For those who prefer to build from the source, follow these steps to get the latest version directly from our repository:
+
+1. Clone the Repository: Clone the KitOps source code to your local machine:
+
+```shell
+git clone https://github.com/jozu-ai/kitops.git
+cd kitops
 ```
 
-This will list all the commands you can use.
-
-### Building and Running Kit from Source Code
-
-You can get the Kit CLI sources from our [tagged versions](https://github.com/jozu-ai/kitops/tags). The `latest` tag is used for the latest tested and stable release. This is usually the best place to start. If you want to live on the cutting edge then `next` is the tag we use to for development builds.
-
+2. Build the Kit CLI: Compile the source code into an executable named kit:
 ```shell
 go build -o kit
 ```
 
-Then run the project:
+3. Run Your Build: Execute the built CLI to see all available commands:
 
 ```shell
 ./kit
 ```
 
-Alternatively
+Or, for direct execution during development:
 
 ```shell
-go run kit
+go run .
 ```
 
-## Filing Issues and Feature Requests
+## Your Voice Matters
 
-We want to see Kit become an open standard across the growing AI/ML industry so we *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. You can file an issue by selecting the **Issues** tab and hitting the **New Issue** green button. There are templates for Issues and Feature Requests, the more information you provide us the faster and better we can address your request. Thank you!
+### Reporting Issues and Suggesting Features
 
-## Contributing
+Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
+
+### Joining the KitOps Contributors
 
 We ❤️ our Kit community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
 
-## Support
+### Heed Help?
 
 If you need help there are several ways to reach our community and [Maintainers](./MAINTAINERS.md) outlined in our [support doc](./SUPPORT.md)
 
-## Code of Conduct
+### A Community Built on Respect
 
-We run an inclusive, empathetic, and responsible community. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md).
+At KitOps, inclusivity, empathy, and responsibility are at our core. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to understand the values guiding our community..
