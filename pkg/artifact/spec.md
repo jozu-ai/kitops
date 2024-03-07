@@ -19,9 +19,9 @@ The artifacts and their media types are
 
 **ModelKitID:** A unique identifier for each ModelKit, derived from the SHA256 hash of its manifest. For example, `sha256:a9561eb1b190625c9adb5a9513e72c4dedafc1cb2d4c5236c9a6957ec7dfd5a9`.
 
-**Tag:** A tag serves to map a descriptive, user-given name to any single modelKitID. Tag values are limited to the set of characters [a-zA-Z0-9_.-], except they may not start with a . or - character. Tags are limited to 128 characters.
+**Tag:** A tag serves to map a descriptive, user-given name to any single modelKitID. Tag values are limited to the set of characters `[a-zA-Z0-9_.-]`, except they may not start with a `.` or `-` character. Tags are limited to 128 characters.
 
-**Repository:** A collection of tags grouped under a common prefix (the name component before :). For example, in a ModelKit tagged with the name myllm:3.1.4, myllm is the Repository component of the name. A repository name is made up of slash-separated name components, optionally prefixed by a DNS hostname. The hostname must comply with standard DNS rules, but may not contain _ characters. If a hostname is present, it may optionally be followed by a port number in the format :8080. Name components may contain lowercase characters, digits, and separators. A separator is defined as a period, one or two underscores, or one or more dashes. A name component may not start or end with a separator.
+**Repository:** A collection of tags grouped under a common prefix (the name component before `:`). For example, in a ModelKit tagged with the name `myllm:3.1.4`, `myllm` is the Repository component of the name. A repository name is made up of slash-separated name components, optionally prefixed by a DNS hostname. The hostname must comply with standard DNS rules, but may not contain `_` characters. If a hostname is present, it may optionally be followed by a port number in the format `:8080`. Name components may contain lowercase characters, digits, and separators. A separator is defined as a period, one or two underscores, or one or more dashes. A name component may not start or end with a separator.
 
 
 ## ModelKit Manifest Example
