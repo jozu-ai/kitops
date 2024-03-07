@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
-	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -69,7 +68,7 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) {
 			}
 			output.Fatalf("Error resolving ModelKit: %s", err)
 		}
-		yamlBytes, err := yaml.Marshal(config)
+		yamlBytes, err := config.MarshalToYAML()
 		if err != nil {
 			output.Fatalf("Error formatting manifest: %w", err)
 		}

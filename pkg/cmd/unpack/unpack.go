@@ -18,7 +18,6 @@ import (
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content"
 	"oras.land/oras-go/v2/registry"
-	"sigs.k8s.io/yaml"
 )
 
 func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
@@ -88,7 +87,7 @@ func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) er
 		}
 	}
 
-	configBytes, err := yaml.Marshal(config)
+	configBytes, err := config.MarshalToYAML()
 	if err != nil {
 		return fmt.Errorf("failed to unpack config: %w", err)
 	}
