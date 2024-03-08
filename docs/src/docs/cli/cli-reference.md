@@ -1,5 +1,94 @@
 # Kit CLI Reference
 
+## kit info
+
+Show the configuration for a modelkit
+
+### Synopsis
+
+Print the contents of a modelkit config to the screen.
+
+By default, kit will check local storage for the specified modelkit. To see
+the configuration for a modelkit stored on a remote registry, use the
+--remote flag.
+
+```
+kit info [flags] MODELKIT
+```
+
+### Examples
+
+```
+# See configuration for a local modelkit:
+kit info mymodel:mytag
+
+# See configuration for a local modelkit by digest:
+kit info mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# See configuration for a remote modelkit if not present locally:
+kit info registry.example.com/my-model:1.0.0
+```
+
+### Options
+
+```
+  -h, --help         help for info
+      --plain-http   Use plain HTTP when connecting to remote registries
+  -r, --remote       Check remote registry even if modelkit is present locally
+      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+```
+
+### Options inherited from parent commands
+
+```
+      --config string   Config file (default $HOME/.kitops)
+  -v, --verbose         Include additional information in output (default false)
+```
+
+## kit inspect
+
+Inspect a modelkit's manifest
+
+### Synopsis
+
+Print the contents of a modelkit manifest to the screen.
+
+By default, kit will check local storage for the specified modelkit. To
+inspect a modelkit stored on a remote registry, use the --remote flag.
+
+```
+kit inspect [flags] MODELKIT
+```
+
+### Examples
+
+```
+# Inspect a local modelkit:
+kit inspect mymodel:mytag
+
+# Inspect a local modelkit by digest:
+kit inspect mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# Inspect a remote modelkit if not present locally:
+kit inspect registry.example.com/my-model:1.0.0
+```
+
+### Options
+
+```
+  -h, --help         help for inspect
+      --plain-http   Use plain HTTP when connecting to remote registries
+  -r, --remote       Check remote registry even if modelkit is present locally
+      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+```
+
+### Options inherited from parent commands
+
+```
+      --config string   Config file (default $HOME/.kitops)
+  -v, --verbose         Include additional information in output (default false)
+```
+
 ## kit list
 
 List modelkits in a repository
