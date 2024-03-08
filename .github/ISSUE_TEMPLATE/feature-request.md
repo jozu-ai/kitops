@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Describe the problem your feature would solve**
+**Describe the problem you're trying to solve**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
 **Describe the solution you'd like**
