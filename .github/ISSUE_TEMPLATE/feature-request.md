@@ -2,7 +2,7 @@
 name: Feature Request
 about: Help us make Kit even better!
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
