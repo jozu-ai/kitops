@@ -12,6 +12,10 @@ import (
 // VerifySubpath checks that filepath.Join(context, subDir) is a subdirectory of context, following
 // symlinks if present.
 func VerifySubpath(context, subDir string) (absPath string, err error) {
+	if filepath.IsAbs(subDir) {
+		return "", fmt.Errorf("absolute paths are not supported (%s)", subDir)
+	}
+
 	// Get absolute path for context and context + subDir
 	absContext, err := filepath.Abs(context)
 	if err != nil {
