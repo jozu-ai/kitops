@@ -18,7 +18,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   </div>
 
   <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto">
-    <source src="how-it-works.mp4" type="video/mp4">
+    <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
