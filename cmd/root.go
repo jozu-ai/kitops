@@ -5,10 +5,7 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"os/user"
-	"path/filepath"
 
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
@@ -46,23 +43,21 @@ func RunCommand() *cobra.Command {
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			configHome := opts.configHome
-			if configHome == "" {
-				currentUser, err := user.Current()
-				if err != nil {
-					output.Fatalf("Failed to resolve default storage path '$HOME/%s: could not get current user", constants.DefaultConfigSubdir)
-				}
-				configHome = filepath.Join(currentUser.HomeDir, constants.DefaultConfigSubdir)
-			}
 			if opts.verbose {
 				output.SetDebug(true)
+			}
+			configHome, err := getConfigHome(opts)
+			if err != nil {
+				output.Errorf("Failed to read base config directory")
+				output.Infof("Use the --config flag or set the $KITOPS_HOME environment variable to provide a default")
+				output.Debugf("Error: %s", err)
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
 		},
 	}
 	addSubcommands(cmd)
-	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
+	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
 	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
 
 	cmd.SetHelpTemplate(helpTemplate)
@@ -94,4 +89,24 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func getConfigHome(opts *rootOptions) (string, error) {
+	if opts.configHome != "" {
+		output.Debugf("Using config directory from flag: %s", opts.configHome)
+		return opts.configHome, nil
+	}
+
+	envHome := os.Getenv("KITOPS_HOME")
+	if envHome != "" {
+		output.Debugf("Using config directory from environment variable: %s", envHome)
+		return envHome, nil
+	}
+
+	defaultHome, err := constants.DefaultConfigPath()
+	if err != nil {
+		return "", err
+	}
+	output.Debugf("Using default config directory: %s", defaultHome)
+	return defaultHome, nil
 }

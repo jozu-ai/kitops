@@ -47,7 +47,6 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = modelRef
 
-	printConfig(opts)
 	return nil
 }
 
@@ -96,8 +95,4 @@ func runCommand(opts *pullOptions) func(*cobra.Command, []string) {
 		}
 		output.Infof("Pulled %s", desc.Digest)
 	}
-}
-
-func printConfig(opts *pullOptions) {
-	output.Debugf("Using config path: %s", opts.configHome)
 }

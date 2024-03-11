@@ -48,7 +48,7 @@ kit list registry.example.com/my-namespace/my-model
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -86,7 +86,7 @@ kit login ghcr.io -u github_user -p personal_token
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -119,7 +119,7 @@ kit logout ghcr.io
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -166,7 +166,7 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -201,7 +201,7 @@ kit pull registry.example.com/my-model:latest
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -241,7 +241,7 @@ kit push registry.example.com/my-model:1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -281,7 +281,7 @@ kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -345,7 +345,7 @@ kit tag myregistry.com/myrepo/mykit:latest myregistry.com/myrepo/mykit:v1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -427,7 +427,7 @@ kit version [flags]
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
