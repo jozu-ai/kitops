@@ -16,19 +16,19 @@ import (
 )
 
 const (
-	shortDesc = `Show the configuration for a ModelKit`
-	longDesc  = `Print the contents of a ModelKit config to the screen.
+	shortDesc = `Show the configuration for a modelkit`
+	longDesc  = `Print the contents of a modelkit config to the screen.
 
-By default, kit will check local storage for the specified ModelKit. To see
-the configuration for a ModelKit stored on a remote registry, use the
+By default, kit will check local storage for the specified modelkit. To see
+the configuration for a modelkit stored on a remote registry, use the
 --remote flag.`
-	example = `# See configuration for a local ModelKit:
+	example = `# See configuration for a local modelkit:
 kit info mymodel:mytag
 
-# See configuration for a local ModelKit by digest:
+# See configuration for a local modelkit by digest:
 kit info mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 
-# See configuration for a remote ModelKit if not present locally:
+# See configuration for a remote modelkit if not present locally:
 kit info registry.example.com/my-model:1.0.0`
 )
 
@@ -52,7 +52,7 @@ func InfoCommand() *cobra.Command {
 	}
 
 	opts.AddNetworkFlags(cmd)
-	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry even if ModelKit is present locally")
+	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry even if modelkit is present locally")
 	return cmd
 }
 
@@ -64,9 +64,9 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) {
 		config, err := getInfo(cmd.Context(), opts)
 		if err != nil {
 			if errors.Is(err, errdef.ErrNotFound) {
-				output.Fatalf("Could not find ModelKit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+				output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
-			output.Fatalf("Error resolving ModelKit: %s", err)
+			output.Fatalf("Error resolving modelkit: %s", err)
 		}
 		yamlBytes, err := config.MarshalToYAML()
 		if err != nil {
