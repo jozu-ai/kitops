@@ -2,7 +2,9 @@
 
 ## Unleashing the Power of Streamlined Collaboration for AI/ML Projects
 
-KitOps is your ultimate toolkit for transforming how you build, package, and deploy AI/ML models. Designed to enhance collaboration among data scientists, application developers, and SREs working on developing, integrating or managing self-hosted AI/ML models. KitOps simplifies bundling models with their dependencies, configurations, and environments into a standardized, portable package. Say goodbye to compatibility concerns and hello to smooth model sharing.
+KitOps is your ultimate toolkit for transforming how you build, package, and deploy AI/ML models. Say goodbye to compatibility concerns and hello to smooth model sharing.
+
+KitOps is designed to enhance collaboration among data scientists, application developers, and SREs working on self-hosted AI/ML models. KitOps' ModelKits simplify packaging models with their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility.
 
 ### What is in the box?
 
