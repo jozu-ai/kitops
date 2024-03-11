@@ -1,29 +1,45 @@
 # Getting started
 
-:::info
-Quick TL; DR about what is KitOps and why it is awesome
-:::
-
 ## What is KitOps?
 
-Consequatur doloremque enim aliquam. Quo ut saepe quia quidem beatae harum itaque at. Quidem ex placeat maiores autem magnam consectetur sequi ad nostrum. Quia modi hic reprehenderit est corporis eaque perspiciatis architecto veritatis. Soluta fuga libero occaecati qui aliquam iste qui voluptatem. Itaque aliquam et molestias debitis at delectus id et.
+KitOps is an innovative open-source project designed to enhance collaboration among data scientists, application developers, and SREs working on integrating or managing self-hosted AI/ML models.
 
-Dolorum aut ut culpa. In voluptatem dolorem quidem. Neque saepe necessitatibus iste aut. Consectetur vitae ducimus asperiores voluptates. Qui eos ex consequatur atque rerum repudiandae hic at. Vel enim occaecati possimus officiis natus commodi laborum libero.
+### Core Components of KitOps
 
-Sapiente consequatur et alias similique delectus consequuntur accusamus. Veniam temporibus est quod iste error impedit doloribus sapiente. Maxime nobis omnis hic asperiores est. Temporibus recusandae totam quia delectus vel atque. Et consequatur qui.
+**ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
 
-## Why use KitOps?
+**Kitfile:** Complementing the ModelKit is the Kitfile, a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. The Kitfile is designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
 
-Porro est facere error nulla deserunt. A eos natus voluptate quam neque sit aut vitae iure. Adipisci maiores cumque debitis illum enim.
+**Kit CLI:** Bringing everything together is the Kit Command Line Interface (CLI). The Kit CLI is a powerful tool that enables users to create, manage, run, and deploy ModelKits using Kitfiles. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the necessary commands and functionalities to streamline your workflow.
 
-Et dolore quisquam natus adipisci nihil minima ipsam dolorum. Reprehenderit reprehenderit ut aliquid labore. Unde natus eligendi accusamus. Aut sapiente vitae iusto exercitationem eveniet. Aspernatur sunt odio at autem quidem enim tenetur veritatis illo.
+### The Goal of KitOps
 
-Hic est vel reprehenderit dolorem temporibus cumque. Nihil tenetur quo ut. Est tempora magnam architecto minima. Magnam voluptatum et. Quo natus aut inventore voluptas voluptatum autem eveniet nulla ex.
+The primary goal of KitOps is to bridge the gaps between data science, software development, and operational deployment. By providing tools that standardize and simplify the sharing of AI/ML artifacts, KitOps drives greater speed, security, and collaboration for teams hosting their own AI/ML models.
+
+_For application developers_ KitOps clears the path for application developers to harness AI/ML without getting entangled in its complexities. It lets developers concentrate on crafting exceptional applications, while KitOps handles the intricate AI/ML workflows. Whether integrating a new ML model or collaborating on novel features, KitOps accelerates the journey from idea to deployment.
+
+_For data scientists_ KitOps enables them to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model managementand sharing, fostering closer collaboration with developers. With KitOps, data scientists can spend more time experimenting and less time grappling with traditional software development tools.
+
+Join us in shaping the future of AI/ML collaboration with KitOps.
 
 ## Benefits of KitOps
 
-Provident aut ea voluptas error qui perferendis earum. Fuga aut deserunt dolores ut. Dolores dolorum ea quo nulla ut recusandae quo eum aut. Non voluptatem eaque voluptatem magnam quis iusto id deleniti.
+KitOps is not just another tool; it's a comprehensive CLI and packaging system specifically designed for the AI/ML workflow. It acknowledges the nuanced needs of AI/ML projects, such as:
 
-Quas quisquam quisquam quis cumque quae. Ipsum perspiciatis aliquid distinctio rerum consequatur voluptate aliquid. Et ratione sequi hic in. Quasi eligendi et beatae consequatur velit et. Ut inventore est nobis. Aspernatur non earum suscipit.
+### Management of Unstructured Datasets ###
+AI/ML projects often deal with large, unstructured datasets, such as images, videos, and audio files. KitOps simplifies the versioning and sharing of these datasets, making them as manageable as traditional code.
 
-Dolore eos in culpa porro vitae aliquam sed omnis. Sapiente nobis fugit laboriosam recusandae nobis sit natus. Repellat aut ut commodi eum est voluptas sit. Suscipit sed ut similique eveniet laudantium.
+### Synchronised Data and Code Versioning ### 
+One of the core strengths of KitOps is its ability to keep data and code versions in sync. This crucial feature solves the reproducibility issues that frequently arise in AI/ML development, ensuring consistency and reliability across project stages.
+
+### Deployment Ready ###
+Designed with a focus on deployment, ModelKits package assets in standard formats so they're compatible with nearly any tool - helping you get your model to production faster and more efficiently.
+
+### Standards-Based Approach ###
+KitOps champions openness and interoperability through its core components, ensuring seamless integration into your existing workflows:
+
+ModelKits are designed as OCI (Open Container Initiative) artifacts, making them fully compatible with the Docker image registries and other OCI-compliant storage solutions you already use. This compatibility allows for an easy and familiar integration process. By adhering to widely accepted standards, KitOps ensures you're not tied to a single vendor or platform. This flexibility gives you the freedom to choose the best tools and services for your needs without being restricted by proprietary formats.
+
+Kitfiles leverage the simplicity and ubiquity of YAML for configuration, offering an accessible and straightforward way to specify the details of your AI/ML projects.
+
+The Kit CLI is an open-source tool, developed and supported by a community passionate about advancing AI/ML collaboration. Its open-source nature not only fosters innovation and continuous improvement but also allows you to customize and extend its capabilities to meet your unique project requirements.

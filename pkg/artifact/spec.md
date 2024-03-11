@@ -4,11 +4,9 @@ A **ModelKit** represents a comprehensive bundle of AI/ML artifacts, including m
 
 ## Terminology and Structure
 
-![ModelKit](../../docs/src/docs/manifest/model-kit.excalidraw.svg)
-
 **Artifacts:** The building blocks of a ModelKit. Artifacts can be models, datasets, or code, each stored and addressed individually. This modular approach facilitates direct access via tools. Artifact metadata is encapsulated within the kitfile, ensuring comprehensive documentation of each component.
 
-The artifacts and their media types are 
+The artifacts and their media types are
 * Serialized Model: `application/vnd.kitops.modelkit.model.v1.tar+gzip`
 * Datasets:  `application/vnd.kitops.modelkit.dataset.v1.tar+gzip`
 * Code: `application/vnd.kitops.modelkit.code.v1.tar+gzip`
@@ -21,14 +19,14 @@ The artifacts and their media types are
 
 **ModelKitID:** A unique identifier for each ModelKit, derived from the SHA256 hash of its manifest. For example, `sha256:a9561eb1b190625c9adb5a9513e72c4dedafc1cb2d4c5236c9a6957ec7dfd5a9`.
 
-**Tag:** A tag serves to map a descriptive, user-given name to any single modelKitID. Tag values are limited to the set of characters [a-zA-Z0-9_.-], except they may not start with a . or - character. Tags are limited to 128 characters.
+**Tag:** A tag serves to map a descriptive, user-given name to any single modelKitID. Tag values are limited to the set of characters `[a-zA-Z0-9_.-]`, except they may not start with a `.` or `-` character. Tags are limited to 128 characters.
 
-**Repository:** A collection of tags grouped under a common prefix (the name component before :). For example, in a ModelKit tagged with the name myllm:3.1.4, myllm is the Repository component of the name. A repository name is made up of slash-separated name components, optionally prefixed by a DNS hostname. The hostname must comply with standard DNS rules, but may not contain _ characters. If a hostname is present, it may optionally be followed by a port number in the format :8080. Name components may contain lowercase characters, digits, and separators. A separator is defined as a period, one or two underscores, or one or more dashes. A name component may not start or end with a separator.
+**Repository:** A collection of tags grouped under a common prefix (the name component before `:`). For example, in a ModelKit tagged with the name `myllm:3.1.4`, `myllm` is the Repository component of the name. A repository name is made up of slash-separated name components, optionally prefixed by a DNS hostname. The hostname must comply with standard DNS rules, but may not contain `_` characters. If a hostname is present, it may optionally be followed by a port number in the format `:8080`. Name components may contain lowercase characters, digits, and separators. A separator is defined as a period, one or two underscores, or one or more dashes. A name component may not start or end with a separator.
 
 
 ## ModelKit Manifest Example
 
-Example of a ModelKit manifest with a single serialized model and kitfile. 
+Example of a ModelKit manifest with a single serialized model and kitfile.
 
 ```JSON
 {

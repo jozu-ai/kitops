@@ -14,20 +14,17 @@ import (
 
 const (
 	shortDesc = `Remove a modelkit from local storage`
-	longDesc  = `Remove a modelkit from local storage.
+	longDesc  = `Removes a modelkit from storage on the local disk.
 
-Description:
-  Removes a modelkit from storage on the local disk.
+The model to be removed may be specifed either by a tag or by a digest. If
+specified by digest, that modelkit will be removed along with any tags that
+might refer to it. If specified by tag (and the --force flag is not used),
+the modelkit will only be removed if no other tags refer to it; otherwise
+it is only untagged.`
 
-  The model to be removed may be specifed either by a tag or by a digest. If
-  specified by digest, that modelkit will be removed along with any tags that
-  might refer to it. If specified by tag (and the --force flag is not used),
-  the modelkit will only be removed if no other tags refer to it; otherwise
-  it is only untagged.`
-
-	examples = `  kit remove my-registry.com/my-org/my-repo:my-tag
-  kit remove my-registry.com/my-org/my-repo@sha256:<digest>
-  kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3`
+	examples = `kit remove my-registry.com/my-org/my-repo:my-tag
+kit remove my-registry.com/my-org/my-repo@sha256:<digest>
+kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3`
 )
 
 type removeOptions struct {
@@ -58,7 +55,7 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 func RemoveCommand() *cobra.Command {
 	opts := &removeOptions{}
 	cmd := &cobra.Command{
-		Use:     "remove [flags] <reference>",
+		Use:     "remove [flags] registry/repository[:tag|@digest]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: examples,

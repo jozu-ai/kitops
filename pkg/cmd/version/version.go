@@ -7,6 +7,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	shortDesc = `Display the version information for the CLI`
+	longDesc  = `The version command prints detailed version information.
+
+This information includes the current version of the tool, the Git commit that
+the version was built from, the build time, and the version of Go it was
+compiled with.`
+)
+
 // Default build-time variable.
 // These values are overridden via ldflags
 var (
@@ -20,11 +29,8 @@ func VersionCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "version",
-		Short: "Display the version information for the CLI",
-		Long: `The version command prints detailed version information for the kit CLI tool,
-including the current version of the tool, the Git commit that the version was built from, 
-the build time, and the version of Go it was compiled with. This can be useful for debugging 
-or verifying that you are running the expected version of kit.`,
+		Short: shortDesc,
+		Long:  longDesc,
 		Run: func(cmd *cobra.Command, args []string) {
 			output.Infof("Version: %s\nCommit: %s\nBuilt: %s\nGo version: %s\n", Version, GitCommit, BuildTime, GoVersion)
 		},

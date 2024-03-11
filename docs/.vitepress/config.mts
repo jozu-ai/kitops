@@ -1,13 +1,13 @@
 import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
+import { getSidebarItemsFromMdFiles } from './utils.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  titleTemplate: 'KitOps',
   description: 'Documentation for KitOps',
   // base: '/kitops', // We'll have to enable this if we wont be using a custom domain / c-name record.
 
@@ -52,61 +52,41 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Overview', link: '/docs/overview' },
-          { text: 'Installation', link: '/docs/cli/installation' },
           { text: 'Use Cases', link: '/docs/use-cases' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
         ]
       },
       {
-        text: 'CLI',
+        text: 'ModelKit',
         items: [
-          { text: 'Download & Install', link: '/docs/cli/installation' },
-          { text: 'Usage', link: '/docs/cli/usage' },
-          { text: 'Flags', link: '/docs/cli/flags' },
+          { text: 'Introduction', link: '/docs/modelkit/intro' },
+          { text: 'Specification', link: '/docs/modelkit/spec' },
+          { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
       },
       {
         text: 'Kitfile',
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '../pkg/artifact/kit-file.md' },
-          { text: 'Benefits', link: '/docs/kitfile/benefits' },
+          { text: 'Format', link: '/docs/kitfile/format' },
         ]
       },
       {
-        text: 'MLOps with Kitfile',
-        items: [
-          { text: 'Kit and CI/CD', link: '/docs/mlops/ci-cd' },
-          //{ text: 'Kit and model orchestration', link: '/docs/mlops/orchestration' },
-          //{ text: 'Kit and registries', link: '/docs/mlops/registries' },
-        ]
+        text: 'CLI',
+        items: getSidebarItemsFromMdFiles('docs/cli', {
+            replacements: {
+              'cli-reference': 'Command Reference' ,
+              'installation': 'Download & Install'
+            },
+            textFormat: (text) => text.replaceAll('cli-', '')
+          })
       },
-      /*
-      {
-        text: 'Advanced',
-        items: [
-          { text: 'Fine-tuning', link: '/docs/mlops/ci-cd' },
-          { text: 'Multi-models and Multi-tasking', link: '/docs/mlops/ci-cd' },
-          { text: 'Parallel training', link: '/docs/mlops/ci-cd' },
-          { text: 'Reinforcement and deep RL', link: '/docs/mlops/ci-cd' },
-        ]
-      },
-      */
       {
         text: 'Contribute',
         items: [
-          { text: 'Contribute to KitOps docs', link: '/' }
+          { text: 'Contribute to KitOps docs', link: '/contributing' }
         ]
       },
-      /*
-      {
-        text: 'Documentation Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-      */
     ],
 
     socialLinks: [

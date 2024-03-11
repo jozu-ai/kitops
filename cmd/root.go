@@ -10,15 +10,15 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"kitops/pkg/cmd/build"
-	"kitops/pkg/cmd/export"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
 	"kitops/pkg/cmd/logout"
+	"kitops/pkg/cmd/pack"
 	"kitops/pkg/cmd/pull"
 	"kitops/pkg/cmd/push"
 	"kitops/pkg/cmd/remove"
 	"kitops/pkg/cmd/tag"
+	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -27,8 +27,10 @@ import (
 )
 
 var (
-	shortDesc = `KitOps model manager`
-	longDesc  = `KitOps is a tool to manage AI and ML models`
+	shortDesc = `Streamline the lifecycle of AI/ML models`
+	longDesc  = `Kit is a tool for efficient AI/ML model lifecycle management.
+
+Find more information at: http://kitops.ml`
 )
 
 type rootOptions struct {
@@ -40,7 +42,7 @@ func RunCommand() *cobra.Command {
 	opts := &rootOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "kit",
+		Use:   `kit`,
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -59,24 +61,30 @@ func RunCommand() *cobra.Command {
 			cmd.SetContext(ctx)
 		},
 	}
-
 	addSubcommands(cmd)
 	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", fmt.Sprintf("Config file (default $HOME/%s)", constants.DefaultConfigSubdir))
 	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
+
+	cmd.SetHelpTemplate(helpTemplate)
+	cmd.SetUsageTemplate(usageTemplate)
+	cobra.AddTemplateFunc("indent", indentBlock)
+	cobra.AddTemplateFunc("sectionHead", sectionHead)
+	cobra.AddTemplateFunc("ensureTrailingNewline", ensureTrailingNewline)
+
 	return cmd
 }
 
 func addSubcommands(rootCmd *cobra.Command) {
-	rootCmd.AddCommand(build.BuildCommand())
+	rootCmd.AddCommand(pack.PackCommand())
+	rootCmd.AddCommand(unpack.UnpackCommand())
+	rootCmd.AddCommand(push.PushCommand())
+	rootCmd.AddCommand(pull.PullCommand())
+	rootCmd.AddCommand(tag.TagCommand())
+	rootCmd.AddCommand(list.ListCommand())
+	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(login.LoginCommand())
 	rootCmd.AddCommand(logout.LogoutCommand())
-	rootCmd.AddCommand(pull.PullCommand())
-	rootCmd.AddCommand(push.PushCommand())
-	rootCmd.AddCommand(list.ListCommand())
-	rootCmd.AddCommand(export.ExportCommand())
-	rootCmd.AddCommand(remove.RemoveCommand())
 	rootCmd.AddCommand(version.VersionCommand())
-	rootCmd.AddCommand(tag.TagCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

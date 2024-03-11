@@ -1,6 +1,6 @@
-# Installation Guide for `kit` CLI 
+# Installation Guide for `kit` CLI
 
-## Installation from GitHub Releases 
+## Installation from GitHub Releases
 Welcome to the installation guide for the `kit`! This guide is designed to help you quickly and easily install the `kit` on your machine.
 
 ### Step 1: Downloading the `kit`
@@ -93,7 +93,7 @@ This command should display the version number of `kit` you have installed, indi
 
 ## Installation from Source
 
-For those who prefer or require building `kit` from the source code, this section will guide you through the necessary steps. 
+For those who prefer or require building `kit` from the source code, this section will guide you through the necessary steps.
 
 ### Prerequisites
 
