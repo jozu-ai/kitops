@@ -32,6 +32,8 @@ jobs:
         with:
           fetch-depth: 0 # Not needed if lastUpdated is not enabled
       - uses: pnpm/action-setup@v2
+        with:
+          package_json_file: docs/package.json
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
