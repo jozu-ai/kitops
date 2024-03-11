@@ -49,7 +49,7 @@ There are two aspects of code review: giving and receiving. To make it easier fo
 * Write good commit messages
 * Break large changes into a logical series of smaller patches which individually make easily understandable changes, and in aggregate solve a broader issue
 
-Reviewers, the people giving the review, are highly encouraged to revisit our [Code of Conduct](./CODE_OF_CONDUCT.md) and must go above and beyond to promote a collaborative, respectful community. When reviewing PRs from others [The Gentle Art of Patch Review](https://sage.thesharps.us/2014/09/01/the-gentle-art-of-patch-review/) suggests an iterative series of focuses which is designed to lead new contributors to positive collaboration without inundating them initially with a pile of suggestions:
+Reviewers, the people giving the review, are highly encouraged to revisit our [Code of Conduct](./CODE-OF-CONDUCT.md) and must go above and beyond to promote a collaborative, respectful community. When reviewing PRs from others [The Gentle Art of Patch Review](https://sage.thesharps.us/2014/09/01/the-gentle-art-of-patch-review/) suggests an iterative series of focuses which is designed to lead new contributors to positive collaboration without inundating them initially with a pile of suggestions:
 
 1. Is the idea behind the contribution sound?
 1. Is the contribution architected correctly?
