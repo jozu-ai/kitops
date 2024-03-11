@@ -2,35 +2,18 @@ package info
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
-	"kitops/pkg/output"
-
-	"oras.land/oras-go/v2/errdef"
 )
 
 func getInfo(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) {
-	if opts.modelRef.Registry == repo.DefaultRegistry {
-		// Local only check
+	if opts.checkRemote {
+		return getRemoteConfig(ctx, opts)
+	} else {
 		return getLocalConfig(ctx, opts)
 	}
-	if opts.checkRemote {
-		// Remote only check
-		return getRemoteConfig(ctx, opts)
-	}
-
-	// Check locally first; if not found check remote
-	manifest, err := getLocalConfig(ctx, opts)
-	if err == nil {
-		return manifest, nil
-	} else if !errors.Is(err, errdef.ErrNotFound) {
-		return nil, err
-	}
-	output.Debugf("ModelKit not found locally, checking remote.")
-	return getRemoteConfig(ctx, opts)
 }
 
 func getLocalConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) {
