@@ -11,13 +11,16 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   <a href="/docs/cli/installation" class="kit-button mt-10 md:mt-14 xl:mt-22">Install</a>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 text-center max-w-[1152px] mx-auto">
+<div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 text-center max-w-[1152px] mx-auto">
   <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
   <div class="p1 mt-8 mx-8">
     Kit is an open source MLOps project that packages your model, datasets, code, and configuration so data scientists and developers can use their preferred tools while collaborating effortlessly.
   </div>
 
-  <img src="/images/cli-screenshot.png" class="mt-22 mx-auto w-[1050px]" alt="screenshot of the kit cli tool" />
+  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto">
+    <source src="how-it-works.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6">
@@ -75,7 +78,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6" id="howdoesitwork">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6">
   <h2 class="text-center">Get stArted</h2>
 
   <div class="kit-cards mt-22 min-h-[32.5rem]">
