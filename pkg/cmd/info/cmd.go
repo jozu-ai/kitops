@@ -19,9 +19,9 @@ const (
 	shortDesc = `Show the configuration for a ModelKit`
 	longDesc  = `Print the contents of a ModelKit config to the screen.
 
-If the ModelKit is present locally, this ModelKit is used by default. If
-it is not present and the ModelKit reference includes a registry, kit will
-download the configuration from the remote registry if possible.`
+By default, kit will check local storage for the specified ModelKit. To see
+the configuration for a ModelKit stored on a remote registry, use the
+--remote flag.`
 	example = `# See configuration for a local ModelKit:
 kit info mymodel:mytag
 

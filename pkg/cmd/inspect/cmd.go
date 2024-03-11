@@ -20,9 +20,8 @@ const (
 	shortDesc = `Inspect a ModelKit's manifest`
 	longDesc  = `Print the contents of a ModelKit manifest to the screen.
 
-If the ModelKit is present locally, this ModelKit is inspected by default. If
-it is not present and the ModelKit reference includes a registry, kit will
-download the manifest from the remote registry if possible.`
+By default, kit will check local storage for the specified ModelKit. To
+inspect a ModelKit stored on a remote registry, use the --remote flag.`
 	example = `# Inspect a local ModelKit:
 kit inspect mymodel:mytag
 
