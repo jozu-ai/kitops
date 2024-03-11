@@ -9,6 +9,7 @@ export default defineConfig({
   srcDir: 'src',
   title: 'KitOps',
   description: 'Documentation for KitOps',
+  // base: '/kitops', // We'll have to enable this if we wont be using a custom domain / c-name record.
 
   head: [
     ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
