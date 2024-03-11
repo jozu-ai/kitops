@@ -17,18 +17,18 @@ import (
 )
 
 const (
-	shortDesc = `Inspect a ModelKit's manifest`
-	longDesc  = `Print the contents of a ModelKit manifest to the screen.
+	shortDesc = `Inspect a modelkit's manifest`
+	longDesc  = `Print the contents of a modelkit manifest to the screen.
 
-By default, kit will check local storage for the specified ModelKit. To
-inspect a ModelKit stored on a remote registry, use the --remote flag.`
-	example = `# Inspect a local ModelKit:
+By default, kit will check local storage for the specified modelkit. To
+inspect a modelkit stored on a remote registry, use the --remote flag.`
+	example = `# Inspect a local modelkit:
 kit inspect mymodel:mytag
 
-# Inspect a local ModelKit by digest:
+# Inspect a local modelkit by digest:
 kit inspect mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 
-# Inspect a remote ModelKit if not present locally:
+# Inspect a remote modelkit if not present locally:
 kit inspect registry.example.com/my-model:1.0.0`
 )
 
@@ -52,7 +52,7 @@ func InspectCommand() *cobra.Command {
 	}
 
 	opts.AddNetworkFlags(cmd)
-	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry even if ModelKit is present locally")
+	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry even if modelkit is present locally")
 	return cmd
 }
 
@@ -64,9 +64,9 @@ func runCommand(opts *inspectOptions) func(*cobra.Command, []string) {
 		manifest, err := inspectReference(cmd.Context(), opts)
 		if err != nil {
 			if errors.Is(err, errdef.ErrNotFound) {
-				output.Fatalf("Could not find ModelKit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+				output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
-			output.Fatalf("Error resolving ModelKit: %s", err)
+			output.Fatalf("Error resolving modelkit: %s", err)
 		}
 		jsonBytes, err := json.MarshalIndent(manifest, "", "  ")
 		if err != nil {
