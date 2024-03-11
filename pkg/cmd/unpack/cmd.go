@@ -171,7 +171,6 @@ func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, erro
 }
 
 func printConfig(opts *unpackOptions) {
-	output.Debugf("Using config path: %s", opts.configHome)
 	output.Debugf("Overwrite: %t", opts.overwrite)
 	output.Debugf("Unpacking %s", opts.modelRef.String())
 }

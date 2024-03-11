@@ -52,7 +52,6 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = modelRef
 
-	printConfig(opts)
 	return nil
 }
 
@@ -102,8 +101,4 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) {
 		}
 		output.Infof("Pushed %s", desc.Digest)
 	}
-}
-
-func printConfig(opts *pushOptions) {
-	output.Debugf("Using config path: %s", opts.configHome)
 }

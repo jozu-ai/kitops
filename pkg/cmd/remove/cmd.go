@@ -96,6 +96,5 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 }
 
 func printConfig(opts *removeOptions) {
-	output.Debugf("Using config path: %s", opts.configHome)
 	output.Debugf("Removing %s and additional tags: [%s]", opts.modelRef.String(), strings.Join(opts.extraTags, ", "))
 }
