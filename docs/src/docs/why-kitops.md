@@ -1,6 +1,8 @@
 # Why Use KitOps?
 
-Because getting an LLM or other AI/ML model deployed safely to production is hard...and it shouldn't be.
+Because hand-offs between AI/ML and app/SRE teams are painful.
+Because getting an LLM or other AI/ML model deployed safely to production is hard.
+Because they can be easy, and painless.
 
 Jupyter notebooks are great, but extracting the model, datasets, and metadata from one is tricky. Similarly, ML-specific experimentation tools like MLFlow or Weights & Biases are excellent at training, but they save everything in proprietary formats that are confusing for software engineers and SREs.
 
@@ -8,7 +10,7 @@ Worse yet, none of these AI/ML tools are compatible with the toolchains organiza
 
 With leaders demanding teams "add AI/ML" to their protfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
 
-**The goal of KitOps is to simplify the sharing of AI/ML models, datasets, code, and configuration so that they can be run anywhere.**
+> **The goal of KitOps is to simplify the sharing of AI/ML models, datasets, code, and configuration so that they can be run anywhere.**
 
 We're not trying to replace your other tools, we just want to improve the experience of packaging and sharing models.
 
@@ -33,4 +35,4 @@ Then `kit push` it to any OCI-compliant registry, even a private one.
 
 Most people won't need everything, so just `kit unpack` from the remote registry to get just the model, only the datasets, or just the notebook. Or, if you need everything then a `kit pull` will grab everything.
 
-Check out our [CLI command reference](./cli/cli-reference.md), or learn more about [ModelKits](./modelkit/intro.md).
+Check out our [quick start](./quick-start.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md).

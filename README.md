@@ -61,7 +61,7 @@ go run .
 
 ## Using Kit
 
-The easiest way to get introduced to Kit is with our [getting started guide](./docs/src/docs/getting-started.md)
+The easiest way to get introduced to Kit is with our [quick start guide](./docs/src/docs/getting-started.md)
 
 ## Your Voice Matters
 

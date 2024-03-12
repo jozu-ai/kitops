@@ -7,16 +7,16 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 ## Before we start...
 
-Make sure you've got the Kit CLI setup on your machine. Our [installation instructions](./cli/installation.md) will help.
+Make sure you've got the [Kit CLI setup](./cli/installation.md) on your machine.
 
-We recommend starting by pulling one of our [example ModelKits](https://github.com/orgs/jozu-ai/packages) to your machine and going through this getting started. From there you can try [writing a Kitfile](./kitfile/format.md) for your own AI/ML project.
+We recommend pulling one of our [example ModelKits](https://github.com/orgs/jozu-ai/packages) for this quick start. From there you can try [writing a Kitfile](./kitfile/format.md) for your own AI/ML project.
 
 ## Preparing for packaging
 
 The first step is to make a `Kitfile` - a YAML manifest for your ModelKit. There are four main parts to a Kitfile:
 1. ModelKit metadata in the `package` section
 1. Path to the Jupyter notebook folder in the `code` section
-1. Path to the datasets in the `datasets` section (you can have multiple datasets in the same page)
+1. Path to the datasets in the `datasets` section
 1. Path to the serialized model in the `model` section
 
 Here's an example Kitfile:
