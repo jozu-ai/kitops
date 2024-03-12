@@ -1,6 +1,4 @@
-# Getting started
-
-## What is KitOps?
+# What is KitOps?
 
 KitOps is an innovative open-source project designed to enhance collaboration among data scientists, application developers, and SREs working on integrating or managing self-hosted AI/ML models.
 

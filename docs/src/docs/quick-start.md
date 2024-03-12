@@ -1,4 +1,4 @@
-# Getting Started with KitOps
+# KitOps Quick Start
 
 In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing mechanisms
