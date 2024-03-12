@@ -92,7 +92,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'discord',
-        link: 'https://discord.gg/XzSmtPn3'
+        link: 'https://discord.gg/bYeHxpT3'
       },
       {
         icon: 'github',

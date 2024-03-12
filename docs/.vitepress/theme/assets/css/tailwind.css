@@ -169,8 +169,8 @@
 @layer components {
   .kit-button {
     @apply inline-block appearance-none;
-    @apply px-6 py-4 relative;
-    @apply text-gold font-bold uppercase;
+    @apply px-5 py-3 relative;
+    @apply text-gold font-bold uppercase text-center;
     @apply hocus:text-white;
 
     border: 2px solid var(--color-gold);
@@ -183,6 +183,7 @@
     background-image: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,0) 10.1%, rgba(255,255,255,0) 100%);
 
     @media screen(md) {
+      @apply text-left;
       font-size: 16px;
       letter-spacing: 2.4px;
     }
@@ -211,10 +212,11 @@
   }
 
   .kit-cards {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-2;
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-2;
 
     > .kit-card {
       @apply border border-gray-02 p-8 xl:p-10;
+      @apply w-full max-w-md mx-auto;
     }
 
     .kit-card h4 {
