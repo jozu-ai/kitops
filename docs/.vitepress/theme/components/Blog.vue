@@ -118,7 +118,7 @@ watchEffect(() => {
 
       <h4 class="font-bold mt-4">{{ post.title }}</h4>
 
-      <p class="mt-2">{{ post.description }}</p>
+      <p class="mt-2 p2">{{ post.description }}</p>
 
       <div class="font-bold p2 mt-10">{{ post.author }}</div>
     </a>
@@ -127,6 +127,10 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+.VPNav {
+  display: none !important;
+}
+
 section {
   max-width: calc(var(--vp-layout-max-width) - 64px);
   margin-left: auto;
