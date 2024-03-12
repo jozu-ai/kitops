@@ -127,6 +127,10 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+.VPNav {
+  display: none !important;
+}
+
 section {
   max-width: calc(var(--vp-layout-max-width) - 64px);
   margin-left: auto;

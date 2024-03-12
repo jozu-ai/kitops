@@ -12,6 +12,7 @@ import (
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content"
 	"oras.land/oras-go/v2/registry"
 )
@@ -125,6 +126,26 @@ func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.De
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
 	return config, nil
+}
+
+func ResolveManifest(ctx context.Context, store oras.Target, reference string) (*ocispec.Manifest, error) {
+	desc, err := store.Resolve(ctx, reference)
+	if err != nil {
+		return nil, fmt.Errorf("reference %s not found in remote repository: %w", reference, err)
+	}
+	return GetManifest(ctx, store, desc)
+}
+
+func ResolveManifestAndConfig(ctx context.Context, store oras.Target, reference string) (*ocispec.Manifest, *artifact.KitFile, error) {
+	manifest, err := ResolveManifest(ctx, store, reference)
+	if err != nil {
+		return nil, nil, err
+	}
+	config, err := GetConfig(ctx, store, manifest.Config)
+	if err != nil {
+		return nil, nil, err
+	}
+	return manifest, config, nil
 }
 
 func GetTagsForDescriptor(ctx context.Context, store LocalStorage, desc ocispec.Descriptor) ([]string, error) {

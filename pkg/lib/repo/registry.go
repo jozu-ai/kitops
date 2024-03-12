@@ -1,8 +1,11 @@
 package repo
 
 import (
+	"context"
+	"fmt"
 	"kitops/pkg/lib/network"
 
+	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
 )
 
@@ -27,4 +30,16 @@ func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, erro
 	reg.Client = client
 
 	return reg, nil
+}
+
+func NewRepository(ctx context.Context, hostname, repository string, opts *RegistryOptions) (registry.Repository, error) {
+	registry, err := NewRegistry(hostname, opts)
+	if err != nil {
+		return nil, err
+	}
+	repo, err := registry.Repository(ctx, repository)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get repository: %w", err)
+	}
+	return repo, nil
 }
