@@ -5,6 +5,12 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 * Push the ModelKit package to a public or private registry
 * Grab just the things you need from the ModelKit for testing, integration, local running, or deployment
 
+## Before we start...
+
+Make sure you've got the Kit CLI setup on your machine. Our [installation instructions](./cli/installation.md) will help.
+
+We recommend starting by pulling one of our [example ModelKits](https://github.com/orgs/jozu-ai/packages) to your machine and going through this getting started. From there you can try [writing a Kitfile](./kitfile/format.md) for your own AI/ML project.
+
 ## Preparing for packaging
 
 The first step is to make a `Kitfile` - a YAML manifest for your ModelKit. There are four main parts to a Kitfile:

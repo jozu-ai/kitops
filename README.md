@@ -1,20 +1,18 @@
 # Welcome to KitOps 🚀
 
-## Unleashing the Power of Streamlined Collaboration for AI/ML Projects
+## Streamlined Collaboration for AI/ML Projects
 
-KitOps is your ultimate toolkit for transforming how you build, package, and deploy AI/ML models. Say goodbye to compatibility concerns and hello to smooth model sharing.
+KitOps is your toolkit for transforming how you package, share, and deploy AI/ML models. Say goodbye to compatibility concerns and hello to smooth AI/ML collaboration.
 
-KitOps is designed to enhance collaboration among data scientists, application developers, and SREs working on self-hosted AI/ML models. KitOps' ModelKits simplify packaging models with their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility.
+KitOps simplifies the handoffs between data scientists, application developers, and SREs working on self-hosted AI/ML models (including LLMs). KitOps' ModelKits create a unified package for models, their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility with the tools you already use.
 
 ### What is in the box?
 
 **ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
 
-**Kitfile:** Complementing the ModelKit is the Kitfile, AI/ML project's blueprint, a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. The Kitfile is designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
+**Kitfile:** Complementing the ModelKit is the Kitfile, your AI/ML project's blueprint. It's a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. Kitfiles are designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
 
-**Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI is a powerful tool that enables users to create, manage, run, and deploy ModelKits using Kitfiles. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the necessary commands and functionalities to streamline your workflow.
-
-KitOps enhances the end-to-end lifecycle of AI/ML model management, making it as streamlined as managing containerized applications. It's about enhancing collaboration, streamlining processes, and unlocking a world of possibilities for AI/ML innovation.
+**Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI not only enables users to create, manage, run, and deploy ModelKits... it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model` or maybe you just want the training datasets? `unpack --datasets`. So, whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the flexibility and power to streamline your workflow.
 
 ## Quick Start with Kit
 
@@ -22,8 +20,7 @@ Dive into the world of KitOps with ease! Whether you're looking to streamline yo
 
 ### Running Kit with Pre-built Binaries
 
-
-Get started with the Kit CLI by downloading a pre-built binary. Choose the `latest` [tagged version](https://github.com/jozu-ai/kitops/tags) for the most stable release, or explore the `next` tag for our development builds.
+First, download the Kit CLI. Choose the `latest` [tagged version](https://github.com/jozu-ai/kitops/tags) for the most stable release, or explore the `next` tag for our development builds.
 
 For installation instructions and selecting the right binary for your platform, please refer to our [Installation Guide](./docs/src/docs/cli/installation.md).
 
@@ -61,6 +58,10 @@ Or, for direct execution during development:
 ```shell
 go run .
 ```
+
+## Using Kit
+
+The easiest way to get introduced to Kit is with our [getting started guide](./docs/src/docs/getting-started.md)
 
 ## Your Voice Matters
 
