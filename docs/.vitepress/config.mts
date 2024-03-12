@@ -20,7 +20,9 @@ export default defineConfig({
     ['link', { rel: "shortcut icon", href: "/favicon.ico"}],
     ['meta', { name: "msapplication-TileColor", content: "#000000"}],
     ['meta', { name: "msapplication-config", content: "/favicons/browserconfig.xml"}],
-    ['meta', { name: "theme-color", content: "#000000"}]
+    ['meta', { name: "theme-color", content: "#000000"}],
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-QTDTMG01Z5' } ],
+    ['script', {}, "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-QTDTMG01Z5');"]
   ],
 
   lastUpdated: true,
