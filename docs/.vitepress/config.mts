@@ -9,7 +9,6 @@ export default defineConfig({
   srcDir: 'src',
   title: 'KitOps',
   description: 'Documentation for KitOps',
-  base: '/kitops',
 
   head: [
     ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
