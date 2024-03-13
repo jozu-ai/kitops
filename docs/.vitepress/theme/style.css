@@ -103,6 +103,36 @@
   letter-spacing: normal;
 }
 
+.vp-doc ul,
+.vp-doc ol {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  margin-left: 1.25rem;
+}
+
+.vp-doc ul ::marker,
+.vp-doc ol ::marker {
+  color: var(--color-cornflower);
+}
+
+.vp-doc ol ::marker {
+  font-weight: bold;
+}
+
+.vp-doc li {
+  padding-left: 0.5rem;
+}
+
+.vp-doc li+li {
+  margin-top: 2rem;
+}
+
+.vp-doc li > ol,
+.vp-doc li > ul {
+  margin-top: 2rem;
+  list-style: circle;
+}
+
 /**
  * Component: Button
  * -------------------------------------------------------------------------- */

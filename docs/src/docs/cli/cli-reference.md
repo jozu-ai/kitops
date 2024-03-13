@@ -41,7 +41,7 @@ kit info registry.example.com/my-model:1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -85,7 +85,7 @@ kit inspect registry.example.com/my-model:1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Config file (default $HOME/.kitops)
+      --config string   Alternate path to root storage directory for CLI
   -v, --verbose         Include additional information in output (default false)
 ```
 
