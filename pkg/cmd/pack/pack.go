@@ -11,7 +11,14 @@ import (
 	"kitops/pkg/output"
 )
 
-func RunPack(ctx context.Context, options *packOptions) error {
+// runPack compresses and stores a modelkit based on a Kitfile. Returns an error if packing
+// fails for any reason, or if any path in the Kitfile is not a subdirectory of the current
+// context directory.
+//
+// Packed modelkits are saved to the local on-disk cache. As OCI-spec indexes only support one
+// registry/repository reference at a time, individual blobs may be duplicated on disk if stored
+// under different references.
+func runPack(ctx context.Context, options *packOptions) error {
 	// 1. Read the model file
 	kitfile := &artifact.KitFile{}
 	if err := kitfile.LoadModel(options.modelFile); err != nil {

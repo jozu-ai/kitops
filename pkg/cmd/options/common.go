@@ -4,6 +4,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NetworkOptions represent common networking-related flags that are used by multiple commands.
+// The flags should be added to the command via AddNetworkFlags before running.
 type NetworkOptions struct {
 	PlainHTTP bool
 	TlsVerify bool

@@ -17,6 +17,9 @@ import (
 	"oras.land/oras-go/v2"
 )
 
+// SaveModel saves an *artifact.Model to the provided oras.Target, compressing layers. It attempts to block
+// modelkits that include paths that leave the base context directory, allowing only subdirectories of the root
+// context to be included in the modelkit.
 func SaveModel(ctx context.Context, store oras.Target, model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
 	configDesc, err := saveConfigFile(ctx, store, model.Config)
 	if err != nil {
