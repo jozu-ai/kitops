@@ -1,7 +1,8 @@
 import { URL, fileURLToPath } from 'node:url'
-import { resolve } from 'path'
+
 import { defineConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
+import { resolve } from 'path'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -22,7 +23,8 @@ export default defineConfig({
     ['meta', { name: "msapplication-config", content: "/favicons/browserconfig.xml"}],
     ['meta', { name: "theme-color", content: "#000000"}],
     ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-QTDTMG01Z5' } ],
-    ['script', {}, "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-QTDTMG01Z5');"]
+    ['script', {}, "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-QTDTMG01Z5');"],
+    ['script', {}, "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';\nj.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','dataLayer','GTM-TFFZXCQW');"],
   ],
 
   lastUpdated: true,
@@ -99,7 +101,7 @@ export default defineConfig({
       {
         icon: 'github',
         link: 'https://github.com/jozu-ai/kitops'
-      },
+      }
     ],
     footer: {
       license: {

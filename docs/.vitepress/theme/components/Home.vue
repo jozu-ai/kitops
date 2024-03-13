@@ -38,7 +38,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
       </svg>
     </div>
     <div class="kit-card max-w-[370px] flex flex-col">
-      <h3>Kit cli</h3>
+      <h3 class="!text-salmon">Kit cli</h3>
 
       <div class="flex-1 mt-8 space-y-4">
         <p class="p2">The Kit CLI is a command line interface (CLI) that performs actions on ModelKits.</p>
@@ -46,8 +46,8 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" fill="none" class="mt-10 md:mt-16 xl:mt-20 size-8 md:size-12">
-        <path d="M36.1238 25.0052H54.7501" class="stroke-gold" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
-        <path d="M0 5.25L15.8041 16.8209L0 26.6985" class="stroke-gold" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
+        <path d="M36.1238 25.0052H54.7501" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
+        <path d="M0 5.25L15.8041 16.8209L0 26.6985" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
       </svg>
     </div>
   </div>
