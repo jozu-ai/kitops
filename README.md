@@ -78,4 +78,8 @@ If you need help there are several ways to reach our community and [Maintainers]
 
 ### A Community Built on Respect
 
-At KitOps, inclusivity, empathy, and responsibility are at our core. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to understand the values guiding our community..
+At KitOps, inclusivity, empathy, and responsibility are at our core. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to understand the values guiding our community. 
+
+### Join KitOps community
+
+For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/qCvhJgf2).
