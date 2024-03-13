@@ -20,6 +20,9 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
+// unpackModel fetches and unpacks a *registry.Reference from an oras.Target. It returns an error if
+// unpacking fails, or if any path specified in the modelkit is not a subdirectory of the current
+// unpack target directory.
 func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {

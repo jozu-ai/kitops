@@ -20,6 +20,8 @@ func NewCredentialStore(storePath string) (credentials.Store, error) {
 	})
 }
 
+// ClientWithAuth returns a default *auth.Client using the provided credentials
+// store
 func ClientWithAuth(store credentials.Store, opts *ClientOpts) *auth.Client {
 	client := DefaultClient(opts)
 	client.Credential = credentials.Credential(store)
@@ -27,6 +29,8 @@ func ClientWithAuth(store credentials.Store, opts *ClientOpts) *auth.Client {
 	return client
 }
 
+// DefaultClient returns an *auth.Client with a default User-Agent header and TLS
+// configured from opts (optionally disabling TLS verification)
 func DefaultClient(opts *ClientOpts) *auth.Client {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	if opts.TLSSkipVerify {

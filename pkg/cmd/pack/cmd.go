@@ -71,7 +71,7 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 			output.Fatalf("Failed to process configuration: %s", err)
 			return
 		}
-		err = RunPack(cmd.Context(), opts)
+		err = runPack(cmd.Context(), opts)
 		if err != nil {
 			output.Fatalf("Failed to pack model kit: %s", err)
 			return

@@ -30,6 +30,10 @@ type LocalStore struct {
 	*oci.Store
 }
 
+// GetAllLocalStores returns all local OCI indexes in the storageRoot path. As OCI
+// indexes only support tags and not registry/repository, the storageRoot may
+// contain multiple OCI indexes at separate paths (stored in
+// <storageRoot>/registry/repository/index.json)
 func GetAllLocalStores(storageRoot string) ([]LocalStorage, error) {
 	subDirs, err := findStoragePaths(storageRoot)
 	if err != nil {
@@ -54,6 +58,9 @@ func GetAllLocalStores(storageRoot string) ([]LocalStorage, error) {
 	return stores, nil
 }
 
+// NewLocalStore returns a new LocalStorage for the provided *registry.Reference's
+// registry and repository. The returned storage will only contain blobs present in
+// this index.
 func NewLocalStore(storageRoot string, ref *registry.Reference) (LocalStorage, error) {
 	storePath := storageRoot
 	repo := ""
@@ -72,14 +79,19 @@ func NewLocalStore(storageRoot string, ref *registry.Reference) (LocalStorage, e
 	}, nil
 }
 
+// GetIndex is a shortcut to reading the index.json for an OCI index, allowing for
+// listing all manfiests stored.
 func (s *LocalStore) GetIndex() (*ocispec.Index, error) {
 	return parseIndexJson(s.storePath)
 }
 
+// GetRepo returns the registry and repository for the current OCI store.
 func (s *LocalStore) GetRepo() string {
 	return s.repo
 }
 
+// findStoragePaths walks the filesystem rooted at storageRoot looking for index.json
+// files that represent OCI indexes, returning a list of paths relative to storageRoot.
 func findStoragePaths(storageRoot string) ([]string, error) {
 	var indexPaths []string
 	err := filepath.WalkDir(storageRoot, func(file string, info fs.DirEntry, err error) error {
@@ -108,6 +120,7 @@ func findStoragePaths(storageRoot string) ([]string, error) {
 	return indexPaths, nil
 }
 
+// parseIndexJson parses the OCI index.json stored in the OCI index at storageHome
 func parseIndexJson(storageHome string) (*ocispec.Index, error) {
 	indexBytes, err := os.ReadFile(constants.IndexJsonPath(storageHome))
 	if err != nil {

@@ -28,7 +28,7 @@ func TestPackOptions_RunPack(t *testing.T) {
 		contextDir: "/path/to/context",
 	}
 
-	err := RunPack(context.Background(), options)
+	err := runPack(context.Background(), options)
 
 	assert.NoError(t, err)
 }

@@ -15,7 +15,11 @@ import (
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
-func compressLayer(layer *artifact.ModelLayer) (string, ocispec.Descriptor, error) {
+// compressLayer compresses an *artifact.ModelLayer to a gzipped tar file. In order to return
+// a descriptor (including hash) for the compressed file, the layer is saved to a temporary file
+// on disk and must be moved to an appropriate location. It is the responsibility of the caller
+// to clean up the temporary file when it is no longer needed.
+func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispec.Descriptor, err error) {
 	pathInfo, err := os.Stat(layer.Path)
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, err
@@ -69,7 +73,7 @@ func compressLayer(layer *artifact.ModelLayer) (string, ocispec.Descriptor, erro
 	}
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
 
-	desc := ocispec.Descriptor{
+	desc = ocispec.Descriptor{
 		MediaType: layer.MediaType,
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
@@ -77,6 +81,8 @@ func compressLayer(layer *artifact.ModelLayer) (string, ocispec.Descriptor, erro
 	return tempFileName, desc, nil
 }
 
+// writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
+// Any non-regular files and directories (e.g. symlinks) are skipped.
 func writeDirToTar(basePath string, tw *tar.Writer) error {
 	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
 	// to compress the directory pointed at by basePath
@@ -133,6 +139,8 @@ func writeFileToTar(file string, fi os.FileInfo, tw *tar.Writer) error {
 	return nil
 }
 
+// callAndPrintError is a wrapper to print an error message for a function that
+// may return an error. The error is printed and then discarded.
 func callAndPrintError(f func() error, msg string) {
 	if err := f(); err != nil {
 		output.Errorf(msg, err)

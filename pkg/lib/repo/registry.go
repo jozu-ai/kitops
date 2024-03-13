@@ -15,6 +15,8 @@ type RegistryOptions struct {
 	CredentialsPath string
 }
 
+// NewRegistry returns a new *remote.Registry for hostname, with credentials and TLS
+// configured.
 func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, error) {
 	reg, err := remote.NewRegistry(hostname)
 	if err != nil {
