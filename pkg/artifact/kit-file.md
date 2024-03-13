@@ -114,28 +114,3 @@ models:
           f1_score: 0.94
 ```
 
-
-## Future Considerations
-
-This section is for collecting future ideas.
-
-### `dependencies`
-
-**This is a possible future section that may be used for creating BOM.**
-
-- **Description**: Lists the project's external dependencies.
-- **Type**: Object Array
-  - `name`: Name of the dependency.
-  - `version`: Version of the dependency.
-  - `license`: SPDX license identifier for the dependency.
-
-##### Example for dependencies
-```yaml
-  dependencies:
-  - name: numpy
-    version: 1.19.2
-    license: BSD-3-Clause
-  - name: pandas
-    version: 1.1.3
-    license: BSD-3-Clause
-```
