@@ -23,7 +23,7 @@ func RunPack(ctx context.Context, options *packOptions) error {
 
 	// 2. package the Code
 	for _, code := range kitfile.Code {
-		codePath, err := filesystem.VerifySubpath(options.contextDir, code.Path)
+		codePath, _, err := filesystem.VerifySubpath(options.contextDir, code.Path)
 		if err != nil {
 			return err
 		}
@@ -36,7 +36,7 @@ func RunPack(ctx context.Context, options *packOptions) error {
 
 	// 3. package the DataSets
 	for _, dataset := range kitfile.DataSets {
-		datasetPath, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
+		datasetPath, _, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
 		if err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func RunPack(ctx context.Context, options *packOptions) error {
 
 	// 4. package the TrainedModel
 	if kitfile.Model != nil {
-		modelPath, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
+		modelPath, _, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
 		if err != nil {
 			return err
 		}

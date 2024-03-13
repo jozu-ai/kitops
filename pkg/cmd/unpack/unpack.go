@@ -40,22 +40,28 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	// through the config's relevant field to get the correct path for unpacking
 	var codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
-		layerDir := ""
+		var layerDir, relPath string
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
 			if !options.unpackConf.unpackModels {
 				continue
 			}
-			layerDir = filepath.Join(options.unpackDir, config.Model.Path)
-			output.Infof("Unpacking model to %s", layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, config.Model.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving model path: %w", err)
+			}
+			output.Infof("Unpacking model to %s", relPath)
 
 		case constants.CodeLayerMediaType:
 			if !options.unpackConf.unpackCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir = filepath.Join(options.unpackDir, codeEntry.Path)
-			output.Infof("Unpacking code to %s", layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, codeEntry.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving code path: %w", err)
+			}
+			output.Infof("Unpacking code to %s", relPath)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
@@ -63,8 +69,11 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir = filepath.Join(options.unpackDir, datasetEntry.Path)
-			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, datasetEntry.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
+			}
+			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
 		}
 		if err := unpackLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
