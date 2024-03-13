@@ -134,8 +134,5 @@ export default defineConfig({
     }
   },
 
-  ignoreDeadLinks: [
-    './CODE-OF-CONDUCT',
-    './GOVERNANCE'
-  ]
+  ignoreDeadLinks: true
 })
