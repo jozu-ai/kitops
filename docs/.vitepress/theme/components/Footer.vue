@@ -59,6 +59,21 @@ const year = (new Date()).getFullYear()
           </svg>
         </a>
       </li>
+      <li>
+        <a href="https://x.com/Kit_Ops">
+          <span class="sr-only">x</span>
+          <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#a)">
+              <path d="M13.482 10.464 20.701 2H18.99l-6.268 7.35L7.714 2H1.94l7.572 11.114L1.94 21.99h1.71l6.62-7.761 5.288 7.76h5.775l-7.852-11.525Zm-2.344 2.747-.767-1.106-6.104-8.806h2.628l4.926 7.107.767 1.106 6.403 9.238h-2.628l-5.225-7.538Z" fill="#ECECEC"/>
+            </g>
+            <defs>
+              <clipPath id="a">
+                <path fill="#fff" d="M1.94 2h19.393v20H1.94z"/>
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+      </li>
     </ul>
 
     <ul class="flex flex-wrap lg:flex-nowrap items-center justify-center text-white gap-x-4 gap-y-2 lg:gap-10 list-none">
