@@ -1,6 +1,4 @@
-# Getting started
-
-## What is KitOps?
+# What is KitOps?
 
 KitOps is an innovative open-source project designed to enhance collaboration among data scientists, application developers, and SREs working on integrating or managing self-hosted AI/ML models.
 
@@ -16,9 +14,9 @@ KitOps is an innovative open-source project designed to enhance collaboration am
 
 The primary goal of KitOps is to bridge the gaps between data science, software development, and operational deployment. By providing tools that standardize and simplify the sharing of AI/ML artifacts, KitOps drives greater speed, security, and collaboration for teams hosting their own AI/ML models.
 
-_For application developers_ KitOps clears the path for application developers to harness AI/ML without getting entangled in its complexities. It lets developers concentrate on crafting exceptional applications, while KitOps handles the intricate AI/ML workflows. Whether integrating a new ML model or collaborating on novel features, KitOps accelerates the journey from idea to deployment.
+_For application developers_ KitOps clears the path to use AI/ML with your existing tools and applications. No need to be an AI/ML expert, KitOps lets you concentrate on crafting exceptional applications, while it handles the packaging and sharing.
 
-_For data scientists_ KitOps enables them to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model managementand sharing, fostering closer collaboration with developers. With KitOps, data scientists can spend more time experimenting and less time grappling with traditional software development tools.
+_For data scientists_ KitOps enables you to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model managementand sharing, fostering closer collaboration with developers. With KitOps, you can spend more time experimenting and less time grappling with traditional software development tools.
 
 Join us in shaping the future of AI/ML collaboration with KitOps.
 

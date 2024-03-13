@@ -120,7 +120,6 @@ func printSummary(lines []string) {
 }
 
 func printConfig(opts *listOptions) {
-	output.Debugf("Using config path: %s", opts.configHome)
 	if opts.remoteRef != nil {
 		output.Debugf("Listing remote model kits in %s", opts.remoteRef.String())
 	}

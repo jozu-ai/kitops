@@ -1,6 +1,17 @@
 # Use Cases
 
-## Use Case Context
+KitOps removes friction from the handoffs between AI/ML and App/SRE teams:
+* AI/ML teams can package their project, including models, code, datasets, and configuration, into a ModelKit that can be run by anyone, anywhere.
+* Application teams can pull only what they need from a ModelKit to embed a model in their app, or generate a RESTful API for integration.
+* SRE teams can pull the serialized model and validation dataset from a ModelKit and deploy it through their CI/CD pipelines.
+* Governance teams can track and audit AI/ML assets with your existing processes and tools (we save everything as OCI-compatible artifacts).
+* Security teams can integrate ModelKits into their SBOM processes.
+
+To make the use cases a little more fun let's tell two stories:
+1. Collaborating on an AI-enabled application for customers
+2. Deploying a model for internal business usage
+
+In both cases the context of the stories is the same.
 
 Weyland-Yutani Corporation has been adding AI and ML models to its portfolio for both internal- and customer-facing deployment. There are three main groups that are involved in the development lifecycle for their AI/ML work:
 * AI/ML Team, composed of data scientists, data engineers, and MLOps engineers. This specialized group builds, tunes, and validates the models that increasingly touch every aspect of the organization's work.
@@ -11,7 +22,7 @@ There has been a heated argument within Weyland-Yutani about how best to manage 
 
 ...but all that's about to change! (Hint: the change involves KitOps...surprise!)
 
-## Collaborating on an AI-Enabled Application for Production
+## 1/ Collaborating on an AI-Enabled Application for Production
 
 ### AI/ML Team Collaboration
 
@@ -81,7 +92,7 @@ Once the deployment is complete across all galactic regions, Annika sends an upd
 
 Thanks KitOps!
 
-## Collaborating on an Internal Model
+## 2/ Collaborating on an Internal Model
 
 ### AI/ML and SRE Team Collaboration
 

@@ -1,10 +1,9 @@
 # Contributing Guide
 
 * [Ways to Contribute](#ways-to-contribute)
-* [Development Environment Setup](#development-environment-setup) **TODO**
+* [Development Environment Setup](#development-environment-setup)
 * [Pull Request Lifecycle](#pull-request-lifecycle)
 * [Sign Your Commits](#sign-your-commits)
-* [Pull Request Checklist](#pull-request-checklist) **TODO**
 * [Ask for Help](#ask-for-help)
 
 Welcome! We are so excited that you want to contribute to our project! 💖
@@ -35,7 +34,38 @@ Not everything happens through a GitHub pull request. Please contact us in the [
 
 ## Development Environment Setup
 
-(TODO) **Explain how to set up a development environment**
+### Prerequisites
+- Go (Golang): The latest version of Go, as the project is written in this language. Go's installation guide can be found at https://golang.org/doc/install.
+- Git: Version control system for cloning the repository and managing code changes. Installation instructions are available at https://git-scm.com/book/en/v2/Getting-Started-Installing-Git.
+
+
+### Setting up the project
+
+1. Clone the Repository: Clone the KitOps source code to your local machine:
+
+```shell
+git clone https://github.com/jozu-ai/kitops.git
+cd kitops
+```
+
+2. Install Go Dependencies: Inside the project directory, fetch and install the project's dependencies using the Go command:
+
+```shell
+go mod tidy
+```
+
+3. Build the Kit CLI: Compile the source code into an executable named kit:
+```shell
+go build -o kit
+```
+
+4. Run Your Build: Execute the built CLI to see all available commands:
+
+```shell
+go run .
+```
+5. Updating Dependencies: If you add or update dependencies, ensure to update the go.mod and go.sum files by running `go mod tidy` again and include these changes in your commits.
+
 
 ## Pull Request Lifecycle
 
@@ -73,13 +103,6 @@ If you forgot to do this and have not yet pushed your changes to the remote
 repository, you can amend your commit with the sign-off by running
 
     git commit --amend -s
-
-## Pull Request Checklist
-
-When you submit your pull request, or you push new commits to it, our automated systems will run some checks on your new code. We require that your pull request passes these checks, but we also have more criteria than just that before we can accept and merge it. We recommend that you check the following things locally before you submit your code:
-
-(TODO) **Create a checklist that authors should use before submitting a pull request**
-
 
 ## Ask for Help
 
