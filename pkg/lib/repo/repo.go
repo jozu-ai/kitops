@@ -190,7 +190,7 @@ func GetTagsForDescriptor(ctx context.Context, store LocalStorage, desc ocispec.
 	}
 	var tags []string
 	for _, manifest := range index.Manifests {
-		if manifest.Digest == desc.Digest {
+		if manifest.Digest == desc.Digest && manifest.Annotations[ocispec.AnnotationRefName] != "" {
 			tags = append(tags, manifest.Annotations[ocispec.AnnotationRefName])
 		}
 	}

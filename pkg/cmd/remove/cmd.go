@@ -38,14 +38,26 @@ might refer to it. If specified by tag (and the --force flag is not used),
 the modelkit will only be removed if no other tags refer to it; otherwise
 it is only untagged.`
 
-	examples = `kit remove my-registry.com/my-org/my-repo:my-tag
+	examples = `# Remove modelkit by tag
+kit remove my-registry.com/my-org/my-repo:my-tag
+
+# Remove modelkit by digest
 kit remove my-registry.com/my-org/my-repo@sha256:<digest>
-kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3`
+
+# Remove multiple tags for a modelkit
+kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3
+
+# Remove all untagged modelkits
+kit remove --all
+
+# Remove all locally stored modelkits
+kit remove --all --force`
 )
 
 type removeOptions struct {
 	configHome  string
 	forceDelete bool
+	removeAll   bool
 	modelRef    *registry.Reference
 	extraTags   []string
 }
@@ -57,12 +69,14 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := repo.ParseReference(args[0])
-	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+	if len(args) > 0 {
+		modelRef, extraTags, err := repo.ParseReference(args[0])
+		if err != nil {
+			return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+		}
+		opts.modelRef = modelRef
+		opts.extraTags = extraTags
 	}
-	opts.modelRef = modelRef
-	opts.extraTags = extraTags
 
 	printConfig(opts)
 	return nil
@@ -77,8 +91,27 @@ func RemoveCommand() *cobra.Command {
 		Example: examples,
 		Run:     runCommand(opts),
 	}
-	cmd.Args = cobra.ExactArgs(1)
-	cmd.Flags().BoolVarP(&opts.forceDelete, "force", "f", false, "remove manifest even if other tags refer to it")
+	// cmd.Args = cobra.ExactArgs(1)
+	cmd.Flags().BoolVarP(&opts.forceDelete, "force", "f", false, "remove modelkit and all other tags that refer to it")
+	cmd.Flags().BoolVarP(&opts.removeAll, "all", "a", false, "remove all untagged modelkits")
+
+	cmd.Args = func(cmd *cobra.Command, args []string) error {
+		switch len(args) {
+		case 0:
+			if opts.removeAll {
+				return nil
+			}
+			return fmt.Errorf("modelkit is required for remove unless --all is specified")
+		case 1:
+			if opts.removeAll {
+				return fmt.Errorf("modelkit should not be specified when --all flag is used")
+			}
+			return nil
+		default:
+			return cobra.MaximumNArgs(1)(cmd, args)
+		}
+	}
+
 	return cmd
 }
 
@@ -87,30 +120,31 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Fatalf("Failed to process arguments: %s", err)
 		}
-		storageRoot := constants.StoragePath(opts.configHome)
-		localStore, err := repo.NewLocalStore(storageRoot, opts.modelRef)
-		if err != nil {
-			output.Fatalf("Failed to read local storage: %s", storageRoot)
-		}
-		desc, err := removeModel(cmd.Context(), localStore, opts.modelRef, opts.forceDelete)
-		if err != nil {
-			output.Fatalf("Failed to remove: %s", err)
-		}
-		output.Infof("Removed %s (digest %s)", opts.modelRef.String(), desc.Digest)
 
-		for _, tag := range opts.extraTags {
-			ref := *opts.modelRef
-			ref.Reference = tag
-			desc, err := removeModel(cmd.Context(), localStore, &ref, opts.forceDelete)
-			if err != nil {
-				output.Errorf("Failed to remove: %s", err)
-			} else {
-				output.Infof("Removed %s (digest %s)", ref.String(), desc.Digest)
-			}
+		var err error
+		switch {
+		case opts.modelRef != nil:
+			err = removeModel(cmd.Context(), opts)
+		case opts.removeAll && !opts.forceDelete:
+			err = removeUntaggedModels(cmd.Context(), opts)
+		case opts.removeAll && opts.forceDelete:
+			err = removeAllModels(cmd.Context(), opts)
+		}
+		if err != nil {
+			output.Fatalf(err.Error())
 		}
 	}
 }
 
 func printConfig(opts *removeOptions) {
-	output.Debugf("Removing %s and additional tags: [%s]", opts.modelRef.String(), strings.Join(opts.extraTags, ", "))
+	if opts.modelRef != nil {
+		output.Debugf("Removing %s and additional tags: [%s]", opts.modelRef, strings.Join(opts.extraTags, ", "))
+	}
+	if opts.removeAll {
+		if opts.forceDelete {
+			output.Debugf("Removing all locally-stored modelkits")
+		} else {
+			output.Debugf("Removing all untagged modelkits")
+		}
+	}
 }
