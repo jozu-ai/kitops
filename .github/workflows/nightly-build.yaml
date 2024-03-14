@@ -34,6 +34,10 @@ jobs:
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
+        env:
+          AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          AC_USERNAME: ${{ secrets.AC_USERNAME }}
+          AC_APPLICATION_IDENTITY: ${{ secrets.APPLICATION_IDENTITY }}
         with:
           version: latest
           distribution: goreleaser
@@ -43,9 +47,6 @@ jobs:
         uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
-          AC_USERNAME: ${{ secrets.AC_USERNAME }}
-          AC_APPLICATION_IDENTITY: ${{ secrets.APPLICATION_IDENTITY }}
         with:
           tag_name: next
           name: 'Nightly Builds Download for KitOps CLI (kit)'
