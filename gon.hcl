@@ -5,5 +5,4 @@ apple_id {
 }
 
 sign {
- application_identity = "Developer ID Application: AKARA TECHNOLOGIES, INC. (PMHBCVV9C2)"
 }
