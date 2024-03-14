@@ -19,17 +19,118 @@ package remove
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 	"strings"
 
+	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
 )
 
-func removeModel(ctx context.Context, store repo.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
+// removeAllModels removes all modelkits from local storage, including tagged ones
+func removeAllModels(ctx context.Context, opts *removeOptions) error {
+	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	if err != nil {
+		return fmt.Errorf("Failed to read local storage: %w", err)
+	}
+	for _, store := range stores {
+		repository := repo.FormatRepositoryForDisplay(store.GetRepo())
+
+		index, err := store.GetIndex()
+		if err != nil {
+			return fmt.Errorf("Failed to read index for %s: %w", repository, err)
+		}
+
+		// Store a list of removed manifests for this LocalStore. This is necessary
+		// as index.Manifests may have multiple manifest descriptors with the same
+		// digest (and different tags). If we delete a manifest we don't want to try
+		// to delete it (by digest) again.
+		skipManifests := map[digest.Digest]bool{}
+		for _, manifestDesc := range index.Manifests {
+			if skipManifests[manifestDesc.Digest] {
+				continue
+			}
+			tags, err := repo.GetTagsForDescriptor(ctx, store, manifestDesc)
+			if err != nil {
+				output.Errorf("Failed to get tags for modelkit %s@%s: %w", repository, manifestDesc.Digest, err)
+			}
+			// First untag all manifests for this digest
+			for _, tag := range tags {
+				if err := store.Untag(ctx, tag); err != nil {
+					output.Errorf("Failed to untag %s:%s: %w", repository, tag, err)
+				}
+				output.Infof("Untagged %s:%s", repository, tag)
+			}
+
+			if err := store.Delete(ctx, manifestDesc); err != nil {
+				output.Errorf("Failed to remove %s@%s: %w", repository, manifestDesc.Digest, err)
+				continue
+			}
+			// Skip future manifest descriptors with this digest, since we just removed it.
+			skipManifests[manifestDesc.Digest] = true
+			output.Infof("Removed %s@%s", repository, manifestDesc.Digest)
+		}
+	}
+	return nil
+}
+
+// removeUntaggedModels removes all untagged modelkits from local storage
+func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
+	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	if err != nil {
+		return fmt.Errorf("Failed to read local storage: %w", err)
+	}
+	for _, store := range stores {
+		index, err := store.GetIndex()
+		repo := repo.FormatRepositoryForDisplay(store.GetRepo())
+		if err != nil {
+			return fmt.Errorf("Failed to read index for %s: %w", repo, err)
+		}
+		for _, manifestDesc := range index.Manifests {
+			if tag, ok := manifestDesc.Annotations[ocispec.AnnotationRefName]; ok {
+				output.Debugf("Skipping %s (tag: %s)", manifestDesc.Digest, tag)
+				continue
+			}
+			if err := store.Delete(ctx, manifestDesc); err != nil {
+				output.Errorf("Failed to remove %s@%s: %w", repo, manifestDesc.Digest, err)
+				continue
+			}
+			output.Infof("Removed %s@%s", repo, manifestDesc.Digest)
+		}
+	}
+	return nil
+}
+
+func removeModel(ctx context.Context, opts *removeOptions) error {
+	storageRoot := constants.StoragePath(opts.configHome)
+	localStore, err := repo.NewLocalStore(storageRoot, opts.modelRef)
+	if err != nil {
+		return fmt.Errorf("Failed to read local storage: %s", storageRoot)
+	}
+	desc, err := removeModelRef(ctx, localStore, opts.modelRef, opts.forceDelete)
+	if err != nil {
+		return fmt.Errorf("Failed to remove: %s", err)
+	}
+	output.Infof("Removed %s (digest %s)", opts.modelRef.String(), desc.Digest)
+
+	for _, tag := range opts.extraTags {
+		ref := *opts.modelRef
+		ref.Reference = tag
+		desc, err := removeModelRef(ctx, localStore, &ref, opts.forceDelete)
+		if err != nil {
+			output.Errorf("Failed to remove tag %s: %s", tag, err)
+		} else {
+			output.Infof("Removed %s (digest %s)", ref.String(), desc.Digest)
+		}
+	}
+	return nil
+}
+
+func removeModelRef(ctx context.Context, store repo.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
 	desc, err := oras.Resolve(ctx, store, ref.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
