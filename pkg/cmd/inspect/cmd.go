@@ -44,8 +44,8 @@ kit inspect mymodel:mytag
 # Inspect a local modelkit by digest:
 kit inspect mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 
-# Inspect a remote modelkit if not present locally:
-kit inspect registry.example.com/my-model:1.0.0`
+# Inspect a remote modelkit:
+kit inspect --remote registry.example.com/my-model:1.0.0`
 )
 
 type inspectOptions struct {
@@ -68,7 +68,7 @@ func InspectCommand() *cobra.Command {
 	}
 
 	opts.AddNetworkFlags(cmd)
-	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry even if modelkit is present locally")
+	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry instead of local storage")
 	return cmd
 }
 
