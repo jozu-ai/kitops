@@ -32,7 +32,7 @@ builds:
     hooks:
       post: |-
         sh -c '
-        cat <<EOF > /tmp/kit-gon.hcl
+        cat <<EOF > /tmp/kit-gon-{{ .Arch }}.hcl
         source = ["./dist/kit-macos_darwin_{{ .Arch }}{{- if .Amd64 }}_{{ .Amd64 }}{{ end }}/kit"]
         bundle_id = "com.jozu-ai.kitops"
         apple_id {
@@ -45,7 +45,7 @@ builds:
           output_path = "/tmp/signing/kitops-darwin-{{ .Arch }}.zip"
         }
         EOF
-        gon /tmp/kit-gon.hcl
+        gon /tmp/kit-gon-{{ .Arch }}.hcl
         '
 
 archives:
