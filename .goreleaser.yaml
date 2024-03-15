@@ -42,7 +42,7 @@ builds:
           application_identity = "Developer ID Application: AKARA TECHNOLOGIES, INC. (PMHBCVV9C2)"
         }
         zip {
-          output_path = "./dist/kitops-darwin-{{ .Arch }}.zip"
+          output_path = "/tmp/signing/kitops-darwin-{{ .Arch }}.zip"
         }
         EOF
         gon /tmp/kit-gon.hcl
@@ -52,6 +52,7 @@ archives:
   - format: tar.gz
     builds:
       - kit
+      - kit-macos
     name_template: >-
       {{ .ProjectName }}-
       {{- tolower .Os }}-
