@@ -33,6 +33,16 @@ jobs:
             exit 1
           fi
 
+      - name: Check license headers
+        run: |
+          go install github.com/google/addlicense@latest
+          if ! addlicense --check -f license-header.txt $(find . -name '*.go'); then
+            echo "License headers missing from Go files (see above)."
+            echo "Install addlicense via 'go install github.com/google/addlicense@latest'"
+            echo "And run 'addlicense -f license-header.txt \$(find . -name '*.go')'"
+            exit 1
+          fi
+
       - name: Check build
         run: |
           if ! go build -o kit; then

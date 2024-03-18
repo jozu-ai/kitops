@@ -1,3 +1,19 @@
+// Copyright 2024 The KitOps Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package unpack
 
 import (
@@ -20,6 +36,9 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
+// unpackModel fetches and unpacks a *registry.Reference from an oras.Target. It returns an error if
+// unpacking fails, or if any path specified in the modelkit is not a subdirectory of the current
+// unpack target directory.
 func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
@@ -40,22 +59,28 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	// through the config's relevant field to get the correct path for unpacking
 	var codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
-		layerDir := ""
+		var layerDir, relPath string
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
 			if !options.unpackConf.unpackModels {
 				continue
 			}
-			layerDir = filepath.Join(options.unpackDir, config.Model.Path)
-			output.Infof("Unpacking model to %s", layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, config.Model.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving model path: %w", err)
+			}
+			output.Infof("Unpacking model to %s", relPath)
 
 		case constants.CodeLayerMediaType:
 			if !options.unpackConf.unpackCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir = filepath.Join(options.unpackDir, codeEntry.Path)
-			output.Infof("Unpacking code to %s", layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, codeEntry.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving code path: %w", err)
+			}
+			output.Infof("Unpacking code to %s", relPath)
 			codeIdx += 1
 
 		case constants.DataSetLayerMediaType:
@@ -63,8 +88,11 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir = filepath.Join(options.unpackDir, datasetEntry.Path)
-			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, layerDir)
+			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, datasetEntry.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
+			}
+			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
 		}
 		if err := unpackLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {

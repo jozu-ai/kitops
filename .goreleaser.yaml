@@ -8,19 +8,51 @@ before:
     - go mod tidy
 
 builds:
-  - env:
+  - id: "kit"
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
-      - darwin
     binary: kit
-
     ldflags:
-      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.Date}}
+      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
+
+  - id: "kit-macos"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: kit
+    ldflags:
+      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
+    hooks:
+      post: |-
+        sh -c '
+        cat <<EOF > /tmp/kit-gon-{{ .Arch }}.hcl
+        source = ["./dist/kit-macos_darwin_{{ .Arch }}{{- if .Amd64 }}_{{ .Amd64 }}{{ end }}/kit"]
+        bundle_id = "com.jozu-ai.kitops"
+        apple_id {
+          provider = "PMHBCVV9C2"
+        }
+        sign {
+          application_identity = "Developer ID Application: AKARA TECHNOLOGIES, INC. (PMHBCVV9C2)"
+        }
+        zip {
+          output_path = "/tmp/signing/kitops-darwin-{{ .Arch }}.zip"
+        }
+        EOF
+        gon /tmp/kit-gon-{{ .Arch }}.hcl
+        '
 
 archives:
   - format: tar.gz
+    builds:
+      - kit
+      - kit-macos
     name_template: >-
       {{ .ProjectName }}-
       {{- tolower .Os }}-
@@ -32,6 +64,10 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    files:
+      - LICENSE
+      - README.md
+
 
 changelog:
   sort: asc

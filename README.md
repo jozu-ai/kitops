@@ -6,6 +6,8 @@ KitOps is your toolkit for transforming how you package, share, and deploy AI/ML
 
 KitOps simplifies the handoffs between data scientists, application developers, and SREs working on self-hosted AI/ML models (including LLMs). KitOps' ModelKits create a unified package for models, their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility with the tools you already use.
 
+https://github.com/jozu-ai/kitops/assets/10517533/8f7539e1-b0d2-43c4-abfe-31841d4c68bd
+
 ### What is in the box?
 
 **ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
@@ -37,21 +39,21 @@ For those who prefer to build from the source, follow these steps to get the lat
 
 1. Clone the Repository: Clone the KitOps source code to your local machine:
 
-```shell
-git clone https://github.com/jozu-ai/kitops.git
-cd kitops
-```
+    ```shell
+    git clone https://github.com/jozu-ai/kitops.git
+    cd kitops
+    ```
 
 2. Build the Kit CLI: Compile the source code into an executable named kit:
-```shell
-go build -o kit
-```
+    ```shell
+    go build -o kit
+    ```
 
 3. Run Your Build: Execute the built CLI to see all available commands:
 
-```shell
-./kit
-```
+    ```shell
+    ./kit
+    ```
 
 Or, for direct execution during development:
 
@@ -73,7 +75,7 @@ Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* t
 
 We ❤️ our Kit community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
 
-### Heed Help?
+### Need Help?
 
 If you need help there are several ways to reach our community and [Maintainers](./MAINTAINERS.md) outlined in our [support doc](./SUPPORT.md)
 
