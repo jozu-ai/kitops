@@ -104,4 +104,4 @@ I can do the same with `--datasets` or `--code`. If I only want to get the Kitfi
 
 We're also working on a `dev` command that will run a lightweight serving engine on a laptop and auto-generate a RESTful API to make it easier for software developers to test an in-development model or integrate it with their applications.
 
-If you have questions please join our [Discord server](https://discord.gg/eHXGmHds).
+If you have questions please join our [Discord server](https://discord.gg/YyAfWnEg).
