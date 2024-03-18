@@ -24,6 +24,7 @@ func PushModel(ctx context.Context, localStore *oci.Store, remoteRegistry *remot
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
+	output.WaitProgress(trackedRepo)
 
 	return desc, err
 }

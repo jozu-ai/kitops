@@ -30,6 +30,7 @@ func pullModel(ctx context.Context, remoteRegistry *remote.Registry, localStore 
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
+	output.WaitProgress(trackedRepo)
 
 	return desc, err
 }
