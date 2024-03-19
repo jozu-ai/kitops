@@ -39,6 +39,7 @@ const changePlatform = () => {
     </svg>
 
     <select
+      class="dark:!text-white !text-black"
       @change="changePlatform"
       v-model="selectedPlatform"
       aria-label="select your preferred platform">
@@ -142,6 +143,10 @@ html.platform-linux .platform-snippet-linux {
 </style>
 
 <style scoped>
+option {
+  @apply bg-night text-off-white;
+}
+
 .container {
   padding-top: 20px;
   margin-bottom: 10px;
