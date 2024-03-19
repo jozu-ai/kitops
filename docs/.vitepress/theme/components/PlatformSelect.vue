@@ -39,7 +39,6 @@ const changePlatform = () => {
     </svg>
 
     <select
-      class="dark:!text-white !text-black"
       @change="changePlatform"
       v-model="selectedPlatform"
       aria-label="select your preferred platform">
