@@ -355,15 +355,27 @@ kit remove [flags] registry/repository[:tag|@digest]
 ### Examples
 
 ```
+# Remove modelkit by tag
 kit remove my-registry.com/my-org/my-repo:my-tag
+
+# Remove modelkit by digest
 kit remove my-registry.com/my-org/my-repo@sha256:<digest>
+
+# Remove multiple tags for a modelkit
 kit remove my-registry.com/my-org/my-repo:tag1,tag2,tag3
+
+# Remove all untagged modelkits
+kit remove --all
+
+# Remove all locally stored modelkits
+kit remove --all --force
 ```
 
 ### Options
 
 ```
-  -f, --force   remove manifest even if other tags refer to it
+  -a, --all     remove all untagged modelkits
+  -f, --force   remove modelkit and all other tags that refer to it
   -h, --help    help for remove
 ```
 
