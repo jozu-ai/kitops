@@ -54,7 +54,12 @@ func (w *wrappedRepo) Push(ctx context.Context, expected ocispec.Descriptor, con
 	return w.Target.Push(ctx, expected, proxyReader)
 }
 
+// WrapTarget wraps an oras.Target so that calls to Push print a progress bar.
+// If output is configured to not print progress bars, this is a no-op.
 func WrapTarget(wrap oras.Target) oras.Target {
+	if !printProgressBars {
+		return wrap
+	}
 	p := mpb.New(
 		mpb.WithWidth(60),
 		mpb.WithRefreshRate(180*time.Millisecond),

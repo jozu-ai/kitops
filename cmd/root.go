@@ -33,8 +33,9 @@ Find more information at: http://kitops.ml`
 )
 
 type rootOptions struct {
-	configHome string
-	verbose    bool
+	configHome         string
+	verbose            bool
+	enableProgressBars bool
 }
 
 func RunCommand() *cobra.Command {
@@ -45,9 +46,9 @@ func RunCommand() *cobra.Command {
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if opts.verbose {
-				output.SetDebug(true)
-			}
+			output.SetDebug(opts.verbose)
+			output.SetProgressBars(opts.enableProgressBars)
+
 			configHome, err := getConfigHome(opts)
 			if err != nil {
 				output.Errorf("Failed to read base config directory")
@@ -61,6 +62,7 @@ func RunCommand() *cobra.Command {
 	addSubcommands(cmd)
 	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
 	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
+	cmd.PersistentFlags().BoolVar(&opts.enableProgressBars, "progress", true, "Print progress bars during longer operations (default true)")
 
 	cmd.SetHelpTemplate(helpTemplate)
 	cmd.SetUsageTemplate(usageTemplate)

@@ -22,14 +22,6 @@ import (
 	"strings"
 )
 
-var (
-	printDebug = false
-)
-
-func SetDebug(debug bool) {
-	printDebug = debug
-}
-
 func Infoln(s any) {
 	fmt.Println(s)
 }
