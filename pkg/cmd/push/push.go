@@ -6,6 +6,7 @@ package push
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
@@ -19,8 +20,8 @@ func PushModel(ctx context.Context, localStore *oci.Store, remoteRegistry *remot
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)
 	}
-
-	desc, err := oras.Copy(ctx, localStore, ref.Reference, repo, ref.Reference, oras.DefaultCopyOptions)
+	trackedRepo := output.WrapTarget(repo)
+	desc, err := oras.Copy(ctx, localStore, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
