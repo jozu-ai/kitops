@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"math"
 	"time"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -74,31 +73,4 @@ func WaitProgress(t oras.Target) {
 	if wrapper, ok := t.(*wrappedRepo); ok {
 		wrapper.progress.Wait()
 	}
-}
-
-func FormatBytes(i int64) string {
-	if i == 0 {
-		return "0 B  "
-	}
-
-	if i < 1024 {
-		// Catch bytes to avoid printing fractional amounts of bytes e.g. 123.0 bytes
-		return fmt.Sprintf("%d B  ", i)
-	}
-
-	suffixes := []string{"KiB", "MiB", "GiB", "TiB"}
-	unit := float64(1024)
-
-	size := float64(i) / unit
-	for _, suffix := range suffixes {
-		if size < unit {
-			// Round down to the nearest tenth of a unit to avoid e.g. 1MiB - 1B = 1024KiB
-			niceSize := math.Floor(size*10) / 10
-			return fmt.Sprintf("%.1f %s", niceSize, suffix)
-		}
-		size = size / unit
-	}
-
-	// Fall back to printing whatever's left as PiB
-	return fmt.Sprintf("%.1f %s", size, "PiB")
 }
