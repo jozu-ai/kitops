@@ -20,12 +20,12 @@ func PushModel(ctx context.Context, localStore *oci.Store, remoteRegistry *remot
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)
 	}
-	trackedRepo := output.WrapTarget(repo)
+	trackedRepo, logger := output.WrapTarget(repo)
 	desc, err := oras.Copy(ctx, localStore, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
-	output.WaitProgress(trackedRepo)
+	logger.Wait()
 
 	return desc, err
 }
