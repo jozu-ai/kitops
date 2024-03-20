@@ -26,12 +26,12 @@ func pullModel(ctx context.Context, remoteRegistry *remote.Registry, localStore 
 	if err := referenceIsModel(ctx, ref, repo); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	trackedRepo := output.WrapTarget(localStore)
+	trackedRepo, logger := output.WrapTarget(localStore)
 	desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
-	output.WaitProgress(trackedRepo)
+	logger.Wait()
 
 	return desc, err
 }
