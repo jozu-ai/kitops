@@ -20,13 +20,20 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"strings"
 	"time"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
+	"golang.org/x/term"
 	"oras.land/oras-go/v2"
 )
+
+func shouldPrintProgress() bool {
+	return printProgressBars && term.IsTerminal(int(os.Stdout.Fd()))
+}
 
 type wrappedRepo struct {
 	oras.Target
@@ -56,7 +63,7 @@ func (w *wrappedRepo) Push(ctx context.Context, expected ocispec.Descriptor, con
 // WrapTarget wraps an oras.Target so that calls to Push print a progress bar.
 // If output is configured to not print progress bars, this is a no-op.
 func WrapTarget(wrap oras.Target) oras.Target {
-	if !printProgressBars {
+	if !shouldPrintProgress() {
 		return wrap
 	}
 	p := mpb.New(
@@ -72,5 +79,74 @@ func WrapTarget(wrap oras.Target) oras.Target {
 func WaitProgress(t oras.Target) {
 	if wrapper, ok := t.(*wrappedRepo); ok {
 		wrapper.progress.Wait()
+	}
+}
+
+type ProgressLogger struct {
+	output io.Writer
+}
+
+func WrapReadCloser(size int64, rc io.ReadCloser) (*ProgressLogger, io.ReadCloser) {
+	if !shouldPrintProgress() {
+		return &ProgressLogger{
+			output: os.Stdout,
+		}, rc
+	}
+
+	p := mpb.New(
+		mpb.WithWidth(60),
+		mpb.WithRefreshRate(180*time.Millisecond),
+	)
+	bar := p.New(size,
+		mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|"),
+		mpb.PrependDecorators(
+			decor.Name("Unpacking"),
+		),
+		mpb.AppendDecorators(
+			decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"),
+			decor.Name(" | "),
+			decor.EwmaSpeed(decor.SizeB1024(0), "% .2f", 60),
+		),
+		mpb.BarRemoveOnComplete(),
+	)
+
+	pw := &ProgressLogger{
+		output: p,
+	}
+	return pw, bar.ProxyReader(rc)
+}
+
+func (pw *ProgressLogger) Infoln(s any) {
+	fmt.Fprintln(pw.output, s)
+}
+
+func (pw *ProgressLogger) Infof(s string, args ...any) {
+	// Avoid printing incomplete lines
+	if !strings.HasSuffix(s, "\n") {
+		s = s + "\n"
+	}
+	fmt.Fprintf(pw.output, s, args...)
+}
+
+func (pw *ProgressLogger) Debugln(s any) {
+	if printDebug {
+		fmt.Fprintln(pw.output, s)
+	}
+}
+
+func (pw *ProgressLogger) Debugf(s string, args ...any) {
+	if !printDebug {
+		return
+	}
+	// Avoid printing incomplete lines
+	if !strings.HasSuffix(s, "\n") {
+		s = s + "\n"
+	}
+	fmt.Fprintf(pw.output, s, args...)
+}
+
+func (pw *ProgressLogger) Wait() {
+	if progress, ok := pw.output.(*mpb.Progress); ok {
+		progress.Wait()
 	}
 }

@@ -132,7 +132,10 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
 	}
+	var progressLogger *output.ProgressLogger
+	progressLogger, rc = output.WrapReadCloser(desc.Size, rc)
 	defer rc.Close()
+	defer progressLogger.Wait()
 
 	gzr, err := gzip.NewReader(rc)
 	if err != nil {
@@ -145,17 +148,17 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 		if !overwrite {
 			return fmt.Errorf("failed to unpack: path %s already exists", unpackPath)
 		}
-		output.Debugf("Directory %s already exists", unpackPath)
+		progressLogger.Debugf("Directory %s already exists", unpackPath)
 	}
 	unpackDir := filepath.Dir(unpackPath)
 	if err := os.MkdirAll(unpackDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", unpackDir, err)
 	}
 
-	return extractTar(tr, unpackDir, overwrite)
+	return extractTar(tr, unpackDir, overwrite, progressLogger)
 }
 
-func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
+func extractTar(tr *tar.Reader, dir string, overwrite bool, progressLogger *output.ProgressLogger) error {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -175,9 +178,9 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 				if !fi.IsDir() {
 					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
 				}
-				output.Debugf("Path %s already exists", outPath)
+				progressLogger.Debugf("Path %s already exists", outPath)
 			}
-			output.Debugf("Creating directory %s", outPath)
+			progressLogger.Debugf("Creating directory %s", outPath)
 			if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
 				return fmt.Errorf("failed to create directory %s: %w", outPath, err)
 			}
@@ -191,7 +194,7 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 					return fmt.Errorf("path '%s' already exists and is not a regular file", outPath)
 				}
 			}
-			output.Debugf("Extracting file %s", outPath)
+			progressLogger.Debugf("Unpacking file %s", outPath)
 			file, err := os.OpenFile(outPath, os.O_CREATE|os.O_TRUNC|os.O_RDWR, header.FileInfo().Mode())
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
@@ -203,7 +206,7 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool) error {
 				return fmt.Errorf("failed to write file %s: %w", outPath, err)
 			}
 			if written != header.Size {
-				return fmt.Errorf("could not extract file %s", outPath)
+				return fmt.Errorf("could not unpack file %s", outPath)
 			}
 
 		default:
