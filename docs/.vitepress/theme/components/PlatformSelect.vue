@@ -142,6 +142,10 @@ html.platform-linux .platform-snippet-linux {
 </style>
 
 <style scoped>
+option {
+  @apply bg-night text-off-white;
+}
+
 .container {
   padding-top: 20px;
   margin-bottom: 10px;
