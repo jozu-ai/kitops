@@ -94,8 +94,8 @@ datasets:
     description: Description of the dataset.
     license: CC-BY-4.0
     preprocessing: Preprocessing steps.
-models:
-  - name: ModelName
+model:
+    name: ModelName
     path: models/model.h5
     framework: TensorFlow
     version: 1.0

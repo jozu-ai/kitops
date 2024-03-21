@@ -41,3 +41,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
           AC_USERNAME: ${{ secrets.AC_USERNAME }}
+
+      - name: Generate CLI documentation
+        run: |
+          docs/src/docs/cli/generate.sh > /dev/null
+
+      - name: PR for CLI documentation
+        uses: peter-evans/create-pull-request@v6
+        with:
+          add-paths: |
+            docs/*.md
+          commit-message: "docs: update CLI documentation for ${{ github.ref_name }}"
