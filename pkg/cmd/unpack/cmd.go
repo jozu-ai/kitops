@@ -78,7 +78,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
+		return fmt.Errorf("failed to parse reference '%s': %w", args[0], err)
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("can not unpack multiple tags")

@@ -72,7 +72,7 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 	if len(args) > 0 {
 		modelRef, extraTags, err := repo.ParseReference(args[0])
 		if err != nil {
-			return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+			return fmt.Errorf("failed to parse reference '%s': %w", modelRef, err)
 		}
 		opts.modelRef = modelRef
 		opts.extraTags = extraTags

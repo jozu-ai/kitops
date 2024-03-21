@@ -82,12 +82,13 @@ func (opts *tagOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 	modelRef, _, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", opts.sourceRef, err)
+		return fmt.Errorf("failed to parse reference '%s': %w", args[0], err)
 	}
 	opts.sourceRef = modelRef
+
 	modelRef, _, err = repo.ParseReference(args[1])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", opts.targetRef, err)
+		return fmt.Errorf("failed to parse reference '%s': %w", args[1], err)
 	}
 	opts.targetRef = modelRef
 	return nil

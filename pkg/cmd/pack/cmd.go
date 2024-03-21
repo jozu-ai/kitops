@@ -96,7 +96,7 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 	if opts.fullTagRef != "" {
 		modelRef, extraRefs, err := repo.ParseReference(opts.fullTagRef)
 		if err != nil {
-			return fmt.Errorf("failed to parse reference %s: %w", opts.fullTagRef, err)
+			return fmt.Errorf("failed to parse reference '%s': %w", opts.fullTagRef, err)
 		}
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs
