@@ -9,7 +9,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 1. Make sure you've got the [Kit CLI setup](./cli/installation.md) on your machine. If you'd like to learn more about ModelKits [check out the overview](./modelkit/intro.md). If you are wondering about specific flags you can check out everything in the [CLI command reference](./cli/cli-reference.md)
 
-1. Create and navigate to a new folder on your filesystem. We'd suggest calling it `KitStart` but any name works.
+2. Create and navigate to a new folder on your filesystem. We'd suggest calling it `KitStart` but any name works.
 
 One more note...with Kit, packing and pushing are separate steps (same with unpacking and pulling). Packing builds the ModelKit using the content outlined in the `Kitfile` manifest. Pushing takes a built ModelKit from your local registry and sends it to any remote registry. We strongly recommend tagging your ModelKits with a version number and any other tags that will help your team (e.g., challenger, champion, v1.3, dev, production, etc...)
 
