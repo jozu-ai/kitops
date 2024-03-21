@@ -58,7 +58,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 
 	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+		return fmt.Errorf("failed to parse reference '%s': %w", modelRef, err)
 	}
 	if modelRef.Registry == "localhost" {
 		return fmt.Errorf("registry is required when pushing")
