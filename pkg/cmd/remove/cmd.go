@@ -72,7 +72,7 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 	if len(args) > 0 {
 		modelRef, extraTags, err := repo.ParseReference(args[0])
 		if err != nil {
-			return fmt.Errorf("failed to parse reference '%s': %w", modelRef, err)
+			return fmt.Errorf("failed to parse reference: %w", err)
 		}
 		opts.modelRef = modelRef
 		opts.extraTags = extraTags
@@ -118,7 +118,7 @@ func RemoveCommand() *cobra.Command {
 func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to process arguments: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		var err error

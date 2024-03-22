@@ -104,7 +104,7 @@ func ListCommand() *cobra.Command {
 func runCommand(opts *listOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to parse argument: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		var allInfoLines []string

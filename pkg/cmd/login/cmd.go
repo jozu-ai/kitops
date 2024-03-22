@@ -62,7 +62,7 @@ func LoginCommand() *cobra.Command {
 func runLogin(opts *loginOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to process flags: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		err := login(cmd.Context(), opts)
