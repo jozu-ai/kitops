@@ -68,7 +68,7 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		err := opts.complete(cmd.Context(), args)
 		if err != nil {
-			output.Fatalf("Failed to process configuration: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 			return
 		}
 		err = runPack(cmd.Context(), opts)
@@ -96,7 +96,7 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 	if opts.fullTagRef != "" {
 		modelRef, extraRefs, err := repo.ParseReference(opts.fullTagRef)
 		if err != nil {
-			return fmt.Errorf("failed to parse reference '%s': %w", opts.fullTagRef, err)
+			return fmt.Errorf("failed to parse reference: %w", err)
 		}
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs

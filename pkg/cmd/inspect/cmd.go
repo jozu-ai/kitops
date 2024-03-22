@@ -75,7 +75,7 @@ func InspectCommand() *cobra.Command {
 func runCommand(opts *inspectOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to parse arguments: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 		manifest, err := inspectReference(cmd.Context(), opts)
 		if err != nil {

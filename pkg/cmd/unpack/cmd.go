@@ -78,7 +78,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference '%s': %w", args[0], err)
+		return fmt.Errorf("failed to parse reference: %w", err)
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("can not unpack multiple tags")
@@ -123,7 +123,7 @@ func UnpackCommand() *cobra.Command {
 func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to process arguments: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		if opts.modelRef.Reference == "" {

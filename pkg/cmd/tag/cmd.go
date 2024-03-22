@@ -82,13 +82,13 @@ func (opts *tagOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 	modelRef, _, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference '%s': %w", args[0], err)
+		return fmt.Errorf("failed to parse reference: %w", err)
 	}
 	opts.sourceRef = modelRef
 
 	modelRef, _, err = repo.ParseReference(args[1])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference '%s': %w", args[1], err)
+		return fmt.Errorf("failed to parse reference: %w", err)
 	}
 	opts.targetRef = modelRef
 	return nil
@@ -111,7 +111,7 @@ func TagCommand() *cobra.Command {
 func runCommand(opts *tagOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to parse argument: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		err := RunTag(cmd.Context(), opts)

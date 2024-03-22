@@ -75,7 +75,7 @@ func InfoCommand() *cobra.Command {
 func runCommand(opts *infoOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to parse arguments: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 		config, err := getInfo(cmd.Context(), opts)
 		if err != nil {
