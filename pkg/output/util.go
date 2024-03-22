@@ -23,12 +23,12 @@ import (
 
 func FormatBytes(i int64) string {
 	if i == 0 {
-		return "0 B  "
+		return "0 B"
 	}
 
 	if i < 1024 {
 		// Catch bytes to avoid printing fractional amounts of bytes e.g. 123.0 bytes
-		return fmt.Sprintf("%d B  ", i)
+		return fmt.Sprintf("%d B", i)
 	}
 
 	suffixes := []string{"KiB", "MiB", "GiB", "TiB"}
