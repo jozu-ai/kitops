@@ -31,7 +31,28 @@ import (
 )
 
 func shouldPrintProgress() bool {
-	return printProgressBars && term.IsTerminal(int(os.Stdout.Fd()))
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
+		return false
+	}
+	switch progressStyle {
+	case "none", "false":
+		return false
+	default:
+		return true
+	}
+}
+
+func barStyle() mpb.BarStyleComposer {
+	switch progressStyle {
+	case "plain":
+		return mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|")
+	case "fancy":
+		return mpb.BarStyle().Lbound("|").Filler("░").Tip("░").Padding("·").Rbound("|")
+	case "cherry":
+		return mpb.BarStyle().Lbound("| ").Filler("· ").Tip("(<", "(-").Padding("• ").Rbound("🍒  ")
+	default:
+		return mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|")
+	}
 }
 
 // wrappedRepo wraps oras.Target to show a progress bar on Push() operations.
@@ -43,14 +64,14 @@ type wrappedRepo struct {
 func (w *wrappedRepo) Push(ctx context.Context, expected ocispec.Descriptor, content io.Reader) error {
 	shortDigest := expected.Digest.Encoded()[0:8]
 	bar := w.progress.New(expected.Size,
-		mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|"),
+		barStyle(),
 		mpb.PrependDecorators(
 			decor.Name("Copying "+shortDigest),
 		),
 		mpb.AppendDecorators(
 			decor.OnComplete(decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"), fmt.Sprintf("%-9s", FormatBytes(expected.Size))),
 			decor.OnComplete(decor.Name(" | "), " | "),
-			decor.OnComplete(decor.EwmaSpeed(decor.SizeB1024(0), "% .2f", 60), "done"),
+			decor.OnComplete(decor.AverageSpeed(decor.SizeB1024(0), "% .2f"), "done"),
 		),
 		mpb.BarFillerOnComplete("|"),
 	)
@@ -68,7 +89,7 @@ func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
 	}
 	p := mpb.New(
 		mpb.WithWidth(60),
-		mpb.WithRefreshRate(180*time.Millisecond),
+		mpb.WithRefreshRate(150*time.Millisecond),
 	)
 	return &wrappedRepo{
 		Target:   wrap,
@@ -83,17 +104,17 @@ func WrapReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogge
 
 	p := mpb.New(
 		mpb.WithWidth(60),
-		mpb.WithRefreshRate(180*time.Millisecond),
+		mpb.WithRefreshRate(150*time.Millisecond),
 	)
 	bar := p.New(size,
-		mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|"),
+		barStyle(),
 		mpb.PrependDecorators(
 			decor.Name("Unpacking"),
 		),
 		mpb.AppendDecorators(
 			decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"),
 			decor.Name(" | "),
-			decor.EwmaSpeed(decor.SizeB1024(0), "% .2f", 60),
+			decor.AverageSpeed(decor.SizeB1024(0), "% .2f"),
 		),
 		mpb.BarRemoveOnComplete(),
 	)
