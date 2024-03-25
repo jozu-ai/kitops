@@ -35,9 +35,7 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_ID_PASSWORD: ${{ secrets.AC_PASSWORD }}
-          APPLE_DEVELOPER_ID: ${{ secrets.AC_USERNAME }}
-          APPLE_ID: ${{ vars.APPLE_ID }}
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
 
       - name: Notarize macOS archives
         env:
