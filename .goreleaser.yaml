@@ -30,24 +30,9 @@ builds:
     ldflags:
       - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
     hooks:
-      post: |-
-        sh -c '
-        cat <<EOF > /tmp/kit-gon-{{ .Arch }}.hcl
-        source = ["./dist/kit-macos_darwin_{{ .Arch }}{{- if .Amd64 }}_{{ .Amd64 }}{{ end }}/kit"]
-        bundle_id = "com.jozu-ai.kitops"
-        apple_id {
-          provider = "PMHBCVV9C2"
-        }
-        sign {
-          application_identity = "Developer ID Application: AKARA TECHNOLOGIES, INC. (PMHBCVV9C2)"
-        }
-        zip {
-          output_path = "/tmp/signing/kitops-darwin-{{ .Arch }}.zip"
-        }
-        EOF
-        gon /tmp/kit-gon-{{ .Arch }}.hcl
-        '
-
+      post:
+        - cmd: ./build/scripts/sign '{{ .Path }}'
+          output: true
 archives:
   - format: tar.gz
     builds:
