@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
@@ -25,11 +26,12 @@ func pullModel(ctx context.Context, remoteRegistry *remote.Registry, localStore 
 	if err := referenceIsModel(ctx, ref, repo); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-
-	desc, err := oras.Copy(ctx, repo, ref.Reference, localStore, ref.Reference, oras.DefaultCopyOptions)
+	trackedRepo, logger := output.WrapTarget(localStore)
+	desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}
+	logger.Wait()
 
 	return desc, err
 }

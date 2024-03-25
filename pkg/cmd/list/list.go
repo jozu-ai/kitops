@@ -9,7 +9,7 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
-	"math"
+	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
@@ -72,7 +72,7 @@ func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *o
 	for _, layer := range manifest.Layers {
 		size += layer.Size
 	}
-	sizeStr := formatBytes(size)
+	sizeStr := output.FormatBytes(size)
 	var author string
 	if len(config.Kit.Authors) > 0 {
 		author = config.Kit.Authors[0]
@@ -82,31 +82,4 @@ func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *o
 
 	info := fmt.Sprintf(listTableFmt, repository, ref, author, config.Kit.Name, sizeStr, desc.Digest)
 	return info
-}
-
-func formatBytes(i int64) string {
-	if i == 0 {
-		return "0 B"
-	}
-
-	if i < 1024 {
-		// Catch bytes to avoid printing fractional amounts of bytes e.g. 123.0 bytes
-		return fmt.Sprintf("%d B", i)
-	}
-
-	suffixes := []string{"KiB", "MiB", "GiB", "TiB"}
-	unit := float64(1024)
-
-	size := float64(i) / unit
-	for _, suffix := range suffixes {
-		if size < unit {
-			// Round down to the nearest tenth of a unit to avoid e.g. 1MiB - 1B = 1024KiB
-			niceSize := math.Floor(size*10) / 10
-			return fmt.Sprintf("%.1f %s", niceSize, suffix)
-		}
-		size = size / unit
-	}
-
-	// Fall back to printing whatever's left as PiB
-	return fmt.Sprintf("%.1f PiB", size)
 }

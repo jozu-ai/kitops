@@ -58,7 +58,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 
 	modelRef, extraTags, err := repo.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference %s: %w", modelRef, err)
+		return fmt.Errorf("failed to parse reference: %w", err)
 	}
 	if modelRef.Registry == "localhost" {
 		return fmt.Errorf("registry is required when pushing")
@@ -90,7 +90,7 @@ func PushCommand() *cobra.Command {
 func runCommand(opts *pushOptions) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Failed to process arguments: %s", err)
+			output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{

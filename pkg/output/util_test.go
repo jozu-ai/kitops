@@ -14,7 +14,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package list
+package output
 
 import (
 	"fmt"
@@ -45,7 +45,7 @@ func TestFormatBytes(t *testing.T) {
 	}
 	for idx, tt := range tests {
 		t.Run(fmt.Sprintf("test %d", idx), func(t *testing.T) {
-			output := formatBytes(tt.input)
+			output := FormatBytes(tt.input)
 			assert.Equalf(t, tt.output, output, "Should convert %d to %s", tt.input, tt.output)
 		})
 	}
