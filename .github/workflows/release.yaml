@@ -38,6 +38,7 @@ jobs:
           APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
           APPLE_ID: ${{ vars.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD}}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID}}
 
       - name: Generate CLI documentation
         run: |
