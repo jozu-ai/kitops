@@ -34,10 +34,10 @@ builds:
         - cmd: ./build/scripts/sign '{{ .Path }}'
           output: true
 archives:
-  - format: tar.gz
+  - id: kit-archive
+    format: tar.gz
     builds:
       - kit
-      - kit-macos
     name_template: >-
       {{ .ProjectName }}-
       {{- tolower .Os }}-
@@ -53,6 +53,30 @@ archives:
       - LICENSE
       - README.md
 
+  - id: kit-macos-archive
+    format: zip
+    builds:
+      - kit-macos
+    name_template: >-
+      {{ .ProjectName }}-
+      {{- tolower .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      - LICENSE
+      - README.md
+
+signs:
+  - artifacts: archive
+    ids:
+      - kit-macos-archive
+    signature: "${artifact}"
+    cmd: build/scripts/sign
+    args:
+      - "${artifact}"
+    output: true
 
 changelog:
   sort: asc

@@ -3,5 +3,10 @@
     "url": "https://www.gorkem-ercan.com/p/do-data-scientists-really-like-git",
     "tags": ["thought leadership"],
     "published_time": "2024-02-27"
+  },
+  {
+    "url": "https://dev.to/jwilliamsr/the-transitory-nature-of-mlops-advocating-for-devopsmlops-coalescence-1k6j",
+    "tags": ["ai", "devops", "open source", "machine learning"],
+    "published_time": "2024-03-25"
   }
 ]
