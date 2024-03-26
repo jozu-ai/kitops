@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
           APPLE_ID: ${{ vars.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD}}
 
       - name: Generate CLI documentation
         run: |
