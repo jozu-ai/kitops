@@ -36,15 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
-
-      - name: Notarize macOS archives
-        env:
-          APPLE_ID_PASSWORD: ${{ secrets.AC_PASSWORD }}
-          APPLE_DEVELOPER_ID: ${{ secrets.AC_USERNAME }}
           APPLE_ID: ${{ vars.APPLE_ID }}
-        run: |
-            shopt -s failglob
-            build/scripts/sign dist/kitops-darwin*.zip
+          APPLE_ID_PASSWORD: ${{ secrets.AC_PASSWORD }}
 
       - name: Generate CLI documentation
         run: |
