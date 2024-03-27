@@ -85,4 +85,4 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 
 ### Join KitOps community
 
-For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/YyAfWnEg).
+For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/3eDb4yAN).
