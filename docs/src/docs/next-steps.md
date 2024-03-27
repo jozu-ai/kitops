@@ -9,10 +9,10 @@ In this guide you'll learn how to:
 ## Making your own Kitfile
 
 A Kitfile is the configuration document for your ModelKit. It's written in YAML so it's easy to read. There are four main parts to a Kitfile:
-1. ModelKit metadata in the `package` section, including the author, description, and license
-1. Path to the Jupyter notebook folder in the `code` section
-1. Path to the datasets in the `datasets` section (you can have multiple datasets in the same page)
-1. Path to the serialized model in the `model` section
+1. The `package` section: Metadata about the ModelKit, including the author, description, and license
+1. The `code` section: Path to any codebases related to the project, including Jupyter notebook folders
+1. The `datasets` section: Path to any datasets
+1. The `model` section: Path to the serialized model
 
 A Kitfile only needs the `package` section, plus one of the other sections.
 
@@ -63,12 +63,27 @@ datasets:
   path: ./data/validate.csv
 ```
 
-Right now you can only build ModelKits from files on your local system...but don't worry we're already working towards allowing you to [reference remote files](https://github.com/jozu-ai/kitops/issues/85). For example, building a ModelKit from a local notebook and model, but a dataset hosted on DvC, S3, or anywhere else.
-
 Once you've authored a Kitfile for your AI/ML project you can pack it up and store it in your local or remote repository.
+
+If you don't provide a registry Kit assumes you're operating against your local registry. For example:
 
 ```sh
 kit pack . -t film-slm:champion
+```
+
+Will create a new tag `champion` in the `film-slm` repository in your local registry.
+
+If you want to push to a remote registry there are two steps - tagging then pushing. Let's imagine we want to push our `champion` tag to Docker Hub:
+
+First, you need to tag the image in your local registry with the remote registry's name:
+
+```sh
+kit pack . -t docker.io/jozubrad/film-slm:champion
+```
+
+Second, you push your local image to the remote registry:
+
+```sh
 kit push docker.io/jozubrad/film-slm:champion
 ```
 
