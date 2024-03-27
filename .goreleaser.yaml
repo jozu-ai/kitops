@@ -8,11 +8,19 @@ before:
     - go mod tidy
 
 builds:
-  - id: "kit"
+  - id: "kit-linux"
     env:
       - CGO_ENABLED=0
     goos:
       - linux
+    binary: kit
+    ldflags:
+      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
+
+  - id: "kit-wins"
+    env:
+      - CGO_ENABLED=0
+    goos:
       - windows
     binary: kit
     ldflags:
@@ -33,11 +41,13 @@ builds:
       post:
         - cmd: ./build/scripts/sign '{{ .Path }}'
           output: true
+
 archives:
   - id: kit-archive
     format: tar.gz
     builds:
-      - kit
+      - kit-linux
+      - kit-wins
     name_template: >-
       {{ .ProjectName }}-
       {{- tolower .Os }}-
@@ -49,6 +59,7 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    rlcp: true
     files:
       - LICENSE
       - README.md
@@ -64,6 +75,8 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
+    wrap_in_directory: true
+    rlcp: true
     files:
       - LICENSE
       - README.md
@@ -72,7 +85,6 @@ signs:
   - artifacts: archive
     ids:
       - kit-macos-archive
-    signature: "${artifact}"
     cmd: build/scripts/sign
     args:
       - "${artifact}"
