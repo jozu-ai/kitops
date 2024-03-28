@@ -1,0 +1,36 @@
+#!/bin/bash
+# usage: script/sign <file>
+#
+# Signs macOS binaries using codesign, notarizes macOS zip archives using notarytool
+set -e
+
+
+sign_macos() {
+  printf "signing %s\n" "$1"
+  if [ -z "$APPLE_DEVELOPER_ID" ]; then
+    echo "skipping macOS code-signing; APPLE_DEVELOPER_ID not set" >&2
+    return 0
+  fi
+
+  if [[ $1 == *.zip ]]; then
+    xcrun notarytool submit "$1" --apple-id "${APPLE_ID?}" --team-id "${APPLE_TEAM_ID?}" --password "${APPLE_ID_PASSWORD?}" --wait
+  else
+    codesign --timestamp --options=runtime -s "${APPLE_DEVELOPER_ID?}" -v "$1"
+  fi
+}
+
+
+if [ $# -eq 0 ]; then
+  echo "usage: script/sign <file>" >&2
+  exit 1
+fi
+
+platform="$(uname -s)"
+
+for input_file; do
+    if [ "$platform" = "Darwin" ]; then
+      sign_macos "$input_file"
+    else
+      printf "warning: don't know how to sign %s on %s\n" "$1", "$platform" >&2
+    fi
+done

@@ -30,7 +30,7 @@ We welcome many different types of contributions including:
 * Communications, social media, blog posts, or other marketing
 * Release management
 
-Not everything happens through a GitHub pull request. Please contact us in the [#general channel of our Discord server](https://discord.gg/YyAfWnEg) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
+Not everything happens through a GitHub pull request. Please contact us in the [#general channel of our Discord server](https://discord.gg/3eDb4yAN) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
 
 ## Development Environment Setup
 

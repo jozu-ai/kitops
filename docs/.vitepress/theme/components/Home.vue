@@ -207,7 +207,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 
   <div class="space-y-6 w-fit mx-auto mt-22">
-    <a href="https://discord.gg/YyAfWnEg" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+    <a href="https://discord.gg/3eDb4yAN" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
       <div class="p1">Join the KitOps Discord</div>
 
       <div class="size-8 md:size-12">
