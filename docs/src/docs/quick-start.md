@@ -109,4 +109,10 @@ You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with a
 kit pull docker.io/jozubrad/mymodelkit:latest
 ```
 
+If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+* Making your own Kitfile
+* The power of `unpack`
+* Tagging ModelKits
+* Keeping your registry tidy
+
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN).
