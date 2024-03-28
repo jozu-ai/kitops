@@ -99,10 +99,6 @@ export default defineConfig({
         icon: 'discord',
         link: 'https://discord.gg/3eDb4yAN'
       },
-      {
-        icon: 'github',
-        link: 'https://github.com/jozu-ai/kitops'
-      }
     ],
     footer: {
       license: {
