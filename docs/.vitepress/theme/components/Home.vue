@@ -8,7 +8,10 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   <p class="h4 !font-normal !text-off-white">Share and run your models anywhere</p>
   <h1 class="mt-4">Bridge the gap between ML and Application teams</h1>
 
-  <a href="/docs/cli/installation" class="kit-button mt-10 md:mt-14 xl:mt-22">Install</a>
+  <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
+    <a href="/docs/cli/installation" class="kit-button">Install</a>
+    <a href="https://github.com/jozu-ai/kitops" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
+  </div>
 </div>
 
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] mx-auto">
