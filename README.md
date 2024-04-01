@@ -5,7 +5,7 @@
 ## Simplify handoffs between data scientists, app devs, and DevOps.
 
 [![LICENSE](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/myscale/myscaledb/blob/main/LICENSE)
-[![Language](https://img.shields.io/badge/Language-go-blue.svg)](https://isocpp.org/)
+[![Language](https://img.shields.io/badge/Language-go-blue.svg)](https://go.dev/)
 [![Discord](https://img.shields.io/discord/1098133460310294528?logo=Discord)](https://discord.gg/3eDb4yAN)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/kit_ops)
 
