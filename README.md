@@ -1,6 +1,18 @@
-# Welcome to KitOps 🚀
 
-## Streamlined Collaboration for AI/ML Projects
+<img width="1270" alt="KitOps" src="https://github.com/jozu-ai/kitops/assets/10517533/41295471-fe49-4011-adf6-a215f29890c2">
+
+
+## Simplify handoffs between data scientists, app devs, and DevOps.
+
+[![LICENSE](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/myscale/myscaledb/blob/main/LICENSE)
+[![Language](https://img.shields.io/badge/Language-go-blue.svg)](https://go.dev/)
+[![Discord](https://img.shields.io/discord/1098133460310294528?logo=Discord)](https://discord.gg/3eDb4yAN)
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/kit_ops)
+
+[![Official Website](<https://img.shields.io/badge/-Visit%20the%20Official%20Website%20%E2%86%92-rgb(255,175,82)?style=for-the-badge>)](https://kitops.ml/?utm_source=github&utm_medium=kitops-readme)
+[![Use Cases](<https://img.shields.io/badge/-KitOps%20Quick%20Start%20%E2%86%92-rgb(122,140,225)?style=for-the-badge>)](https://kitops.ml/?utm_source=github&utm_medium=kitops-readme)
+
+### What is KitOps?
 
 KitOps is your toolkit for transforming how you package, share, and deploy AI/ML models. Say goodbye to compatibility concerns and hello to smooth AI/ML collaboration.
 
