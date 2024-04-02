@@ -99,3 +99,7 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 ### Join KitOps community
 
 For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/3eDb4yAN). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
+
+<a href="https://trackgit.com">
+<img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/luitr38h7apvgox8wafl" alt="trackgit-views" />
+</a>
