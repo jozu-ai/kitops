@@ -8,5 +8,10 @@
     "url": "https://dev.to/jwilliamsr/the-transitory-nature-of-mlops-advocating-for-devopsmlops-coalescence-1k6j",
     "tags": ["ai", "devops", "open source", "machine learning"],
     "published_time": "2024-03-25"
+  },
+  {
+    "url": "https://thenewstack.io/beyond-git-a-new-collaboration-model-for-ai-ml-development/",
+    "tags": ["git", "devops", "open source", "machine learning"],
+    "published_time": "2024-04-02"
   }
 ]
