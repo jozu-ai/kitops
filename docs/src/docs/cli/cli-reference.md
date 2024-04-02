@@ -1,3 +1,6 @@
+---
+outline: 2
+---
 # Kit CLI Reference
 
 ## kit info
@@ -42,6 +45,7 @@ kit info registry.example.com/my-model:1.0.0
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -86,6 +90,7 @@ kit inspect registry.example.com/my-model:1.0.0
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -138,6 +143,7 @@ kit list registry.example.com/my-namespace/my-model
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -176,6 +182,7 @@ kit login ghcr.io -u github_user -p personal_token
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -209,6 +216,7 @@ kit logout ghcr.io
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -256,6 +264,7 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -291,6 +300,7 @@ kit pull registry.example.com/my-model:latest
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -331,6 +341,7 @@ kit push registry.example.com/my-model:1.0.0
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -383,6 +394,7 @@ kit remove --all --force
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -447,6 +459,7 @@ kit tag myregistry.com/myrepo/mykit:latest myregistry.com/myrepo/mykit:v1.0.0
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
@@ -500,7 +513,8 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 ### Options inherited from parent commands
 
 ```
-  -v, --verbose   Include additional information in output (default false)
+      --progress   Print progress bars during longer operations (default true) (default true)
+  -v, --verbose    Include additional information in output (default false)
 ```
 
 ## kit version
@@ -529,6 +543,7 @@ kit version [flags]
 
 ```
       --config string   Alternate path to root storage directory for CLI
+      --progress        Print progress bars during longer operations (default true) (default true)
   -v, --verbose         Include additional information in output (default false)
 ```
 
