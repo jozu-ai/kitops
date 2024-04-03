@@ -98,7 +98,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'discord',
-        link: 'https://discord.gg/3eDb4yAN'
+        link: 'https://discord.gg/Tapeh8agYy'
       },
     ],
     footer: {
