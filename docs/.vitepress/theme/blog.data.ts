@@ -39,7 +39,7 @@ export default {
         const image = getMetaTag('image') || $('meta[property="og:image:url"]').attr('content')
         const icon = $('link[rel="icon"]').attr('href') || $('link[rel="shortcut icon"]').attr('href') || $('link[rel="alternate icon"]').attr('href')
         const author = getMetaTag('author')
-        const published_time = $('meta[property="article:published_time"]').attr('content') || post.published_time
+        const published_time = post.published_time || $('meta[property="article:published_time"]').attr('content')
         const tags = post.tags || []
 
         return {

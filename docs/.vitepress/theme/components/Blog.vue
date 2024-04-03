@@ -22,6 +22,14 @@ const tagsColorsMap = [
   { normal: '!border-tea hocus:!bg-tea hocus:!text-night !text-tea', selected: '!border-tea !bg-tea !text-night', post: 'hocus:!border-tea' },
 ]
 
+// There are custom acronyms that must go with custom capitalization or fully uppercase.
+// eg. AWS, AI, DevOps, etc.
+// Those are listed here and replaced as specified.
+const customCapitalTags = {
+  'ai': 'AI',
+  'devops': 'DevOps'
+}
+
 const formatDate = (raw: string) => {
   const date = new Date(raw)
   date.setUTCHours(12)
@@ -90,7 +98,7 @@ watchEffect(() => {
             [getColorForTag(tag).selected]: selectedTag === tag
           }"
           @click="filterByTag(tag)">
-          {{ tag }}
+          {{ customCapitalTags[tag] || tag }}
         </button>
       </li>
     </ul>
@@ -107,7 +115,7 @@ watchEffect(() => {
           v-for="tag in post.tags" :key="tag"
           class="tag"
           :class="getColorForTag(tag).selected">
-          {{ tag }}
+          {{ customCapitalTags[tag] || tag }}
         </span>
         <time v-if="post.published_time"
           :datetime="post.published_time"
