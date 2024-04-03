@@ -6,7 +6,7 @@
 
 [![LICENSE](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/myscale/myscaledb/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/Language-go-blue.svg)](https://go.dev/)
-[![Discord](https://img.shields.io/discord/1098133460310294528?logo=Discord)](https://discord.gg/3eDb4yAN)
+[![Discord](https://img.shields.io/discord/1098133460310294528?logo=Discord)](https://discord.gg/Tapeh8agYy)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/kit_ops)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjozu-ai%2Fkitops&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
@@ -98,7 +98,7 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 
 ### Join KitOps community
 
-For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/3eDb4yAN). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
+For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/Tapeh8agYy). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
 
 <a href="https://trackgit.com">
 <img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/luitr38h7apvgox8wafl" alt="trackgit-views" />
