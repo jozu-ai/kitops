@@ -48,7 +48,7 @@ To become a Maintainer you need to demonstrate the following:
   * Understanding of how the team works (policies, processes for testing and code review, etc)
   * Understanding of the project's code base and coding and documentation style
 
-A new Maintainer must be proposed by an existing maintainer by sending a message in the #general channel in the [KitOps Discord server](https://discord.gg/3eDb4yAN). A simple majority vote of existing Maintainers approves the application.  Maintainers nominations will be evaluated without prejudice to employer or demographics.
+A new Maintainer must be proposed by an existing maintainer by sending a message in the #general channel in the [KitOps Discord server](https://discord.gg/Tapeh8agYy). A simple majority vote of existing Maintainers approves the application.  Maintainers nominations will be evaluated without prejudice to employer or demographics.
 
 Maintainers who are selected will be granted the necessary GitHub rights, and invited to the private Maintainers Discord channel.
 
@@ -87,7 +87,7 @@ The Security Response Team is responsible for handling all reports of security h
 
 ## Voting
 
-While most business in KitOps is conducted by "[lazy consensus](https://community.apache.org/committers/lazyConsensus.html)", periodically the Maintainers may need to vote on specific actions or changes. A vote can be taken in the #general channel in the [KitOps Discord server](https://discord.gg/3eDb4yAN) or in the private Maintainers channel for security or conduct matters. Votes may also be taken at the bi-weekly [KitOps Public Office Hours meeting](#kitops-public-office-hours-bi-weekly). Any Maintainer may demand a vote be taken.
+While most business in KitOps is conducted by "[lazy consensus](https://community.apache.org/committers/lazyConsensus.html)", periodically the Maintainers may need to vote on specific actions or changes. A vote can be taken in the #general channel in the [KitOps Discord server](https://discord.gg/Tapeh8agYy) or in the private Maintainers channel for security or conduct matters. Votes may also be taken at the bi-weekly [KitOps Public Office Hours meeting](#kitops-public-office-hours-bi-weekly). Any Maintainer may demand a vote be taken.
 
 Most votes require a simple majority of all Maintainers to succeed, except where otherwise noted.  Two-thirds majority votes mean at least two-thirds of all existing maintainers.
 
