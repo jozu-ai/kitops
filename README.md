@@ -19,7 +19,7 @@ KitOps is your toolkit for transforming how you package, share, and deploy AI/ML
 
 KitOps simplifies the handoffs between data scientists, application developers, and SREs working on self-hosted AI/ML models (including LLMs). KitOps' ModelKits create a unified package for models, their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility with the tools you already use.
 
-https://github.com/Jwilliamsr/kitops/assets/10517533/8d0d3073-c8d0-40b4-8b3e-a896f52aa5e1
+https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17f8df2
 
 ### What is in the box?
 
