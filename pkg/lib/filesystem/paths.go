@@ -19,6 +19,7 @@ package filesystem
 import (
 	"fmt"
 	"io/fs"
+	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
@@ -79,7 +80,7 @@ func PathExists(path string) (fs.FileInfo, bool) {
 // It checks for accepted kitfile names and returns the absolute path for the first found kitfile.
 // If no kitfile is found, returns error
 func FindKitfileInPath(contextDir string) (string, error) {
-	var defaultKitFileNames = []string{"Kitfile", "kitfile", ".kitfile"}
+	var defaultKitFileNames = constants.DefaultKitfileNames()
 	for _, fileName := range defaultKitFileNames {
 		if _, exists := PathExists(filepath.Join(contextDir, fileName)); exists {
 			absPath, err := filepath.Abs(filepath.Join(contextDir, fileName))

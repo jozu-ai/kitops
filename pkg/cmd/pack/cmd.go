@@ -73,7 +73,7 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 			output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		ignores, err := readIgnoreFile(opts.contextDir)
+		ignores, err := getIgnoreMatcher(opts.contextDir)
 		if err != nil {
 			output.Fatalln(err)
 		}

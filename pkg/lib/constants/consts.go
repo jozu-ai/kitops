@@ -27,7 +27,7 @@ type ConfigKey struct{}
 
 const (
 	// Default name for Kitfile (otherwise specified via the -f flag in pack)
-	DefaultKitFileName = "Kitfile"
+	DefaultKitfileName = "Kitfile"
 	// IgnoreFileName is the name for the Kit ignore file
 	IgnoreFileName = ".kitignore"
 
@@ -47,6 +47,10 @@ const (
 	// Media type for the model config (Kitfile)
 	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
 )
+
+func DefaultKitfileNames() []string {
+	return []string{"Kitfile", "kitfile", ".kitfile"}
+}
 
 // DefaultConfigPath returns the default configuration and cache directory for the CLI.
 // This is platform-dependent, using

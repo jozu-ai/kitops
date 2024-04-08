@@ -26,12 +26,27 @@ import (
 	"github.com/moby/patternmatcher/ignorefile"
 )
 
-func readIgnoreFile(contextDir string) (*patternmatcher.PatternMatcher, error) {
+func getIgnoreMatcher(contextDir string) (*patternmatcher.PatternMatcher, error) {
+	filePatterns, err := readIgnoreFile(contextDir)
+	if err != nil {
+		return nil, err
+	}
+	filePatterns = append(filePatterns, constants.DefaultKitfileNames()...)
+	filePatterns = append(filePatterns, constants.IgnoreFileName)
+
+	pm, err := patternmatcher.New(filePatterns)
+	if err != nil {
+		return nil, fmt.Errorf("invalid %s file: %w", constants.IgnoreFileName, err)
+	}
+	return pm, nil
+}
+
+func readIgnoreFile(contextDir string) ([]string, error) {
 	ignorePath := filepath.Join(contextDir, constants.IgnoreFileName)
 	ignoreFile, err := os.Open(ignorePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return &patternmatcher.PatternMatcher{}, nil
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -39,9 +54,5 @@ func readIgnoreFile(contextDir string) (*patternmatcher.PatternMatcher, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to read %s file: %w", constants.IgnoreFileName, err)
 	}
-	pm, err := patternmatcher.New(patterns)
-	if err != nil {
-		return nil, fmt.Errorf("invalid %s file: %w", constants.IgnoreFileName, err)
-	}
-	return pm, nil
+	return patterns, nil
 }
