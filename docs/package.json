@@ -17,6 +17,6 @@
   "dependencies": {
     "@vueuse/core": "^10.7.2",
     "cheerio": "1.0.0-rc.12",
-    "vue3-marquee-slider": "^1.0.5"
+    "vue3-marquee": "^4.2.0"
   }
 }
