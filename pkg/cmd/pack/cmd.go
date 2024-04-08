@@ -6,6 +6,8 @@ package pack
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"kitops/pkg/lib/constants"
@@ -76,6 +78,12 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 			output.Fatalln(err)
 		}
 
+		// Change working directory to context path to make sure relative paths within
+		// tarballs are correct. This is the equivalent of using the -C parameter for tar
+		if err := os.Chdir(opts.contextDir); err != nil {
+			output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
+		}
+
 		err = runPack(cmd.Context(), opts, ignores)
 		if err != nil {
 			output.Fatalf("Failed to pack model kit: %s", err)
@@ -85,10 +93,18 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 }
 
 func (opts *packOptions) complete(ctx context.Context, args []string) error {
-	opts.contextDir = args[0]
+	contextDir, err := filepath.Abs(args[0])
+	if err != nil {
+		return fmt.Errorf("failed to get context dir %s: %w", args[0], err)
+	}
+	opts.contextDir = contextDir
 
 	if opts.modelFile == "" {
-		opts.modelFile = filesystem.FindKitfileInPath(opts.contextDir)
+		foundModel, err := filesystem.FindKitfileInPath(opts.contextDir)
+		if err != nil {
+			return err
+		}
+		opts.modelFile = foundModel
 	}
 
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)

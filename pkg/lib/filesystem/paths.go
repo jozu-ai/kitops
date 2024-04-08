@@ -19,7 +19,6 @@ package filesystem
 import (
 	"fmt"
 	"io/fs"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
@@ -77,15 +76,18 @@ func PathExists(path string) (fs.FileInfo, bool) {
 }
 
 // Searches for a kit file in the given context directory.
-// It checks for accepted kitfile names and returns the path of the first found kitfile.
-// If no kitfile is found, it returns the path (contextDir + kitfile)
-// of the default kitfile.
-func FindKitfileInPath(contextDir string) string {
+// It checks for accepted kitfile names and returns the absolute path for the first found kitfile.
+// If no kitfile is found, returns error
+func FindKitfileInPath(contextDir string) (string, error) {
 	var defaultKitFileNames = []string{"Kitfile", "kitfile", ".kitfile"}
 	for _, fileName := range defaultKitFileNames {
 		if _, exists := PathExists(filepath.Join(contextDir, fileName)); exists {
-			return filepath.Join(contextDir, fileName)
+			absPath, err := filepath.Abs(filepath.Join(contextDir, fileName))
+			if err != nil {
+				return "", fmt.Errorf("Failed to find Kitfile: %w", err)
+			}
+			return absPath, nil
 		}
 	}
-	return filepath.Join(contextDir, constants.DefaultKitFileName)
+	return "", fmt.Errorf("No Kitfile found in %s. Consider using the -f flag to specify its path", contextDir)
 }

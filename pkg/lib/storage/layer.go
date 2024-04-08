@@ -104,25 +104,35 @@ func writeDirToTar(basePath string, ignore *patternmatcher.PatternMatcher, tw *t
 	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
 	// to compress the directory pointed at by basePath
 	trimPath := filepath.Dir(basePath)
+	if trimPath == "." {
+		// Avoid accidentally trimming leading `.` from filenames
+		trimPath = ""
+	}
 	return filepath.Walk(basePath, func(file string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		// Skip adding an entry for the context directory to the tarball
+		if file == "." {
+			return nil
 		}
 		// Skip anything that's not a regular file or directory
 		if !fi.Mode().IsRegular() && !fi.Mode().IsDir() {
 			return nil
 		}
 
-		relPath := strings.TrimPrefix(strings.Replace(file, trimPath, "", -1), string(filepath.Separator))
-		if relPath == "" {
-			relPath = filepath.Base(basePath)
-		}
-		if shouldIgnore, err := ignore.MatchesOrParentMatches(relPath); err != nil {
-			return fmt.Errorf("failed to match %s against ignore file: %w", relPath, err)
+		if shouldIgnore, err := ignore.MatchesOrParentMatches(file); err != nil {
+			return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
 		} else if shouldIgnore {
+			if !ignore.Exclusions() && fi.IsDir() {
+				output.Debugf("Skipping directory %s: ignored", file)
+				return filepath.SkipDir
+			}
+			output.Debugf("Skipping file %s: ignored", file)
 			return nil
 		}
 
+		relPath := strings.TrimPrefix(strings.Replace(file, trimPath, "", -1), string(filepath.Separator))
 		if err := writeHeaderToTar(relPath, fi, tw); err != nil {
 			return err
 		}

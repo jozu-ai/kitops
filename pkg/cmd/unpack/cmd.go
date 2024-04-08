@@ -24,6 +24,8 @@ import (
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2"
@@ -93,6 +95,12 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		opts.unpackConf.unpackDatasets = true
 	}
 
+	absDir, err := filepath.Abs(opts.unpackDir)
+	if err != nil {
+		return fmt.Errorf("failed to resolve absolute path %s: %w", opts.unpackDir, err)
+	}
+	opts.unpackDir = absDir
+
 	printConfig(opts)
 	return nil
 }
@@ -139,6 +147,16 @@ func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 		if unpackTo == "" {
 			unpackTo = "current directory"
 		}
+		// Make sure target directory exists, in case user is using the -d flag
+		if err := os.MkdirAll(opts.unpackDir, 0755); err != nil {
+			output.Fatalf("failed to create directory %s: %w", opts.unpackDir, err)
+		}
+		// Change working directory to context path to make sure relative paths within
+		// tarballs are correct. This is the equivalent of using the -C parameter for tar
+		if err := os.Chdir(opts.unpackDir); err != nil {
+			output.Fatalf("Failed to use unpack path %s: %w", opts.unpackDir, err)
+		}
+
 		output.Infof("Unpacking to %s", unpackTo)
 		err = unpackModel(cmd.Context(), store, opts.modelRef, opts)
 		if err != nil {

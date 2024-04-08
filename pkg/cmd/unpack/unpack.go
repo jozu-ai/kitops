@@ -49,11 +49,6 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
-	// Make sure target directory exists, in case user is using the -d flag
-	if err := os.MkdirAll(options.unpackDir, 0755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", options.unpackDir, err)
-	}
-
 	if options.unpackConf.unpackConfig {
 		if err := unpackConfig(config, options.unpackDir, options.overwrite); err != nil {
 			return err
@@ -64,13 +59,13 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 	// through the config's relevant field to get the correct path for unpacking
 	var codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
-		var layerDir, relPath string
+		var relPath string
 		switch layerDesc.MediaType {
 		case constants.ModelLayerMediaType:
 			if !options.unpackConf.unpackModels {
 				continue
 			}
-			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, config.Model.Path)
+			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, config.Model.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving model path: %w", err)
 			}
@@ -81,7 +76,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, codeEntry.Path)
+			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, codeEntry.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving code path: %w", err)
 			}
@@ -93,14 +88,14 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			layerDir, relPath, err = filesystem.VerifySubpath(options.unpackDir, datasetEntry.Path)
+			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, datasetEntry.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
 			}
 			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
 		}
-		if err := unpackLayer(ctx, store, layerDesc, layerDir, options.overwrite); err != nil {
+		if err := unpackLayer(ctx, store, layerDesc, relPath, options.overwrite); err != nil {
 			return err
 		}
 	}
@@ -149,12 +144,6 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer gzr.Close()
 	tr := tar.NewReader(gzr)
 
-	if _, exists := filesystem.PathExists(unpackPath); exists {
-		if !overwrite {
-			return fmt.Errorf("failed to unpack: path %s already exists", unpackPath)
-		}
-		logger.Debugf("Directory %s already exists", unpackPath)
-	}
 	unpackDir := filepath.Dir(unpackPath)
 	if err := os.MkdirAll(unpackDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", unpackDir, err)
