@@ -56,7 +56,7 @@ func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.P
 
 	// 2. package the Code
 	for _, code := range kitfile.Code {
-		codePath, _, err := filesystem.VerifySubpath(options.contextDir, code.Path)
+		_, codePath, err := filesystem.VerifySubpath(options.contextDir, code.Path)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.P
 
 	// 3. package the DataSets
 	for _, dataset := range kitfile.DataSets {
-		datasetPath, _, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
+		_, datasetPath, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
 		if err != nil {
 			return err
 		}
@@ -84,7 +84,7 @@ func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.P
 
 	// 4. package the TrainedModel
 	if kitfile.Model != nil {
-		modelPath, _, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
+		_, modelPath, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
 		if err != nil {
 			return err
 		}
@@ -136,7 +136,6 @@ func readerForKitfile(modelFile string) (io.ReadCloser, error) {
 		} else {
 			return nil, fmt.Errorf("No input file specified and no data piped")
 		}
-		modelfile = os.Stdin
 	} else {
 		var err error
 		modelfile, err = os.Open(modelFile)
