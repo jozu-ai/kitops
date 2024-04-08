@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// @ts-expect-error
-import { VueMarqueeSlider } from 'vue3-marquee-slider'
+import { Vue3Marquee } from 'vue3-marquee'
 </script>
 
 <template>
@@ -20,7 +19,7 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
     Kit is an open source MLOps project that packages your model, datasets, code, and configuration so data scientists and developers can use their preferred tools while collaborating effortlessly.
   </div>
 
-  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto">
+  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
     <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -116,91 +115,82 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
   <p class="p1 mt-8 mb-22">Kit was designed to work with the tools your team already uses.</p>
 
   <div class="space-y-12 relative marquee-gradients">
-    <VueMarqueeSlider
-      id="logos-row-1"
-      :speed="80000"
-      :space="75">
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/jupyter@2x.png" alt="jupyter logo" class="opacity-65 max-h-10 md:max-h-12 xl:max-h-14">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/docker@2x.png" alt="docker logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/dvc@2x.png" alt="dvc logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/huggingface@2x.png" alt="huggingface logo" class="opacity-65 max-h-10 md:max-h-12 xl:max-h-14">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/github@2x.png" alt="github logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/gitlab@2x.png" alt="gitlab logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/jfrog@2x.png" alt="jfrog logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/azureml@2x.png" alt="azureml logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
-      </div>
-    </VueMarqueeSlider>
 
-    <VueMarqueeSlider
-      id="logos-row-2"
-      :speed="80000"
-      :space="75"
-      reverse>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/databricks@2x.png" alt="data bricks logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+    <Vue3Marquee>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/jupyter@2x.png" alt="jupyter logo" width="48" height="56" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/datarobot@2x.png" alt="data robot logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/docker@2x.png" alt="docker logo" width="160" height="36" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/kubernetes@2x.png" alt="kubernetes logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/dvc@2x.png" alt="dvc logo" width="48" height="30" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/mlflow@2x.png" alt="mlflow logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/huggingface@2x.png" alt="hugging face logo" width="200" height="44" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/nvidia@2x.png" alt="nvidia logo" class="opacity-65 max-h-10 md:max-h-12 xl:max-h-14">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/github@2x.png" alt="github logo" width="120" height="31" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/openshift@2x.png" alt="openshift logo" class="opacity-65 max-h-10 md:max-h-12 xl:max-h-14">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/gitlab@2x.png" alt="gitlab logo" width="110" height="25" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/tensorflow@2x.png" alt="tensorflow logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/jfrog@2x.png" alt="jfrog logo" width="110" height="29" class="opacity-65">
       </div>
-    </VueMarqueeSlider>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/azureml@2x.png" alt="azureml logo" width="35" height="37" class="opacity-65">
+      </div>
+    </Vue3Marquee>
 
-    <VueMarqueeSlider
-      id="logos-row-3"
-      :speed="80000"
-      :space="75"
-      :width="200">
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/amazonsagemaker@2x.png" alt="amazon sage maker logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+    <Vue3Marquee
+      direction="reverse">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/databricks@2x.png" alt="data bricks logo" width="148" height="25" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/circleci@2x.png" alt="circle ci logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/datarobot@2x.png" alt="data robot logo" width="148" height="19" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/prefect@2x.png" alt="prefect logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/kubernetes@2x.png" alt="kubernetes logo" width="148" height="27" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/ray@2x.png" alt="ray logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/mlflow@2x.png" alt="mlflow logo" width="90" height="33" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/runai@2x.png" alt="runai logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/nvidia@2x.png" alt="nvidia logo" width="58" height="43" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/vertexai@2x.png" alt="vertex logo" class="opacity-65 max-h-8 md:max-h-10 xl:max-h-12">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/openshift@2x.png" alt="openshift logo" width="48" height="51" class="opacity-65">
       </div>
-      <div class="flex justify-center items-center">
-        <img src="/images/logos/weightsbiases@2x.png" alt="weights & biases logo" class="opacity-65 max-h-6 md:max-h-7 xl:max-h-8">
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/tensorflow@2x.png" alt="tensorflow logo" width="148" height="33" class="opacity-65">
       </div>
-    </VueMarqueeSlider>
+    </Vue3Marquee>
+
+    <Vue3Marquee>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/amazonsagemaker@2x.png" alt="amazon sage maker logo" width="130" height="40" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/circleci@2x.png" alt="circle ci logo" width="110" height="32" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/prefect@2x.png" alt="prefect logo" width="120" height="15" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/ray@2x.png" alt="ray logo" width="80" height="31" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/runai@2x.png" alt="runai logo" width="48" height="33" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/vertexai@2x.png" alt="vertex logo" width="120" height="39" class="opacity-65">
+      </div>
+      <div class="flex justify-center items-center mx-10">
+        <img src="/images/logos/weightsbiases@2x.png" alt="weights & biases logo" width="160" height="25" class="opacity-65">
+      </div>
+    </Vue3Marquee>
   </div>
 
   <a href="/docs/modelkit/compatibility.html" class="kit-button mt-22">SEE FULL LIST</a>
@@ -255,6 +245,3 @@ import { VueMarqueeSlider } from 'vue3-marquee-slider'
 
 <!-- Our custom home styles -->
 <style scoped src="@theme/assets/css/home.css"></style>
-
-<!-- The marquee lib css -->
-<style src="../../../node_modules/vue3-marquee-slider/dist/style.css"></style>
