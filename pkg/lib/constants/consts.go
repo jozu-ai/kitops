@@ -28,6 +28,9 @@ type ConfigKey struct{}
 const (
 	// Default name for Kitfile (otherwise specified via the -f flag in pack)
 	DefaultKitFileName = "Kitfile"
+	// IgnoreFileName is the name for the Kit ignore file
+	IgnoreFileName = ".kitignore"
+
 	// Constants for the directory structure of kit's cached images and credentials
 	// Modelkits are stored in <configpath>/kitops/storage/ and
 	// credentials are stored in <configpath>/kitops/credentials.json

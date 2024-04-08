@@ -69,9 +69,14 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 		err := opts.complete(cmd.Context(), args)
 		if err != nil {
 			output.Fatalf("Invalid arguments: %s", err)
-			return
 		}
-		err = runPack(cmd.Context(), opts)
+
+		ignores, err := readIgnoreFile(opts.contextDir)
+		if err != nil {
+			output.Fatalln(err)
+		}
+
+		err = runPack(cmd.Context(), opts, ignores)
 		if err != nil {
 			output.Fatalf("Failed to pack model kit: %s", err)
 			return

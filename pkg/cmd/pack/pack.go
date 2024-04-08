@@ -20,13 +20,16 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
-	"os"
+
+	"github.com/moby/patternmatcher"
 )
 
 // runPack compresses and stores a modelkit based on a Kitfile. Returns an error if packing
@@ -36,7 +39,7 @@ import (
 // Packed modelkits are saved to the local on-disk cache. As OCI-spec indexes only support one
 // registry/repository reference at a time, individual blobs may be duplicated on disk if stored
 // under different references.
-func runPack(ctx context.Context, options *packOptions) error {
+func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.PatternMatcher) error {
 	// 1. Read the model file
 	kitfile := &artifact.KitFile{}
 	kitfileContentReader, err := readerForKitfile(options.modelFile)
@@ -60,6 +63,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 		layer := &artifact.ModelLayer{
 			Path:      codePath,
 			MediaType: constants.CodeLayerMediaType,
+			Ignore:    ignore,
 		}
 		model.Layers = append(model.Layers, *layer)
 	}
@@ -73,6 +77,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 		layer := &artifact.ModelLayer{
 			Path:      datasetPath,
 			MediaType: constants.DataSetLayerMediaType,
+			Ignore:    ignore,
 		}
 		model.Layers = append(model.Layers, *layer)
 	}
@@ -86,6 +91,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 		layer := &artifact.ModelLayer{
 			Path:      modelPath,
 			MediaType: constants.ModelLayerMediaType,
+			Ignore:    ignore,
 		}
 		model.Layers = append(model.Layers, *layer)
 	}
