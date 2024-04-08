@@ -106,7 +106,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 }
 
 func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) error {
-	configPath := filepath.Join(unpackDir, constants.DefaultKitFileName)
+	configPath := filepath.Join(unpackDir, constants.DefaultKitfileName)
 	if fi, exists := filesystem.PathExists(configPath); exists {
 		if !overwrite {
 			return fmt.Errorf("failed to unpack config: path %s already exists", configPath)
