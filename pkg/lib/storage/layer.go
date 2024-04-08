@@ -27,6 +27,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/moby/patternmatcher"
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
@@ -72,7 +73,7 @@ func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispe
 			return handleErr(err)
 		}
 	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(layer.Path, tw); err != nil {
+		if err := writeDirToTar(layer.Path, layer.Ignore, tw); err != nil {
 			return handleErr(err)
 		}
 	} else {
@@ -99,7 +100,7 @@ func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispe
 
 // writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
 // Any non-regular files and directories (e.g. symlinks) are skipped.
-func writeDirToTar(basePath string, tw *tar.Writer) error {
+func writeDirToTar(basePath string, ignore *patternmatcher.PatternMatcher, tw *tar.Writer) error {
 	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
 	// to compress the directory pointed at by basePath
 	trimPath := filepath.Dir(basePath)
@@ -116,6 +117,12 @@ func writeDirToTar(basePath string, tw *tar.Writer) error {
 		if relPath == "" {
 			relPath = filepath.Base(basePath)
 		}
+		if shouldIgnore, err := ignore.MatchesOrParentMatches(relPath); err != nil {
+			return fmt.Errorf("failed to match %s against ignore file: %w", relPath, err)
+		} else if shouldIgnore {
+			return nil
+		}
+
 		if err := writeHeaderToTar(relPath, fi, tw); err != nil {
 			return err
 		}

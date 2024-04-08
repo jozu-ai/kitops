@@ -14,36 +14,34 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package artifact
+package pack
 
 import (
+	"fmt"
 	"kitops/pkg/lib/constants"
+	"os"
+	"path/filepath"
 
 	"github.com/moby/patternmatcher"
+	"github.com/moby/patternmatcher/ignorefile"
 )
 
-type Model struct {
-	Repository string
-	Layers     []ModelLayer
-	Config     *KitFile
-}
-
-type ModelLayer struct {
-	Path      string
-	MediaType string
-	Ignore    *patternmatcher.PatternMatcher
-}
-
-func (l *ModelLayer) Type() string {
-	switch l.MediaType {
-	case constants.CodeLayerMediaType:
-		return "code"
-	case constants.DataSetLayerMediaType:
-		return "dataset"
-	case constants.ModelConfigMediaType:
-		return "config"
-	case constants.ModelLayerMediaType:
-		return "model"
+func readIgnoreFile(contextDir string) (*patternmatcher.PatternMatcher, error) {
+	ignorePath := filepath.Join(contextDir, constants.IgnoreFileName)
+	ignoreFile, err := os.Open(ignorePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return &patternmatcher.PatternMatcher{}, nil
+		}
+		return nil, err
 	}
-	return "<unknown>"
+	patterns, err := ignorefile.ReadAll(ignoreFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read %s file: %w", constants.IgnoreFileName, err)
+	}
+	pm, err := patternmatcher.New(patterns)
+	if err != nil {
+		return nil, fmt.Errorf("invalid %s file: %w", constants.IgnoreFileName, err)
+	}
+	return pm, nil
 }

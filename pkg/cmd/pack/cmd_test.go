@@ -36,15 +36,3 @@ func TestPackOptions_Complete(t *testing.T) {
 	assert.Equal(t, args[0], options.contextDir)
 	assert.Equal(t, filepath.Join(args[0], constants.DefaultKitFileName), options.modelFile)
 }
-
-func TestPackOptions_RunPack(t *testing.T) {
-	t.Skip("Skipping test for now")
-	options := &packOptions{
-		modelFile:  "Kitfile",
-		contextDir: "/path/to/context",
-	}
-
-	err := runPack(context.Background(), options)
-
-	assert.NoError(t, err)
-}
