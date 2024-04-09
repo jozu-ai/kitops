@@ -11,9 +11,9 @@ dependencies:
   cheerio:
     specifier: 1.0.0-rc.12
     version: 1.0.0-rc.12
-  vue3-marquee-slider:
-    specifier: ^1.0.5
-    version: 1.0.5
+  vue3-marquee:
+    specifier: ^4.2.0
+    version: 4.2.0(vue@3.4.18)
 
 devDependencies:
   autoprefixer:
@@ -1843,13 +1843,13 @@ packages:
     dependencies:
       vue: 3.4.18
 
-  /vue3-marquee-slider@1.0.5:
-    resolution: {integrity: sha512-92nrvGrmTC9Ltqz6QRXdkuJ5Tj6gM+69xy8sEB2kq/xY8RI/FTQxDF6QiCyJdieJDNL67giKlhJVDL0D9i9SxQ==}
+  /vue3-marquee@4.2.0(vue@3.4.18):
+    resolution: {integrity: sha512-Ij4iyvHZjTHMrsPqblpJjq6TYbEFq3utihUllAOfuy0E6W2QKX1vX4E7e7qV/ShmHbCbG0pljcEDq3y0FtzBGw==}
     engines: {node: '>=12'}
+    peerDependencies:
+      vue: ^3.2
     dependencies:
       vue: 3.4.18
-    transitivePeerDependencies:
-      - typescript
     dev: false
 
   /vue@3.4.18:
