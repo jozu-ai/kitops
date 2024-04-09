@@ -196,6 +196,42 @@ import { Vue3Marquee } from 'vue3-marquee'
   <a href="/docs/modelkit/compatibility.html" class="kit-button mt-22">SEE FULL LIST</a>
 </div>
 
+<div class="max-w-3xl mx-auto my-32 md:my-40 lg:my-60 faq-section">
+  <h2 class="text-center mb-10 md:mb-14 lg:mb-22">fAq</h2>
+
+  <details>
+    <summary>Harum provident corporis dolorem rem sit?</summary>
+
+    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
+    <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
+  </details>
+
+  <details>
+    <summary>Officia sint assumenda libero molestias at optio ut nihil?</summary>
+
+    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
+    <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
+  </details>
+
+  <details>
+    <summary>Epcot Center</summary>
+
+    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
+    <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
+  </details>
+
+  <details>
+    <summary>Voluptatibus in deleniti omnis repellendus?</summary>
+
+    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
+    <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
+  </details>
+</div>
+
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 

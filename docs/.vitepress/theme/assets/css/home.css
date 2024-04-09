@@ -20,3 +20,31 @@
   @apply before:absolute before:inset-y-0 before:-left-px before:w-16 before:z-10 before:bg-gradient-to-r before:from-night before:to-transparent;
   @apply after:absolute after:inset-y-0 after:-right-px after:w-16 after:z-10 after:bg-gradient-to-l after:from-night after:to-transparent;
 }
+
+.faq-section details {
+  @apply p2 text-gray-06;
+  @apply py-10 px-4 border-b border-opacity-20 border-gold;
+  @apply space-y-[1em];
+}
+
+.faq-section details summary {
+  @apply flex justify-between text-off-white;
+}
+
+.faq-section details[open] summary {
+  @apply mb-6;
+}
+
+.faq-section details summary::marker {
+  content: '';
+  display: none;
+}
+
+.faq-section details summary::after {
+  @apply ml-4;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z' fill='%23ECECEC'/%3E%3C/svg%3E");
+}
+
+.faq-section details[open] summary::after {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 11V13H19V11H5Z' fill='%23ECECEC'/%3E%3C/svg%3E");
+}

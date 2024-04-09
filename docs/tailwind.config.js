@@ -27,7 +27,8 @@ module.exports = {
         tea: '#DEF2C8',
         gray: {
           '02': '#4D4D4F',
-          '05': '#6A6A6A'
+          '05': '#6A6A6A',
+          '06': '#AAAAAA'
         }
       },
 
