@@ -1,3 +1,7 @@
+<script setup>
+import vGaTrack from '@theme/directives/ga'
+</script>
+
 # Installation Guide for `kit` CLI
 
 ## Installation from GitHub Releases
@@ -7,9 +11,21 @@ Welcome to the installation guide for the `kit`! This guide is designed to help 
 
 To begin, you will need to download the latest version of `kit`. You can find the most recent release on the official GitHub releases page:
 
-[Download the latest `kit` release](https://github.com/jozu-ai/kitops/releases/latest)
+<a href="https://github.com/jozu-ai/kitops/releases/latest"
+  v-ga-track="{
+    category: 'link',
+    label: 'download the latest kit',
+    location: 'docs/installation'
+  }">
+  Download the latest `kit`
+</a>
 
-Or, if you're feeling frisky try the cutting edge [`next` release](https://github.com/jozu-ai/kitops/releases/latest). Just remember that's not fully tested so YMMV.
+Or, if you're feeling frisky try the cutting edge <a href="https://github.com/jozu-ai/kitops/releases/latest"
+  v-ga-track="{
+    category: 'link',
+    label: 'download next release',
+    location: 'docs/installation'
+  }">`next` release</a>. Just remember that's not fully tested so YMMV.
 
 #### Selecting the Correct Version for Your Platform
 
