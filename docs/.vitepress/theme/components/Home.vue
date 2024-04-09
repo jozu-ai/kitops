@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Vue3Marquee } from 'vue3-marquee'
+import vGaTrack from '../directives/ga'
 </script>
 
 <template>
@@ -8,8 +9,8 @@ import { Vue3Marquee } from 'vue3-marquee'
   <h1 class="mt-4">Bridge the gap between ML and Application teams</h1>
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
-    <a href="/docs/cli/installation" class="kit-button">Install</a>
-    <a href="https://github.com/jozu-ai/kitops" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
+    <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'hero' }" class="kit-button">Install</a>
+    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
   </div>
 </div>
 
@@ -88,7 +89,7 @@ import { Vue3Marquee } from 'vue3-marquee'
       <div class="h4 font-bold !text-salmon">1</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/cli/installation" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
       </div>
     </div>
 
@@ -200,7 +201,7 @@ import { Vue3Marquee } from 'vue3-marquee'
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 
   <div class="space-y-6 w-fit mx-auto mt-22">
-    <a href="https://discord.gg/Tapeh8agYy" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+    <a href="https://discord.gg/Tapeh8agYy" v-ga-track="{ category: 'button', label: 'join the kitops discord', location: 'how to get involved' }" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
       <div class="p1">Join the KitOps Discord</div>
 
       <div class="size-8 md:size-12">
@@ -217,7 +218,7 @@ import { Vue3Marquee } from 'vue3-marquee'
       </div>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'contribute to kit', location: 'how to get involved' }" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
       <div class="p1">Contribute to Kit</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="size-8 md:size-12">
@@ -225,7 +226,7 @@ import { Vue3Marquee } from 'vue3-marquee'
       </svg>
     </a>
 
-    <a href="https://github.com/jozu-ai/kitops" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
+    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'star the repo', location: 'how to get involved' }" class="border border-gray-02 p-8 md:px-14 md:py-10 flex justify-between gap-8 items-center hover:border-gold transition-colors">
       <div class="p1">Star the repo on GitHub</div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="size-8 md:size-12">

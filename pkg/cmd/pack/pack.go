@@ -19,12 +19,14 @@ package pack
 import (
 	"context"
 	"fmt"
+	"io"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
+	"os"
 )
 
 // runPack compresses and stores a modelkit based on a Kitfile. Returns an error if packing
@@ -37,7 +39,12 @@ import (
 func runPack(ctx context.Context, options *packOptions) error {
 	// 1. Read the model file
 	kitfile := &artifact.KitFile{}
-	if err := kitfile.LoadModel(options.modelFile); err != nil {
+	kitfileContentReader, err := readerForKitfile(options.modelFile)
+	if err != nil {
+		return err
+	}
+	defer kitfileContentReader.Close()
+	if err := kitfile.LoadModel(kitfileContentReader); err != nil {
 		return err
 	}
 
@@ -107,4 +114,29 @@ func runPack(ctx context.Context, options *packOptions) error {
 	output.Infof("Model saved: %s", manifestDesc.Digest)
 
 	return nil
+}
+
+// readerForKitfile returns a reader for the Kitfile specified by the modelFile argument.
+// If modelFile is "-", the function returns a reader for stdin. If modelFile is a file path,
+// the function returns a reader for the file. If the file cannot be opened, the function returns
+// an error.
+// it is up-to the caller to close the reader.
+func readerForKitfile(modelFile string) (io.ReadCloser, error) {
+	var modelfile io.ReadCloser
+	if modelFile == "-" {
+		stat, _ := os.Stdin.Stat()
+		if (stat.Mode() & os.ModeCharDevice) == 0 {
+			modelfile = os.Stdin
+		} else {
+			return nil, fmt.Errorf("No input file specified and no data piped")
+		}
+		modelfile = os.Stdin
+	} else {
+		var err error
+		modelfile, err = os.Open(modelFile)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return modelfile, nil
 }
