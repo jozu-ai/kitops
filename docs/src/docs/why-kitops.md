@@ -8,7 +8,7 @@ Jupyter notebooks are great, but extracting the model, datasets, and metadata fr
 
 Worse yet, none of these AI/ML tools are compatible with the toolchains organizations have successfully used for years with their applications.
 
-With leaders demanding teams "add AI/ML" to their protfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
+With leaders demanding teams "add AI/ML" to their portfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
 
 > **The goal of KitOps is to simplify the sharing of AI/ML models, datasets, code, and configuration so that they can be run anywhere.**
 

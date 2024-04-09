@@ -2,6 +2,7 @@
 import { type Ref, inject, ref, onMounted } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { getUserOS } from '@theme/utils'
+import vGaTrack from '@theme/directives/ga'
 
 let documentClassList:DOMTokenList
 
@@ -41,6 +42,7 @@ const changePlatform = () => {
     <select
       @change="changePlatform"
       v-model="selectedPlatform"
+      v-ga-track="{ category: 'select', action: 'change', label: 'platform selector switch', location: 'sidebar' }"
       aria-label="select your preferred platform">
       <option value="mac">Mac</option>
       <option value="windows">Windows</option>
@@ -70,6 +72,7 @@ const changePlatform = () => {
                 changePlatform();
                 closeModal();
               }"
+              v-ga-track="{ category: 'select', action: 'change', label: 'platform selector switch', location: 'platform switch modal' }"
               v-model="selectedPlatform"
               aria-label="select your preferred platform">
               <option value="mac">Mac</option>

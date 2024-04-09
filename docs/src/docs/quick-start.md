@@ -47,7 +47,12 @@ You'll see `Log in successful`.
 
 Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the thigs you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
 
-You can grab [any of the ModelKits](https://github.com/orgs/jozu-ai/packages) from our site, but we've chosen a small language model example below.
+You can grab <a href="https://github.com/orgs/jozu-ai/packages"
+  v-ga-track="{
+    category: 'link',
+    label: 'grab any of the ModelKits',
+    location: 'docs/quick-start'
+  }">any of the ModelKits</a>from our site, but we've chosen a small language model example below.
 
 ```sh
 kit unpack ghcr.io/jozu-ai/modelkit-examples/finetuning_slm:latest
