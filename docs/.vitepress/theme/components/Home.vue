@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Vue3Marquee } from 'vue3-marquee'
+import Accordion from './Accordion.vue'
 </script>
 
 <template>
@@ -199,37 +200,37 @@ import { Vue3Marquee } from 'vue3-marquee'
 <div class="max-w-3xl mx-auto my-32 md:my-40 lg:my-60 faq-section">
   <h2 class="text-center mb-10 md:mb-14 lg:mb-22">fAq</h2>
 
-  <details>
-    <summary>Harum provident corporis dolorem rem sit?</summary>
+  <Accordion content-class="space-y-[1em]">
+    <template #title>Harum provident corporis dolorem rem sit?</template>
 
-    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p class="mt-6">Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
     <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
     <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
-  </details>
+  </Accordion>
 
-  <details>
-    <summary>Officia sint assumenda libero molestias at optio ut nihil?</summary>
+  <Accordion content-class="space-y-[1em]">
+    <template #title>Officia sint assumenda libero molestias at optio ut nihil?</template>
 
-    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p class="mt-6">Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
     <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
     <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
-  </details>
+  </Accordion>
 
-  <details>
-    <summary>Epcot Center</summary>
+  <Accordion content-class="space-y-[1em]">
+    <template #title>Epcot Center</template>
 
-    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p class="mt-6">Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
     <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
     <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
-  </details>
+  </Accordion>
 
-  <details>
-    <summary>Voluptatibus in deleniti omnis repellendus?</summary>
+  <Accordion content-class="space-y-[1em]">
+    <template #title>Voluptatibus in deleniti omnis repellendus?</template>
 
-    <p>Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
+    <p class="mt-6">Aut tempore rerum officiis explicabo illum quos aut rerum pariatur. Porro aperiam aut eum nobis blanditiis aut atque ea. Eum earum explicabo et aut autem ut. Itaque eos ut reiciendis est id eos. Numquam provident et id ratione consequatur molestiae. Quibusdam odio et quis et repellendus.</p>
     <p>Pariatur non dolor sequi. Accusantium vel voluptas ipsam. Rerum voluptas et distinctio quibusdam atque quia. Illum et tenetur vero itaque autem soluta voluptas.</p>
     <p>Ad eos in doloribus. Consequuntur est tempore est. Voluptatibus corrupti illo voluptas et architecto dolorum qui. Esse nobis officia quo eos earum voluptas. At voluptas voluptates ut.</p>
-  </details>
+  </Accordion>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
