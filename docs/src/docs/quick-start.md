@@ -1,3 +1,7 @@
+<script setup>
+import vGaTrack from '@theme/directives/ga'
+</script>
+
 # KitOps Quick Start
 
 In this guide, we'll use ModelKits and the kit CLI to easily:
