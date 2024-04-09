@@ -42,11 +42,11 @@ import (
 func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
-		return fmt.Errorf("failed to resolve local reference: %w", err)
+		return fmt.Errorf("Failed to resolve local reference: %w", err)
 	}
 	manifest, config, err := repo.GetManifestAndConfig(ctx, store, manifestDesc)
 	if err != nil {
-		return fmt.Errorf("failed to read local model: %s", err)
+		return fmt.Errorf("Failed to read local model: %s", err)
 	}
 
 	if options.unpackConf.unpackConfig {
@@ -96,7 +96,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			datasetIdx += 1
 		}
 		if err := unpackLayer(ctx, store, layerDesc, relPath, options.overwrite); err != nil {
-			return err
+			return fmt.Errorf("Failed to unpack: %w", err)
 		}
 	}
 	output.Debugf("Unpacked %d code layers", codeIdx)
@@ -166,17 +166,15 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 		switch header.Typeflag {
 		case tar.TypeDir:
 			if fi, exists := filesystem.PathExists(outPath); exists {
-				if !overwrite {
-					return fmt.Errorf("path '%s' already exists", outPath)
-				}
 				if !fi.IsDir() {
 					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
 				}
 				logger.Debugf("Path %s already exists", outPath)
-			}
-			logger.Debugf("Creating directory %s", outPath)
-			if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
-				return fmt.Errorf("failed to create directory %s: %w", outPath, err)
+			} else {
+				logger.Debugf("Creating directory %s", outPath)
+				if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
+					return fmt.Errorf("failed to create directory %s: %w", outPath, err)
+				}
 			}
 
 		case tar.TypeReg:
