@@ -17,7 +17,7 @@ To begin, you will need to download the latest version of `kit`. You can find th
     label: 'download the latest kit',
     location: 'docs/installation'
   }">
-  Download the latest `kit`
+  Download the latest `kit` release
 </a>
 
 Or, if you're feeling frisky try the cutting edge <a href="https://github.com/jozu-ai/kitops/releases/latest"
