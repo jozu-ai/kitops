@@ -49,6 +49,11 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("failed to read local model: %s", err)
 	}
 
+	// Make sure target directory exists, in case user is using the -d flag
+	if err := os.MkdirAll(options.unpackDir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %w", options.unpackDir, err)
+	}
+
 	if options.unpackConf.unpackConfig {
 		if err := unpackConfig(config, options.unpackDir, options.overwrite); err != nil {
 			return err
