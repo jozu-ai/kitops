@@ -21,13 +21,12 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"kitops/pkg/artifact"
+	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/moby/patternmatcher"
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
@@ -36,8 +35,8 @@ import (
 // a descriptor (including hash) for the compressed file, the layer is saved to a temporary file
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
-func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispec.Descriptor, err error) {
-	pathInfo, err := os.Stat(layer.Path)
+func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+	pathInfo, err := os.Stat(path)
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, err
 	}
@@ -69,15 +68,15 @@ func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispe
 		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, tw); err != nil {
 			return handleErr(err)
 		}
-		if err := writeFileToTar(layer.Path, pathInfo, tw); err != nil {
+		if err := writeFileToTar(path, pathInfo, tw); err != nil {
 			return handleErr(err)
 		}
 	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(layer.Path, layer.Ignore, tw); err != nil {
+		if err := writeDirToTar(path, ignore, tw); err != nil {
 			return handleErr(err)
 		}
 	} else {
-		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", layer.Path))
+		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", path))
 	}
 
 	callAndPrintError(tw.Close, "Failed to close tar writer: %s")
@@ -91,7 +90,7 @@ func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispe
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
 
 	desc = ocispec.Descriptor{
-		MediaType: layer.MediaType,
+		MediaType: mediaType,
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
 	}
@@ -100,7 +99,7 @@ func compressLayer(layer *artifact.ModelLayer) (tempFilePath string, desc ocispe
 
 // writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
 // Any non-regular files and directories (e.g. symlinks) are skipped.
-func writeDirToTar(basePath string, ignore *patternmatcher.PatternMatcher, tw *tar.Writer) error {
+func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, tw *tar.Writer) error {
 	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
 	// to compress the directory pointed at by basePath
 	trimPath := filepath.Dir(basePath)
@@ -121,10 +120,10 @@ func writeDirToTar(basePath string, ignore *patternmatcher.PatternMatcher, tw *t
 			return nil
 		}
 
-		if shouldIgnore, err := ignore.MatchesOrParentMatches(file); err != nil {
+		if shouldIgnore, err := ignore.Matches(file, basePath); err != nil {
 			return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
 		} else if shouldIgnore {
-			if !ignore.Exclusions() && fi.IsDir() {
+			if !ignore.HasExclusions() && fi.IsDir() {
 				output.Debugf("Skipping directory %s: ignored", file)
 				return filepath.SkipDir
 			}

@@ -249,10 +249,3 @@ func GetTagsForDescriptor(ctx context.Context, store LocalStorage, desc ocispec.
 	}
 	return tags, nil
 }
-
-func ValidateTag(tag string) error {
-	if !validTagRegex.MatchString(tag) {
-		return fmt.Errorf("invalid tag")
-	}
-	return nil
-}
