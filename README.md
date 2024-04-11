@@ -2,7 +2,7 @@
 <img width="1270" alt="KitOps" src="https://github.com/jozu-ai/kitops/assets/10517533/41295471-fe49-4011-adf6-a215f29890c2">
 
 
-## Simplify handoffs between data scientists, app devs, and DevOps.
+## The world needs a standard packaging / versioning system for AI/ML projects.
 
 [![LICENSE](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/myscale/myscaledb/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/Language-go-blue.svg)](https://go.dev/)
@@ -11,13 +11,31 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjozu-ai%2Fkitops&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 [![Official Website](<https://img.shields.io/badge/-Visit%20the%20Official%20Website%20%E2%86%92-rgb(255,175,82)?style=for-the-badge>)](https://kitops.ml/?utm_source=github&utm_medium=kitops-readme)
-[![Use Cases](<https://img.shields.io/badge/-KitOps%20Quick%20Start%20%E2%86%92-rgb(122,140,225)?style=for-the-badge>)](https://kitops.ml/?utm_source=github&utm_medium=kitops-readme)
+[![Use Cases](<https://img.shields.io/badge/-KitOps%20Quick%20Start%20%E2%86%92-rgb(122,140,225)?style=for-the-badge>)](https://kitops.ml/docs/quick-start.html/?utm_source=github&utm_medium=kitops-readme)
 
 ### What is KitOps?
 
-KitOps is your toolkit for transforming how you package, share, and deploy AI/ML models. Say goodbye to compatibility concerns and hello to smooth AI/ML collaboration.
+KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using.
 
-KitOps simplifies the handoffs between data scientists, application developers, and SREs working on self-hosted AI/ML models (including LLMs). KitOps' ModelKits create a unified package for models, their dependencies, configurations, and environments. The ModelKit is portable and uses open standards for compatibility with the tools you already use.
+KitOps simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are a standards-based package for models, their dependencies, configurations, and codebases. ModelKits are portable, reproducible, and work with the tools you already use.
+
+### Features
+
+* 🎁 **[Unified packaging](https://kitops.ml/docs/modelkit/intro.html):** A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.
+* 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each ModelKit is tagged so everyone knows which dataset and model work together.
+* 🤖 **[Automation]](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
+* 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
+* ✅ **Self-verifying:** ModelKits are checked for validity and tampering before and after every action.
+* 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any container or artifact registry.
+* 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
+* 😻 **No GPU or internet:** Kit doesn't require GPUs, internet connectivity, your email, or favourite limb. It's a free tool you can use anywhere.
+* 🤗 **Flexible:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
+* 🧰 **Data science + DevOps:** Simplify asset management and versioning for training, experimentation, integration, deployment, and operations.
+* 🏃‍♂️‍➡️ **Run locally:** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly (coming soon).
+* 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
+* 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
+
+### See KitOps in Action
 
 https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17f8df2
 
@@ -29,11 +47,7 @@ https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17
 
 **Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI not only enables users to create, manage, run, and deploy ModelKits... it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model` or maybe you just want the training datasets? `unpack --datasets`. So, whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the flexibility and power to streamline your workflow.
 
-## Quick Start with Kit
-
-Dive into the world of KitOps with ease! Whether you're looking to streamline your AI/ML workflows or explore the power of ModelKits, getting started with Kit is straightforward.
-
-### Running Kit with Pre-built Binaries
+## Try Kit in under 15 Minutes
 
 First, download the Kit CLI. Choose the `latest` [tagged version](https://github.com/jozu-ai/kitops/tags) for the most stable release, or explore the `next` tag for our development builds.
 
@@ -46,7 +60,9 @@ kit
 ```
 This command will display a list of available actions to supercharge your AI/ML projects.
 
-### Building Kit from Source
+The [Kit Quick Start](https://kitops.ml/docs/quick-start.html) will guide you through the main features of kit in under 10 minutes.
+
+## Building Kit from Source
 
 For those who prefer to build from the source, follow these steps to get the latest version directly from our repository:
 
@@ -74,10 +90,6 @@ Or, for direct execution during development:
 go run .
 ```
 
-## Using Kit
-
-The easiest way to get introduced to Kit is with our [quick start guide](./docs/src/docs/quick-start.md)
-
 ## Your Voice Matters
 
 ### Reporting Issues and Suggesting Features
@@ -100,6 +112,4 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 
 For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/Tapeh8agYy). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
 
-<a href="https://trackgit.com">
-<img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/luitr38h7apvgox8wafl" alt="trackgit-views" />
-</a>
+<a href="https://trackgit.com">Trackgit</a>
