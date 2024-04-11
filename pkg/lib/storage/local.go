@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
 	"os"
 
@@ -36,64 +36,23 @@ import (
 // SaveModel saves an *artifact.Model to the provided oras.Target, compressing layers. It attempts to block
 // modelkits that include paths that leave the base context directory, allowing only subdirectories of the root
 // context to be included in the modelkit.
-func SaveModel(ctx context.Context, store oras.Target, model *artifact.Model, tag string) (*ocispec.Descriptor, error) {
-	configDesc, err := saveConfigFile(ctx, store, model.Config)
+func SaveModel(ctx context.Context, store oras.Target, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths) (*ocispec.Descriptor, error) {
+	configDesc, err := saveConfig(ctx, store, kitfile)
 	if err != nil {
 		return nil, err
 	}
-	var layerDescs []ocispec.Descriptor
-	for _, layer := range model.Layers {
-		layerDesc, err := saveContentLayer(ctx, store, &layer)
-		if err != nil {
-			return nil, err
-		}
-		layerDescs = append(layerDescs, layerDesc)
-	}
+	layerDescs, err := saveKitfileLayers(ctx, store, kitfile, ignore)
 
 	manifest := CreateManifest(configDesc, layerDescs)
-	manifestDesc, err := saveModelManifest(ctx, store, manifest, tag)
+	manifestDesc, err := saveModelManifest(ctx, store, manifest)
 	if err != nil {
 		return nil, err
 	}
 	return manifestDesc, nil
 }
 
-func saveContentLayer(ctx context.Context, store oras.Target, layer *artifact.ModelLayer) (ocispec.Descriptor, error) {
-	// We want to store a gzipped tar file in store, but to do so we need a descriptor, so we have to compress
-	// to a temporary file. Ideally, we'd also add this to the internal store by moving the file to avoid
-	// copying if possible.
-	tempPath, desc, err := compressLayer(layer)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, err
-	}
-	defer func() {
-		if err := os.Remove(tempPath); err != nil {
-			output.Errorf("Failed to remove temporary file %s: %s", tempPath, err)
-		}
-	}()
-
-	if exists, err := store.Exists(ctx, desc); err != nil {
-		return ocispec.DescriptorEmptyJSON, err
-	} else if exists {
-		output.Infof("Already saved %s layer: %s", layer.Type(), desc.Digest)
-		return desc, nil
-	}
-
-	file, err := os.Open(tempPath)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to open temporary file: %s", err)
-	}
-	defer file.Close()
-
-	if err := store.Push(ctx, desc, file); err != nil {
-		return ocispec.DescriptorEmptyJSON, err
-	}
-	output.Infof("Saved %s layer: %s", layer.Type(), desc.Digest)
-	return desc, nil
-}
-
-func saveConfigFile(ctx context.Context, store oras.Target, model *artifact.KitFile) (ocispec.Descriptor, error) {
-	modelBytes, err := model.MarshalToJSON()
+func saveConfig(ctx context.Context, store oras.Target, kitfile *artifact.KitFile) (ocispec.Descriptor, error) {
+	modelBytes, err := kitfile.MarshalToJSON()
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
@@ -121,7 +80,68 @@ func saveConfigFile(ctx context.Context, store oras.Target, model *artifact.KitF
 	return desc, nil
 }
 
-func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.Manifest, tag string) (*ocispec.Descriptor, error) {
+func saveKitfileLayers(ctx context.Context, store oras.Target, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths) ([]ocispec.Descriptor, error) {
+	var layers []ocispec.Descriptor
+	if kitfile.Model != nil {
+		layer, err := saveContentLayer(ctx, store, kitfile.Model.Path, constants.ModelLayerMediaType, ignore)
+		if err != nil {
+			return nil, err
+		}
+		layers = append(layers, layer)
+	}
+	for _, code := range kitfile.Code {
+		layer, err := saveContentLayer(ctx, store, code.Path, constants.CodeLayerMediaType, ignore)
+		if err != nil {
+			return nil, err
+		}
+		layers = append(layers, layer)
+	}
+	for _, dataset := range kitfile.DataSets {
+		layer, err := saveContentLayer(ctx, store, dataset.Path, constants.DataSetLayerMediaType, ignore)
+		if err != nil {
+			return nil, err
+		}
+		layers = append(layers, layer)
+	}
+	return layers, nil
+}
+
+func saveContentLayer(ctx context.Context, store oras.Target, path, mediaType string, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
+	// We want to store a gzipped tar file in store, but to do so we need a descriptor, so we have to compress
+	// to a temporary file. Ideally, we'd also add this to the internal store by moving the file to avoid
+	// copying if possible.
+	tempPath, desc, err := compressLayer(path, mediaType, ignore)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+	defer func() {
+		if err := os.Remove(tempPath); err != nil {
+			output.Errorf("Failed to remove temporary file %s: %s", tempPath, err)
+		}
+	}()
+
+	layerType := layerTypeForMediaType(mediaType)
+	if exists, err := store.Exists(ctx, desc); err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	} else if exists {
+		output.Infof("Already saved %s layer: %s", layerType, desc.Digest)
+		return desc, nil
+	}
+
+	file, err := os.Open(tempPath)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to open temporary file: %s", err)
+	}
+	defer file.Close()
+
+	if err := store.Push(ctx, desc, file); err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+	output.Infof("Saved %s layer: %s", layerType, desc.Digest)
+	return desc, nil
+}
+
+func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.Manifest) (*ocispec.Descriptor, error) {
 	manifestBytes, err := json.Marshal(manifest)
 	if err != nil {
 		return nil, err
@@ -145,17 +165,6 @@ func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.
 	} else {
 		output.Infof("Manifest already exists in storage: %s", desc.Digest)
 	}
-
-	if tag != "" {
-		if err := repo.ValidateTag(tag); err != nil {
-			return nil, err
-		}
-		if err := store.Tag(ctx, desc, tag); err != nil {
-			return nil, fmt.Errorf("failed to tag manifest: %w", err)
-		}
-		output.Debugf("Added tag to manifest: %s", tag)
-	}
-
 	return &desc, nil
 }
 
@@ -168,4 +177,18 @@ func CreateManifest(configDesc ocispec.Descriptor, layerDescs []ocispec.Descript
 	}
 
 	return manifest
+}
+
+func layerTypeForMediaType(mediaType string) string {
+	switch mediaType {
+	case constants.CodeLayerMediaType:
+		return "code"
+	case constants.DataSetLayerMediaType:
+		return "dataset"
+	case constants.ModelConfigMediaType:
+		return "config"
+	case constants.ModelLayerMediaType:
+		return "model"
+	}
+	return "<unknown>"
 }

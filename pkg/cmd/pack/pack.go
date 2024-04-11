@@ -28,8 +28,6 @@ import (
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
-
-	"github.com/moby/patternmatcher"
 )
 
 // runPack compresses and stores a modelkit based on a Kitfile. Returns an error if packing
@@ -39,7 +37,7 @@ import (
 // Packed modelkits are saved to the local on-disk cache. As OCI-spec indexes only support one
 // registry/repository reference at a time, individual blobs may be duplicated on disk if stored
 // under different references.
-func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.PatternMatcher) error {
+func runPack(ctx context.Context, options *packOptions) error {
 	// 1. Read the model file
 	kitfile := &artifact.KitFile{}
 	kitfileContentReader, err := readerForKitfile(options.modelFile)
@@ -51,64 +49,27 @@ func runPack(ctx context.Context, options *packOptions, ignore *patternmatcher.P
 		return err
 	}
 
-	model := &artifact.Model{}
-	model.Config = kitfile
-
-	// 2. package the Code
-	for _, code := range kitfile.Code {
-		_, codePath, err := filesystem.VerifySubpath(options.contextDir, code.Path)
-		if err != nil {
-			return err
-		}
-		layer := &artifact.ModelLayer{
-			Path:      codePath,
-			MediaType: constants.CodeLayerMediaType,
-			Ignore:    ignore,
-		}
-		model.Layers = append(model.Layers, *layer)
+	ignore, err := filesystem.NewIgnore(options.contextDir, kitfile)
+	if err != nil {
+		return err
 	}
 
-	// 3. package the DataSets
-	for _, dataset := range kitfile.DataSets {
-		_, datasetPath, err := filesystem.VerifySubpath(options.contextDir, dataset.Path)
-		if err != nil {
-			return err
-		}
-		layer := &artifact.ModelLayer{
-			Path:      datasetPath,
-			MediaType: constants.DataSetLayerMediaType,
-			Ignore:    ignore,
-		}
-		model.Layers = append(model.Layers, *layer)
-	}
-
-	// 4. package the TrainedModel
-	if kitfile.Model != nil {
-		_, modelPath, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
-		if err != nil {
-			return err
-		}
-		layer := &artifact.ModelLayer{
-			Path:      modelPath,
-			MediaType: constants.ModelLayerMediaType,
-			Ignore:    ignore,
-		}
-		model.Layers = append(model.Layers, *layer)
-	}
-
-	tag := ""
-	if options.modelRef != nil {
-		tag = options.modelRef.Reference
-	}
 	storageHome := constants.StoragePath(options.configHome)
 	localStore, err := repo.NewLocalStore(storageHome, options.modelRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
 
-	manifestDesc, err := storage.SaveModel(ctx, localStore, model, tag)
+	manifestDesc, err := storage.SaveModel(ctx, localStore, kitfile, ignore)
 	if err != nil {
 		return err
+	}
+
+	if options.modelRef != nil && options.modelRef.Reference != "" {
+		if err := localStore.Tag(ctx, *manifestDesc, options.modelRef.Reference); err != nil {
+			return fmt.Errorf("failed to tag manifest: %w", err)
+		}
+		output.Debugf("Added tag to manifest: %s", options.modelRef.Reference)
 	}
 
 	for _, tag := range options.extraRefs {

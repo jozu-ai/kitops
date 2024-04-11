@@ -73,18 +73,13 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
 			output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		ignores, err := getIgnoreMatcher(opts.contextDir)
-		if err != nil {
-			output.Fatalln(err)
-		}
-
 		// Change working directory to context path to make sure relative paths within
 		// tarballs are correct. This is the equivalent of using the -C parameter for tar
 		if err := os.Chdir(opts.contextDir); err != nil {
 			output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
 		}
 
-		err = runPack(cmd.Context(), opts, ignores)
+		err = runPack(cmd.Context(), opts)
 		if err != nil {
 			output.Fatalf("Failed to pack model kit: %s", err)
 			return
