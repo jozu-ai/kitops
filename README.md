@@ -25,7 +25,6 @@ KitOps simplifies the handoffs between data scientists, application developers, 
 * 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each ModelKit is tagged so everyone knows which dataset and model work together.
 * 🤖 **[Automation]](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
 * 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
-* ✅ **Self-verifying:** ModelKits are checked for validity and tampering before and after every action.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
 * 😻 **No GPU or internet:** Kit doesn't require GPUs, internet connectivity, your email, or favourite limb. It's a free tool you can use anywhere.
@@ -34,6 +33,7 @@ KitOps simplifies the handoffs between data scientists, application developers, 
 * 🏃‍♂️‍➡️ **Run locally:** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly (coming soon).
 * 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
 * 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
+* 📝 **Signed packages:** ModelKits and their assets can be signed so you can be confident of their provenance.
 
 ### See KitOps in Action
 
