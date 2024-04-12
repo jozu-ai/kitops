@@ -36,23 +36,22 @@ func extractLibraries(harnessHome string, glob string) error {
 	return g.Wait()
 }
 
-
 func extractFile(fs embed.FS, file, harnessHome string) error {
-    srcFile, err := fs.Open(file)
-    if err != nil {
-        return fmt.Errorf("read payload %s: %v", file, err)
-    }
-    defer srcFile.Close()
+	srcFile, err := fs.Open(file)
+	if err != nil {
+		return fmt.Errorf("read payload %s: %v", file, err)
+	}
+	defer srcFile.Close()
 
-    destFile := filepath.Join(harnessHome, filepath.Base(file))
-    dest, err := os.OpenFile(destFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o755) // Keep executable permissions
-    if err != nil {
-        return fmt.Errorf("write payload %s: %v", file, err)
-    }
-    defer dest.Close()
+	destFile := filepath.Join(harnessHome, filepath.Base(file))
+	dest, err := os.OpenFile(destFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o755) // Keep executable permissions
+	if err != nil {
+		return fmt.Errorf("write payload %s: %v", file, err)
+	}
+	defer dest.Close()
 
-    if _, err := io.Copy(dest, srcFile); err != nil {
-        return fmt.Errorf("copy payload %s: %v", file, err)
-    }
-    return nil
+	if _, err := io.Copy(dest, srcFile); err != nil {
+		return fmt.Errorf("copy payload %s: %v", file, err)
+	}
+	return nil
 }
