@@ -19,6 +19,5 @@ func GetGPUInfo() *GPUInfo {
 	}
 	return &GPUInfo{
 		Library: "metal",
-		
 	}
 }

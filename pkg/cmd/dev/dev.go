@@ -35,7 +35,6 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	llmHarness.ConfigHome = options.configHome
 	llmHarness.Init()
 
-
 	if err := llmHarness.Start(modelPath); err != nil {
 		output.Errorf("Error starting llm harness: %s", err)
 		return err
