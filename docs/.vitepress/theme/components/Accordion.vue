@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 const props = withDefaults(defineProps<{
-  tag: string | HTMLElement,
+  tag?: string | HTMLElement,
   contentClass?: ClassProp,
   summaryClass?: ClassProp,
 }>(), {
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
 <template>
 <Component :is="props.tag" class="border-b border-opacity-20 border-gold py-10 px-4 p2 text-gray-06">
   <details class="group peer">
-    <summary :class="props.summaryClass" class="flex items-center justify-between" @click="toggleCollapsed()">
+    <summary :class="props.summaryClass" class="flex items-center justify-between">
       <slot name="title"></slot>
     </summary>
   </details>
