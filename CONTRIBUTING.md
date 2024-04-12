@@ -30,7 +30,7 @@ We welcome many different types of contributions including:
 * Web design
 * Communications, social media, blog posts, or other marketing
 
-If you think there's something else you can help with please contact us in the [#general channel of our Discord server](https://discord.gg/3eDb4yAN) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
+If you think there's something else you can help with please contact us in the [#general channel of our Discord server](https://discord.gg/Tapeh8agYy) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
 
 ## Development Environment Setup
 
