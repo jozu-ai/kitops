@@ -20,17 +20,17 @@ If anything doesn't make sense, or doesn't work when you try it, please open a b
 
 We welcome many different types of contributions including:
 
-* New features
-* Builds and CI/CD
-* Bug fixes
-* Documentation
+* [New features](https://github.com/jozu-ai/kitops/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+* [Bug fixes](https://github.com/jozu-ai/kitops/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+* [Documentation](https://github.com/jozu-ai/kitops/issues?q=is%3Aopen+is%3Aissue+label%3Adocumentation)
+* [Builds and CI/CD](https://github.com/jozu-ai/kitops/issues?q=is%3Aopen+is%3Aissue+label%3Abuild)
+* Release management
 * Issue triage
 * Answering questions on Discord, or the mailing list
 * Web design
 * Communications, social media, blog posts, or other marketing
-* Release management
 
-Not everything happens through a GitHub pull request. Please contact us in the [#general channel of our Discord server](https://discord.gg/3eDb4yAN) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
+If you think there's something else you can help with please contact us in the [#general channel of our Discord server](https://discord.gg/Tapeh8agYy) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
 
 ## Development Environment Setup
 
