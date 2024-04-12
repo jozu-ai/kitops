@@ -37,9 +37,9 @@ const (
 	DefaultConfigSubdir = "kitops"
 	StorageSubpath      = "storage"
 	CredentialsSubpath  = "credentials.json"
-	HarnessSubpath	    = "harness"
+	HarnessSubpath      = "harness"
 	HarnessProcessFile  = "process.pid"
-	
+
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
 	// Media type for the dataset layer
