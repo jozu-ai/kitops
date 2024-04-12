@@ -14,9 +14,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-//go:build !darwin
-// +build !darwin
-
 package harness
 
 import (
@@ -29,8 +26,6 @@ import (
 
 	"golang.org/x/sync/errgroup"
 )
-
-var serverEmbed embed.FS
 
 func extractLibraries(harnessHome string, glob string) error {
 	files, err := fs.Glob(serverEmbed, glob)
