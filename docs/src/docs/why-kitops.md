@@ -1,20 +1,33 @@
 # Why Use KitOps?
 
-Because hand-offs between AI/ML and app/SRE teams are painful.
-Because getting an LLM or other AI/ML model deployed safely to production is hard.
-Because they can be easy, and painless.
+## The Problem
+
+There is no standard and versioned packaging system for AI/ML projects. Today each part of the project is kept somewhere different:
+* Code in Jupyter notebooks or (if you're lucky) git repositories 
+* Datasets in DvC or storage buckets like S3
+* Configuration in Jupyter notebooks, feature stores, MLOps tools, or ...
+* Pipeline definitions in proprietary tools
 
 Jupyter notebooks are great, but extracting the model, datasets, and metadata from one is tricky. Similarly, ML-specific experimentation tools like MLFlow or Weights & Biases are excellent at training, but they save everything in proprietary formats that are confusing for software engineers and SREs.
 
-Worse yet, none of these AI/ML tools are compatible with the toolchains organizations have successfully used for years with their applications.
+When the only people using AI were data scientists this was annoying but workable. Now there are application teams trying to integrate model versions with their application, testing teams trying to validate models, and DevOps teams trying to deploy and maintain models in production.
 
-With leaders demanding teams "add AI/ML" to their portfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
+Without unified packaging teams take on risk and give up speed:
+* Which dataset version was used to train and validate this model version?
+* When did the dataset change? Did that effect my test run?
+* Where are the best configuration parameters for the model we're running in production?
+* Where did the model come from? Can we trust the source?
+* What changes did we make to the model?
 
-> **The goal of KitOps is to simplify the sharing of AI/ML models, datasets, code, and configuration so that they can be run anywhere.**
+...and if you have to rollback a model deployment in production...good luck. With leaders demanding teams "add AI/ML" to their portfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
 
-We're not trying to replace your other tools, we just want to improve the experience of packaging and sharing models.
+This problem is only getting worse and the stakes are rising each day as more and more teams start deploying models to production without proper operational safeguards.
 
-We dreamt of a better solution we call a "ModelKit." ModelKits:
+## The Solution
+
+**The goal of KitOps is to keep a versioned package for your AI project in a repository you already use.**
+
+Kit's ModelKits are the better solution:
 * Combine models, datasets, code and all the context teams need to integrate, test, or deploy:
   * Training code
   * Model code
@@ -24,11 +37,8 @@ We dreamt of a better solution we call a "ModelKit." ModelKits:
 * Let teams reuse their existing container registries by packaging everything as an OCI-compliant artifact
 * Support unpacking only a piece of the model package to your local machine (saving time and space)
 * Remove tampering risks by using an immutable package
-* Reduces risks by including the provenance of the model and datasets
+* Reduce risks by including the provenance of the model and datasets
 
-Using the kit CLI, you no longer have to remember the repo with the code in it, the registry with the model in it, the storage URI with the datasets, etc...
-
-The better way:
 Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](./kitfile/structure.md)).
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
