@@ -1,0 +1,182 @@
+name: Release with Platform builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_signing:
+        description: 'Skip code signing'
+        required: true
+        default: false
+        type: boolean
+      release_tag:
+        description: 'Release tag'
+        required: true
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+            go-version-file: 'go.mod'
+
+      - name: Import Apple Code Signing Certificates
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.skip_signing }}
+        uses: Apple-Actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          distribution: goreleaser
+          args: release --clean --snapshot --config ./.goreleaser.darwin.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
+          APPLE_ID: ${{ vars.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD}}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID}}
+      - name: Notarize the macOS binary
+        run: |
+          ./build/scripts/sign ./dist/kitops-darwin-amd64.zip
+          ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+            name: dist-macos
+            if-no-files-found: error
+            retention-days: 7
+            path: |
+              ./dist/*.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+            go-version-file: 'go.mod'
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          distribution: goreleaser
+          args: release --clean --snapshot --config ./.goreleaser.windows.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+            name: dist-windows
+            if-no-files-found: error
+            retention-days: 7
+            path: |
+              ./dist/*.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+            go-version-file: 'go.mod'
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          distribution: goreleaser
+          args: release --clean --snapshot --config ./.goreleaser.linux.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+            name: dist-linux
+            if-no-files-found: error
+            retention-days: 7
+            path: |
+              ./dist/*.tar.gz
+  # Creates a release with the artifacts from the previous steps.
+  # workflow_dispatch triggered versions will be draft releases.
+  # CLI docs are not updated for workflow_dispatch triggered versions.
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-linux, build-macos, build-windows]
+    steps:
+      - name: Merge built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: dist-*
+          merge-multiple: true
+      - name: Create Checksums
+        env:
+          TAG_NAME: ${{ github.ref_name}}
+        run: |
+          shopt -s failglob
+          pushd dist
+          shasum -a 256 kitops-* > checksums.txt
+          mv checksums.txt kitops_${TAG_NAME}_checksums.txt
+          popd
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
+          REPO: ${{ github.repository }}
+          DRAFT_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "Creating release for ${TAG_NAME}"
+          release_args=(
+            ${TAG_NAME}
+            ./dist/*.*
+            --title "Release ${TAG_NAME}"
+            --generate-notes
+            --repo ${REPO}
+           )
+          if [[ "${DRAFT_RELEASE}" == "false" ]]; then
+            previous_release="$(gh release list --repo $REPO --limit 1 --json tagName --jq '.[] | .tagName ')"
+            echo "Previous release: ${previous_release}"
+            release_args+=( --latest )
+            release_args+=( --verify-tag )
+            release_args+=( --notes-start-tag "${previous_release}" )
+          else
+            release_args+=( --draft )
+          fi
+          gh release create "${release_args[@]}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate CLI documentation
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        run: |
+          ./docs/src/docs/cli/generate.sh > /dev/null
+
+      - name: PR for CLI documentation
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          add-paths: |
+            docs/*.md
+          commit-message: "docs: update CLI documentation for ${{ github.ref_name }}"
