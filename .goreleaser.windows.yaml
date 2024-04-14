@@ -1,0 +1,34 @@
+version: 1
+
+project_name: kitops
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: "kit-wins"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    binary: kit
+    ldflags:
+      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
+
+archives:
+  - id: kit-archive
+    format: zip
+    builds:
+      - kit-wins
+    name_template: >-
+      {{ .ProjectName }}-
+      {{- tolower .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    rlcp: true
+    files:
+      - LICENSE
+      - README.md
