@@ -67,7 +67,7 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 			}
 
 			if err := store.Delete(ctx, manifestDesc); err != nil {
-				output.Errorf("Failed to remove %s@%s: %w", repository, manifestDesc.Digest, err)
+				output.Errorf("Failed to remove %s@%s: %s", repository, manifestDesc.Digest, err)
 				continue
 			}
 			// Skip future manifest descriptors with this digest, since we just removed it.
@@ -96,7 +96,7 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 				continue
 			}
 			if err := store.Delete(ctx, manifestDesc); err != nil {
-				output.Errorf("Failed to remove %s@%s: %w", repo, manifestDesc.Digest, err)
+				output.Errorf("Failed to remove %s@%s: %s", repo, manifestDesc.Digest, err)
 				continue
 			}
 			output.Infof("Removed %s@%s", repo, manifestDesc.Digest)
