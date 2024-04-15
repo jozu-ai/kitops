@@ -2,13 +2,13 @@
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. You can read more about why KitOps is a powerful collaboration solution for AI/ML projects in our [Why KitOps](./why-kitops.md) page.
 
-## How KitOps Gets Used
+## How KitOps Gets Used 🛠️
 
 Organizations have spent the last 15+ years building up a suite of developer and DevOps tools to make developing software applications and services faster, safer, and easier. As they start working with AI/ML, they are realizing that those tools are not well suited to a world of massive models and even bigger datasets. ModelKits were created by a team who lived that nightmare and wanted others to avoid it.
 
 Here’s how we used ModelKits along with the tools we already used in our data science, software development, and infrastructure management teams.
 
-### Using Tags
+### Using Tags 🏷️
 
 We used ModelKit tag names to give team members a quick way to determine where an AI project was in its lifecycle and whether they needed to get involved. Since ModelKits are immutable but use content-addressable storage, two ModelKits with the same contents but different tags only result in one ModelKit in storage (with two tag "pointers").
 
@@ -31,7 +31,7 @@ We used ModelKit tag names to give team members a quick way to determine where a
 
 Here's how we implemented those tags and changes in our repo throughout the AI project development lifecycle.
 
-### Development
+### Development 🧪
 
 Our data scientists developed models in Jupyter notebooks, but saved their work as a ModelKit at each development milestone to facilitate collaboration across our teams. This was simple by using the `kit pack` and `kit push` commands in their notebook:
 
@@ -44,7 +44,7 @@ kit push registry.gitlab.com/chatbot/legalchat:tuned
 
 Now everyone knew that the Legal Chat model had completed fine-tuning and they could quickly pull, run, or inspect the updated model, datasets, or code.
 
-### Integration
+### Integration 🧑‍🍳
 
 Once a new ModelKit completed training or tuning, our app team would pull the updated ModelKit:
 
@@ -52,7 +52,7 @@ Once a new ModelKit completed training or tuning, our app team would pull the up
 
 The team would test their service integration with the updated model, paying special attention to the performance characteristics and watching for features that may have changed between model versions.
 
-### Testing
+### Testing 🍽️
 
 Once the application team had confirmed the new model didn’t change the behavior of the application, an engineer from outside the data science team would validate the model. To do this they would run the new model with the validation dataset included in the ModelKit, and compare their results with the results from the data science team. This engineer generally didn't need the codebases in the ModelKit so they would just unpack the model and datasets.
 
@@ -68,7 +68,7 @@ kit tag registry.gitlab.com/chatbot/legalchat:tuned registry.gitlab.com/chatbot/
 kit push registry.gitlab.com/chatbot/legalchat:challenger
 ```
 
-### Deployment
+### Deployment 🚢
 
 Adding the `challenger` tag to a ModelKit was a trigger in our team for the DevOps group to know that it was ready to deploy to production. They would take the serialized model from the ModelKit and ready it for deployment via our pipelines. This may mean putting the model into a container, but it may mean using an init container, a sidecar, entrypoint, or post-start hooks.
 
