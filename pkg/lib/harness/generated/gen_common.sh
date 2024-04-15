@@ -32,8 +32,8 @@ build() {
 }
 
 git_module_setup() {
-    # Make sure the tree is clean after the directory moves
-    if [ -d "${LLAMACPP_DIR}/gguf" ]; then
+    # Make sure the tree is clean 
+    if [ -d "${LLAMACPP_DIR}/build/darwin/${GOARCH}/build" ]; then
         echo "Cleaning up old submodule"
         rm -rf ${LLAMACPP_DIR}
     fi
