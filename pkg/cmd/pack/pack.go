@@ -49,7 +49,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 		return err
 	}
 
-	ignore, err := filesystem.NewIgnore(options.contextDir, kitfile)
+	ignore, err := filesystem.NewIgnoreFromContext(options.contextDir, kitfile)
 	if err != nil {
 		return err
 	}
