@@ -66,7 +66,7 @@ type unpackOptions struct {
 }
 
 type unpackConf struct {
-	unpackConfig   bool
+	unpackKitfile  bool
 	unpackModels   bool
 	unpackCode     bool
 	unpackDatasets bool
@@ -88,8 +88,8 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	opts.modelRef = modelRef
 
 	conf := opts.unpackConf
-	if !conf.unpackConfig && !conf.unpackModels && !conf.unpackCode && !conf.unpackDatasets {
-		opts.unpackConf.unpackConfig = true
+	if !conf.unpackKitfile && !conf.unpackModels && !conf.unpackCode && !conf.unpackDatasets {
+		opts.unpackConf.unpackKitfile = true
 		opts.unpackConf.unpackModels = true
 		opts.unpackConf.unpackCode = true
 		opts.unpackConf.unpackDatasets = true
@@ -119,7 +119,7 @@ func UnpackCommand() *cobra.Command {
 	cmd.Args = cobra.ExactArgs(1)
 	cmd.Flags().StringVarP(&opts.unpackDir, "dir", "d", "", "The target directory to unpack components into. This directory will be created if it does not exist")
 	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrites existing files and directories in the target unpack directory without prompting")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackConfig, "config", false, "Unpack only config file")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackKitfile, "kitfile", false, "Unpack only Kitfile")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
