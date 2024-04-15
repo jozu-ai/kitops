@@ -29,10 +29,11 @@ const props = withDefaults(defineProps<{
 
 <style scoped>
 details summary {
-  @apply flex justify-between text-off-white;
+  @apply flex justify-between text-off-white cursor-pointer;
 }
 
-details summary::marker {
+details summary::marker,
+details summary::-webkit-details-marker {
   content: '';
   display: none;
 }
