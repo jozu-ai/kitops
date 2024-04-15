@@ -6,8 +6,8 @@ import vGaTrack from '../directives/ga'
 
 <template>
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center">
-  <p class="h4 !font-normal !text-off-white">Share and run your models anywhere</p>
-  <h1 class="mt-4">Bridge the gap between ML and Application teams</h1>
+  <p class="h4 !font-normal !text-off-white">Share and run your AI projects anywhere</p>
+  <h1 class="mt-4">Ease handoffs between AI/ML and Application teams</h1>
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
     <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'hero' }" class="kit-button">Install</a>
@@ -18,13 +18,38 @@ import vGaTrack from '../directives/ga'
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] mx-auto">
   <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
   <div class="p1 mt-8 mx-8">
-    Kit is an open source MLOps project that packages your model, datasets, code, and configuration so data scientists and developers can use their preferred tools while collaborating effortlessly.
+    Kit is an open source MLOps tool that packages your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
   </div>
 
   <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
     <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+</div>
+
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12" id="whykitops">
+  <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
+
+  <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
+    <div class="h4 !text-gold">Model handoffs are hard.</div>
+    <div class="p2 space-y-4">
+      <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
+      <p>Kit is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
+      <p>Kit solves two big problems:</p>
+    </div>
+
+    <div class="h4 !text-gold xs:mt-12">Collaboration–</div>
+    <div class="p2 space-y-4">
+      <p>By building ModelKits on industry standards, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating models with their application, experimenting with them locally, or deploying them to production.</p>
+      <p>ModelKits and Kitfiles work with the tools your team is already using, so you can use the same deployment pipelines and endpoints you’ve hardened with your application development process.</p>
+    </div>
+
+    <div class="h4 !text-gold xs:mt-12">Model traceability and reproducibility–</div>
+    <div class="p2 space-y-4">
+      <p>Unlike Dockerfiles, Kitfiles are a modular package - pull just a part of the ModelKit, like the model or dataset, or pull the whole package with one simple command.</p>
+      <p>Storing ModelKits in your organization’s registry provides a history of meaningful state changes for auditing. ModelKits are immutable so are perfect for a secure bill-of-materials (SBOM) initiative.</p>
+    </div>
+  </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
@@ -57,29 +82,60 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12" id="whykitops">
-  <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+  <h2 class="text-center">Key feAtuRes</h2>
+  <p class="p2 text-center mt-16">Visit our <a href="https://github.com/jozu-ai/kitops" target="_blank" class="underline">GitHub repo</a> for a list of all features and our roadmap.</p>
 
-  <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
-    <div class="h4 !text-gold">Model handoffs are hard.</div>
-    <div class="p2 space-y-4">
-      <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
-      <p>Kit is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
-      <p>Kit solves two big problems:</p>
-    </div>
-
-    <div class="h4 !text-gold xs:mt-12">Collaboration–</div>
-    <div class="p2 space-y-4">
-      <p>By building ModelKits on industry standards, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating models with their application, experimenting with them locally, or deploying them to production.</p>
-      <p>ModelKits and Kitfiles work with the tools your team is already using, so you can use the same deployment pipelines and endpoints you’ve hardened with your application development process.</p>
-    </div>
-
-    <div class="h4 !text-gold xs:mt-12">Model traceability and reproducibility–</div>
-    <div class="p2 space-y-4">
-      <p>Unlike Dockerfiles, Kitfiles are a modular package - pull just a part of the ModelKit, like the model or dataset, or pull the whole package with one simple command.</p>
-      <p>Storing ModelKits in your organization’s registry provides a history of meaningful state changes for auditing. ModelKits are immutable so are perfect for a secure bill-of-materials (SBOM) initiative.</p>
-    </div>
-  </div>
+  <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-22 gap-y-16 mt-16 max-w-[960px] mx-auto p1">
+    <li>
+      <div class="text-off-white">🎁 Standards-based package</div>
+      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🔒 Tamper-proof</div>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit package includes a SHA digest for itself, and every artifact it holds.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🏭 Tags and versions</div>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged so everyone knows which dataset and model work together.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🤗 Use with LLM, ML, or AI projects</div>
+      <p class="p2 mb-4 text-gray-06">ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.</p>
+    </li>
+    <li>
+      <div class="text-off-white">🤖 Automation for CI/CD</div>
+      <p class="p2 mb-4 text-gray-06">Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
+      <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
+    </li>
+  </ol>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
