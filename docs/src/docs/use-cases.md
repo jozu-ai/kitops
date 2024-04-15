@@ -12,21 +12,22 @@ Here’s how we used ModelKits along with the tools we already used in our data 
 
 We used ModelKit tag names to give team members a quick way to determine where an AI project was in its lifecycle and whether they needed to get involved. Since ModelKits are immutable but use content-addressable storage, two ModelKits with the same contents but different tags only result in one ModelKit in storage (with two tag "pointers").
 
-* _tuning_: dataset is designed for model tuning [1]
-* _validating_: dataset is designed for model validation [1]
-* _trained_: model has completed training phase [2]
-* _tuned_: model has completed fine-tuning phase [2]
-* _challenger_: model should be prepared to replace the current champion model [3]
-* _champion_: model is deployed in production [4]
-* _rollback_: the model was the previous "champion" model, before it was replaced by the "challenger" [5]
-* _retired_: the model is no longer appropriate for production usage [6]
-
-[1] Used for ModelKits that contained only datasets. These were used almost exclusively by the data science team.
-[2] ModelKit would include the model, plus training and validation datasets. Other assets were optional depending on the project.
-[3] ModelKit would include any codebases and datasets that need to be deployed to production with the model. The idea was to create a package that could be deployed via our existing CI/CD pipelines (one for code, one for serialized models, one for datasets).
-[4] This is the same ModelKit as the `challenger` tagged one, but with an updated tag to show what's in production. This just creates a second reference to the same ModelKit, not 2x the ModelKit storage.
-[5] This is the same ModelKit as the `chamption` tagged one. We kept it so that we could quickly deploy it to production if there was a catastrophic failure with the current `champion` model.
-[6] We kept old ModelKits so we could trace the history of development. When they were too old to be informative we used `kit remove` to get rid of them.
+* **_tuning_**: dataset is designed for model tuning
+  * Used for ModelKits that contained only datasets. These were used almost exclusively by the data science team.
+* **_validating_**: dataset is designed for model validation [1]
+  * Used for ModelKits that contained only datasets. These were used almost exclusively by the data science team.
+* **_trained_**: model has completed training phase [2]
+  * ModelKit would include the model, plus training and validation datasets. Other assets were optional depending on the project.
+* **_tuned_**: model has completed fine-tuning phase [2]
+  * ModelKit would include the model, plus training and validation datasets. Other assets were optional depending on the project.
+* **_challenger_**: model should be prepared to replace the current champion model
+  * ModelKit would include any codebases and datasets that need to be deployed to production with the model. The idea was to create a package that could be deployed via our existing CI/CD pipelines (one for code, one for serialized models, one for datasets).
+* **_champion_**: model is deployed in production
+  * This is the same ModelKit as the `challenger` tagged one, but with an updated tag to show what's in production. This just creates a second reference to the same ModelKit, not 2x the ModelKit storage.
+* **_rollback_**: the model was the previous "champion" model, before it was replaced by the "challenger"
+  * This is the same ModelKit as the `champion` tagged one. We kept it so that we could quickly deploy it to production if there was a catastrophic failure with the current `champion` model.
+* **_retired_**: the model is no longer appropriate for production usage
+  * We kept old ModelKits so we could trace the history of development. When they were too old to be informative we used `kit remove` to get rid of them.
 
 Here's how we implemented those tags and changes in our repo throughout the AI project development lifecycle.
 
@@ -53,7 +54,7 @@ The team would test their service integration with the updated model, paying spe
 
 ### Testing
 
-Once the application team had confirmed the new model didn’t change the behaviour of the application, an engineer from outside the data science team would validate the model. To do this they would run the new model with the validation dataset included in the ModelKit, and compare their results with the results from the data science team. This engineer generally didn't need the codebases in the ModelKit so they would just unpack the model and datasets.
+Once the application team had confirmed the new model didn’t change the behavior of the application, an engineer from outside the data science team would validate the model. To do this they would run the new model with the validation dataset included in the ModelKit, and compare their results with the results from the data science team. This engineer generally didn't need the codebases in the ModelKit so they would just unpack the model and datasets.
 
 `kit unpack registry.gitlab.com/chatbot/legalchat:tuned --model --datasets`
 
@@ -69,7 +70,7 @@ kit push registry.gitlab.com/chatbot/legalchat:challenger
 
 ### Deployment
 
-Adding the `challenger` tag to a ModelKit was a trigger in our team for the DevOps group to know that it was ready to deploy to production. They would take the serialized model from the ModelKit and ready it for deployment via our pipelines. For small infrequently changing models that would usually mean wrapping it in a container. For larger and more iterative models we typically use a Kubernetes `init` container linked to the serialized model file stored in a safe location in production (this makes iterations on the model faster, but requires more controls to ensure the model changes are properly tested).
+Adding the `challenger` tag to a ModelKit was a trigger in our team for the DevOps group to know that it was ready to deploy to production. They would take the serialized model from the ModelKit and ready it for deployment via our pipelines. This may mean putting the model into a container, but it may mean using an init container, a sidecar, entrypoint, or post-start hooks.
 
 Once the model was deployed and validated in production the ModelKit for the model that was previously tagged `champion` would be retagged to `rollback`, and the ModelKit for the `challenger` would be retagged to `champion`. These changes were part of our deployment automation and ensured that we were always ready to quickly redeploy the `rollback` model in case something catastrophic happened in production withe current `champion`.
 
