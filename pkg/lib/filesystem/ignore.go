@@ -34,11 +34,15 @@ type IgnorePaths interface {
 	HasExclusions() bool
 }
 
-func NewIgnore(contextDir string, kitfile *artifact.KitFile) (IgnorePaths, error) {
+func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile) (IgnorePaths, error) {
 	kitIgnorePaths, err := readIgnoreFile(contextDir)
 	if err != nil {
 		return nil, err
 	}
+	return NewIgnore(kitIgnorePaths, kitfile)
+}
+
+func NewIgnore(kitIgnorePaths []string, kitfile *artifact.KitFile) (IgnorePaths, error) {
 	kitIgnorePaths = append(kitIgnorePaths, constants.DefaultKitfileNames()...)
 	kitIgnorePaths = append(kitIgnorePaths, constants.IgnoreFileName)
 	kitIgnorePM, err := patternmatcher.New(kitIgnorePaths)
