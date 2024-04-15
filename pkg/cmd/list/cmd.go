@@ -19,11 +19,11 @@ package list
 import (
 	"context"
 	"fmt"
+	"io"
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
-	"os"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
@@ -121,13 +121,12 @@ func runCommand(opts *listOptions) func(*cobra.Command, []string) {
 			}
 			allInfoLines = lines
 		}
-
-		printSummary(allInfoLines)
+		printSummary(cmd.OutOrStdout(), allInfoLines)
 	}
 }
 
-func printSummary(lines []string) {
-	tw := tabwriter.NewWriter(os.Stdout, 0, 2, 3, ' ', 0)
+func printSummary(w io.Writer, lines []string) {
+	tw := tabwriter.NewWriter(w, 0, 2, 3, ' ', 0)
 	fmt.Fprintln(tw, listTableHeader)
 	for _, line := range lines {
 		fmt.Fprintln(tw, line)

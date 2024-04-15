@@ -26,40 +26,40 @@ import (
 )
 
 func Infoln(s any) {
-	fmt.Println(s)
+	fmt.Fprintln(stdout, s)
 }
 
 func Infof(s string, args ...any) {
-	printFmt(os.Stdout, s, args...)
+	printFmt(stdout, s, args...)
 }
 
 func Errorln(s any) {
-	fmt.Fprintln(os.Stderr, s)
+	fmt.Fprintln(stderr, s)
 }
 
 func Errorf(s string, args ...any) {
-	printFmt(os.Stderr, s, args...)
+	printFmt(stderr, s, args...)
 }
 
 func Fatalln(s any) {
-	fmt.Fprintln(os.Stderr, s)
+	fmt.Fprintln(stderr, s)
 	os.Exit(1)
 }
 
 func Fatalf(s string, args ...any) {
-	printFmt(os.Stderr, s, args...)
+	printFmt(stderr, s, args...)
 	os.Exit(1)
 }
 
 func Debugln(s any) {
 	if printDebug {
-		fmt.Println(s)
+		fmt.Fprintln(stdout, s)
 	}
 }
 
 func Debugf(s string, args ...any) {
 	if printDebug {
-		printFmt(os.Stdout, s, args...)
+		printFmt(stdout, s, args...)
 	}
 }
 
