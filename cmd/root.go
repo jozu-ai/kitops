@@ -46,6 +46,8 @@ func RunCommand() *cobra.Command {
 		Short: shortDesc,
 		Long:  longDesc,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			output.SetOut(cmd.OutOrStdout())
+			output.SetErr(cmd.ErrOrStderr())
 			output.SetDebug(opts.verbose)
 			output.SetProgressBars(opts.enableProgressBars)
 

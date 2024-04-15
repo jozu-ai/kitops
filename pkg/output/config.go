@@ -16,9 +16,16 @@
 
 package output
 
+import (
+	"io"
+	"os"
+)
+
 var (
-	printDebug        = false
-	printProgressBars = true
+	printDebug                  = false
+	printProgressBars           = true
+	stdout            io.Writer = os.Stdout
+	stderr            io.Writer = os.Stderr
 )
 
 func SetDebug(debug bool) {
@@ -27,4 +34,12 @@ func SetDebug(debug bool) {
 
 func SetProgressBars(print bool) {
 	printProgressBars = print
+}
+
+func SetOut(w io.Writer) {
+	stdout = w
+}
+
+func SetErr(w io.Writer) {
+	stderr = w
 }
