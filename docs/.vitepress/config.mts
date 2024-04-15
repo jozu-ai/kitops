@@ -58,8 +58,8 @@ export default defineConfig({
           { text: 'Overview', link: '/docs/overview' },
           { text: 'Quick Start', link: '/docs/quick-start.md' },
           { text: 'Next Steps', link: '/docs/next-steps.md' },
-          { text: 'Use Cases', link: '/docs/use-cases' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
+          { text: 'KitOps Workflow', link: '/docs/use-cases' },
         ]
       },
       {
