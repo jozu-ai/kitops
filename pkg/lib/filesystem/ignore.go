@@ -21,7 +21,6 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -63,6 +62,8 @@ type ignorePaths struct {
 }
 
 func (pm *ignorePaths) Matches(path, layerPath string) (bool, error) {
+	path = cleanPath(path)
+	layerPath = cleanPath(layerPath)
 	ignoreFileMatches, err := pm.ignoreFileMatcher.MatchesOrParentMatches(path)
 	if err != nil {
 		return false, err
@@ -91,21 +92,6 @@ func (pm *ignorePaths) HasExclusions() bool {
 	return pm.ignoreFileMatcher.Exclusions()
 }
 
-func getIgnoreMatcher(contextDir string) (*patternmatcher.PatternMatcher, error) {
-	filePatterns, err := readIgnoreFile(contextDir)
-	if err != nil {
-		return nil, err
-	}
-	filePatterns = append(filePatterns, constants.DefaultKitfileNames()...)
-	filePatterns = append(filePatterns, constants.IgnoreFileName)
-
-	pm, err := patternmatcher.New(filePatterns)
-	if err != nil {
-		return nil, fmt.Errorf("invalid %s file: %w", constants.IgnoreFileName, err)
-	}
-	return pm, nil
-}
-
 func readIgnoreFile(contextDir string) ([]string, error) {
 	ignorePath := filepath.Join(contextDir, constants.IgnoreFileName)
 	ignoreFile, err := os.Open(ignorePath)
@@ -123,19 +109,19 @@ func readIgnoreFile(contextDir string) ([]string, error) {
 }
 
 func layerPathsFromKitfile(kitfile *artifact.KitFile) []string {
-	cleanpath := func(s string) string {
-		return path.Clean(strings.TrimSpace(s))
-	}
-
 	var layerPaths []string
 	for _, code := range kitfile.Code {
-		layerPaths = append(layerPaths, cleanpath(code.Path))
+		layerPaths = append(layerPaths, cleanPath(code.Path))
 	}
 	for _, dataset := range kitfile.DataSets {
-		layerPaths = append(layerPaths, cleanpath(dataset.Path))
+		layerPaths = append(layerPaths, cleanPath(dataset.Path))
 	}
 	if kitfile.Model != nil {
-		layerPaths = append(layerPaths, cleanpath(kitfile.Model.Path))
+		layerPaths = append(layerPaths, cleanPath(kitfile.Model.Path))
 	}
 	return layerPaths
+}
+
+func cleanPath(path string) string {
+	return filepath.Clean(strings.TrimSpace(path))
 }
