@@ -49,7 +49,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 		return fmt.Errorf("Failed to read local model: %s", err)
 	}
 
-	if options.unpackConf.unpackConfig {
+	if options.unpackConf.unpackKitfile {
 		if err := unpackConfig(config, options.unpackDir, options.overwrite); err != nil {
 			return err
 		}
