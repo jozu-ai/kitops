@@ -1,0 +1,6 @@
+#!/bin/bash
+#Calls generate for all architectures
+set -e
+
+GOOS=darwin GOARCH=arm64 go generate ./...
+GOOS=darwin GOARCH=amd64 go generate ./...
