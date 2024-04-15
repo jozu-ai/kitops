@@ -36,6 +36,12 @@ import (
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
 func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+	if layerIgnored, err := ignore.Matches(path, path); err != nil {
+		return "", ocispec.DescriptorEmptyJSON, err
+	} else if layerIgnored {
+		output.Errorf("Warning: layer path %s ignored by kitignore", path)
+	}
+
 	pathInfo, err := os.Stat(path)
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, err
