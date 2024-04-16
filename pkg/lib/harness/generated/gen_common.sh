@@ -32,7 +32,7 @@ build() {
 }
 
 git_module_setup() {
-    # Make sure the tree is clean 
+    # Make sure the tree is clean
     if [ -d "${LLAMACPP_DIR}/build/darwin/${GOARCH}/build" ]; then
         echo "Cleaning up old submodule"
         rm -rf ${LLAMACPP_DIR}
