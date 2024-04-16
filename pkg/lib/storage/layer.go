@@ -25,7 +25,6 @@ import (
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -36,6 +35,9 @@ import (
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
 func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+	// Clean path to ensure consistent format (./path vs path/ vs path)
+	path = filepath.Clean(path)
+
 	if layerIgnored, err := ignore.Matches(path, path); err != nil {
 		return "", ocispec.DescriptorEmptyJSON, err
 	} else if layerIgnored {
@@ -137,7 +139,11 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, tw *tar.Write
 			return nil
 		}
 
-		relPath := strings.TrimPrefix(strings.Replace(file, trimPath, "", -1), string(filepath.Separator))
+		relPath, err := filepath.Rel(trimPath, file)
+		if err != nil {
+			return fmt.Errorf("failed to find relative path for %s", file)
+		}
+
 		if err := writeHeaderToTar(relPath, fi, tw); err != nil {
 			return err
 		}
