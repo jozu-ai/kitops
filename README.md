@@ -92,6 +92,10 @@ go run .
 
 ## Your Voice Matters
 
+### Need Help?
+
+If you need help there are several ways to reach our community and [Maintainers](./MAINTAINERS.md) outlined in our [support doc](./SUPPORT.md)
+
 ### Reporting Issues and Suggesting Features
 
 Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
@@ -100,10 +104,6 @@ Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* t
 
 We ❤️ our Kit community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
 
-### Need Help?
-
-If you need help there are several ways to reach our community and [Maintainers](./MAINTAINERS.md) outlined in our [support doc](./SUPPORT.md)
-
 ### A Community Built on Respect
 
 At KitOps, inclusivity, empathy, and responsibility are at our core. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to understand the values guiding our community.
@@ -111,5 +111,13 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 ### Join KitOps community
 
 For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/Tapeh8agYy). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
+
+### Roadmap
+
+We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provide feedback and ideas. Let us know what you'd like to see by pinging us on Discord or creating an issue.
+
+---
+---
+---
 
 <a href="https://trackgit.com">Trackgit</a>
