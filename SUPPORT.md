@@ -3,8 +3,8 @@
 Welcome to our project! We use GitHub for tracking bugs and feature requests.
 
 If you need other types of help try:
-* [User Documentation - TODO](TODO)
-* [Discord - TODO](TODO)
+* View our [product documentation](https://kitops.ml/docs/overview.html)
+* Join the [KitOps Discord](https://discord.gg/Tapeh8agYy)
 * Join our [public office hours meeting](./GOVERNANCE.md)
 
 ## Enterprise Support
