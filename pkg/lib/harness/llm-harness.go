@@ -47,7 +47,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 		}
 		// Check if the process is still running.
 		if isProcessRunning(pid) {
-			return fmt.Errorf("a process with PID %d is already running", pid)
+			return fmt.Errorf("A server process with PID %d is already running", pid)
 		} else {
 			fmt.Println("The process previously recorded is not running. Proceeding to start a new process.")
 		}
@@ -59,8 +59,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	cmd.Dir = constants.HarnessPath(harness.ConfigHome)
 
 	if err := cmd.Start(); err != nil {
-		fmt.Printf("Error starting llm harness: %s\n", err)
-		return err
+		return fmt.Errorf("Error starting llm harness: %s", err)
 	}
 
 	pid := cmd.Process.Pid
@@ -75,6 +74,9 @@ func (harness *LLMHarness) Stop() error {
 	pidFile := filepath.Join(constants.HarnessPath(harness.ConfigHome), constants.HarnessProcessFile)
 
 	pid, err := readPIDFromFile(pidFile)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("No Running server found")
+	}
 	if err != nil {
 		fmt.Printf("Error reading PID file: %s\n", err)
 		return err
@@ -82,34 +84,30 @@ func (harness *LLMHarness) Stop() error {
 
 	// Check if the process is still running.
 	if !isProcessRunning(pid) {
-		fmt.Printf("No running process found with PID %d. Nothing to stop.\n", pid)
-		return err
+		return fmt.Errorf("No running process found with PID %d.", pid)
 	}
 
 	// Kill the process using the PID.
 	process, err := os.FindProcess(pid)
 	if err != nil {
-		fmt.Printf("Error finding process: %s\n", err)
-		return err
+		return fmt.Errorf("Error finding process: %s\n", err)
 	}
 
 	err = process.Signal(syscall.SIGTERM) // Try to kill it gently
 	if err != nil {
-		fmt.Printf("Error killing process: %s\n", err)
+		fmt.Printf("Error killing process %s\n", err)
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
-			fmt.Printf("Error killing process with SIGKILL: %s\n", err)
-			return err
+			return fmt.Errorf("Error killing process: %s", err)
 		}
 	}
 
-	fmt.Printf("Process with PID %d has been killed.\n", pid)
+	output.Debugf("Process with PID %d has been killed.\n", pid)
 	// Delete the PID file to clean up.
 	err = os.Remove(pidFile)
 	if err != nil {
-		fmt.Printf("Error removing PID file: %s\n", err)
-		return nil
+		return fmt.Errorf("Error removing PID file: %s\n", err)
 	}
 
 	return nil

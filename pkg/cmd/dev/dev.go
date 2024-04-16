@@ -51,11 +51,8 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	llmHarness.Init()
 
 	if err := llmHarness.Start(modelPath); err != nil {
-		output.Errorf("Error starting llm harness: %s", err)
 		return err
 	}
-
-	output.Infof("Development server started at http://localhost:%d", options.port)
 
 	return nil
 }
