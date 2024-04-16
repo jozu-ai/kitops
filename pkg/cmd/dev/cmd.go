@@ -112,13 +112,15 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 				output.Fatalf("Failed to stop dev server: %s", err)
 				return
 			}
+			output.Infoln("Development server stopped")
 			return
 		}
 		err := runDev(cmd.Context(), opts)
 		if err != nil {
 			output.Fatalf("Failed to start dev server: %s", err)
-			return
 		}
+		output.Infof("Development server started at http://localhost:%d", opts.port)
+		output.Infof("Use \"kit dev --stop\" to stop the development server")
 	}
 }
 
