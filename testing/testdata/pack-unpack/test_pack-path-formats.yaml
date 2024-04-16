@@ -1,0 +1,40 @@
+description: Pack and unpack with different path formats
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-paths
+  datasets:
+    - name: test-with-dot
+      path: ./test1
+    - name: test-path-without-dot
+      path: test2
+    - name: test-path-is-directory
+      path: test3/
+    - name: test-path-is-file
+      path: test4/test-single-file.txt
+    - name: test-path-is-subdirectory
+      path: test5/subdir/subdir2/
+    - name: test-path-has-subdirs
+      path: test6/
+    - name: test-path-has-repeated-elements
+      path: test7/test7
+files:
+  - test1/test1-file1.txt
+  - test1/test1-file2.txt
+  - test2/test2-file1
+  - test2/test2-file2
+  - test3/test3-file1.txt
+  - test3/test3-file2.txt
+  - test4/test-single-file.txt
+  - test5/subdir/subdir2/test5-file1.txt
+  - test6/subdir1/test6-file1.txt
+  - test6/subdir2/test6-file2.txt
+  - test6/subdir2/test6-file3.txt
+  - test6/test6-file4.txt
+  - test7/test7/test7/test7/test7-file1.txt
+ignored:
+  - test4/ignored-file.txt
+  - test5/ignored-file.txt
+  - test5/ignored-subdir/ignored-file.txt
+  - test5/subdir/ignored-subdir/ignored-file.txt
+  - test-ignored/ignored-file.txt

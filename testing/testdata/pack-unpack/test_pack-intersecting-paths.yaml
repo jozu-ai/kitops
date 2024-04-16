@@ -1,0 +1,29 @@
+description: Pack and unpack when paths intersect
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-intersecting-dir
+  model:
+    name: test-model
+    path: main-dir
+  dataset:
+    - name: test-dataset
+      path: main-dir/subdir
+  code:
+    - path: .   # everything else
+files:
+  # Files belonging to model
+  - main-dir/model-file1.txt
+  - main-dir/model-file2.txt
+  - main-dir/model-file3.txt
+  - main-dir/main-subdir/model-subdir1.txt
+  - main-dir/main-subdir/model-subdir2.txt
+  # Files belonging to dataset
+  - main-dir/subdir/dataset-file1.txt
+  - main-dir/subdir/dataset-file2.txt
+  - main-dir/subdir/subdir2/dataset-subdir1.txt
+  # Files belonging to code
+  - other-dir/code-file1.txt
+  - other-dir/code-file2.txt
+  - root-file1.txt
+  - root-file2
