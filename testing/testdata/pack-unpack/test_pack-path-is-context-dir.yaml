@@ -1,0 +1,14 @@
+description: Pack and unpack path that is context dir itself
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-context-dir
+  model:
+    name: test-model
+    path: .
+files:
+  - file-in-root1.txt
+  - file-in-root2.txt
+  - main-dir/file-main1.txt
+  - main-dir/subdir/file-subdir1.txt
+  - dir2/test-file1.txt

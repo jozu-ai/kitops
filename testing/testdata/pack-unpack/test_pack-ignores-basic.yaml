@@ -1,0 +1,57 @@
+description: Pack and unpack with basic ignorefile
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-ignores
+  model:
+    name: test-ignores
+    path: .
+
+kitignore: |
+  # Ignore an entire directory
+  dir1
+  # Ignore a subdirectory
+  dir2/dirA
+  # Ignore a file in root
+  root-ignored.txt
+  # Ignore a file in a subdirectory
+  dir3/dir3-ignored.txt
+  # Ignore with wildcard
+  dir4/*/ignored-file.txt
+  # Ignore all with md extension
+  **/*.md
+  # Ignore all dirs with name
+  **/ignored
+  # Single character wildcard
+  ignored-?.txt
+  # Exclusions
+  !dir5/not-ignored.md
+
+files:
+  - dir2/file2.txt
+  - dir2/dirB/fileB.txt
+  - root-included.txt
+  - dir3/dir3-included.txt
+  - dir3/dirA/fileA.txt
+  - dir4/dirA/not-ignored
+  - dir4/dirB/not-ignored
+  - dir4/ignored-file.txt
+  - dir5/not-ignored.md
+
+ignored:
+  - dir1/dirA/fileA.txt
+  - dir1/file1.txt
+  - dir2/dirA/fileA.txt
+  - root-ignored.txt
+  - dir3/dir3-ignored.txt
+  - dir4/dirA/ignored-file.txt
+  - dir4/dirB/ignored-file.txt
+  - dir4/dirC/ignored-file.txt
+  - ignored-root.md
+  - dir2/ignored-dir2.md
+  - dir3/dirA/ignored-dirA.md
+  - dir2/ignored/ignored-file1.txt
+  - dir3/dirB/ignored/ignored-file2.txt
+  - ignored-a.txt
+  - ignored-b.txt
+  - ignored-1.txt
