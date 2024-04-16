@@ -6,6 +6,21 @@ As a public community project the KitOps roadmap is always open to feedback. If 
 * Tell us in the [KitOps Discord](https://discord.gg/Tapeh8agYy) channel
 * Send us a message on [X / Twitter](https://twitter.com/Kit_Ops)
 
+## TL;DR
+
+The main things we're working on are:
+
+* CLI dev mode to simplify running LLMs locally for testing or app integrations
+* Tutorials for using KitOps with LLM fine-tuning and RAG pipelines
+* Attestation for ModelKits and their contents
+* Signing of ModelKits
+* Model chaining (foundational --> tuned)
+* Deployment
+* More CLI distribution options
+* Documentation of the KitOps workflow
+
+## Roadmap Details
+
 ### Dev Mode (in-progress)
 
 Users can run a ModelKit packaged LLM on localhost and interact with it via chat or prompt. Uses Llama CPP with a cleaned up and more user-friendly UI. Simplifies running, testing, and integratting LLMs with applications.
