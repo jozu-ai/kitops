@@ -69,7 +69,7 @@ Users want to be able to deploy their models through existing CI/CD/CT pipelines
 
 ### CLI Distribution
 
-Users want to be able to get the Kit CLI from locations like Brew, Choco, an Conda.
+Users want to be able to get the Kit CLI from locations like Brew, Choco, and Conda.
 
 ### Workflow Documentation (in-progress)
 
