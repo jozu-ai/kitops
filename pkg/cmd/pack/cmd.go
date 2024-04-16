@@ -58,7 +58,7 @@ func PackCommand() *cobra.Command {
 		Example: examples,
 		Run:     runCommand(opts),
 	}
-	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile if it's not located at the root of the context directory")
+	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile explictly (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
