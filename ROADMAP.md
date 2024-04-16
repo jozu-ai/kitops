@@ -30,9 +30,8 @@ This feature will come in two parts: build attestation and self-attestation. Bui
 
 * Add attestation for KitOps ModelKit builds
 * Add mechanism for adding attestations to ModelKits
-* CLI `pack` with attestation using a `--verify` flag
-* CLI warning if attestation was expected and now found
-* Option to surpress attestation warnings
+* Update CLI to make use of attestations
+* Add CLI warnings if attestation was expected and not found
 
 ### Signing
 
@@ -43,7 +42,7 @@ Users can optionally sign their ModelKit using something like Cosign in order to
 
 ### ModelKit Chaining
 
-A ModelKit can refer to another ModelKit's model as its "base model." This is useful for situations where a user wants to take an existing model (e.g., Llama 3) but create their own model based on it. The user would create a kind of link between their ModelKit and the ModelKit for Llama 3 that they used. Right now we think this will be done by having a base model and model parts. The chain could theoretically be as long as desired (not limited to a single relationship).
+A ModelKit can refer to another ModelKit's model as its "base model." This is useful for situations where a user wants to take an existing model (e.g., Llama 2) but create their own model based on it. The user would create a kind of link between their ModelKit and the ModelKit for Llama 2 that they used. Right now we think this will be done by having a base model and model parts. The chain could theoretically be as long as desired (not limited to a single relationship).
 
 * Determine mechanism for ModelKit chaining
 * Add chaining to ModelKit schema
