@@ -41,11 +41,11 @@ https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17
 
 ### What is in the box?
 
-**ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
+**ModelKit:** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format for sharing the artifacts involved in the AI/ML model lifecycle: datasets, code, configurations, and models. By standardizing the way these components are packaged, versioned, and shared, ModelKits facilitate a more streamlined and collaborative development process that is compatible with nearly any tool.
 
-**Kitfile:** Complementing the ModelKit is the Kitfile, your AI/ML project's blueprint. It's a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. Kitfiles are designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
+**Kitfile:** A ModelKit is defined by a Kitfile - your AI/ML project's blueprint. It uses YAML to describe where to find each of the artifacts that will be packaged into the ModelKit along with metadata about each of them. Reading the Kitfile gives you a quick understanding of what's involved in each AI project.
 
-**Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI not only enables users to create, manage, run, and deploy ModelKits... it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model` or maybe you just want the training datasets? `unpack --datasets`. So, whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the flexibility and power to streamline your workflow.
+**Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI not only enables users to create, manage, run, and deploy ModelKits -- it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model`, or maybe you just want the training datasets? `unpack --datasets`. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the flexibility and power to streamline your workflow.
 
 ## Try Kit in under 15 Minutes
 
@@ -60,35 +60,24 @@ kit
 ```
 This command will display a list of available actions to supercharge your AI/ML projects.
 
-The [Kit Quick Start](https://kitops.ml/docs/quick-start.html) will guide you through the main features of kit in under 10 minutes.
+The [Kit Quick Start](https://kitops.ml/docs/quick-start.html) will guide you through the main features of kit in under 10 minutes. If you need help check out our [support guide](./SUPPORT.md).
 
-## Building Kit from Source
+### Building Kit from Source
 
-For those who prefer to build from the source, follow these steps to get the latest version directly from our repository:
+For those who prefer to build from the source, follow [these steps to get the latest version directly from our repository](https://kitops.ml/docs/cli/installation.html#installation-from-source).
 
-1. Clone the Repository: Clone the KitOps source code to your local machine:
+## ✨ What's New? 😍
 
-    ```shell
-    git clone https://github.com/jozu-ai/kitops.git
-    cd kitops
-    ```
+We've been busy and shipping quickly!
 
-2. Build the Kit CLI: Compile the source code into an executable named kit:
-    ```shell
-    go build -o kit
-    ```
+📙 New page explaining how to use [KitOps in an AI project workflow](https://kitops.ml/docs/use-cases.html)
+📙 Improved [Why KitOps? page](https://kitops.ml/docs/why-kitops.html)
+📙 Improved [Quick Start](https://kitops.ml/docs/quick-start.html), and new [Next Steps](https://kitops.ml/docs/next-steps.html) pages
+💝 Read Kitfile from `stdin`
+🐞 Check directory exists before unpacking
+🐞 Fix license header automation
 
-3. Run Your Build: Execute the built CLI to see all available commands:
-
-    ```shell
-    ./kit
-    ```
-
-Or, for direct execution during development:
-
-```shell
-go run .
-```
+You can see all the gory details in our [release changelogs](https://github.com/jozu-ai/kitops/releases).
 
 ## Your Voice Matters
 
