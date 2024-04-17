@@ -33,18 +33,8 @@ const (
 	example   = `kit dev ./my-model --port 8080`
 )
 
-var (
-	flags *DevFlags
-	opts  *DevOptions
-)
-
-type DevFlags struct {
-	Port      int
-	ModelFile string
-	Stop      bool
-}
-
 type DevOptions struct {
+	host       string
 	port       int
 	modelFile  string
 	contextDir string
@@ -63,15 +53,13 @@ func (opts *DevOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	if flags.Stop {
-		opts.stop = flags.Stop
-	}
-
-	opts.modelFile = flags.ModelFile
 	if opts.modelFile == "" {
 		opts.modelFile = filesystem.FindKitfileInPath(opts.contextDir)
 	}
-	opts.port = flags.Port
+	if opts.host == "" {
+		opts.host = "127.0.0.1"
+	}
+
 	if opts.port == 0 {
 		availPort, err := findAvailablePort()
 		if err != nil {
@@ -84,8 +72,7 @@ func (opts *DevOptions) complete(ctx context.Context, args []string) error {
 }
 
 func DevCommand() *cobra.Command {
-	opts = &DevOptions{}
-	flags = &DevFlags{}
+	opts := &DevOptions{}
 	cmd := &cobra.Command{
 		Use:     "dev <directory> [flags]",
 		Short:   shortDesc,
@@ -94,9 +81,10 @@ func DevCommand() *cobra.Command {
 		Run:     runCommand(opts),
 	}
 	cmd.Args = cobra.MaximumNArgs(1)
-	cmd.Flags().StringVarP(&flags.ModelFile, "file", "f", "", "Path to the kitfile")
-	cmd.Flags().IntVar(&flags.Port, "port", 0, "Port for development server to listen on")
-	cmd.Flags().BoolVar(&flags.Stop, "stop", false, "Stop the development server")
+	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Path to the kitfile")
+	cmd.Flags().StringVar(&opts.host, "host", "127.0.0.1", "Path to the kitfile")
+	cmd.Flags().IntVar(&opts.port, "port", 0, "Port for development server to listen on")
+	cmd.Flags().BoolVar(&opts.stop, "stop", false, "Stop the development server")
 	return cmd
 }
 
@@ -119,7 +107,7 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 		if err != nil {
 			output.Fatalf("Failed to start dev server: %s", err)
 		}
-		output.Infof("Development server started at http://localhost:%d", opts.port)
+		output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
 		output.Infof("Use \"kit dev --stop\" to stop the development server")
 	}
 }
