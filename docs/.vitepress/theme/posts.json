@@ -14,5 +14,11 @@
     "url": "https://thenewstack.io/beyond-git-a-new-collaboration-model-for-ai-ml-development/",
     "tags": ["git", "devops", "open source", "machine learning"],
     "published_time": "2024-04-02"
+  },
+  {
+    "url": "https://open.spotify.com/episode/1BoMxaEYiZIrFTrT1N5UKa?si=zH9L868bRGyU0wc8oxz6vQ",
+    "tags": ["MLOps", "KitOps", "Machine Learning"],
+    "author": "Brad Micklea",
+    "published_time": "2024-04-17"
   }
 ]
