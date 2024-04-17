@@ -27,9 +27,6 @@ import (
 func runDev(ctx context.Context, options *DevOptions) error {
 
 	kitfile := &artifact.KitFile{}
-	if fileInfo, err := os.Stat(options.modelFile); err == nil && fileInfo.IsDir() {
-		options.modelFile = filesystem.FindKitfileInPath(options.modelFile)
-	}
 
 	modelfile, err := os.Open(options.modelFile)
 	if err != nil {
