@@ -16,7 +16,7 @@ import (
 
 const (
 	listTableHeader = "REPOSITORY\tTAG\tMAINTAINER\tNAME\tSIZE\tDIGEST"
-	listTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s\t"
+	listTableFmt    = "%s\t%s\t%s\t%s\t%s\t%s"
 )
 
 func listLocalKits(ctx context.Context, opts *listOptions) ([]string, error) {
