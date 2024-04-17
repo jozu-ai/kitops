@@ -138,7 +138,8 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 
 func printConfig(opts *removeOptions) {
 	if opts.modelRef != nil {
-		output.Debugf("Removing %s and additional tags: [%s]", opts.modelRef, strings.Join(opts.extraTags, ", "))
+		displayRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+		output.Debugf("Removing %s and additional tags: [%s]", displayRef, strings.Join(opts.extraTags, ", "))
 	}
 	if opts.removeAll {
 		if opts.forceDelete {

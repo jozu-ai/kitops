@@ -115,16 +115,18 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 	if err != nil {
 		return fmt.Errorf("Failed to remove: %s", err)
 	}
-	output.Infof("Removed %s (digest %s)", opts.modelRef.String(), desc.Digest)
+	displayRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+	output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
 
 	for _, tag := range opts.extraTags {
 		ref := *opts.modelRef
 		ref.Reference = tag
+		displayRef := repo.FormatRepositoryForDisplay(ref.String())
 		desc, err := removeModelRef(ctx, localStore, &ref, opts.forceDelete)
 		if err != nil {
 			output.Errorf("Failed to remove tag %s: %s", tag, err)
 		} else {
-			output.Infof("Removed %s (digest %s)", ref.String(), desc.Digest)
+			output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
 		}
 	}
 	return nil
@@ -134,7 +136,7 @@ func removeModelRef(ctx context.Context, store repo.LocalStorage, ref *registry.
 	desc, err := oras.Resolve(ctx, store, ref.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
-			return ocispec.DescriptorEmptyJSON, fmt.Errorf("model %s not found", ref.String())
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("model %s not found", repo.FormatRepositoryForDisplay(ref.String()))
 		}
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("error resolving model: %s", err)
 	}
