@@ -54,7 +54,11 @@ func (opts *DevOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 	if opts.modelFile == "" {
-		opts.modelFile = filesystem.FindKitfileInPath(opts.contextDir)
+		foundKitfile, err  := filesystem.FindKitfileInPath(opts.contextDir)
+		if err != nil {
+			return err
+		}	
+		opts.modelFile = foundKitfile	
 	}
 	if opts.host == "" {
 		opts.host = "127.0.0.1"
