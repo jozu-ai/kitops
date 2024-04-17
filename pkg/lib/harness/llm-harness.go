@@ -28,6 +28,7 @@ import (
 )
 
 type LLMHarness struct {
+	Host       string
 	Port       int
 	ConfigHome string
 }
@@ -54,6 +55,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	}
 
 	cmd := exec.Command("./server",
+		"--host", harness.Host,
 		"--port", strconv.Itoa(harness.Port),
 		"--model", modelPath)
 	cmd.Dir = constants.HarnessPath(harness.ConfigHome)

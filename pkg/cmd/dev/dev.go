@@ -46,6 +46,7 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	}
 
 	llmHarness := &harness.LLMHarness{}
+	llmHarness.Host = options.host
 	llmHarness.Port = options.port
 	llmHarness.ConfigHome = options.configHome
 	llmHarness.Init()
