@@ -27,7 +27,9 @@ const tagsColorsMap = [
 // Those are listed here and replaced as specified.
 const customCapitalTags = {
   'ai': 'AI',
-  'devops': 'DevOps'
+  'devops': 'DevOps',
+  'mlops': 'MLOps',
+  'kitops': 'KitOps'
 }
 
 const formatDate = (raw: string) => {

@@ -14,5 +14,12 @@
     "url": "https://thenewstack.io/beyond-git-a-new-collaboration-model-for-ai-ml-development/",
     "tags": ["git", "devops", "open source", "machine learning"],
     "published_time": "2024-04-02"
+  },
+  {
+    "url": "https://open.spotify.com/episode/1BoMxaEYiZIrFTrT1N5UKa?si=zH9L868bRGyU0wc8oxz6vQ",
+    "description": "Listen to this episode from Partially Redacted: Data Privacy, Security & Compliance on Spotify. In this episode, we dive into the world of MLOps, the engine behind secure and reliable AI/ML deployments. MLOps focuses on the lifecycle of machine learning models, ensuring they are developed and deployed efficiently and responsibly. With the explosion of ML applications, the demand for specialized tools has skyrocketed, highlighting the need for improved observability, auditing, and reproducibility. This shift necessitates an evolution in ML toolchains to address gaps in security, governance, and reliability. Jozu is a platform founded to tackle these very challenges by enhancing the collaboration between AI/ML and application development teams. Jozu aims to provide a comprehensive suite of tools focusing on efficiency throughout the model development and deployment process. This conversation discusses the importance of MLOps, the limitations of current tools, and how Jozu is paving the way for the future of secure and reliable ML deployments.",
+    "tags": ["mlops", "kitops", "machine learning", "podcast"],
+    "author": "Brad Micklea",
+    "published_time": "2024-04-17"
   }
 ]
