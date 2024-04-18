@@ -52,7 +52,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 		if isProcessRunning(pid) {
 			return fmt.Errorf("A server process with PID %d is already running", pid)
 		} else {
-			fmt.Println("The process previously recorded is not running. Proceeding to start a new process.")
+			output.Infoln("The process previously recorded is not running. Proceeding to start a new process.")
 		}
 	}
 
@@ -92,7 +92,6 @@ func (harness *LLMHarness) Stop() error {
 		return fmt.Errorf("No Running server found")
 	}
 	if err != nil {
-		fmt.Printf("Error reading PID file: %s\n", err)
 		return err
 	}
 
@@ -109,7 +108,7 @@ func (harness *LLMHarness) Stop() error {
 
 	err = process.Signal(syscall.SIGTERM) // Try to kill it gently
 	if err != nil {
-		fmt.Printf("Error killing process %s\n", err)
+		output.Infof("Error killing process %s", err)
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
