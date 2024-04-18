@@ -25,6 +25,7 @@ import (
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -160,6 +161,9 @@ func writeHeaderToTar(name string, fi os.FileInfo, tw *tar.Writer) error {
 		return fmt.Errorf("failed to generate header for %s: %w", name, err)
 	}
 	header.Name = name
+	header.AccessTime = time.Time{}
+	header.ModTime = time.Time{}
+	header.ChangeTime = time.Time{}
 	if err := tw.WriteHeader(header); err != nil {
 		return fmt.Errorf("failed to write header: %w", err)
 	}
