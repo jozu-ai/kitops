@@ -104,14 +104,13 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 		}
 
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Errorf("failed to complete options: %w", err)
+			output.Errorf("failed to complete options: %s", err)
 		}
 		if opts.stop {
 			output.Infoln("Stopping development server...")
 			err := stopDev(cmd.Context(), opts)
 			if err != nil {
 				output.Fatalf("Failed to stop dev server: %s", err)
-				return
 			}
 			output.Infoln("Development server stopped")
 			return
