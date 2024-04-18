@@ -9,23 +9,49 @@ In this guide you'll learn how to:
 ## Making your own Kitfile
 
 A Kitfile is the configuration document for your ModelKit. It's written in YAML so it's easy to read. There are four main parts to a Kitfile:
+
 1. The `package` section: Metadata about the ModelKit, including the author, description, and license
-1. The `code` section: Path to any codebases related to the project, including Jupyter notebook folders
-1. The `datasets` section: Path to any datasets
-1. The `model` section: Path to the serialized model
+1. The `code` section: Path and information about codebases related to the project, including Jupyter notebook folders
+1. The `datasets` section: Path and infromation on included datasets
+1. The `model` section: Path and information on the serialized model
 
 A Kitfile only needs the `package` section, plus one of the other sections.
 
-The `datasets` and `code` sections can include multiple assets, but the `model` section can only contain a single model (you can chain models by using multiple ModelKits).
+The `package` and `model` sections can only contain a single model (you can chain models by using multiple ModelKits).
 
-Here's an example Kitfile:
+The `datasets` and `code` sections can include multiple assets. Each asset is indicated by starting with a dash. The dash is required even if you are only packaging a single dataset or codebase.
+
+Here's a snippet of a KitFile that contains two datasets, notice that each starts with "-":
 
 ```yaml
-manifestVersion: v1.0.0
+datasets:
+- description: Forum postings from photo sites
+  name: training data
+  path: ./data/forum-to-2023-train.csv
+  
+- name: validation data
+  path: ./data/test.csv
+```
+
+...and here's an example of a single codebase, it still needs to start with a "-":
+
+```yaml
+code:
+- description: Jupyter notebook with model training code in Python
+  path: ./notebooks
+```
+
+Any relative paths defined within the Kitfile are interpreted as being relative to the context directory sent to the `kit pack` command.
+
+### Kitfile Examples
+
+Here's a complete Kitfile example, with a model, two datasets, and a codebase:
+
+```yaml
+manifestVersion: 1.0
 
 package:
-  authors:
-  - Jozu
+  authors: Jozu
   description: Small language model based on Mistral-7B fine tuned for answering film photography questions.
   license: Apache-2.0
   name: FilmSLM
@@ -51,29 +77,49 @@ code:
   path: ./notebooks
 ```
 
-A minimal ModelKit for distributing a pair of datasets might look like this:
+A minimal ModelKit for distributing a pair of datasets looks like this:
+
 ```yaml
 manifestVersion: v1.0.0
+
+package:
+  authors: Jozu
 
 datasets:
 - name: training data
   path: ./data/train.csv
+  license: Apache-2.0
 - description: validation data
   name: validation data
   path: ./data/validate.csv
 ```
 
-Once you've authored a Kitfile for your AI/ML project you can pack it up and store it in your local or remote repository.
+More information on Kitfiles can be found in the [Overview](./kitfile/kf-overview.md) and [Format](./kitfile/format.md) documentation.
 
-If you don't provide a registry Kit assumes you're operating against your local registry. For example:
+### Using the Kitfile to Pack a ModelKit
+
+When you're done writing the Kitfile, name it `kitfile` without an extension. Now you can use the `kit pack` command to build your ModelKit.
+
+To pack a ModelKit with a Kitfile in the current directory, name it "film-slm", attach the "champion" tag, and store it in the local registry:
 
 ```sh
 kit pack . -t film-slm:champion
 ```
 
-Will create a new tag `champion` in the `film-slm` repository in your local registry.
+To pack a ModelKit with the same settings, but using a Kitfile stored elsewhere:
 
-If you want to push to a remote registry there are two steps - tagging then pushing. Let's imagine we want to push our `champion` tag to Docker Hub:
+```sh
+kit pack . -f /path/to/your/Kitfile -t film-slm:champion
+```
+
+### Pushing to a Remote Registry
+
+In each case this will pack a ModelKit and store it in your local registry. To push it to a remote registry for sharing with others, there are two steps:
+
+1. Tagging the local copy with the remote registry's name
+1. Pushing the remote-named copy from your local to the remote regisry
+
+Let's imagine we want to push our new ModelKit to Docker Hub:
 
 First, you need to tag the image in your local registry with the remote registry's name:
 
@@ -87,15 +133,15 @@ Second, you push your local image to the remote registry:
 kit push docker.io/jozubrad/film-slm:champion
 ```
 
-# The power of unpack
+# The Power of Unpack
 
 Models and their datasets can be very large and take a long time to push or pull, so Kit includes the `unpack` command that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
 
-`unpack` can take arguments for partial pulling of a ModelKit:
-* `--model` to pull only the model to the destination file system
-* `--datasets` to pull only the datasets to the destination file system
-* `--code` to pull only the code bases to the destination file system
-* `--config` to pull only the `Kitfile` to the destination file system
+`unpack` can take arguments for partial unpacking of a ModelKit:
+* `--model` to unpack only the model to the destination file system
+* `--datasets` to unpack only the datasets to the destination file system
+* `--code` to unpack only the code bases to the destination file system
+* `--config` to unpack only the Kitfile to the destination file system
 
 For example:
 
@@ -103,15 +149,15 @@ For example:
 kit unpack mymodel:challenger --model -d ./model
 ```
 
-Will extract the model from the `mymodel:challenger` ModelKit and place it in a local directory called `/model`.
+Will extract only the model from the `mymodel:challenger` ModelKit, and place it in a local directory called `/model`.
 
 The `unpack` command is part of the typical push and pull commands:
 * `pack` will pack up a set of assets into a ModelKit package.
 * `push` will push the whole ModelKit to a registry.
 * `pull` will pull the whole ModelKit from a registry.
-* `unpack` will extract all the assets from the ModelKit package. 
+* `unpack` will extract all, or selected assets, from the ModelKit. 
 
-## Read the Kitfile or manifest from a ModelKit
+## Read the Kitfile or Manifest from a ModelKit
 
 For any ModelKit in your local or remote registry you can easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull comamnds.
 
@@ -122,7 +168,7 @@ kit info mymodel:challenger
 
 Will print the following to your terminal:
 
-```sh
+```yaml
 manifestVersion: v1.0.0
 package:
   name: Finetuning_SLM
@@ -151,7 +197,7 @@ If you need more details, like the size or file format of the contents, you can 
 kit inspect mymodel:challenger
 ```
 
-```sh
+```json
 {
   "schemaVersion": 2,
   "config": {
@@ -179,13 +225,15 @@ kit inspect mymodel:challenger
 }
 ```
 
-## Tag ModelKits and keep your registry tidy
+`size` is shown in kilobytes (KB). For more information on the manifest can be found in the [specification documentation](./modelkit/spec.md).
+
+## Tag ModelKits and Keep Your Registry Tidy
 
 Tagging is a great way to version your ModelKits as they move through the development lifecycle. For example, during development the model I'm working on currently may always be tagged as the `latest` so my team knows which is most current. At the same time the model that's operating in production for my customers may be tagged the `champion`.
 
-However, after testing my latest model, I find that its scores are much higher than the current champion model. At that point I may want to tag it `challenger` so everyone knows that this is likely to be the next model we deploy to production, to replace our current champion model.
+However, after testing my latest model, if I find that its scores are much higher than the current champion model I may tag it `challenger` so everyone knows that this is likely to be the next model we deploy to production, replacing our current champion model.
 
-To do that I can simply add a new tag based on the existing latest tag.
+To do that I can create a new ModelKit with the updated tag. For example to change from `latest` to `challenger`:
 
 ```sh
 kit tag mymodel:latest mymodel:challenger
@@ -202,7 +250,7 @@ mymodel     latest      Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 mymodel     challenger  Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74ff85a00f2a68400dfc17b045bc7c1638da7f096c7ae400ad5bdfd520c
 ```
 
-You'll notice that the digest of the two ModelKits is the same so while you have two tags, the ModelKit itself is only stored once for efficiency. This makes tags an efficient way to mark models that have hit specific milestones that are meaningful to your organization's development lifecycle.
+You'll notice that the digest of the two ModelKits is the same so while you have two tags, the ModelKit itself is only stored once for efficiency. This makes tags an efficient way to mark models that have hit specific milestones that are meaningful to your organization's development lifecycle. Of course, if the contents of the ModelKit have changed since I last packaged it, I should use the `pack -t` command with the new tag so I get an updated ModelKit.
 
 Now let's imagine that we deploy our challenger model. At that point we'd tag it as `champion`:
 
@@ -210,7 +258,7 @@ Now let's imagine that we deploy our challenger model. At that point we'd tag it
 kit tag mymodel:challenger mymodel:champion
 ```
 
-If you run `kit list` you'll now see that you have two models in your local registry:
+If you run `kit list` you'll now see that you have three models in your local registry:
 
 ```sh
 kit list
@@ -223,7 +271,7 @@ mymodel     challenger  Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74ff85a00f2a68400dfc17b045bc7c1638da7f096c7ae400ad5bdfd520c
 ```
 
-Now we no longer want this ModelKit to be tagged as `challenger` because it's the `champion` so we can remove it from our registry:
+However, we no longer want this ModelKit to be tagged as `challenger` since it's the `champion` now. Let's remove it from our registry to keep things clean and clear:
 
 ```sh
 kit remove mymodel:challenger
@@ -244,4 +292,4 @@ mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 
 You can learn more about all the Kit CLI commands from our [command reference doc](./cli/cli-reference.md).
 
-Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/YyAfWnEg).
+Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).
