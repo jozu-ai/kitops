@@ -39,6 +39,7 @@ const (
 	CredentialsSubpath  = "credentials.json"
 	HarnessSubpath      = "harness"
 	HarnessProcessFile  = "process.pid"
+	HarnessLogFile      = "harness.log"
 
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
