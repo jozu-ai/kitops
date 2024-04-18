@@ -22,6 +22,7 @@ import (
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
 	"net"
+	"runtime"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -43,34 +44,36 @@ type DevOptions struct {
 }
 
 func (opts *DevOptions) complete(ctx context.Context, args []string) error {
-	opts.contextDir = ""
-	if len(args) == 1 {
-		opts.contextDir = args[0]
-	}
 
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	if opts.modelFile == "" {
-		foundKitfile, err  := filesystem.FindKitfileInPath(opts.contextDir)
-		if err != nil {
-			return err
-		}	
-		opts.modelFile = foundKitfile	
-	}
-	if opts.host == "" {
-		opts.host = "127.0.0.1"
-	}
-
-	if opts.port == 0 {
-		availPort, err := findAvailablePort()
-		if err != nil {
-			output.Fatalf("failed to find available port: %v", err)
-			return err
+	if !opts.stop {
+		opts.contextDir = ""
+		if len(args) == 1 {
+			opts.contextDir = args[0]
 		}
-		opts.port = availPort
+		if opts.modelFile == "" {
+			foundKitfile, err := filesystem.FindKitfileInPath(opts.contextDir)
+			if err != nil {
+				return err
+			}
+			opts.modelFile = foundKitfile
+		}
+		if opts.host == "" {
+			opts.host = "127.0.0.1"
+		}
+
+		if opts.port == 0 {
+			availPort, err := findAvailablePort()
+			if err != nil {
+				output.Fatalf("failed to find available port: %v", err)
+				return err
+			}
+			opts.port = availPort
+		}
 	}
 	return nil
 }
@@ -94,6 +97,12 @@ func DevCommand() *cobra.Command {
 
 func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
+		if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
+			output.Infoln("Development server is not yet supported in this platform")
+			output.Infof("We are working to bring it to %s soon", runtime.GOOS)
+			return
+		}
+
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %w", err)
 		}
