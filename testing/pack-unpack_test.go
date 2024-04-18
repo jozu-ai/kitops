@@ -21,8 +21,11 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"kitops/pkg/lib/constants"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestPackUnpack tests kit functionality by generating a file tree, packing it,
@@ -64,4 +67,47 @@ func TestPackUnpack(t *testing.T) {
 			checkFilesDoNotExist(t, unpackPath, append(tt.IgnoredFiles, ".kitignore"))
 		})
 	}
+}
+
+func TestPackReproducibility(t *testing.T) {
+	tmpDir, removeTmp := setupTempDir(t)
+	defer removeTmp()
+
+	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
+	t.Setenv("KITOPS_HOME", contextPath)
+
+	testKitfile := `
+manifestVersion: 1.0.0
+package:
+  name: test-repack
+model:
+  path: test-file.txt
+dataset:
+  - path: test-dir/test-subfile.txt
+`
+	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
+	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
+		t.Fatal(err)
+	}
+	setupFiles(t, modelKitPath, []string{"test-file.txt", "test-dir/test-subfile.txt"})
+
+	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:repack1", "-v")
+	digestOne := digestFromPack(t, packOut)
+
+	// Change timestamps on file to simulate an unpacked modelkit at a future time
+	futureTime := time.Now().Add(time.Hour)
+	if err := os.Chtimes(filepath.Join(modelKitPath, "test-file.txt"), futureTime, futureTime); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(filepath.Join(modelKitPath, "test-dir"), futureTime, futureTime); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(filepath.Join(modelKitPath, "test-dir/test-subfile.txt"), futureTime, futureTime); err != nil {
+		t.Fatal(err)
+	}
+
+	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:repack2", "-v")
+	digestTwo := digestFromPack(t, packOut)
+
+	assert.Equal(t, digestOne, digestTwo, "Digests should be the same")
 }
