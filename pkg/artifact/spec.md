@@ -46,4 +46,4 @@ Example of a ModelKit manifest with a single serialized model and kitfile.
 }
 ```
 
-`size` is listed in kilobytes (KB).
+`size` is listed in bytes.

@@ -12,14 +12,14 @@ A Kitfile is the configuration document for your ModelKit. It's written in YAML 
 
 1. The `package` section: Metadata about the ModelKit, including the author, description, and license
 1. The `code` section: Path and information about codebases related to the project, including Jupyter notebook folders
-1. The `datasets` section: Path and infromation on included datasets
+1. The `datasets` section: Path and information on included datasets
 1. The `model` section: Path and information on the serialized model
 
 A Kitfile only needs the `package` section, plus one of the other sections.
 
 The `package` and `model` sections can only contain a single model (you can chain models by using multiple ModelKits).
 
-The `datasets` and `code` sections can include multiple assets. Each asset is indicated by starting with a dash. The dash is required even if you are only packaging a single dataset or codebase.
+The `datasets`, `code`, and `name` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
 
 Here's a snippet of a KitFile that contains two datasets, notice that each starts with "-":
 
@@ -51,7 +51,8 @@ Here's a complete Kitfile example, with a model, two datasets, and a codebase:
 manifestVersion: 1.0
 
 package:
-  authors: Jozu
+  authors:
+  - Jozu
   description: Small language model based on Mistral-7B fine tuned for answering film photography questions.
   license: Apache-2.0
   name: FilmSLM
@@ -83,7 +84,8 @@ A minimal ModelKit for distributing a pair of datasets looks like this:
 manifestVersion: v1.0.0
 
 package:
-  authors: Jozu
+  authors:
+  - Jozu
 
 datasets:
 - name: training data
@@ -98,7 +100,7 @@ More information on Kitfiles can be found in the [Overview](./kitfile/kf-overvie
 
 ### Using the Kitfile to Pack a ModelKit
 
-When you're done writing the Kitfile, name it `kitfile` without an extension. Now you can use the `kit pack` command to build your ModelKit.
+When you're done writing the Kitfile, name it `Kitfile` without an extension. Now you can use the `kit pack` command to build your ModelKit.
 
 To pack a ModelKit with a Kitfile in the current directory, name it "film-slm", attach the "champion" tag, and store it in the local registry:
 
@@ -225,7 +227,7 @@ kit inspect mymodel:challenger
 }
 ```
 
-`size` is shown in kilobytes (KB). For more information on the manifest can be found in the [specification documentation](./modelkit/spec.md).
+`size` is shown in bytes. For more information on the manifest can be found in the [specification documentation](./modelkit/spec.md).
 
 ## Tag ModelKits and Keep Your Registry Tidy
 
