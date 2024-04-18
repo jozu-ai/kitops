@@ -38,7 +38,9 @@ func (harness *LLMHarness) Init() {
 }
 
 func (harness *LLMHarness) Start(modelPath string) error {
-	pidFile := filepath.Join(constants.HarnessPath(harness.ConfigHome), constants.HarnessProcessFile)
+	harnessPath := constants.HarnessPath(harness.ConfigHome)
+	pidFile := filepath.Join(harnessPath, constants.HarnessProcessFile)
+	logFile := filepath.Join(harnessPath, constants.HarnessLogFile)
 
 	if _, err := os.Stat(pidFile); !os.IsNotExist(err) {
 		// Attempt to read the PID from the file.
@@ -59,13 +61,23 @@ func (harness *LLMHarness) Start(modelPath string) error {
 		"--port", strconv.Itoa(harness.Port),
 		"--model", modelPath)
 	cmd.Dir = constants.HarnessPath(harness.ConfigHome)
+	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return fmt.Errorf("Failed to open log file for harness: %w", err)
+	}
+	defer logs.Close()
+	output.Debugf("Saving server logs to %s", logFile)
+	cmd.Stdout = logs
+	cmd.Stderr = logs
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("Error starting llm harness: %s", err)
 	}
 
 	pid := cmd.Process.Pid
-	writePIDFile(pidFile, pid)
+	if err := writePIDFile(pidFile, pid); err != nil {
+		return fmt.Errorf("Failed to write PID file: %w", err)
+	}
 
 	output.Debugf("Started harness with PID %d and saved to file.\n", pid)
 
