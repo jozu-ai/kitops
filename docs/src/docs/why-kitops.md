@@ -25,7 +25,7 @@ This problem is only getting worse and the stakes are rising each day as more an
 
 ## The Solution
 
-**The goal of KitOps is to keep a versioned package for your AI project in a repository you already use.**
+> **The goal of KitOps is to be a library of versioned packages for your AI project, in an OCI registry you already use.**
 
 Kit's ModelKits are the better solution:
 * Combine models, datasets, code and all the context teams need to integrate, test, or deploy:
