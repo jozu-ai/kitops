@@ -22,6 +22,7 @@ jobs:
           go-version-file: 'go.mod'
 
       - name: Check go.mod
+        shell: bash
         run: |
           go mod tidy
           if ! git diff --quiet; then
@@ -30,6 +31,7 @@ jobs:
           fi
 
       - name: Check format
+        shell: bash
         run: |
           go fmt ./...
           if ! git diff --quiet; then
@@ -38,6 +40,7 @@ jobs:
           fi
 
       - name: Check license headers
+        shell: bash
         run: |
           go install github.com/google/addlicense@latest
           if ! addlicense --check -s -l apache -c "The KitOps Authors." $(find . -name '*.go'); then
@@ -48,6 +51,7 @@ jobs:
           fi
 
       - name: Check build
+        shell: bash
         run: |
           if ! go build -o kit; then
             echo "Project does not build"
@@ -55,6 +59,7 @@ jobs:
           fi
 
       - name: Run tests
+        shell: bash
         run: |
           if ! go test ./... -v; then
             echo "Project tests failed"
@@ -62,6 +67,7 @@ jobs:
           fi
 
       - name: Check for trailing whitespace
+        shell: bash
         run: |
           files=$(grep -E -lI --exclude '*.svg' --exclude 'docs/*' " +$" $(git ls-files) || true)
           if [ ! -z $files ]; then
