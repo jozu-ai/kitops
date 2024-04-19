@@ -32,3 +32,6 @@ archives:
     files:
       - LICENSE
       - README.md
+
+snapshot:
+  name_template: "{{ .Version }}-{{ .ShortCommit }}"

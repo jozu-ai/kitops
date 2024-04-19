@@ -50,6 +50,12 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD}}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID}}
       - name: Notarize the macOS binary
+        env:
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLICATION_IDENTITY}}
+          APPLE_ID: ${{ vars.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD}}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID}}
+        shell: bash
         run: |
           ./build/scripts/sign ./dist/kitops-darwin-amd64.zip
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
