@@ -21,5 +21,19 @@
     "tags": ["mlops", "kitops", "machine learning", "podcast"],
     "author": "Brad Micklea",
     "published_time": "2024-04-17"
+  },
+  {
+    "url": "https://dev.to/kitops/streamlining-aiml-deployment-with-jozu-model-kits-innovations-and-future-directions-41ae",
+    "description": "Yesterday, Brad Micklea, Jozu CEO and KitOps maintainer, was a guest on the Partially Redacted podcast hosted by Sean Falconer. The 45-minute conversation covered a lot of ground. Specifically, the current state of the KitOps project, where the project is headed, and some of our early ideas for productizing and releasing Jozu, which builds on top of KitOps. In this post I dive a bit deeper into a few of these topics.",
+    "tags": ["mlops", "kitops", "machine learning", "open source"],
+    "author": "Jesse Williams",
+    "published_time": "2024-04-19"
+  },
+  {
+    "url": "https://dev.to/kitops/strategies-for-tagging-modelkits-208j",
+    "description": "ModelKits, much like other OCI artifacts, can be identified using tags that are comprehensible to humans. This blog explores various strategies for effectively tagging your ModelKits.",
+    "tags": ["mlops", "kitops", "ModelKits"],
+    "author": "Gorkem Ercan",
+    "published_time": "2024-04-19"
   }
 ]
