@@ -47,4 +47,3 @@ git:
 
 snapshot:
   name_template: "{{ .Version }}-{{ .ShortCommit }}"
-
