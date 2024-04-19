@@ -18,13 +18,73 @@ import vGaTrack from '../directives/ga'
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] mx-auto">
   <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
   <div class="p1 mt-8 mx-8">
-    Kit is an open source MLOps tool that packages your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
+    Kit is a free open source MLOps tool that packages and versions your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
   </div>
 
   <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
     <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+</div>
+
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+  <h2 class="text-center">Key feAtuRes</h2>
+  <p class="p2 text-center mt-16">Visit our <a href="https://github.com/jozu-ai/kitops" target="_blank" class="underline">GitHub repo</a> for a list of all features and our roadmap.</p>
+
+  <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-22 gap-y-16 mt-16 max-w-[960px] mx-auto p1">
+    <li>
+      <div class="text-off-white">🎁 Standards-based package</div>
+      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/compatibility.html">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🔒 Tamper-proof</div>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit package includes a SHA digest for itself, and every artifact it holds.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/spec.html">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🏭 Tags and versions</div>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged so everyone knows which dataset and model work together.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🤗 Use with LLM, ML, or AI projects</div>
+      <p class="p2 mb-4 text-gray-06">ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.</p>
+    </li>
+    <li>
+      <div class="text-off-white">🤖 Automation for CI/CD</div>
+      <p class="p2 mb-4 text-gray-06">Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/marketplace/actions/setup-kit-cli" target="_blank">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
+      <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
+    </li>
+  </ol>
+
+  <div class="mt-16 p2 text-center">
+    <a href="/docs/use-cases.html#development-%F0%9F%A7%AA" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
+  </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12" id="whykitops">
@@ -78,92 +138,6 @@ import vGaTrack from '../directives/ga'
         <path d="M36.1238 25.0052H54.7501" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
         <path d="M0 5.25L15.8041 16.8209L0 26.6985" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
       </svg>
-    </div>
-  </div>
-</div>
-
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
-  <h2 class="text-center">Key feAtuRes</h2>
-  <p class="p2 text-center mt-16">Visit our <a href="https://github.com/jozu-ai/kitops" target="_blank" class="underline">GitHub repo</a> for a list of all features and our roadmap.</p>
-
-  <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-22 gap-y-16 mt-16 max-w-[960px] mx-auto p1">
-    <li>
-      <div class="text-off-white">🎁 Standards-based package</div>
-      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
-        LEARN MORE
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
-        </svg>
-      </a>
-    </li>
-    <li>
-      <div class="text-off-white">🔒 Tamper-proof</div>
-      <p class="p2 mb-4 text-gray-06">Each ModelKit package includes a SHA digest for itself, and every artifact it holds.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
-        LEARN MORE
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
-        </svg>
-      </a>
-    </li>
-    <li>
-      <div class="text-off-white">🏭 Tags and versions</div>
-      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged so everyone knows which dataset and model work together.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
-        LEARN MORE
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
-        </svg>
-      </a>
-    </li>
-    <li>
-      <div class="text-off-white">🤗 Use with LLM, ML, or AI projects</div>
-      <p class="p2 mb-4 text-gray-06">ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.</p>
-    </li>
-    <li>
-      <div class="text-off-white">🤖 Automation for CI/CD</div>
-      <p class="p2 mb-4 text-gray-06">Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="https://github.com/jozu-ai/kitops" target="_blank">
-        LEARN MORE
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
-        </svg>
-      </a>
-    </li>
-    <li>
-      <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
-      <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
-    </li>
-  </ol>
-</div>
-
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
-  <h2 class="text-center">Get stArted</h2>
-
-  <div class="kit-cards mt-22 min-h-[32.5rem]">
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-salmon">1</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
-      </div>
-    </div>
-
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-cornflower">2</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
-        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
-      </div>
-    </div>
-
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-gold">3</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model.</p>
-        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
-      </div>
     </div>
   </div>
 </div>
@@ -335,6 +309,36 @@ import vGaTrack from '../directives/ga'
 
     <p class="mt-6">Enterprise support for ModelKits and the Kit CLI is available from <a href="https://www.jozu.com/" class="underline" target="_blank">Jozu</a>.</p>
   </Accordion>
+</div>
+
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+  <h2 class="text-center">Get stArted</h2>
+
+  <div class="kit-cards mt-22 min-h-[32.5rem]">
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-salmon">1</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Download and install Kit CLI.</p>
+        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+      </div>
+    </div>
+
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-cornflower">2</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
+        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
+      </div>
+    </div>
+
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-gold">3</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model.</p>
+        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
