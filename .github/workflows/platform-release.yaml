@@ -186,3 +186,7 @@ jobs:
           add-paths: |
             docs/*.md
           commit-message: "docs: update CLI documentation for ${{ github.ref_name }}"
+          title: Update CLI Reference for ${{ github.ref_name }}
+          body: Update CLI Reference for the release ${{ github.ref_name }}
+          branch: update-reference-docs
+          base: main
