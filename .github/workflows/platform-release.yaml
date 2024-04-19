@@ -58,7 +58,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID}}
         shell: bash
         run: |
-          ./build/scripts/sign ./dist/kitops-darwin-amd64.zip
+          ./build/scripts/sign ./dist/kitops-darwin-arm64.zip
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
