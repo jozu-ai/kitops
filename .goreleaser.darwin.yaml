@@ -44,3 +44,7 @@ archives:
 git:
   ignore_tags:
     - "next"
+
+snapshot:
+  name_template: "{{ .Version }}-{{ .ShortCommit }}"
+
