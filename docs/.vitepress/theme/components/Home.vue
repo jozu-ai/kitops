@@ -82,8 +82,8 @@ import vGaTrack from '../directives/ga'
     </li>
   </ol>
 
-  <div class="mt-16 p2 text-center">
-    <a href="/docs/use-cases.html#development-%F0%9F%A7%AA" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
+  <div class="mt-36 p2 text-center">
+    <a href="/docs/use-cases.html#development-%F0%9F%A7%AA" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">SEE THE KIT WORKFLOW</a>
   </div>
 </div>
 
