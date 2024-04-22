@@ -40,6 +40,8 @@ const (
 
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
+	// Media type for model part layer
+	ModelPartLayerMediaType = "application/vnd.kitops.modelkit.modelpart.v1.tar+gzip"
 	// Media type for the dataset layer
 	DataSetLayerMediaType = "application/vnd.kitops.modelkit.dataset.v1.tar+gzip"
 	// Media type for the code layer
