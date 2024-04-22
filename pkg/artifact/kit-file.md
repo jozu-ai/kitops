@@ -12,7 +12,7 @@ The manifest is structured into several key sections: `version`, `package`,`code
 - **Type**: String
 - **Example**: `1.0`
 
-### `modelkit`
+### `package`
 
 This section provides general information about the AI/ML project.
 
@@ -66,6 +66,10 @@ This section provides general information about the AI/ML project.
   - `version`: Version of the model
   - `description`: Overview of the model
   - `license`: SPDX license identifier for the dataset.
+  - `parts`: List of related files for the model (e.g. LoRA weights)
+    - `name`: Identifier for the part
+    - `path`: Location of the file or a directory relative to the context
+    - `description`: Description of the part
   - `training`:
     - `dataset`: Name of the dataset
     - `parameters`: name value pairs

@@ -65,6 +65,13 @@ type (
 		License     string      `json:"license,omitempty" yaml:"license,omitempty"`
 		Training    *Training   `json:"training,omitempty" yaml:"training,omitempty"`
 		Validation  *Validation `json:"validation,omitempty" yaml:"validation,omitempty"`
+		Parts       []ModelPart `json:"parts,omitempty" yaml:"parts,omitempty"`
+	}
+
+	ModelPart struct {
+		Name        string `json:"name,omitempty" yaml:"name,omitempty"`
+		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
+		Description string `json:"description,omitempty" yaml:"description,omitempty"`
 	}
 
 	Training struct {
