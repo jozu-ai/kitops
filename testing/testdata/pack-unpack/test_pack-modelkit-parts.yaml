@@ -1,0 +1,21 @@
+name: Packs and unpacks modelKit parts
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-model-parts
+  model:
+    name: test-model
+    path: ./model
+    parts:
+      - name: part1
+        path: ./model/part1
+      - name: part2
+        path: model/part2
+      - name: part3
+        path: ./part3
+files:
+  - model/main-model-1
+  - model/main-model-2
+  - model/part1
+  - model/part2
+  - part3

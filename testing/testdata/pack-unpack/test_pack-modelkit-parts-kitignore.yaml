@@ -1,0 +1,31 @@
+name: Packs and unpacks modelKit parts with kitignore
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-model-parts-ignore
+  model:
+    name: test-model
+    path: ./model
+    parts:
+    - name: part1
+      path: model/part1/
+    - name: part2
+      path: model/part2/
+    - name: part3
+      path: part3/
+kitignore: |
+  **/*.md
+  **/part2/ignored
+files:
+  - model/main-model1
+  - model/main-model2
+  - model/part1/part1A
+  - model/part1/part1B
+  - model/part2/part2A
+  - model/part2/part2B
+  - part3/part3A
+ignored:
+  - model/main-ignored.md
+  - model/part1/part1-ignored.md
+  - model/part2/ignored/ignored-file.txt
+  - part3/ignored.md
