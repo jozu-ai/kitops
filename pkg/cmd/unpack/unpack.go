@@ -57,7 +57,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for unpacking
-	var codeIdx, datasetIdx int
+	var modelPartIdx, codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
 		var relPath string
 		switch layerDesc.MediaType {
@@ -69,7 +69,19 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			if err != nil {
 				return fmt.Errorf("Error resolving model path: %w", err)
 			}
-			output.Infof("Unpacking model to %s", relPath)
+			output.Infof("Unpacking model %s to %s", config.Model.Name, relPath)
+
+		case constants.ModelPartLayerMediaType:
+			if !options.unpackConf.unpackModels {
+				continue
+			}
+			part := config.Model.Parts[modelPartIdx]
+			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, part.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving code path: %w", err)
+			}
+			output.Infof("Unpacking model part %s to %s", part.Name, relPath)
+			modelPartIdx += 1
 
 		case constants.CodeLayerMediaType:
 			if !options.unpackConf.unpackCode {
@@ -99,6 +111,7 @@ func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference
 			return fmt.Errorf("Failed to unpack: %w", err)
 		}
 	}
+	output.Debugf("Unpacked %d model part layers", modelPartIdx)
 	output.Debugf("Unpacked %d code layers", codeIdx)
 	output.Debugf("Unpacked %d dataset layers", datasetIdx)
 
