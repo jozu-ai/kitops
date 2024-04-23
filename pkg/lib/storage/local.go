@@ -42,6 +42,9 @@ func SaveModel(ctx context.Context, store oras.Target, kitfile *artifact.KitFile
 		return nil, err
 	}
 	layerDescs, err := saveKitfileLayers(ctx, store, kitfile, ignore)
+	if err != nil {
+		return nil, err
+	}
 
 	manifest := CreateManifest(configDesc, layerDescs)
 	manifestDesc, err := saveModelManifest(ctx, store, manifest)
