@@ -22,7 +22,7 @@ The primary goal of KitOps is to bridge the gaps between data science, software 
 
 ### 👩‍💻 For application developers
 
-KitOps clears the path to use AI/ML with your existing tools and applications. No need to be an AI/ML expert, KitOps lets you concentrate on integrating AI/ML models into your applications, while Kit handles the packaging and sharing.
+KitOps clears the path to use AI/ML with your existing tools and applications. No need to be an AI/ML expert, KitOps lets you concentrate on integrating AI/ML models into your applications, while KitOps handles the packaging and sharing.
 
 ### 👷 For DevOps teams
 
