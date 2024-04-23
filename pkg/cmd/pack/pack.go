@@ -25,9 +25,12 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/lib/storage"
 	"kitops/pkg/output"
+
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 // runPack compresses and stores a modelkit based on a Kitfile. Returns an error if packing
@@ -38,18 +41,7 @@ import (
 // registry/repository reference at a time, individual blobs may be duplicated on disk if stored
 // under different references.
 func runPack(ctx context.Context, options *packOptions) error {
-	// 1. Read the model file
-	kitfile := &artifact.KitFile{}
-	kitfileContentReader, err := readerForKitfile(options.modelFile)
-	if err != nil {
-		return err
-	}
-	defer kitfileContentReader.Close()
-	if err := kitfile.LoadModel(kitfileContentReader); err != nil {
-		return err
-	}
-
-	ignore, err := filesystem.NewIgnoreFromContext(options.contextDir, kitfile)
+	kitfile, err := readKitfile(options.modelFile)
 	if err != nil {
 		return err
 	}
@@ -60,7 +52,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
 
-	manifestDesc, err := storage.SaveModel(ctx, localStore, kitfile, ignore)
+	manifestDesc, err := pack(ctx, options, kitfile, localStore)
 	if err != nil {
 		return err
 	}
@@ -81,6 +73,42 @@ func runPack(ctx context.Context, options *packOptions) error {
 	output.Infof("Model saved: %s", manifestDesc.Digest)
 
 	return nil
+}
+
+func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, store repo.LocalStorage) (*ocispec.Descriptor, error) {
+	var extraLayerPaths []string
+	if kitfile.Model != nil && kfutils.IsModelKitReference(kitfile.Model.Path) {
+		parentKitfile, err := kfutils.ResolveKitfile(ctx, opts.configHome, kitfile.Model.Path)
+		if err != nil {
+			return nil, err
+		}
+		extraLayerPaths = kfutils.LayerPathsFromKitfile(parentKitfile)
+	}
+
+	ignore, err := filesystem.NewIgnoreFromContext(opts.contextDir, kitfile, extraLayerPaths...)
+	if err != nil {
+		return nil, err
+	}
+
+	manifestDesc, err := storage.SaveModel(ctx, store, kitfile, ignore)
+	if err != nil {
+		return nil, err
+	}
+	return manifestDesc, nil
+}
+
+func readKitfile(modelFile string) (*artifact.KitFile, error) {
+	// 1. Read the model file
+	kitfile := &artifact.KitFile{}
+	kitfileContentReader, err := readerForKitfile(modelFile)
+	if err != nil {
+		return nil, err
+	}
+	defer kitfileContentReader.Close()
+	if err := kitfile.LoadModel(kitfileContentReader); err != nil {
+		return nil, err
+	}
+	return kitfile, nil
 }
 
 // readerForKitfile returns a reader for the Kitfile specified by the modelFile argument.

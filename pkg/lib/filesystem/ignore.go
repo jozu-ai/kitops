@@ -18,11 +18,13 @@ package filesystem
 
 import (
 	"fmt"
-	"kitops/pkg/artifact"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	kfutils "kitops/pkg/lib/kitfile"
 
 	"github.com/moby/patternmatcher"
 	"github.com/moby/patternmatcher/ignorefile"
@@ -33,7 +35,7 @@ type IgnorePaths interface {
 	HasExclusions() bool
 }
 
-func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile) (IgnorePaths, error) {
+func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile, extraLayers ...string) (IgnorePaths, error) {
 	kitIgnorePaths, err := readIgnoreFile(contextDir)
 	if err != nil {
 		return nil, err
@@ -41,7 +43,7 @@ func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile) (IgnoreP
 	return NewIgnore(kitIgnorePaths, kitfile)
 }
 
-func NewIgnore(kitIgnorePaths []string, kitfile *artifact.KitFile) (IgnorePaths, error) {
+func NewIgnore(kitIgnorePaths []string, kitfile *artifact.KitFile, extraLayers ...string) (IgnorePaths, error) {
 	kitIgnorePaths = append(kitIgnorePaths, constants.DefaultKitfileNames()...)
 	kitIgnorePaths = append(kitIgnorePaths, constants.IgnoreFileName)
 	kitIgnorePM, err := patternmatcher.New(kitIgnorePaths)
@@ -49,7 +51,8 @@ func NewIgnore(kitIgnorePaths []string, kitfile *artifact.KitFile) (IgnorePaths,
 		return nil, fmt.Errorf("invalid %s file: %w", constants.IgnoreFileName, err)
 	}
 
-	layerPaths := layerPathsFromKitfile(kitfile)
+	layerPaths := kfutils.LayerPathsFromKitfile(kitfile)
+	layerPaths = append(layerPaths, extraLayers...)
 	return &ignorePaths{
 		ignoreFileMatcher: kitIgnorePM,
 		layers:            layerPaths,
@@ -106,23 +109,6 @@ func readIgnoreFile(contextDir string) ([]string, error) {
 		return nil, fmt.Errorf("failed to read %s file: %w", constants.IgnoreFileName, err)
 	}
 	return patterns, nil
-}
-
-func layerPathsFromKitfile(kitfile *artifact.KitFile) []string {
-	var layerPaths []string
-	for _, code := range kitfile.Code {
-		layerPaths = append(layerPaths, cleanPath(code.Path))
-	}
-	for _, dataset := range kitfile.DataSets {
-		layerPaths = append(layerPaths, cleanPath(dataset.Path))
-	}
-	if kitfile.Model != nil {
-		layerPaths = append(layerPaths, cleanPath(kitfile.Model.Path))
-		for _, part := range kitfile.Model.Parts {
-			layerPaths = append(layerPaths, cleanPath(part.Path))
-		}
-	}
-	return layerPaths
 }
 
 func cleanPath(path string) string {
