@@ -3,6 +3,7 @@ import { type RemovableRef, useSessionStorage } from '@vueuse/core'
 import { ref, computed, provide } from 'vue'
 import { useRouter } from 'vue-router'
 
+import ParameterTooltip from '@/components/ParameterTooltip.vue'
 import ChatResults from '@/components/ChatResults.vue'
 import CompletionResults from '@/components/CompletionResults.vue'
 import Accordion from '@/components/ui/Accordion.vue'
@@ -152,7 +153,11 @@ provide('uploadImage', uploadImage)
       v-model="session.prompt"
       class="h-28">
       <template #label="{ className }">
-        <span :class="className">Prompt</span>
+        <ParameterTooltip
+          :className
+          message="Specific guidelines that involve providing an input sequence of tokens to generate a continuation or completion of the sequence.">
+          Prompt
+        </ParameterTooltip>
       </template>
     </Textarea>
 
@@ -167,7 +172,11 @@ provide('uploadImage', uploadImage)
         v-model="message"
         @keydown="onMessageKeydown">
         <template #label="{ className }">
-          <span :class="className">Message</span>
+          <ParameterTooltip
+            :className
+            message="The text input by the user for the chatbot to process and respond to.">
+            Message
+          </ParameterTooltip>
         </template>
       </Textarea>
     </template>
@@ -178,8 +187,25 @@ provide('uploadImage', uploadImage)
 
     <template v-if="isChat">
       <div class="flex gap-6 my-10">
-        <Input label="User name" v-model="session.user" placeholder="eg. User" wrapper-class="flex-1" @input="storedSession.user = session.user" />
-        <Input label="Bot name" v-model="session.char" placeholder="eg. Llama" wrapper-class="flex-1" @input="storedSession.char = session.char" />
+        <Input v-model="session.user" placeholder="eg. User" wrapper-class="flex-1" @input="storedSession.user = session.user">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="The name of the user interacting with the chatbot.">
+              User name
+            </ParameterTooltip>
+          </template>
+        </Input>
+
+        <Input v-model="session.char" placeholder="eg. Llama" wrapper-class="flex-1" @input="storedSession.char = session.char">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="The name of the chatbot.">
+              Bot name
+            </ParameterTooltip>
+          </template>
+        </Input>
       </div>
 
       <Accordion id="accordion-templates" summary-class="border-b border-b-elevation-05 py-2 text-xl" content-class="space-y-6 !mt-10">
@@ -189,14 +215,22 @@ provide('uploadImage', uploadImage)
           id="textarea-templates"
           class="h-36"
           v-model="session.template">
-        <template #label="{ className }">
-          <span :class="className">Prompt template</span>
-        </template>
-      </Textarea>
-
-        <Input id="Message" placeholder="Chat history template" model-value="{{ name }}: {{ message }}">
           <template #label="{ className }">
-            <span :class="className">Chat history template</span>
+            <ParameterTooltip
+              :className
+              message="The template used to generate the initial prompt for the chatbot.">
+              Prompt template
+            </ParameterTooltip>
+          </template>
+        </Textarea>
+
+        <Input id="Message" placeholder="Chat history template" model-value="{{ name }}: {{ message }}" wrapper-class="!mb-10">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="The template used to format the chat history for display to the user.">
+              Chat history template
+            </ParameterTooltip>
           </template>
         </Input>
       </Accordion>
@@ -205,54 +239,213 @@ provide('uploadImage', uploadImage)
     <Accordion id="accordion-options" summary-class="border-b border-b-elevation-05 py-2 text-xl" content-class="md:grid grid-cols-2 md:gap-6 xs:space-y-6 mt-10">
       <template #title>Options</template>
 
-      <Slider v-model="parameters.n_predict" :min="-1" :step="1" :max="2048" label="Predictions" />
-      <Slider v-model="parameters.temperature" :min="0" :step="0.01" :max="2" label="Temperature" />
-      <Slider v-model="parameters.repeat_penalty" :min="0" :step="0.01" :max="2" label="Penalize repeat sequence" />
-      <Slider v-model="parameters.repeat_last_n" :min="0" :max="2048" label="Consider N tokens for penalize" />
-      <Slider v-model="parameters.top_k" :max="100" :min="-1" label="Top-K sampling" />
-      <Slider v-model="parameters.top_p" :max="1" :min="0" :step="0.01" label="Top-P sampling" />
-      <Slider v-model="parameters.min_p" :max="1" :min="0" :step="0.01" label="Min-P sampling" />
+      <Slider v-model="parameters.n_predict" :min="-1" :step="1" :max="2048">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Number of tokens that the model should generate in response">
+            Predictions
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.temperature" :min="0" :step="0.01" :max="2">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Adjust the randomness of the output where higher temperatures result in more random outputs and lower temperatures result in more deterministic outputs.">
+            Temperature
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.repeat_penalty" :min="0" :step="0.01" :max="2">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="The penalty to apply to repeated tokens.">
+            Penalize repeat sequence
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.repeat_last_n" :min="0" :max="2048">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Number of tokens that should be considered for repetition penalty.">
+            Consider N tokens for penalize
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.top_k" :max="100" :min="-1">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Selecting the top K most probable tokens from a probability distribution and normalizing their probabilities to create a new distribution for sampling, where K is a user-defined parameter.">
+            Top-K sampling
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.top_p" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Selecting the smallest number of top tokens whose cumulative probability is at least p, where p is a user-defined parameter, and sampling from those tokens after normalizing their probabilities.">
+            Top-P sampling
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.min_p" :max="1" :min="0" :step="0.01" wrapper-class="!mb-10">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Sets a minimum probability threshold for tokens to be considered, based on the confidence of the highest probability token, allowing for more diverse choices while preventing the model from considering too many or too few tokens.">
+            Min-P sampling
+          </ParameterTooltip>
+        </template>
+      </Slider>
     </Accordion>
 
     <Accordion id="accordion-more-options" summary-class="border-b border-b-elevation-05 py-2 text-xl" content-class="md:grid grid-cols-2 md:gap-6 xs:space-y-6 mt-10">
       <template #title>More Options</template>
 
-      <Slider v-model="parameters.tfs_z" :max="1" :min="0" :step="0.01" label="TFS-Z" />
-      <Slider v-model="parameters.typical_p" :max="1" :min="0" :step="0.01" label="Typical P" />
-      <Slider v-model="parameters.presence_penalty" :max="1" :min="0" :step="0.01" label="Presence penalty" />
-      <Slider v-model="parameters.frequency_penalty" :max="1" :min="0" :step="0.01" label="Frequency penalty" />
+      <Slider v-model="parameters.tfs_z" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Modifies probability distribution to carefully cut off least likely tokens.">
+            TFS-Z
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.typical_p" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Enable locally typical sampling with parameter p">
+            Typical P
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.presence_penalty" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="The penalty to apply to tokens based on their presence in the prompt.">
+            Presence penalty
+          </ParameterTooltip>
+        </template>
+      </Slider>
+      <Slider v-model="parameters.frequency_penalty" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="The penalty to apply to tokens based on their frequency in the prompt.">
+            Frequency penalty
+          </ParameterTooltip>
+        </template>
+      </Slider>
 
       <hr class="col-span-2 border-elevation-05 my-8">
 
       <div class="col-span-2 flex flex-col md:flex-row items-center gap-16">
-        <Radio label="no Mirostat" name="mirostat" :value="0" v-model="parameters.mirostat" />
-        <Radio label="Mirostat v1" name="mirostat" :value="1" v-model="parameters.mirostat" />
-        <Radio label="Mirostat v2" name="mirostat" :value="2" v-model="parameters.mirostat" />
+        <Radio label="no Mirostat" name="mirostat" :value="0" v-model="parameters.mirostat">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="Mirostat is not used">
+              No Mirostat
+            </ParameterTooltip>
+          </template>
+        </Radio>
+
+        <Radio label="Mirostat v1" name="mirostat" :value="1" v-model="parameters.mirostat">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="Adjusts the value of k in top-k decoding to keep the perplexity within a specific range. (Top K, Nucleus, Tail Free and Locally Typical samplers are ignored if used.)">
+              Mirostat v1
+            </ParameterTooltip>
+          </template>
+        </Radio>
+
+        <Radio label="Mirostat v2" name="mirostat" :value="2" v-model="parameters.mirostat">
+          <template #label="{ className }">
+            <ParameterTooltip
+              :className
+              message="Adjusts the value of k in top-k decoding to keep the perplexity within a specific range. (Top K, Nucleus, Tail Free and Locally Typical samplers are ignored if used.)">
+              Mirostat v2
+            </ParameterTooltip>
+          </template>
+        </Radio>
+
       </div>
 
       <hr class="col-span-2 border-elevation-05 my-8">
 
-      <Slider v-model="parameters.mirostat_tau" :max="10" :min="0" :step="0.01" label="Mirostat tau" />
-      <Slider v-model="parameters.mirostat_eta" :max="1" :min="0" :step="0.01" label="Mirostat eta" />
-      <Slider v-model="parameters.n_probs" label="Show probabilities" />
-      <Slider v-model="parameters.min_keep" label="Min probabilities from each sampler" />
+      <Slider v-model="parameters.mirostat_tau" :max="10" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="The target cross-entropy (or surprise) value you want to achieve for the generated text. A higher value corresponds to more surprising or less predictable text, while a lower value corresponds to less surprising or more predictable text.">
+            Mirostat tau
+          </ParameterTooltip>
+        </template>
+      </Slider>
+
+      <Slider v-model="parameters.mirostat_eta" :max="1" :min="0" :step="0.01">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="The learning rate used to update `mu` based on the error between the target and observed surprisal of the sampled word. A larger learning rate will cause `mu` to be updated more quickly, while a smaller learning rate will result in slower updates.">
+            Mirostat eta
+          </ParameterTooltip>
+        </template>
+      </Slider>
+
+      <Slider v-model="parameters.n_probs">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Display the top N most probable tokens along with their probabilities.">
+            Show probabilities
+          </ParameterTooltip>
+        </template>
+      </Slider>
+
+      <Slider v-model="parameters.min_keep">
+        <template #label="{ className }">
+          <ParameterTooltip
+            :className
+            message="Controls the minimum probability threshold for each sampler.">
+            Min probabilities from each sampler
+          </ParameterTooltip>
+        </template>
+      </Slider>
+
 
       <hr class="col-span-2 border-elevation-05 my-8">
 
       <div class="col-span-2">
         <Input id="api-key" placeholder="Enter API Key" class="w-1/2" v-model="parameters.api_key">
           <template #label="{ className }">
-            <span :class="className">API Key</span>
+            <ParameterTooltip
+              :className
+              message="Unique API Key">
+              API Key
+            </ParameterTooltip>
           </template>
         </Input>
 
         <Textarea id="grammar" placeholder="Use gbnf or JSON Schema+convert" wrapper-class="mt-8" v-model="parameters.grammar">
           <template #label="{ className }">
-            <span :class="className">Grammar</span>
+            <ParameterTooltip
+              :className
+              message="A grammar to use for constrained sampling.">
+              Grammar
+            </ParameterTooltip>
           </template>
         </Textarea>
 
-        <div class="flex gap-6 mt-6">
+        <div class="flex gap-6 mt-6 mb-10">
           <Input id="order" wrapper-class="flex-1" placeholder="order: prop1, prop2, prop3" v-model="parameters.prop_order" />
           <Button secondary :disabled="!parameters.grammar" @click="convertJSONSchemaGrammar">CONVERT JSON SCHEMA</Button>
         </div>

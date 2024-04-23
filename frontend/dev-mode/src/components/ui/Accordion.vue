@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useSessionStorage } from '@vueuse/core'
 
 import IconChevronDown from '~icons/ri/arrow-down-s-line'
@@ -16,6 +17,8 @@ const props = withDefaults(defineProps<{
 })
 
 const isCollapsed = useSessionStorage(props.id, !props.open)
+
+const addOverflow = ref(false)
 
 const toggleCollapsed = () => {
   // avoid race conditions between the browser `open` state and the session storage update
@@ -38,9 +41,11 @@ const toggleCollapsed = () => {
   </details>
 
   <div
-    class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 peer-open:grid-rows-[1fr]"
-    :style="{ transitionDuration: `${props.speed}ms` }">
-    <div class="overflow-hidden" :class="props.contentClass">
+    class="grid grid-rows-[0fr] transition-[grid-template-rows] mb-0 duration-300 peer-open:grid-rows-[1fr]"
+    :style="{ transitionDuration: `${props.speed}ms` }"
+    @transitionstart.self="addOverflow = true"
+    @transitionend.self="addOverflow = isCollapsed">
+    <div :class="[ props.contentClass, { 'overflow-hidden': addOverflow || isCollapsed } ]">
       <slot></slot>
     </div>
   </div>
