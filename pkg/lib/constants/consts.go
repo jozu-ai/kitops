@@ -48,6 +48,10 @@ const (
 	CodeLayerMediaType = "application/vnd.kitops.modelkit.code.v1.tar+gzip"
 	// Media type for the model config (Kitfile)
 	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
+
+	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
+	// by e.g. referring to another modelkit in its .model.path
+	MaxModelRefChain = 10
 )
 
 func DefaultKitfileNames() []string {
