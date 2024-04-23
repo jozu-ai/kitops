@@ -35,6 +35,7 @@ import (
 type LocalStorage interface {
 	GetRepo() string
 	GetIndex() (*ocispec.Index, error)
+	getStorePath() string
 	oras.Target
 	content.Deleter
 	content.Untagger
@@ -104,6 +105,14 @@ func (s *LocalStore) GetIndex() (*ocispec.Index, error) {
 // GetRepo returns the registry and repository for the current OCI store.
 func (s *LocalStore) GetRepo() string {
 	return s.repo
+}
+
+func (s *LocalStore) getStorePath() string {
+	return s.storePath
+}
+
+func BlobPathForManifest(store LocalStorage, desc ocispec.Descriptor) string {
+	return filepath.Join(store.getStorePath(), "blobs", "sha256", desc.Digest.Encoded())
 }
 
 // findStoragePaths walks the filesystem rooted at storageRoot looking for index.json
