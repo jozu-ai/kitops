@@ -22,17 +22,22 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/repo"
+
+	"oras.land/oras-go/v2/registry"
 )
 
-func GetKitfileForRef(ctx context.Context, configHome, ref string) (*artifact.KitFile, error) {
+func GetKitfileForRefString(ctx context.Context, configHome, ref string) (*artifact.KitFile, error) {
 	modelRef, _, err := repo.ParseReference(ref)
 	if err != nil {
 		return nil, err
 	}
+	return GetKitfileForRef(ctx, configHome, modelRef)
+}
 
+func GetKitfileForRef(ctx context.Context, configHome string, ref *registry.Reference) (*artifact.KitFile, error) {
 	opts := &infoOptions{
 		configHome: configHome,
-		modelRef:   modelRef,
+		modelRef:   ref,
 		NetworkOptions: options.NetworkOptions{
 			PlainHTTP: false,
 			TlsVerify: true,
@@ -47,5 +52,5 @@ func GetKitfileForRef(ctx context.Context, configHome, ref string) (*artifact.Ki
 	if err != nil {
 		return nil, fmt.Errorf("Failed to fetch Kitfile for %s: %w", ref, err)
 	}
-	return kitfile, err
+	return kitfile, nil
 }

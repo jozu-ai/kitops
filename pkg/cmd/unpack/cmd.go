@@ -18,7 +18,6 @@ package unpack
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
@@ -28,9 +27,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"oras.land/oras-go/v2"
-	"oras.land/oras-go/v2/content/oci"
-	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -137,11 +133,6 @@ func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 		if opts.modelRef.Reference == "" {
 			output.Fatalf("Invalid reference: unpacking requires a tag or digest")
 		}
-		store, err := getStoreForRef(cmd.Context(), opts)
-		if err != nil {
-			ref := repo.FormatRepositoryForDisplay(opts.modelRef.String())
-			output.Fatalf("Failed to find reference %s: %s", ref, err)
-		}
 
 		unpackTo := opts.unpackDir
 		if unpackTo == "" {
@@ -158,50 +149,11 @@ func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 		}
 
 		output.Infof("Unpacking to %s", unpackTo)
-		err = unpackModel(cmd.Context(), store, opts.modelRef, opts)
+		err := runUnpack(cmd.Context(), opts)
 		if err != nil {
 			output.Fatalln(err)
 		}
 	}
-}
-
-func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, error) {
-	storageHome := constants.StoragePath(opts.configHome)
-	localStore, err := oci.New(repo.RepoPath(storageHome, opts.modelRef))
-	if err != nil {
-		return nil, fmt.Errorf("failed to read local storage: %s\n", err)
-	}
-
-	if _, err := localStore.Resolve(ctx, opts.modelRef.Reference); err == nil {
-		// Reference is present in local storage
-		return localStore, nil
-	}
-
-	if opts.modelRef.Registry == repo.DefaultRegistry {
-		return nil, fmt.Errorf("not found")
-	}
-	// Not in local storage, check remote
-	remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.modelRef.Registry, err)
-	}
-
-	repo, err := remoteRegistry.Repository(ctx, opts.modelRef.Repository)
-	if err != nil {
-		return nil, fmt.Errorf("could not resolve repository %s in registry %s", opts.modelRef.Repository, opts.modelRef.Registry)
-	}
-	if _, err := repo.Resolve(ctx, opts.modelRef.Reference); err != nil {
-		if errors.Is(err, errdef.ErrNotFound) {
-			return nil, fmt.Errorf("reference %s is not present in local storage and could not be found in remote", opts.modelRef.String())
-		}
-		return nil, fmt.Errorf("unexpected error retrieving reference from remote: %w", err)
-	}
-
-	return repo, nil
 }
 
 func printConfig(opts *unpackOptions) {

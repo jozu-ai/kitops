@@ -78,7 +78,8 @@ func runPack(ctx context.Context, options *packOptions) error {
 func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, store repo.LocalStorage) (*ocispec.Descriptor, error) {
 	var extraLayerPaths []string
 	if kitfile.Model != nil && kfutils.IsModelKitReference(kitfile.Model.Path) {
-		parentKitfile, err := kfutils.ResolveKitfile(ctx, opts.configHome, kitfile.Model.Path)
+		baseRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+		parentKitfile, err := kfutils.ResolveKitfile(ctx, opts.configHome, kitfile.Model.Path, baseRef)
 		if err != nil {
 			return nil, err
 		}
