@@ -22,12 +22,12 @@ KitOps simplifies the handoffs between data scientists, application developers, 
 ### Features
 
 * 🎁 **[Unified packaging](https://kitops.ml/docs/modelkit/intro.html):** A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.
-* 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each ModelKit is tagged so everyone knows which dataset and model work together.
-* 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
-* 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
+* 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each Modelis tagged so everyone knows which dataset and model work together.
+* 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a Modellocally or as part of your CI/CD workflow for testing, integration, or deployment.
+* 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each Modelpackage includes a SHA digest for itself, and every artifact it holds.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
-* 😻 **No GPU or internet:** Kit doesn't require GPUs, internet connectivity, your email, or favorite limb. It's a free tool you can use anywhere.
+* 😻 **No GPU or internet:** KitOps doesn't require GPUs, internet connectivity, your email, or favorite limb. It's a free tool you can use anywhere.
 * 🤗 **Flexible:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
 * 🧰 **Data science + DevOps:** Simplify asset management and versioning for training, experimentation, integration, deployment, and operations.
 * 🏃‍♂️‍➡️ **Run locally:** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly (coming soon).
@@ -47,7 +47,7 @@ https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17
 
 **Kit CLI:** Your magic wand for AI/ML collaboration. The Kit CLI not only enables users to create, manage, run, and deploy ModelKits -- it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model`, or maybe you just want the training datasets? `unpack --datasets`. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the flexibility and power to streamline your workflow.
 
-## Try Kit in under 15 Minutes
+## Try KitOps in under 15 Minutes
 
 First, download the Kit CLI. Choose the `latest` [tagged version](https://github.com/jozu-ai/kitops/tags) for the most stable release, or explore the `next` tag for our development builds.
 
@@ -60,9 +60,9 @@ kit
 ```
 This command will display a list of available actions to supercharge your AI/ML projects.
 
-The [Kit Quick Start](https://kitops.ml/docs/quick-start.html) will guide you through the main features of kit in under 10 minutes. If you need help check out our [support guide](./SUPPORT.md).
+The [Kit Quick Start](https://kitops.ml/docs/quick-start.html) will guide you through the main features of KitOps in under 10 minutes. If you need help check out our [support guide](./SUPPORT.md).
 
-### Building Kit from Source
+### Building KitOps from Source
 
 For those who prefer to build from the source, follow [these steps to get the latest version directly from our repository](https://kitops.ml/docs/cli/installation.html#installation-from-source).
 
@@ -87,11 +87,11 @@ If you need help there are several ways to reach our community and [Maintainers]
 
 ### Reporting Issues and Suggesting Features
 
-Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
+Your insights help KitOps evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
 
 ### Joining the KitOps Contributors
 
-We ❤️ our Kit community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
+We ❤️ our KitOps community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
 
 ### A Community Built on Respect
 
