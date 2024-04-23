@@ -1,4 +1,4 @@
-# Next Steps with Kit
+# Next Steps with KitOps
 
 In this guide you'll learn how to:
 * Make your own Kitfile
@@ -137,7 +137,7 @@ kit push docker.io/jozubrad/film-slm:champion
 
 # The Power of Unpack
 
-Models and their datasets can be very large and take a long time to push or pull, so Kit includes the `unpack` command that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
+Models and their datasets can be very large and take a long time to push or pull, so KitOps includes the `unpack` command that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
 
 `unpack` can take arguments for partial unpacking of a ModelKit:
 * `--model` to unpack only the model to the destination file system
