@@ -182,6 +182,7 @@ jobs:
         run: |
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           PR_BRANCH="${{ github.ref_name }}-docs-update"
+          git fetch origin main
           git branch "$PR_BRANCH"
           git checkout "$PR_BRANCH"
           git pull origin --ff-only "${PR_BRANCH}" || true

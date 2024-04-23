@@ -28,8 +28,8 @@ kit info mymodel:mytag
 # See configuration for a local modelkit by digest:
 kit info mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 
-# See configuration for a remote modelkit if not present locally:
-kit info registry.example.com/my-model:1.0.0
+# See configuration for a remote modelkit:
+kit info --remote registry.example.com/my-model:1.0.0
 ```
 
 ### Options
@@ -37,16 +37,16 @@ kit info registry.example.com/my-model:1.0.0
 ```
   -h, --help         help for info
       --plain-http   Use plain HTTP when connecting to remote registries
-  -r, --remote       Check remote registry even if modelkit is present locally
+  -r, --remote       Check remote registry instead of local storage
       --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit inspect
@@ -73,8 +73,8 @@ kit inspect mymodel:mytag
 # Inspect a local modelkit by digest:
 kit inspect mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 
-# Inspect a remote modelkit if not present locally:
-kit inspect registry.example.com/my-model:1.0.0
+# Inspect a remote modelkit:
+kit inspect --remote registry.example.com/my-model:1.0.0
 ```
 
 ### Options
@@ -82,16 +82,16 @@ kit inspect registry.example.com/my-model:1.0.0
 ```
   -h, --help         help for inspect
       --plain-http   Use plain HTTP when connecting to remote registries
-  -r, --remote       Check remote registry even if modelkit is present locally
+  -r, --remote       Check remote registry instead of local storage
       --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit list
@@ -142,9 +142,9 @@ kit list registry.example.com/my-namespace/my-model
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit login
@@ -181,9 +181,9 @@ kit login ghcr.io -u github_user -p personal_token
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit logout
@@ -215,9 +215,9 @@ kit logout ghcr.io
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit pack
@@ -255,7 +255,7 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 ### Options
 
 ```
-  -f, --file string   Specifies the path to the Kitfile if it's not located at the root of the context directory
+  -f, --file string   Specifies the path to the Kitfile explictly (use "-" to read from standard input)
   -h, --help          help for pack
   -t, --tag string    Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
 ```
@@ -263,9 +263,9 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit pull
@@ -299,9 +299,9 @@ kit pull registry.example.com/my-model:latest
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit push
@@ -340,9 +340,9 @@ kit push registry.example.com/my-model:1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit remove
@@ -393,9 +393,9 @@ kit remove --all --force
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit tag
@@ -458,9 +458,9 @@ kit tag myregistry.com/myrepo/mykit:latest myregistry.com/myrepo/mykit:v1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit unpack
@@ -500,10 +500,10 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 
 ```
       --code         Unpack only code
-      --config       Unpack only config file
       --datasets     Unpack only datasets
   -d, --dir string   The target directory to unpack components into. This directory will be created if it does not exist
   -h, --help         help for unpack
+      --kitfile      Unpack only Kitfile
       --model        Unpack only model
   -o, --overwrite    Overwrites existing files and directories in the target unpack directory without prompting
       --plain-http   Use plain HTTP when connecting to remote registries
@@ -513,8 +513,9 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 ### Options inherited from parent commands
 
 ```
-      --progress   Print progress bars during longer operations (default true) (default true)
-  -v, --verbose    Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
 ## kit version
@@ -542,8 +543,8 @@ kit version [flags]
 ### Options inherited from parent commands
 
 ```
-      --config string   Alternate path to root storage directory for CLI
-      --progress        Print progress bars during longer operations (default true) (default true)
-  -v, --verbose         Include additional information in output (default false)
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
 ```
 
