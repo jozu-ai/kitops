@@ -4,7 +4,7 @@ import vGaTrack from '@theme/directives/ga'
 
 # KitOps Quick Start
 
-In this guide, we'll use ModelKits and the kit CLI to easily:
+In this guide, we'll use ModelKits and the Kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
 * Push the ModelKit package to a public or private registry
 * Grab only the assets you need from the ModelKit for testing, integration, local running, or deployment
@@ -15,7 +15,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 2. Create and navigate to a new folder on your filesystem. We'd suggest calling it `KitStart` but any name works.
 
-One more note...with Kit, packing and pushing are separate steps (same with unpacking and pulling). Packing builds the ModelKit using the content outlined in the `Kitfile` manifest. Pushing takes a built ModelKit from your local registry and sends it to any remote registry. We strongly recommend tagging your ModelKits with a version number and any other tags that will help your team (e.g., challenger, champion, v1.3, dev, production, etc...)
+One more note...with KitOps, packing and pushing are separate steps (same with unpacking and pulling). Packing builds the ModelKit using the content outlined in the `Kitfile` manifest. Pushing takes a built ModelKit from your local registry and sends it to any remote registry. We strongly recommend tagging your ModelKits with a version number and any other tags that will help your team (e.g., challenger, champion, v1.3, dev, production, etc...)
 
 ## Learning to use the CLI
 
@@ -27,7 +27,7 @@ Check that the Kit CLI is properly installed.
 kit version
 ```
 
-You'll see information about the version of Kit you're running. If you get an error check to make sure you have [Kit installed](./cli/installation.md) and in your path.
+You'll see information about the version of KitOps you're running. If you get an error check to make sure you have [KitOps installed](./cli/installation.md) and in your path.
 
 ### 2/ Login to Your Registry
 
@@ -49,7 +49,7 @@ You'll see `Log in successful`.
 
 ### 3/ Get a Sample ModelKit
 
-Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the thigs you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
+Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about KitOps is that you can also selectively unpack only the thigs you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
 
 You can grab <a href="https://github.com/orgs/jozu-ai/packages"
   v-ga-track="{
@@ -62,7 +62,7 @@ You can grab <a href="https://github.com/orgs/jozu-ai/packages"
 kit unpack ghcr.io/jozu-ai/modelkit-examples/finetuning_slm:latest
 ```
 
-You'll see a set of messages as Kit unpacked the configuration, code, datasets, and serialized model. Now list the directory contents:
+You'll see a set of messages as KitOps unpacked the configuration, code, datasets, and serialized model. Now list the directory contents:
 
 ```sh
 ls
@@ -118,10 +118,10 @@ You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with a
 kit pull docker.io/jozubrad/mymodelkit:latest
 ```
 
-If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+If you'd like to learn more about using KitOps, try our [Next Steps with KitOps](./next-steps.md) document that covers:
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
 * Keeping your registry tidy
 
-Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN).
+Thanks for taking some time to play with KitOps. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN).
