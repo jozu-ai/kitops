@@ -8,7 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
+
 	"kitops/pkg/lib/constants"
+	kfutils "kitops/pkg/lib/kitfile"
+	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -17,6 +21,67 @@ import (
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
 )
+
+func runPull(ctx context.Context, opts *pullOptions) (ocispec.Descriptor, error) {
+	storageHome := constants.StoragePath(opts.configHome)
+	localStorePath := repo.RepoPath(storageHome, opts.modelRef)
+	localStore, err := oci.New(localStorePath)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+	return runPullRecursive(ctx, localStore, opts, []string{})
+}
+
+func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOptions, pulledRefs []string) (ocispec.Descriptor, error) {
+	refStr := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+	if idx := getIndex(pulledRefs, refStr); idx != -1 {
+		cycleStr := fmt.Sprintf("[%s=>%s]", strings.Join(pulledRefs[idx:], "=>"), refStr)
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Found cycle in modelkit references: %s", cycleStr)
+	}
+	pulledRefs = append(pulledRefs, refStr)
+	if len(pulledRefs) > constants.MaxModelRefChain {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Reached maximum number of model references: [%s]", strings.Join(pulledRefs, "=>"))
+	}
+
+	remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
+		PlainHTTP:       opts.PlainHTTP,
+		SkipTLSVerify:   !opts.TlsVerify,
+		CredentialsPath: constants.CredentialsPath(opts.configHome),
+	})
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+
+	desc, err := pullModel(ctx, remoteRegistry, localStore, opts.modelRef)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+
+	if err := pullParents(ctx, localStore, desc, opts, pulledRefs); err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to pull referenced modelkits: %w", err)
+	}
+
+	return desc, nil
+}
+
+func pullParents(ctx context.Context, localStore *oci.Store, desc ocispec.Descriptor, optsIn *pullOptions, pulledRefs []string) error {
+	_, config, err := repo.GetManifestAndConfig(ctx, localStore, desc)
+	if err != nil {
+		return err
+	}
+	if config.Model == nil || !kfutils.IsModelKitReference(config.Model.Path) {
+		return nil
+	}
+	output.Infof("Pulling referenced image %s", config.Model.Path)
+	parentRef, _, err := repo.ParseReference(config.Model.Path)
+	if err != nil {
+		return err
+	}
+	opts := *optsIn
+	opts.modelRef = parentRef
+	_, err = runPullRecursive(ctx, localStore, &opts, pulledRefs)
+	return err
+}
 
 func pullModel(ctx context.Context, remoteRegistry *remote.Registry, localStore *oci.Store, ref *registry.Reference) (ocispec.Descriptor, error) {
 	repo, err := remoteRegistry.Repository(ctx, ref.Repository)
@@ -58,4 +123,13 @@ func referenceIsModel(ctx context.Context, ref *registry.Reference, repo registr
 		return fmt.Errorf("reference %s does not refer to a model", ref.String())
 	}
 	return nil
+}
+
+func getIndex(list []string, s string) int {
+	for idx, item := range list {
+		if s == item {
+			return idx
+		}
+	}
+	return -1
 }
