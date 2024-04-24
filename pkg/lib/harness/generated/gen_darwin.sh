@@ -5,6 +5,10 @@ source $(dirname $0)/gen_common.sh
 init_vars
 git_module_setup
 
+## Build devmode UI
+build_ui
+compress ${UI_DIR}/dist ../ui.tar.gz
+
 case "${GOARCH}" in
 "amd64")
     COMMON_CPU_DEFS="${COMMON_DARWIN_DEFS} -DCMAKE_SYSTEM_PROCESSOR=${ARCH} -DCMAKE_OSX_ARCHITECTURES=${ARCH} -DLLAMA_METAL=off -DLLAMA_NATIVE=off"

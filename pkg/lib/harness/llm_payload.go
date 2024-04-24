@@ -24,3 +24,5 @@ import (
 )
 
 var serverEmbed embed.FS
+
+var uiEmbed embed.FS

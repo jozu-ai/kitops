@@ -1,5 +1,7 @@
 # common logic across linux and darwin
 
+UI_DIR=../../../../frontend/dev-mode
+
 init_vars() {
     case "${GOARCH}" in
     "amd64")
@@ -39,4 +41,16 @@ git_module_setup() {
     fi
     git submodule init
     git submodule update --force ${LLAMACPP_DIR}
+}
+
+build_ui() {
+    pushd ${UI_DIR}
+    pnpm install
+    pnpm run build
+    popd
+}
+
+compress() {
+    echo "Compressing $1 to $2"
+    tar -czf $2 -C $1 .
 }
