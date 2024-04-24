@@ -81,7 +81,7 @@ func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, sto
 		baseRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
 		parentKitfile, err := kfutils.ResolveKitfile(ctx, opts.configHome, kitfile.Model.Path, baseRef)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to resolve referenced modelkit %s: %w", kitfile.Model.Path, err)
 		}
 		extraLayerPaths = kfutils.LayerPathsFromKitfile(parentKitfile)
 	}
@@ -107,6 +107,9 @@ func readKitfile(modelFile string) (*artifact.KitFile, error) {
 	}
 	defer kitfileContentReader.Close()
 	if err := kitfile.LoadModel(kitfileContentReader); err != nil {
+		return nil, err
+	}
+	if err := kfutils.ValidateKitfile(kitfile); err != nil {
 		return nil, err
 	}
 	return kitfile, nil
