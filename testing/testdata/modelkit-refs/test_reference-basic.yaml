@@ -1,0 +1,63 @@
+description: "Test that pack works with modelkit references"
+modelkits:
+  - tag: test-ref:model-1
+    kitfile: |
+      manifestVersion: 1.0.0
+      package:
+        name: model-1
+      model:
+        name: model-1
+        path: my-model/
+        parts:
+        - name: model-1-part-1
+          path: my-model-alt/model-1-part-1.txt
+        - name: model-1-part-2
+          path: model-1-part-2.txt
+    files:
+    - my-model/model-1-file-1.txt
+    - my-model/model-1-file-2.txt
+    - my-model/model-1-subdir/model-1-file-3.txt
+    - my-model-alt/model-1-part-1.txt
+    - model-1-part-2.txt
+  - tag: test-ref:model-2
+    kitfile: |
+      manifestVersion: 1.0.0
+      package:
+        name: model-2
+      model:
+        name: model-2
+        path: test-ref:model-1
+        parts:
+        - name: model-2-part-1
+          path: my-model/model-2-dir-1
+        - name: model-2-part-2
+          path: my-model-alt/model-2-part-1.txt
+        - name: model-2-part-3
+          path: model-2-part-3.txt
+    files:
+    - my-model/model-2-dir-1/model-2-subdir-part-1.txt
+    - my-model/model-2-dir-1/model-2-subdir-part-2.txt
+    - my-model-alt/model-2-part-1.txt
+    - model-2-part-3.txt
+  - tag: test-ref:model-3
+    kitfile: |
+      manifestVersion: 1.0.0
+      package:
+        name: model-3
+      model:
+        name: model-3
+        path: test-ref:model-2
+        parts:
+        - name: model-3-part-1
+          path: my-model/model-2-dir-1/model-3-part-1.txt
+        - name: model-3-part-2
+          path: my-model/model-3-part-2.txt
+        - name: model-3-part-3
+          path: my-model-alt/model-3-part-1.txt
+        - name: model-3-part-4
+          path: model-3-part-4.txt
+    files:
+    - my-model/model-2-dir-1/model-3-part-1.txt
+    - my-model/model-3-part-2.txt
+    - my-model-alt/model-3-part-1.txt
+    - model-3-part-4.txt
