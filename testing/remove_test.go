@@ -50,17 +50,17 @@ func TestRemoveSingleModelkitTag(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:delete_testing", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:delete_testing", "-v")
 	digest := digestFromPack(t, packOut)
 	modelRegexp := fmt.Sprintf(`^test\s+delete_testing.*%s$`, digest)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
-	runCommand(t, "remove", "test:delete_testing", "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", "test:delete_testing", "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, false)
 }
 
@@ -78,18 +78,18 @@ func TestRemoveSingleModelkitDigest(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:delete_testing", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:delete_testing", "-v")
 	digest := digestFromPack(t, packOut)
 	modelRegexp := fmt.Sprintf(`^test\s+delete_testing.*%s$`, digest)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
 	ref := fmt.Sprintf("test@%s", digest)
-	runCommand(t, "remove", ref, "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", ref, "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, false)
 }
 
@@ -107,17 +107,17 @@ func TestRemoveSingleModelkitNoTag(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-v")
 	digest := digestFromPack(t, packOut)
 	modelRegexp := fmt.Sprintf(`^.*%s$`, digest)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
-	runCommand(t, "remove", digest, "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", digest, "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, modelRegexp, false)
 }
 
@@ -135,21 +135,21 @@ func TestRemoveModelkitUntagsWhenMultiple(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:test_tag_1", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:test_tag_1", "-v")
 	digest := digestFromPack(t, packOut)
 	firstModelRegexp := fmt.Sprintf(`^test\s+test_tag_1.*%s$`, digest)
 
-	runCommand(t, "tag", "test:test_tag_1", "test:test_tag_2", "-v")
+	runCommand(t, expectNoError, "tag", "test:test_tag_1", "test:test_tag_2", "-v")
 	secondModelRegexp := fmt.Sprintf(`^test\s+test_tag_2.*%s$`, digest)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, firstModelRegexp, true)
 	assertContainsLineRegexp(t, listOut, secondModelRegexp, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
-	runCommand(t, "remove", "test:test_tag_1", "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", "test:test_tag_1", "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, firstModelRegexp, false)
 	assertContainsLineRegexp(t, listOut, secondModelRegexp, true)
 }
@@ -168,22 +168,22 @@ func TestRemoveModelkitUntagsAllWhenDigest(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:test_tag_1", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:test_tag_1", "-v")
 	digest := digestFromPack(t, packOut)
 	firstModelRegexp := fmt.Sprintf(`^test\s+test_tag_1.*%s$`, digest)
 
-	runCommand(t, "tag", "test:test_tag_1", "test:test_tag_2", "-v")
+	runCommand(t, expectNoError, "tag", "test:test_tag_1", "test:test_tag_2", "-v")
 	secondModelRegexp := fmt.Sprintf(`^test\s+test_tag_2.*%s$`, digest)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, firstModelRegexp, true)
 	assertContainsLineRegexp(t, listOut, secondModelRegexp, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
 	ref := fmt.Sprintf("test@%s", digest)
-	runCommand(t, "remove", ref, "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", ref, "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, firstModelRegexp, false)
 	assertContainsLineRegexp(t, listOut, secondModelRegexp, false)
 }
@@ -202,30 +202,30 @@ func TestRemoveModelkitUntagged(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestOne := digestFromPack(t, packOut)
 	regexpOne := fmt.Sprintf("^test.*%s$", digestOne)
 
 	// Create files to pack with a different digests
 	setupFiles(t, modelKitPath, []string{"testfile-1"})
-	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestTwo := digestFromPack(t, packOut)
 	regexpTwo := fmt.Sprintf("^test.*%s$", digestTwo)
 
 	setupFiles(t, modelKitPath, []string{"testfile-2"})
-	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestThree := digestFromPack(t, packOut)
 	regexpThree := fmt.Sprintf(`^test\s+testing-tag.*%s$`, digestThree)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, regexpOne, true)
 	assertContainsLineRegexp(t, listOut, regexpTwo, true)
 	assertContainsLineRegexp(t, listOut, regexpThree, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
-	runCommand(t, "remove", "--all", "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", "--all", "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, regexpOne, false)
 	assertContainsLineRegexp(t, listOut, regexpTwo, false)
 	assertContainsLineRegexp(t, listOut, regexpThree, true)
@@ -245,30 +245,30 @@ func TestRemoveModelkitAll(t *testing.T) {
 	}
 
 	// Pack model kit and tag it
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestOne := digestFromPack(t, packOut)
 	regexpOne := fmt.Sprintf("^test.*%s$", digestOne)
 
 	// Create files to pack with a different digests
 	setupFiles(t, modelKitPath, []string{"testfile-1"})
-	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestTwo := digestFromPack(t, packOut)
 	regexpTwo := fmt.Sprintf("^test.*%s$", digestTwo)
 
 	setupFiles(t, modelKitPath, []string{"testfile-2"})
-	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:testing-tag", "-v")
 	digestThree := digestFromPack(t, packOut)
 	regexpThree := fmt.Sprintf(`^test\s+testing-tag.*%s$`, digestThree)
 
 	// Ensure modelkit exists in output of 'kit list'
-	listOut := runCommand(t, "list")
+	listOut := runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, regexpOne, true)
 	assertContainsLineRegexp(t, listOut, regexpTwo, true)
 	assertContainsLineRegexp(t, listOut, regexpThree, true)
 
 	// Remove modelkit and verify it's no longer in 'kit list'
-	runCommand(t, "remove", "--all", "--force", "-v")
-	listOut = runCommand(t, "list")
+	runCommand(t, expectNoError, "remove", "--all", "--force", "-v")
+	listOut = runCommand(t, expectNoError, "list")
 	assertContainsLineRegexp(t, listOut, regexpOne, false)
 	assertContainsLineRegexp(t, listOut, regexpTwo, false)
 	assertContainsLineRegexp(t, listOut, regexpThree, false)
