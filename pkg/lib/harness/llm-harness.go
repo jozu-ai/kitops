@@ -33,8 +33,16 @@ type LLMHarness struct {
 	ConfigHome string
 }
 
-func (harness *LLMHarness) Init() {
-	extractLibraries(constants.HarnessPath(harness.ConfigHome), "llama.cpp/build/*/*/*/bin/**")
+func (harness *LLMHarness) Init() error {
+	err := extractServer(constants.HarnessPath(harness.ConfigHome), "llama.cpp/build/*/*/*/bin/**")
+	if err != nil {
+		return fmt.Errorf("Failed to extract dev server files: %s", err)
+	}
+	err = extractUI(constants.HarnessPath(harness.ConfigHome))
+	if err != nil {
+		return fmt.Errorf("Failed to extract dev UI files: %s", err)
+	}
+	return nil
 }
 
 func (harness *LLMHarness) Start(modelPath string) error {
@@ -56,11 +64,13 @@ func (harness *LLMHarness) Start(modelPath string) error {
 		}
 	}
 
+	uiHome := filepath.Join(harnessPath, "ui")
 	cmd := exec.Command("./server",
 		"--host", harness.Host,
 		"--port", strconv.Itoa(harness.Port),
-		"--model", modelPath)
-	cmd.Dir = constants.HarnessPath(harness.ConfigHome)
+		"--model", modelPath,
+		"--path", uiHome)
+	cmd.Dir = harnessPath
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return fmt.Errorf("Failed to open log file for harness: %w", err)

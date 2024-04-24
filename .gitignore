@@ -2,3 +2,4 @@
 .vscode
 kit
 dist/
+pkg/lib/harness/ui.tar.gz

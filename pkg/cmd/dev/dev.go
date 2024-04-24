@@ -46,7 +46,9 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	llmHarness.Host = options.host
 	llmHarness.Port = options.port
 	llmHarness.ConfigHome = options.configHome
-	llmHarness.Init()
+	if err := llmHarness.Init(); err != nil {
+		return err
+	}
 
 	if err := llmHarness.Start(modelPath); err != nil {
 		return err
@@ -59,7 +61,13 @@ func stopDev(ctx context.Context, options *DevOptions) error {
 
 	llmHarness := &harness.LLMHarness{}
 	llmHarness.ConfigHome = options.configHome
-	llmHarness.Init()
 
-	return llmHarness.Stop()
+	if err := llmHarness.Init(); err != nil {
+		return err
+	}
+
+	if err := llmHarness.Stop(); err != nil {
+		return err
+	}
+	return nil
 }
