@@ -72,7 +72,7 @@ func PullCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -81,18 +81,18 @@ func PullCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *pullOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *pullOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		output.Infof("Pulling %s", opts.modelRef.String())
 		desc, err := runPull(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalf("Failed to pull: %s", err)
-			return
+			return output.Fatalf("Failed to pull: %s", err)
 		}
 		output.Infof("Pulled %s", desc.Digest)
+		return nil
 	}
 }

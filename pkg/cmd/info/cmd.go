@@ -63,7 +63,7 @@ func InfoCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 		Args:    cobra.ExactArgs(1),
 	}
 
@@ -72,23 +72,24 @@ func InfoCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *infoOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *infoOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 		config, err := getInfo(cmd.Context(), opts)
 		if err != nil {
 			if errors.Is(err, errdef.ErrNotFound) {
-				output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+				return output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
-			output.Fatalf("Error resolving modelkit: %s", err)
+			return output.Fatalf("Error resolving modelkit: %s", err)
 		}
 		yamlBytes, err := config.MarshalToYAML()
 		if err != nil {
-			output.Fatalf("Error formatting manifest: %w", err)
+			return output.Fatalf("Error formatting manifest: %w", err)
 		}
 		fmt.Println(string(yamlBytes))
+		return nil
 	}
 }
 

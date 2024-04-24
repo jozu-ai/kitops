@@ -45,6 +45,10 @@ func RunCommand() *cobra.Command {
 		Use:   `kit`,
 		Short: shortDesc,
 		Long:  longDesc,
+		// Commands do all their printing directly and return an error only to signal that we should exit with
+		// nonzero status. We don't want to print usage or the error message in this case.
+		SilenceUsage:  true,
+		SilenceErrors: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())

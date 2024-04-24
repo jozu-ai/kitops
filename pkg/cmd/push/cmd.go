@@ -78,7 +78,7 @@ func PushCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -87,10 +87,10 @@ func PushCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *pushOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
@@ -99,22 +99,22 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) {
 			CredentialsPath: constants.CredentialsPath(opts.configHome),
 		})
 		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalln(err)
 		}
 
 		storageHome := constants.StoragePath(opts.configHome)
 		localStorePath := repo.RepoPath(storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalln(err)
 		}
 
 		output.Infof("Pushing %s", opts.modelRef.String())
 		desc, err := PushModel(cmd.Context(), localStore, remoteRegistry, opts.modelRef)
 		if err != nil {
-			output.Fatalf("Failed to push: %s", err)
-			return
+			return output.Fatalf("Failed to push: %s", err)
 		}
 		output.Infof("Pushed %s", desc.Digest)
+		return nil
 	}
 }
