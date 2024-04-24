@@ -38,6 +38,9 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 		}
 		resolved = mergeKitfiles(resolved, kitfile)
 		if resolved.Model == nil || !IsModelKitReference(resolved.Model.Path) {
+			if err := ValidateKitfile(resolved); err != nil {
+				return nil, err
+			}
 			return resolved, nil
 		}
 		if idx := getIndex(refChain, resolved.Model.Path); idx != -1 {
