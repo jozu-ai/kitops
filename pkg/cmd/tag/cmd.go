@@ -101,23 +101,24 @@ func TagCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(&tagOptions{}),
+		RunE:    runCommand(&tagOptions{}),
 	}
 
 	cmd.Args = cobra.ExactArgs(2)
 	return cmd
 }
 
-func runCommand(opts *tagOptions) func(cmd *cobra.Command, args []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *tagOptions) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		err := RunTag(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalf("Failed to tag modelkit: %s", err)
+			return output.Fatalf("Failed to tag modelkit: %s", err)
 		}
 		output.Infof("Modelkit %s tagged as %s", opts.sourceRef, opts.targetRef)
+		return nil
 	}
 }

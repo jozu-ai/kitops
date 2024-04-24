@@ -109,7 +109,7 @@ func UnpackCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -124,14 +124,14 @@ func UnpackCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *unpackOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		if opts.modelRef.Reference == "" {
-			output.Fatalf("Invalid reference: unpacking requires a tag or digest")
+			return output.Fatalf("Invalid reference: unpacking requires a tag or digest")
 		}
 
 		unpackTo := opts.unpackDir
@@ -140,19 +140,20 @@ func runCommand(opts *unpackOptions) func(*cobra.Command, []string) {
 		}
 		// Make sure target directory exists, in case user is using the -d flag
 		if err := os.MkdirAll(opts.unpackDir, 0755); err != nil {
-			output.Fatalf("failed to create directory %s: %w", opts.unpackDir, err)
+			return output.Fatalf("failed to create directory %s: %w", opts.unpackDir, err)
 		}
 		// Change working directory to context path to make sure relative paths within
 		// tarballs are correct. This is the equivalent of using the -C parameter for tar
 		if err := os.Chdir(opts.unpackDir); err != nil {
-			output.Fatalf("Failed to use unpack path %s: %w", opts.unpackDir, err)
+			return output.Fatalf("Failed to use unpack path %s: %w", opts.unpackDir, err)
 		}
 
 		output.Infof("Unpacking to %s", unpackTo)
 		err := runUnpack(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalln(err)
 		}
+		return nil
 	}
 }
 

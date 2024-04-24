@@ -92,7 +92,7 @@ func ListCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.MaximumNArgs(1)
@@ -101,27 +101,28 @@ func ListCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *listOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *listOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		var allInfoLines []string
 		if opts.remoteRef == nil {
 			lines, err := listLocalKits(cmd.Context(), opts)
 			if err != nil {
-				output.Fatalln(err)
+				return output.Fatalln(err)
 			}
 			allInfoLines = lines
 		} else {
 			lines, err := listRemoteKits(cmd.Context(), opts)
 			if err != nil {
-				output.Fatalln(err)
+				return output.Fatalln(err)
 			}
 			allInfoLines = lines
 		}
 		printSummary(cmd.OutOrStdout(), allInfoLines)
+		return nil
 	}
 }
 

@@ -53,7 +53,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 	store, err := getStoreForRef(ctx, opts)
 	if err != nil {
 		ref := repo.FormatRepositoryForDisplay(opts.modelRef.String())
-		output.Fatalf("Failed to find reference %s: %s", ref, err)
+		return output.Fatalf("Failed to find reference %s: %s", ref, err)
 	}
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
