@@ -60,6 +60,11 @@ func RunCommand() *cobra.Command {
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
+			// At this point, we've parsed the command tree and args; the CLI is being correctly
+			// so we don't want to print usage. Each subcommand should print its error message before
+			// returning
+			cmd.SilenceErrors = true
+			cmd.SilenceUsage = true
 		},
 	}
 	addSubcommands(cmd)
