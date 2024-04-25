@@ -19,6 +19,7 @@ package storage
 import (
 	"archive/tar"
 	"compress/gzip"
+	"errors"
 	"fmt"
 	"io"
 	"kitops/pkg/lib/filesystem"
@@ -47,6 +48,9 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 
 	pathInfo, err := os.Stat(path)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("%s path %s does not exist", layerTypeForMediaType(mediaType), path)
+		}
 		return "", ocispec.DescriptorEmptyJSON, err
 	}
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")

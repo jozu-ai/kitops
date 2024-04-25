@@ -60,6 +60,7 @@ export default defineConfig({
           { text: 'Next Steps', link: '/docs/next-steps.md' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
           { text: 'KitOps Workflow', link: '/docs/use-cases' },
+          { text: 'KitOps versus...', link: '/docs/versus' },
         ]
       },
       {
