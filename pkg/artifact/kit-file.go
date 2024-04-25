@@ -69,9 +69,9 @@ type (
 	}
 
 	ModelPart struct {
-		Name        string `json:"name,omitempty" yaml:"name,omitempty"`
-		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
-		Description string `json:"description,omitempty" yaml:"description,omitempty"`
+		Name string `json:"name,omitempty" yaml:"name,omitempty"`
+		Path string `json:"path,omitempty" yaml:"path,omitempty"`
+		Type string `json:"type,omitempty" yaml:"type,omitempty"`
 	}
 
 	Training struct {
