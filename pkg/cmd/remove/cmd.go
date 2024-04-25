@@ -117,6 +117,10 @@ func RemoveCommand() *cobra.Command {
 
 func runCommand(opts *removeOptions) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
+		// Don't want to output usage and placeholder error if this command fails. We can't set this higher up
+		// since it will suppress usage and error messages for actual incorrect usage (e.g. wrong number of args)
+		cmd.SilenceUsage = true
+		cmd.SilenceErrors = true
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
