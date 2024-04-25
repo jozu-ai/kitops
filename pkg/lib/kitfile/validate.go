@@ -20,15 +20,26 @@ import (
 	"fmt"
 	"path"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 
 	"kitops/pkg/artifact"
 )
 
+const partTypeMaxLen = 64
+
+var partTypeRegexp = regexp.MustCompile(`^[\w][\w.-]$`)
+
 // ValidateKitfile returns an error if the parsed Kitfile is not valid. The error string
 // is multiple lines, each consisting of an issue in the kitfile (e.g. duplicate path).
 func ValidateKitfile(kf *artifact.KitFile) error {
+	var errs []string
+	addErr := func(format string, a ...any) {
+		s := fmt.Sprintf(format, a...)
+		errs = append(errs, fmt.Sprintf("  * %s", s))
+	}
+
 	// Map of paths to the component that uses them; used to detect duplicate paths
 	paths := map[string][]string{}
 	addPath := func(path, source string) {
@@ -42,6 +53,14 @@ func ValidateKitfile(kf *artifact.KitFile) error {
 		addPath(kf.Model.Path, fmt.Sprintf("model %s", kf.Model.Name))
 		for _, part := range kf.Model.Parts {
 			addPath(part.Path, fmt.Sprintf("modelpart %s", part.Name))
+			if part.Type != "" {
+				if !partTypeRegexp.MatchString(part.Type) {
+					addErr("modelpart %s has invalid type (must be alphanumeric with dots, dashes, and underscores)", part.Name)
+				}
+				if len(part.Type) > partTypeMaxLen {
+					addErr("modelpart %s type is too long (must be fewer than %d characters)", part.Name, partTypeMaxLen)
+				}
+			}
 		}
 	}
 	for _, dataset := range kf.DataSets {
@@ -51,15 +70,12 @@ func ValidateKitfile(kf *artifact.KitFile) error {
 		addPath(code.Path, fmt.Sprintf("code layer %d", idx))
 	}
 
-	var errs []string
 	for layerPath, layerIds := range paths {
 		if len := len(layerIds); len > 1 {
-			errMsg := fmt.Sprintf("  * %s and %s use the same path %s", strings.Join(layerIds[:len-1], ", "), layerIds[len-1], layerPath)
-			errs = append(errs, errMsg)
+			addErr("%s and %s use the same path %s", strings.Join(layerIds[:len-1], ", "), layerIds[len-1], layerPath)
 		}
 		if path.IsAbs(layerPath) || filepath.IsAbs(layerPath) {
-			errMsg := fmt.Sprintf("  * absolute paths are not supported in a Kitfile (path %s in %s)", layerPath, layerIds[0])
-			errs = append(errs, errMsg)
+			addErr("absolute paths are not supported in a Kitfile (path %s in %s)", layerPath, layerIds[0])
 		}
 	}
 	if len(errs) > 0 {
