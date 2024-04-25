@@ -69,7 +69,7 @@ This section provides general information about the AI/ML project.
   - `parts`: List of related files for the model (e.g. LoRA weights)
     - `name`: Identifier for the part
     - `path`: Location of the file or a directory relative to the context
-    - `description`: Description of the part
+    - `type`: The type of the part (e.g. LoRA weights)
   - `training`:
     - `dataset`: Name of the dataset
     - `parameters`: name value pairs
