@@ -89,3 +89,10 @@ jobs:
             echo "$files"
             exit 1
           fi
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-artifacts-${{ matrix.os }}
+          retention-days: 3
+          path: |
+            ./kit*
