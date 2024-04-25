@@ -50,6 +50,20 @@ jobs:
             exit 1
           fi
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: './frontend/dev-mode/.nvmrc'
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8.0.0
+
+      - name: Generate embeds
+        run: |
+          go generate ./...
+
       - name: Check build
         shell: bash
         run: |
@@ -69,7 +83,7 @@ jobs:
       - name: Check for trailing whitespace
         shell: bash
         run: |
-          files=$(grep -E -lI --exclude '*.svg' --exclude 'docs/*' " +$" $(git ls-files) || true)
+          files=$(grep -E -lI --exclude '*.svg' --exclude 'docs/*' --exclude 'frontend/*' " +$" $(git ls-files) || true)
           if [ ! -z $files ]; then
             echo "Trailing whitespace in files:"
             echo "$files"
