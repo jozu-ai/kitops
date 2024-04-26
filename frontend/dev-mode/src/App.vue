@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { vIntersectionObserver } from '@vueuse/components'
+import { ref, provide } from 'vue'
 
 import { getModels } from '@/services/completion'
 
 const currentModel = ref('')
+
+const shouldAutoScroll = ref(true)
+
+const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
+  shouldAutoScroll.value = isIntersecting
+}
 
 getModels().then((response) => {
   // get the filename from the path
   const modelName = response[0].id.replace(/^.*[\\/]/, '')
   currentModel.value = modelName
 })
+
+provide('shouldAutoScroll', shouldAutoScroll)
 </script>
 
 <template>
@@ -31,7 +40,9 @@ getModels().then((response) => {
   <RouterView />
 </main>
 
-<div id="scrollPosition" class="-mt-16 mb-16"></div>
+<div
+  id="scrollPosition" class="-mt-16 mb-16"
+  v-intersection-observer="updateAutoScrollFlag"></div>
 
 <footer class="bg-black py-16 text-center">
   Powered by <a href="https://github.com/ggerganov/llama.cpp" class="underline" target="_blank">llama.cpp</a> and <a href="http://ggml.ai" class="underline" target="_blank">ggml.ai</a>

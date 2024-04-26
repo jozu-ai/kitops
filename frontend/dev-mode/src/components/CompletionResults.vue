@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useResizeObserver } from '@vueuse/core'
 import MarkdownIt from 'markdown-it'
-import { type Ref, ref, inject, computed, onMounted } from 'vue'
+import { type Ref, ref, inject, computed, onMounted, watch } from 'vue'
 
 import LoadingState from '@/components/LoadingState.vue'
 import StatsValues, { type Stats } from '@/components/StatsValues.vue'
@@ -22,6 +22,7 @@ const stats = inject<Stats>('stats', {} as Stats)
 const session = inject<Session>('session', {} as Session)
 const runCompletion = inject<() => void>('runCompletion', () => {})
 const stop = inject<() => void>('stop', () => {})
+const shouldAutoScroll = inject<Ref<boolean>>('shouldAutoScroll')
 const markdown = new MarkdownIt({
   breaks: true
 })
@@ -57,7 +58,7 @@ onMounted(() => {
 
 useResizeObserver(resultsContainer, () => {
   const footer = document.querySelector('#scrollPosition')
-  if (footer) {
+  if (footer && shouldAutoScroll?.value) {
     footer.scrollIntoView({
       block: 'end'
     })

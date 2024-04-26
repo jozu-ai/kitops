@@ -42,7 +42,8 @@ const paramDefaults: ParamDefaults = {
   stop: ['</s>']
 }
 
-const apiUrl = location.pathname.replace(/\/+$/, '')
+// const apiUrl = location.pathname.replace(/\/+$/, '')
+const apiUrl = 'http://localhost:62320'
 
 let generation_settings: any = null // You might want to replace 'any' with an appropriate type
 
