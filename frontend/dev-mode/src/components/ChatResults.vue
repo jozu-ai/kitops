@@ -15,7 +15,7 @@ const emit = defineEmits<{ (event: 'leave'): void }>()
 
 const msg = ref('')
 const resultsContainer = ref(null)
-const promptInput: Ref<{ inputRef: HTMLInputElement} | null> = ref(null)
+const messageInput: Ref<{ inputRef: HTMLInputElement} | null> = ref(null)
 
 const session = inject<Session>('session', {} as Session)
 const isPending = inject('isPending', false)
@@ -25,6 +25,7 @@ const template = inject('template', (text: string) => text)
 const runChat = inject<(prompt: string) => void>('runChat', () => {})
 const stop = inject<() => void>('stop', () => {})
 const uploadImage = inject<() => void>('uploadImage', () => {})
+const shouldAutoScroll = inject<Ref<boolean>>('shouldAutoScroll')
 
 const send = (message = msg.value) => {
   if (!message) {
@@ -50,8 +51,8 @@ const removeImage = () => {
 onMounted(() => {
   send(props.message)
 
-  if (promptInput.value?.inputRef) {
-    promptInput.value.inputRef.focus()
+  if (messageInput.value?.inputRef) {
+    messageInput.value.inputRef.focus()
   }
 })
 
@@ -60,8 +61,11 @@ const joinResponse = (response: TranscriptMessage[]) =>
 
 useResizeObserver(resultsContainer, () => {
   const footer = document.querySelector('#scrollPosition')
-  if (footer) {
+  if (footer && shouldAutoScroll?.value) {
     footer.scrollIntoView({ block: 'end' })
+    if (messageInput.value?.inputRef) {
+      messageInput.value.inputRef.focus()
+    }
   }
 })
 </script>
@@ -77,9 +81,9 @@ useResizeObserver(resultsContainer, () => {
         class="mt-2 bg-elevation-01 px-4 py-2 space-y-[1em]" />
 
       <CopyTextButton
-        v-if="((response as TranscriptMessage[])[0]).id_slot !== undefined"
         :text="joinResponse(response as TranscriptMessage[])"
-        class="mt-6">COPY RESULTS</CopyTextButton>
+        :class="{ '!visible': ((response as TranscriptMessage[])[0]).id_slot !== undefined }"
+        class="mt-6 invisible">COPY RESULTS</CopyTextButton>
     </template>
 
     <LoadingState v-show="isPending" />
@@ -91,7 +95,7 @@ useResizeObserver(resultsContainer, () => {
         id="textarea-chat-message"
         autogrow
         :persist="false"
-        ref="promptInput"
+        ref="messageInput"
         :label="session.user"
         rows="1"
         :placeholder="`Message ${session.char}`"

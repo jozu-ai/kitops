@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useResizeObserver } from '@vueuse/core'
 import MarkdownIt from 'markdown-it'
-import { type Ref, ref, inject, computed, onMounted } from 'vue'
+import { type Ref, ref, inject, computed, onMounted, watch } from 'vue'
 
 import LoadingState from '@/components/LoadingState.vue'
 import StatsValues, { type Stats } from '@/components/StatsValues.vue'
@@ -22,6 +22,7 @@ const stats = inject<Stats>('stats', {} as Stats)
 const session = inject<Session>('session', {} as Session)
 const runCompletion = inject<() => void>('runCompletion', () => {})
 const stop = inject<() => void>('stop', () => {})
+const shouldAutoScroll = inject<Ref<boolean>>('shouldAutoScroll')
 const markdown = new MarkdownIt({
   breaks: true
 })
@@ -42,8 +43,8 @@ const completionContent = computed(() => {
   }).join('')
 })
 
-const send = () => {
-  if (resultsContainer.value && isChatStarted) {
+const send = (prompt: string = '') => {
+  if (!prompt && resultsContainer.value && isChatStarted) {
     session.prompt = resultsContainer.value.innerText
     session.transcript = []
   }
@@ -52,12 +53,12 @@ const send = () => {
 }
 
 onMounted(() => {
-  send()
+  send(session.prompt)
 })
 
 useResizeObserver(resultsContainer, () => {
   const footer = document.querySelector('#scrollPosition')
-  if (footer) {
+  if (footer && shouldAutoScroll?.value) {
     footer.scrollIntoView({
       block: 'end'
     })
@@ -76,9 +77,9 @@ useResizeObserver(resultsContainer, () => {
     </div>
 
     <CopyTextButton
-      v-if="!isGenerating && resultsContainer?.textContent"
       :text="resultsContainer?.textContent as string"
-      class="mt-6">
+      :class="{ '!visible': !isGenerating && resultsContainer?.textContent }"
+      class="mt-6 invisible">
       COPY RESULTS
     </CopyTextButton>
 

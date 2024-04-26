@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { type RemovableRef, useSessionStorage } from '@vueuse/core'
-import { ref, computed, provide } from 'vue'
+import { type Ref, ref, computed, provide, inject } from 'vue'
 import { useRouter } from 'vue-router'
 
-import ParameterTooltip from '@/components/ParameterTooltip.vue'
 import ChatResults from '@/components/ChatResults.vue'
 import CompletionResults from '@/components/CompletionResults.vue'
+import ParameterTooltip from '@/components/ParameterTooltip.vue'
 import Accordion from '@/components/ui/Accordion.vue'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
@@ -14,6 +14,7 @@ import Slider from '@/components/ui/Slider.vue'
 import Textarea from '@/components/ui/Textarea.vue'
 import useLlama, { type Session, type UserParameters, DEFAULT_SESSION } from '@/composables/useLlama'
 import { SchemaConverter } from '@/services/json-schema-to-grammar.js'
+import IconChevronDown from '~icons/ri/arrow-down-s-line'
 
 const router = useRouter()
 
@@ -46,6 +47,8 @@ const DEFAULT_PARAMS_VALUES = {
 const isChat = computed(() => router.currentRoute.value.query?.type !== 'completion')
 
 const message = ref('')
+
+const shouldAutoScroll = inject<Ref<boolean>>('shouldAutoScroll')
 
 const storedSession:RemovableRef<Session> = useSessionStorage('session', DEFAULT_SESSION)
 const parameters = useSessionStorage('parameters', { ...DEFAULT_PARAMS_VALUES })
@@ -113,6 +116,16 @@ const convertJSONSchemaGrammar = async () => {
   } catch (e) {
     // @ts-ignore
     alert(`Convert failed: ${e.message}`)
+  }
+}
+
+const scrollToBottom = () => {
+  const footer = document.querySelector('#scrollPosition')
+  if (footer) {
+    footer.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end'
+    })
   }
 }
 
@@ -457,6 +470,15 @@ provide('uploadImage', uploadImage)
     </div>
   </div>
 </div>
+
+<button
+  :class="{
+    '!pointer-events-auto opacity-100': !shouldAutoScroll
+  }"
+  class="fixed right-10 bottom-20 text-3xl opacity-0 pointer-events-none transition-opacity p-1 bg-elevation-01"
+  @click="scrollToBottom()">
+  <IconChevronDown />
+</button>
 
 <ChatResults
   v-if="isShowingResults && isChat"
