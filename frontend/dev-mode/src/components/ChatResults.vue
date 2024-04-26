@@ -81,9 +81,9 @@ useResizeObserver(resultsContainer, () => {
         class="mt-2 bg-elevation-01 px-4 py-2 space-y-[1em]" />
 
       <CopyTextButton
-        v-if="((response as TranscriptMessage[])[0]).id_slot !== undefined"
         :text="joinResponse(response as TranscriptMessage[])"
-        class="mt-6">COPY RESULTS</CopyTextButton>
+        :class="{ '!visible': ((response as TranscriptMessage[])[0]).id_slot !== undefined }"
+        class="mt-6 invisible">COPY RESULTS</CopyTextButton>
     </template>
 
     <LoadingState v-show="isPending" />

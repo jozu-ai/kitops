@@ -43,8 +43,8 @@ const completionContent = computed(() => {
   }).join('')
 })
 
-const send = () => {
-  if (resultsContainer.value && isChatStarted) {
+const send = (prompt: string = '') => {
+  if (!prompt && resultsContainer.value && isChatStarted) {
     session.prompt = resultsContainer.value.innerText
     session.transcript = []
   }
@@ -53,7 +53,7 @@ const send = () => {
 }
 
 onMounted(() => {
-  send()
+  send(session.prompt)
 })
 
 useResizeObserver(resultsContainer, () => {
@@ -77,9 +77,9 @@ useResizeObserver(resultsContainer, () => {
     </div>
 
     <CopyTextButton
-      v-if="!isGenerating && resultsContainer?.textContent"
       :text="resultsContainer?.textContent as string"
-      class="mt-6">
+      :class="{ '!visible': !isGenerating && resultsContainer?.textContent }"
+      class="mt-6 invisible">
       COPY RESULTS
     </CopyTextButton>
 

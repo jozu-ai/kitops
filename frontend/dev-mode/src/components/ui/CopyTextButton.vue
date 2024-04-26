@@ -2,7 +2,7 @@
 import { useClipboard } from '@vueuse/core'
 
 const props = defineProps<{
-  text: string
+  text?: string
 }>()
 
 const { copy, copied } = useClipboard()
@@ -11,7 +11,7 @@ const { copy, copied } = useClipboard()
 <template>
 <button
   class="text-xs font-bold flex items-center gap-2 ml-auto hover:text-cornflower"
-  @click="copy(props.text)">
+  @click="copy(props.text || '')">
   <template v-if="!copied">
     <slot />
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

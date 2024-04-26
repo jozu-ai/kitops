@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { vIntersectionObserver } from '@vueuse/components'
-import { ref, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
 
 import { getModels } from '@/services/completion'
 
 const currentModel = ref('')
 
 const shouldAutoScroll = ref(true)
+const isFooterVisible = ref(true)
 
 const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
   shouldAutoScroll.value = isIntersecting
+}
+
+const updateFooterIntersect = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
+  isFooterVisible.value = isIntersecting
 }
 
 getModels().then((response) => {
@@ -18,7 +23,10 @@ getModels().then((response) => {
   currentModel.value = modelName
 })
 
-provide('shouldAutoScroll', shouldAutoScroll)
+provide('shouldAutoScroll', computed(() => {
+  console.log(shouldAutoScroll.value, isFooterVisible.value)
+  return shouldAutoScroll.value && !isFooterVisible.value
+}))
 </script>
 
 <template>
@@ -41,10 +49,13 @@ provide('shouldAutoScroll', shouldAutoScroll)
 </main>
 
 <div
-  id="scrollPosition" class="-mt-16 mb-16"
+  id="scrollPosition"
+  class="h-16 -mt-16"
   v-intersection-observer="updateAutoScrollFlag"></div>
 
-<footer class="bg-black py-16 text-center">
+<footer
+  class="bg-black py-16 text-center"
+  v-intersection-observer="updateFooterIntersect">
   Powered by <a href="https://github.com/ggerganov/llama.cpp" class="underline" target="_blank">llama.cpp</a> and <a href="http://ggml.ai" class="underline" target="_blank">ggml.ai</a>
 </footer>
 </template>
