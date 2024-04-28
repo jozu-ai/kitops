@@ -26,7 +26,10 @@ const (
 automatically for future CLI operations`
 
 	example = `# Login to ghcr.io
-kit login ghcr.io -u github_user -p personal_token`
+kit login ghcr.io -u github_user -p personal_token
+
+# Login to docker.io with password from stdin
+kit login docker.io --password-stdin -u docker_user`
 )
 
 type loginOptions struct {
