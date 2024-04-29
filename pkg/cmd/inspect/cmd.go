@@ -77,18 +77,18 @@ func runCommand(opts *inspectOptions) func(*cobra.Command, []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
-		manifest, err := inspectReference(cmd.Context(), opts)
+		inspectInfo, err := inspectReference(cmd.Context(), opts)
 		if err != nil {
 			if errors.Is(err, errdef.ErrNotFound) {
 				return output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
 			return output.Fatalf("Error resolving modelkit: %s", err)
 		}
-		jsonBytes, err := json.MarshalIndent(manifest, "", "  ")
+		jsonBytes, err := json.MarshalIndent(inspectInfo, "", "  ")
 		if err != nil {
-			return output.Fatalf("Error formatting manifest: %w", err)
+			return fmt.Errorf("Error formatting manifest: %w", err)
 		}
-		fmt.Println(string(jsonBytes))
+		output.Infoln(string(jsonBytes))
 		return nil
 	}
 }

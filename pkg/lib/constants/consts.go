@@ -52,6 +52,9 @@ const (
 	// Media type for the model config (Kitfile)
 	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
 
+	// Kitops-specific annotations for modelkit artifacts
+	CliVersionAnnotation = "ml.kitops.modelkit.cli-version"
+
 	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
 	// by e.g. referring to another modelkit in its .model.path
 	MaxModelRefChain = 10
