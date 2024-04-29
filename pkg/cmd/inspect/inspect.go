@@ -22,10 +22,18 @@ import (
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 
+	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
-func inspectReference(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+// Utility struct for formatting output of inspect
+type inspectInfo struct {
+	Digest     digest.Digest     `json:"digest,omitempty" yaml:"digest,omitempty"`
+	CLIVersion string            `json:"cliVersion,omitempty" yaml:"cliVersion,omitempty"`
+	Manifest   *ocispec.Manifest `json:"manifest,omitempty" yaml:"manifest,omitempty"`
+}
+
+func inspectReference(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	if opts.checkRemote {
 		return getRemoteManifest(ctx, opts)
 	} else {
@@ -33,16 +41,28 @@ func inspectReference(ctx context.Context, opts *inspectOptions) (*ocispec.Manif
 	}
 }
 
-func getLocalManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+func getLocalManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
 	store, err := repo.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	return repo.ResolveManifest(ctx, store, opts.modelRef.Reference)
+	desc, manifest, err := repo.ResolveManifest(ctx, store, opts.modelRef.Reference)
+	if err != nil {
+		return nil, err
+	}
+	version := "unknown"
+	if manifest.Annotations != nil && manifest.Annotations[constants.CliVersionAnnotation] != "" {
+		version = manifest.Annotations[constants.CliVersionAnnotation]
+	}
+	return &inspectInfo{
+		Digest:     desc.Digest,
+		CLIVersion: version,
+		Manifest:   manifest,
+	}, nil
 }
 
-func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	repository, err := repo.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
@@ -51,5 +71,17 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Mani
 	if err != nil {
 		return nil, err
 	}
-	return repo.ResolveManifest(ctx, repository, opts.modelRef.Reference)
+	desc, manifest, err := repo.ResolveManifest(ctx, repository, opts.modelRef.Reference)
+	if err != nil {
+		return nil, err
+	}
+	version := "unknown"
+	if manifest.Annotations != nil && manifest.Annotations[constants.CliVersionAnnotation] != "" {
+		version = manifest.Annotations[constants.CliVersionAnnotation]
+	}
+	return &inspectInfo{
+		Digest:     desc.Digest,
+		CLIVersion: version,
+		Manifest:   manifest,
+	}, nil
 }
