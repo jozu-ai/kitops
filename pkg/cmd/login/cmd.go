@@ -26,7 +26,10 @@ const (
 automatically for future CLI operations`
 
 	example = `# Login to ghcr.io
-kit login ghcr.io -u github_user -p personal_token`
+kit login ghcr.io -u github_user -p personal_token
+
+# Login to docker.io with password from stdin
+kit login docker.io --password-stdin -u docker_user`
 )
 
 type loginOptions struct {
@@ -47,7 +50,7 @@ func LoginCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runLogin(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -59,16 +62,17 @@ func LoginCommand() *cobra.Command {
 	return cmd
 }
 
-func runLogin(opts *loginOptions) func(cmd *cobra.Command, args []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *loginOptions) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		err := login(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalln(err)
 		}
+		return nil
 	}
 }
 

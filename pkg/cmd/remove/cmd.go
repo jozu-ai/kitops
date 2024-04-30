@@ -89,7 +89,7 @@ func RemoveCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: examples,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 	// cmd.Args = cobra.ExactArgs(1)
 	cmd.Flags().BoolVarP(&opts.forceDelete, "force", "f", false, "remove modelkit and all other tags that refer to it")
@@ -115,10 +115,10 @@ func RemoveCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *removeOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		var err error
@@ -131,8 +131,9 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) {
 			err = removeAllModels(cmd.Context(), opts)
 		}
 		if err != nil {
-			output.Fatalf(err.Error())
+			return output.Fatalf(err.Error())
 		}
+		return nil
 	}
 }
 

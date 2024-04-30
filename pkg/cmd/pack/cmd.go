@@ -58,7 +58,7 @@ func PackCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: examples,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile explictly (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
@@ -66,24 +66,24 @@ func PackCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		err := opts.complete(cmd.Context(), args)
 		if err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		// Change working directory to context path to make sure relative paths within
 		// tarballs are correct. This is the equivalent of using the -C parameter for tar
 		if err := os.Chdir(opts.contextDir); err != nil {
-			output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
+			return output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
 		}
 
 		err = runPack(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalf("Failed to pack model kit: %s", err)
-			return
+			return output.Fatalf("Failed to pack model kit: %s", err)
 		}
+		return nil
 	}
 }
 

@@ -22,12 +22,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
-	"os"
 
 	"github.com/opencontainers/go-digest"
 	specs "github.com/opencontainers/image-spec/specs-go"
@@ -88,11 +90,20 @@ func saveConfig(ctx context.Context, store repo.LocalStorage, kitfile *artifact.
 func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths) ([]ocispec.Descriptor, error) {
 	var layers []ocispec.Descriptor
 	if kitfile.Model != nil {
-		layer, err := saveContentLayer(ctx, store, kitfile.Model.Path, constants.ModelLayerMediaType, ignore)
-		if err != nil {
-			return nil, err
+		if kitfile.Model.Path != "" && !kfutils.IsModelKitReference(kitfile.Model.Path) {
+			layer, err := saveContentLayer(ctx, store, kitfile.Model.Path, constants.ModelLayerMediaType, ignore)
+			if err != nil {
+				return nil, err
+			}
+			layers = append(layers, layer)
 		}
-		layers = append(layers, layer)
+		for _, part := range kitfile.Model.Parts {
+			layer, err := saveContentLayer(ctx, store, part.Path, constants.ModelPartLayerMediaType, ignore)
+			if err != nil {
+				return nil, err
+			}
+			layers = append(layers, layer)
+		}
 	}
 	for _, code := range kitfile.Code {
 		layer, err := saveContentLayer(ctx, store, code.Path, constants.CodeLayerMediaType, ignore)
@@ -201,6 +212,8 @@ func layerTypeForMediaType(mediaType string) string {
 		return "config"
 	case constants.ModelLayerMediaType:
 		return "model"
+	case constants.ModelPartLayerMediaType:
+		return "modelpart"
 	}
 	return "<unknown>"
 }

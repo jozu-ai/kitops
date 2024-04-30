@@ -17,9 +17,9 @@
 package output
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/vbauerster/mpb/v8"
@@ -41,14 +41,16 @@ func Errorf(s string, args ...any) {
 	printFmt(stderr, s, args...)
 }
 
-func Fatalln(s any) {
+// Fatalln is the equivalent of Errorln except it returns a basic error to signal the command has failed
+func Fatalln(s any) error {
 	fmt.Fprintln(stderr, s)
-	os.Exit(1)
+	return errors.New("failed to run")
 }
 
-func Fatalf(s string, args ...any) {
+// Fatalf is the equivalent of Errorf except it returns a basic error to signal the command has failed
+func Fatalf(s string, args ...any) error {
 	printFmt(stderr, s, args...)
-	os.Exit(1)
+	return errors.New("failed to run")
 }
 
 func Debugln(s any) {

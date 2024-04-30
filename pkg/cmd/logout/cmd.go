@@ -34,21 +34,22 @@ func LogoutCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runLogout(opts),
+		RunE:    runCommand(opts),
 	}
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }
 
-func runLogout(opts *logoutOptions) func(cmd *cobra.Command, args []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *logoutOptions) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 		err := logout(cmd.Context(), opts.registry, opts.credentialStoreHome)
 		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalln(err)
 		}
+		return nil
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"context"
 	"os"
 
+	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
 	"kitops/pkg/cmd/inspect"
 	"kitops/pkg/cmd/list"
@@ -59,6 +60,11 @@ func RunCommand() *cobra.Command {
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
+			// At this point, we've parsed the command tree and args; the CLI is being correctly
+			// so we don't want to print usage. Each subcommand should print its error message before
+			// returning
+			cmd.SilenceErrors = true
+			cmd.SilenceUsage = true
 		},
 	}
 	addSubcommands(cmd)
@@ -88,6 +94,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(login.LoginCommand())
 	rootCmd.AddCommand(logout.LogoutCommand())
 	rootCmd.AddCommand(version.VersionCommand())
+	rootCmd.AddCommand(dev.DevCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

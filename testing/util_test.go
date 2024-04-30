@@ -22,6 +22,7 @@ import (
 	"io"
 	"io/fs"
 	"kitops/cmd"
+	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
@@ -33,20 +34,32 @@ import (
 
 const modelKitTag = "test:test"
 
-type testcase struct {
-	Name         string
-	Description  string   `yaml:"description"`
-	Kitfile      string   `yaml:"kitfile"`
-	Kitignore    string   `yaml:"kitignore"`
-	Files        []string `yaml:"files"`
-	IgnoredFiles []string `yaml:"ignored"`
+type shouldExpectError int
+
+const (
+	expectError shouldExpectError = iota
+	expectNoError
+)
+
+// testPreflight should be called at the start of every test; it returns a function that
+// restores state (e.g. working directory) that may have been changed by executing commands.
+func testPreflight(t *testing.T) func(t *testing.T) {
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return func(t *testing.T) {
+		if err := os.Chdir(wd); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 // runCommand executes kit <args>, saving stdout/stderr output to a buffer
 // that is then printed through the test interface. If the kit command
 // calls `os.Exit`, this command will terminate without generating any logs.
 // Returns the stdout and stderr output of the command.
-func runCommand(t *testing.T, args ...string) string {
+func runCommand(t *testing.T, e shouldExpectError, args ...string) string {
 	t.Logf("Running command: kit %s", strings.Join(args, " "))
 	runCmd := cmd.RunCommand()
 	runCmd.SetArgs(args)
@@ -56,16 +69,18 @@ func runCommand(t *testing.T, args ...string) string {
 	runCmd.SetOut(outbuf)
 	runCmd.SetErr(outbuf)
 
-	err := runCmd.Execute()
-	if !assert.NoError(t, err, "Command returned error") {
-		return ""
-	}
-
+	runErr := runCmd.Execute()
 	outlog, err := io.ReadAll(outbuf)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Command output: \n%s", string(outlog))
+
+	if e == expectError && !assert.Error(t, runErr, "Command should have failed") {
+		t.Fatalf("Command 'kit %s' should have failed and returned error", strings.Join(args, " "))
+	} else if e == expectNoError && !assert.NoError(t, runErr, "Command should not fail") {
+		t.Fatalf("Command 'kit %s' should not have failed", strings.Join(args, " "))
+	}
 	return string(outlog)
 }
 
@@ -97,6 +112,21 @@ func setupTestDirs(t *testing.T, tmpDir string) (modelKitPath, unpackPath, conte
 		}
 	}
 	return
+}
+
+func setupKitfileAndKitignore(t *testing.T, modelKitPath, kitfile, ignoreFile string) {
+	// Create Kitfile
+	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
+	if err := os.WriteFile(kitfilePath, []byte(kitfile), 0644); err != nil {
+		t.Fatal(err)
+	}
+	// Create .kitignore, if it exists
+	if ignoreFile != "" {
+		ignorePath := filepath.Join(modelKitPath, constants.IgnoreFileName)
+		if err := os.WriteFile(ignorePath, []byte(ignoreFile), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 // setupFiles ensures that all paths in files exist within tmpDir. Directories along the
@@ -146,12 +176,12 @@ func checkFilesDoNotExist(t *testing.T, tmpDir string, files []string) {
 	}
 }
 
-func loadAllTestCasesOrPanic(t *testing.T, testsPath string) []testcase {
+func loadAllTestCasesOrPanic[T interface{ withName(string) T }](t *testing.T, testsPath string) []T {
 	files, err := os.ReadDir(testsPath)
 	if err != nil {
 		t.Fatal(err)
 	}
-	var tests []testcase
+	var tests []T
 	for _, file := range files {
 		if file.IsDir() {
 			continue
@@ -160,11 +190,11 @@ func loadAllTestCasesOrPanic(t *testing.T, testsPath string) []testcase {
 		if err != nil {
 			t.Fatal(err)
 		}
-		testcase := testcase{}
+		var testcase T
 		if err := yaml.Unmarshal(bytes, &testcase); err != nil {
 			t.Fatal(err)
 		}
-		testcase.Name = file.Name()
+		testcase = testcase.withName(file.Name())
 		tests = append(tests, testcase)
 	}
 	return tests

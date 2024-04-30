@@ -37,15 +37,24 @@ const (
 	DefaultConfigSubdir = "kitops"
 	StorageSubpath      = "storage"
 	CredentialsSubpath  = "credentials.json"
+	HarnessSubpath      = "harness"
+	HarnessProcessFile  = "process.pid"
+	HarnessLogFile      = "harness.log"
 
 	// Media type for the model layer
 	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
+	// Media type for model part layer
+	ModelPartLayerMediaType = "application/vnd.kitops.modelkit.modelpart.v1.tar+gzip"
 	// Media type for the dataset layer
 	DataSetLayerMediaType = "application/vnd.kitops.modelkit.dataset.v1.tar+gzip"
 	// Media type for the code layer
 	CodeLayerMediaType = "application/vnd.kitops.modelkit.code.v1.tar+gzip"
 	// Media type for the model config (Kitfile)
 	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
+
+	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
+	// by e.g. referring to another modelkit in its .model.path
+	MaxModelRefChain = 10
 )
 
 func DefaultKitfileNames() []string {
@@ -94,6 +103,10 @@ func DefaultConfigPath() (string, error) {
 
 func StoragePath(configBase string) string {
 	return filepath.Join(configBase, StorageSubpath)
+}
+
+func HarnessPath(configBase string) string {
+	return filepath.Join(configBase, HarnessSubpath)
 }
 
 func CredentialsPath(configBase string) string {
