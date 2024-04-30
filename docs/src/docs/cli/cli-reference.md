@@ -1,7 +1,11 @@
 ---
 outline: 2
+title: "Kit CLI Reference"
 ---
-# Kit CLI Reference
+<script setup>
+  import { version } from '../../../package.json'
+</script>
+# Kit CLI Reference {{ version }}
 
 ## kit dev
 

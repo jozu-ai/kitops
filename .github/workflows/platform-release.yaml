@@ -201,6 +201,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
 
+          (cd docs; npm pkg set version=$TAG_NAME)
           ./docs/src/docs/cli/generate.sh > /dev/null
           git add --all
           git commit -m "docs: update CLI documentation for ${{ github.ref_name }}"
