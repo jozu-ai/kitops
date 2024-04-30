@@ -19,6 +19,7 @@ package inspect
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 
@@ -30,6 +31,7 @@ import (
 type inspectInfo struct {
 	Digest     digest.Digest     `json:"digest,omitempty" yaml:"digest,omitempty"`
 	CLIVersion string            `json:"cliVersion,omitempty" yaml:"cliVersion,omitempty"`
+	Kitfile    *artifact.KitFile `json:"kitfile,omitempty" yaml:"kitfile,omitempty"`
 	Manifest   *ocispec.Manifest `json:"manifest,omitempty" yaml:"manifest,omitempty"`
 }
 
@@ -47,7 +49,7 @@ func getLocalManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, 
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	desc, manifest, err := repo.ResolveManifest(ctx, store, opts.modelRef.Reference)
+	desc, manifest, config, err := repo.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +60,7 @@ func getLocalManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, 
 	return &inspectInfo{
 		Digest:     desc.Digest,
 		CLIVersion: version,
+		Kitfile:    config,
 		Manifest:   manifest,
 	}, nil
 }
@@ -71,7 +74,7 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo,
 	if err != nil {
 		return nil, err
 	}
-	desc, manifest, err := repo.ResolveManifest(ctx, repository, opts.modelRef.Reference)
+	desc, manifest, config, err := repo.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +85,7 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo,
 	return &inspectInfo{
 		Digest:     desc.Digest,
 		CLIVersion: version,
+		Kitfile:    config,
 		Manifest:   manifest,
 	}, nil
 }
