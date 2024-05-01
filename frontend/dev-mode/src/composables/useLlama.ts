@@ -8,7 +8,7 @@ type Chunk = {
 
 type LlamaResponseParams = {
   id_slot?: string;
-  slot_id: string;
+  slot_id?: number;
   stop: string[];
 }
 
@@ -125,7 +125,9 @@ export default function useLlama(params?: UserParameters, localSession?: Session
           session.transcript = [...history, [char, currentMessages]] as Transcript
         } else {
           currentMessages.push(data)
-          params.slot_id = data.slot_id
+          if (params) {
+            params.slot_id = data.slot_id
+          }
           if (session.image_selected && !data.multimodal) {
             alert("The server was not compiled for multimodal or the model projector can't be loaded.")
             return

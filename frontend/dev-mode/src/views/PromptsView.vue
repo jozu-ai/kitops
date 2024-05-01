@@ -102,7 +102,7 @@ const convertJSONSchemaGrammar = async () => {
   try {
     let schema = JSON.parse(parameters.value.grammar)
     const converter = new SchemaConverter({
-      prop_order: parameters.value.prop_order
+      prop_order: (parameters.value.prop_order ?? '')
         .split(',')
         .reduce((acc, cur, i) => ({ ...acc, [cur.trim()]: i }), {}),
       allow_fetch: true,
