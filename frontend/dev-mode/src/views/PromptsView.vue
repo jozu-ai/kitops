@@ -23,7 +23,6 @@ const DEFAULT_PARAMS_VALUES = {
   temperature: 0.7,
   repeat_last_n: 256, // 0 = disable penalty, -1 = context size
   repeat_penalty: 1.18, // 1.0 = disabled
-  penalize_nl: false,
   top_k: 40, // <= 0 to use vocab size
   top_p: 0.95, // 1.0 = disabled
   min_p: 0.05, // 0 = disabled
@@ -40,7 +39,8 @@ const DEFAULT_PARAMS_VALUES = {
   image_data: [],
   cache_prompt: true,
   api_key: '',
-  prop_order: '',
+  prop_order: undefined,
+  slot_id: -1
 } as UserParameters
 
 // no query string or a query string that is not completion, is assumed a chat
@@ -63,7 +63,7 @@ const {
   runCompletion,
   stop,
   uploadImage
-} = useLlama(parameters.value)
+} = useLlama({ ...parameters.value, slot_id: -1 })
 
 const isShowingResults = ref(false)
 
