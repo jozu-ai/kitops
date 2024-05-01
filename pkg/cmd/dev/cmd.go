@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/harness"
 	"kitops/pkg/output"
 	"net"
 	"os"
@@ -42,6 +43,7 @@ type DevOptions struct {
 	contextDir string
 	configHome string
 	stop       bool
+	printLogs  bool
 }
 
 func (opts *DevOptions) complete(ctx context.Context, args []string) error {
@@ -51,7 +53,7 @@ func (opts *DevOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	if !opts.stop {
+	if !opts.stop && !opts.printLogs {
 		opts.contextDir = ""
 		if len(args) == 1 {
 			opts.contextDir = args[0]
@@ -93,6 +95,7 @@ func DevCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.host, "host", "127.0.0.1", "Host for the development server")
 	cmd.Flags().IntVar(&opts.port, "port", 0, "Port for development server to listen on")
 	cmd.Flags().BoolVar(&opts.stop, "stop", false, "Stop the development server")
+	cmd.Flags().BoolVar(&opts.printLogs, "logs", false, "Print logs for the running development server")
 	return cmd
 }
 
@@ -108,23 +111,30 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 			output.Errorf("failed to complete options: %s", err)
 			return
 		}
-		if opts.stop {
+		switch {
+		case opts.stop:
 			output.Infoln("Stopping development server...")
 			err := stopDev(cmd.Context(), opts)
 			if err != nil {
 				output.Errorf("Failed to stop dev server: %s", err)
-				return
+				os.Exit(1)
 			}
 			output.Infoln("Development server stopped")
-			return
+		case opts.printLogs:
+			err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout())
+			if err != nil {
+				output.Errorln(err)
+				os.Exit(1)
+			}
+		default:
+			err := runDev(cmd.Context(), opts)
+			if err != nil {
+				output.Errorf("Failed to start dev server: %s", err)
+				os.Exit(1)
+			}
+			output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
+			output.Infof("Use \"kit dev --stop\" to stop the development server")
 		}
-		err := runDev(cmd.Context(), opts)
-		if err != nil {
-			output.Errorf("Failed to start dev server: %s", err)
-			os.Exit(1)
-		}
-		output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
-		output.Infof("Use \"kit dev --stop\" to stop the development server")
 	}
 }
 
