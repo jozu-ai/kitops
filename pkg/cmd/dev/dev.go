@@ -17,9 +17,11 @@ package dev
 
 import (
 	"context"
+	"fmt"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/harness"
+	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/output"
 	"os"
 )
@@ -36,7 +38,15 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	if err := kitfile.LoadModel(modelfile); err != nil {
 		return err
 	}
-	output.Infof("Loaded Kitfile: %s", kitfile.Model.Path)
+	output.Infof("Loaded Kitfile: %s", options.modelFile)
+	if kfutils.IsModelKitReference(kitfile.Model.Path) {
+		resolvedKitfile, err := kfutils.ResolveKitfile(ctx, options.configHome, kitfile.Model.Path, kitfile.Model.Path)
+		if err != nil {
+			return fmt.Errorf("Failed to resolve referenced modelkit %s: %w", kitfile.Model.Path, err)
+		}
+		kitfile.Model.Path = resolvedKitfile.Model.Path
+		kitfile.Model.Parts = append(kitfile.Model.Parts, resolvedKitfile.Model.Parts...)
+	}
 	modelPath, _, err := filesystem.VerifySubpath(options.contextDir, kitfile.Model.Path)
 	if err != nil {
 		return err
