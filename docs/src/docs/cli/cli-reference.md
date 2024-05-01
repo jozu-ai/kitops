@@ -3,6 +3,42 @@ outline: 2
 ---
 # Kit CLI Reference
 
+## kit dev
+
+Start development server (experimental)
+
+### Synopsis
+
+Start development server (experimental) with the specified context directory and kitfile
+
+```
+kit dev <directory> [flags]
+```
+
+### Examples
+
+```
+kit dev ./my-model --port 8080
+```
+
+### Options
+
+```
+  -f, --file string   Path to the kitfile
+  -h, --help          help for dev
+      --host string   Host for the development server (default "127.0.0.1")
+      --port int      Port for development server to listen on
+      --stop          Stop the development server
+```
+
+### Options inherited from parent commands
+
+```
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
+```
+
 ## kit info
 
 Show the configuration for a modelkit
@@ -165,6 +201,9 @@ kit login [flags] [REGISTRY]
 ```
 # Login to ghcr.io
 kit login ghcr.io -u github_user -p personal_token
+
+# Login to docker.io with password from stdin
+kit login docker.io --password-stdin -u docker_user
 ```
 
 ### Options
