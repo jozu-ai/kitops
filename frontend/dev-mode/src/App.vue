@@ -23,10 +23,7 @@ getModels().then((response) => {
   currentModel.value = modelName
 })
 
-provide('shouldAutoScroll', computed(() => {
-  console.log(shouldAutoScroll.value, isFooterVisible.value)
-  return shouldAutoScroll.value && !isFooterVisible.value
-}))
+provide('shouldAutoScroll', computed(() => shouldAutoScroll.value && !isFooterVisible.value))
 </script>
 
 <template>

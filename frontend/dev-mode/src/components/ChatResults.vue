@@ -89,7 +89,7 @@ useResizeObserver(resultsContainer, () => {
     <LoadingState v-show="isPending" />
   </div>
 
-  <div class="flex flex-col sticky bottom-0 bg-night pt-8">
+  <div class="flex flex-col sticky bottom-12 bg-night pt-8">
     <form @submit.prevent="send()">
       <Textarea
         id="textarea-chat-message"
