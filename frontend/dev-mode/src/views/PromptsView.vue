@@ -252,7 +252,7 @@ provide('uploadImage', uploadImage)
     <Accordion id="accordion-options" summary-class="border-b border-b-elevation-05 py-2 text-xl" content-class="md:grid grid-cols-2 md:gap-6 xs:space-y-6 mt-10">
       <template #title>Options</template>
 
-      <Slider v-model="parameters.n_predict" :min="-1" :step="1" :max="2048">
+      <Slider v-model.number="parameters.n_predict" :min="-1" :step="1" :max="2048">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -261,7 +261,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.temperature" :min="0" :step="0.01" :max="2">
+      <Slider v-model.number="parameters.temperature" :min="0" :step="0.01" :max="2">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -270,7 +270,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.repeat_penalty" :min="0" :step="0.01" :max="2">
+      <Slider v-model.number="parameters.repeat_penalty" :min="0" :step="0.01" :max="2">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -279,7 +279,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.repeat_last_n" :min="0" :max="2048">
+      <Slider v-model.number="parameters.repeat_last_n" :min="0" :max="2048">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -288,7 +288,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.top_k" :max="100" :min="-1">
+      <Slider v-model.number="parameters.top_k" :max="100" :min="-1">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -297,7 +297,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.top_p" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.top_p" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -306,7 +306,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.min_p" :max="1" :min="0" :step="0.01" wrapper-class="!mb-10">
+      <Slider v-model.number="parameters.min_p" :max="1" :min="0" :step="0.01" wrapper-class="!mb-10">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -320,7 +320,7 @@ provide('uploadImage', uploadImage)
     <Accordion id="accordion-more-options" summary-class="border-b border-b-elevation-05 py-2 text-xl" content-class="md:grid grid-cols-2 md:gap-6 xs:space-y-6 mt-10">
       <template #title>More Options</template>
 
-      <Slider v-model="parameters.tfs_z" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.tfs_z" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -329,7 +329,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.typical_p" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.typical_p" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -338,7 +338,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.presence_penalty" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.presence_penalty" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -347,7 +347,7 @@ provide('uploadImage', uploadImage)
           </ParameterTooltip>
         </template>
       </Slider>
-      <Slider v-model="parameters.frequency_penalty" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.frequency_penalty" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -360,7 +360,7 @@ provide('uploadImage', uploadImage)
       <hr class="col-span-2 border-elevation-05 my-8">
 
       <div class="col-span-2 flex flex-col md:flex-row items-center gap-16">
-        <Radio label="no Mirostat" name="mirostat" :value="0" v-model="parameters.mirostat">
+        <Radio label="no Mirostat" name="mirostat" :value="0" v-model.number="parameters.mirostat">
           <template #label="{ className }">
             <ParameterTooltip
               :className
@@ -370,7 +370,7 @@ provide('uploadImage', uploadImage)
           </template>
         </Radio>
 
-        <Radio label="Mirostat v1" name="mirostat" :value="1" v-model="parameters.mirostat">
+        <Radio label="Mirostat v1" name="mirostat" :value="1" v-model.number="parameters.mirostat">
           <template #label="{ className }">
             <ParameterTooltip
               :className
@@ -380,7 +380,7 @@ provide('uploadImage', uploadImage)
           </template>
         </Radio>
 
-        <Radio label="Mirostat v2" name="mirostat" :value="2" v-model="parameters.mirostat">
+        <Radio label="Mirostat v2" name="mirostat" :value="2" v-model.number="parameters.mirostat">
           <template #label="{ className }">
             <ParameterTooltip
               :className
@@ -394,7 +394,7 @@ provide('uploadImage', uploadImage)
 
       <hr class="col-span-2 border-elevation-05 my-8">
 
-      <Slider v-model="parameters.mirostat_tau" :max="10" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.mirostat_tau" :max="10" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -404,7 +404,7 @@ provide('uploadImage', uploadImage)
         </template>
       </Slider>
 
-      <Slider v-model="parameters.mirostat_eta" :max="1" :min="0" :step="0.01">
+      <Slider v-model.number="parameters.mirostat_eta" :max="1" :min="0" :step="0.01">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -414,7 +414,7 @@ provide('uploadImage', uploadImage)
         </template>
       </Slider>
 
-      <Slider v-model="parameters.n_probs">
+      <Slider v-model.number="parameters.n_probs">
         <template #label="{ className }">
           <ParameterTooltip
             :className
@@ -424,7 +424,7 @@ provide('uploadImage', uploadImage)
         </template>
       </Slider>
 
-      <Slider v-model="parameters.min_keep">
+      <Slider v-model.number="parameters.min_keep">
         <template #label="{ className }">
           <ParameterTooltip
             :className
