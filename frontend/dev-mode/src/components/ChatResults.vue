@@ -71,7 +71,7 @@ useResizeObserver(resultsContainer, () => {
 </script>
 
 <template>
-<div role="presentation" class="w-full pb-16 max-w-3xl mx-auto flex-1 flex flex-col">
+<div role="presentation" class="w-full max-w-3xl mx-auto flex-1 flex flex-col">
   <div class="flex-1 h-full flex flex-col justify-end" ref="resultsContainer">
     <template v-for="([actor, response], index) in session.transcript" :key="index">
       <div class="font-bold mt-6">{{ template(actor) }}</div>
@@ -82,14 +82,17 @@ useResizeObserver(resultsContainer, () => {
 
       <CopyTextButton
         :text="joinResponse(response as TranscriptMessage[])"
-        :class="{ '!visible': ((response as TranscriptMessage[])[0]).id_slot !== undefined }"
+        :class="{
+          '!visible': ((response as TranscriptMessage[])[0]).id_slot !== undefined,
+          'hidden': template(actor) === session.user
+        }"
         class="mt-6 invisible">COPY RESULTS</CopyTextButton>
     </template>
 
     <LoadingState v-show="isPending" />
   </div>
 
-  <div class="flex flex-col sticky bottom-12 bg-night pt-8">
+  <div class="flex flex-col sticky bottom-0 bg-night pt-8 pb-24">
     <form @submit.prevent="send()">
       <Textarea
         id="textarea-chat-message"

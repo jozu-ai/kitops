@@ -8,7 +8,7 @@ type Chunk = {
 
 type LlamaResponseParams = {
   id_slot?: string;
-  slot_id: string;
+  slot_id?: number;
   stop: string[];
 }
 
@@ -38,7 +38,6 @@ export type UserParameters = {
   temperature: number,
   repeat_last_n: number,
   repeat_penalty: number,
-  penalize_nl: boolean,
   top_k: number,
   top_p: number,
   min_p: number,
@@ -55,7 +54,22 @@ export type UserParameters = {
   image_data: Array<unknown>,
   cache_prompt: boolean,
   api_key: string,
-  prop_order: string,
+  slot_id?: number,
+  prop_order?: string,
+}
+
+type LlamaComposableResponse = {
+  stats: Ref<Record<string, string> | null>,
+  session: Session;
+  template: (str: string, extraSettings?: Record<string, any>) => string,
+  isGenerating: Ref<boolean>;
+  isChatStarted: Ref<boolean>;
+  isPending: Ref<boolean>;
+  chat: (msg: string) => Promise<void>;
+  runCompletion: () => void;
+  stop: (e: Event) => void;
+  reset: (e: Event) => void;
+  uploadImage: (e: Event) => void;
 }
 
 export const DEFAULT_SESSION: Session = {
@@ -70,19 +84,7 @@ export const DEFAULT_SESSION: Session = {
   image_selected: '',
 }
 
-export default function useLlamaChat(params?: UserParameters, localSession?: Session): {
-  stats: Ref<Record<string, string> | null>,
-  session: Session;
-  template: (str: string, extraSettings?: Record<string, any>) => string,
-  isGenerating: Ref<boolean>;
-  isChatStarted: Ref<boolean>;
-  isPending: Ref<boolean>;
-  chat: (msg: string) => Promise<void>;
-  runCompletion: () => void;
-  stop: (e: Event) => void;
-  reset: (e: Event) => void;
-  uploadImage: (e: Event) => void;
-} {
+export default function useLlama(params?: UserParameters, localSession?: Session): LlamaComposableResponse {
   const stats = ref(null)
   const controller = ref<AbortController | null>(null)
 
@@ -123,7 +125,9 @@ export default function useLlamaChat(params?: UserParameters, localSession?: Ses
           session.transcript = [...history, [char, currentMessages]] as Transcript
         } else {
           currentMessages.push(data)
-          llamaResponseParams.slot_id = data.slot_id
+          if (params) {
+            params.slot_id = data.slot_id
+          }
           if (session.image_selected && !data.multimodal) {
             alert("The server was not compiled for multimodal or the model projector can't be loaded.")
             return
@@ -185,7 +189,6 @@ export default function useLlamaChat(params?: UserParameters, localSession?: Ses
 
     await runLlama(prompt, {
       ...params,
-      slot_id: '',
       stop: ['</s>', template('{{char}}:'), template('{{user}}:')],
     }, '{{char}}')
   }
@@ -201,7 +204,6 @@ export default function useLlamaChat(params?: UserParameters, localSession?: Ses
 
     runLlama(prompt, {
         ...params,
-        slot_id: '',
         stop: [],
       }, '')
       .finally(() => {
