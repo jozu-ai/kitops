@@ -472,6 +472,7 @@ provide('uploadImage', uploadImage)
 </div>
 
 <button
+  v-show="isShowingResults"
   :class="{
     '!pointer-events-auto opacity-100': !shouldAutoScroll
   }"
