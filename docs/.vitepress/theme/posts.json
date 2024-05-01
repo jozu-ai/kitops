@@ -47,5 +47,12 @@
     "tags": ["kitops", "ModelKits", "LLMs", "Community"],
     "author": "Nevo David",
     "published_time": "2024-04-25"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=jRi3wmaHQBQ",
+    "description": "Let's dive into the dynamic relationship between enterprises and AI/ML teams with Brad Micklea, Founder & CEO of Jozu and project lead for Kitops.ml. Brad shares valuable insights on bridging the gap and improving the collaboration between these entities. From common challenges to effective strategies, Brad sheds light on the crucial role of communication, alignment, and AI/ML literacy in driving successful collaborations.",
+    "tags": ["KitOps", "Podcast", "LLMs", "Community"],
+    "author": "Lights On Data Show",
+    "published_time": "2024-04-26"
   }
 ]
