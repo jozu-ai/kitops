@@ -29,7 +29,7 @@ import (
 
 const partTypeMaxLen = 64
 
-var partTypeRegexp = regexp.MustCompile(`^[\w][\w.-]$`)
+var partTypeRegexp = regexp.MustCompile(`^[\w][\w.-]*$`)
 
 // ValidateKitfile returns an error if the parsed Kitfile is not valid. The error string
 // is multiple lines, each consisting of an issue in the kitfile (e.g. duplicate path).

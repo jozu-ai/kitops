@@ -5,6 +5,7 @@ project_name: kitops
 before:
   hooks:
     - go mod tidy
+    - ./build/scripts/generate-arch
 
 builds:
   - id: "kit-macos"

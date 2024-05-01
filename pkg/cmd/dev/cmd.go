@@ -22,6 +22,7 @@ import (
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
 	"net"
+	"os"
 	"runtime"
 	"strconv"
 
@@ -69,7 +70,7 @@ func (opts *DevOptions) complete(ctx context.Context, args []string) error {
 		if opts.port == 0 {
 			availPort, err := findAvailablePort()
 			if err != nil {
-				output.Fatalf("failed to find available port: %v", err)
+				output.Fatalf("Invalid arguments: %s", err)
 				return err
 			}
 			opts.port = availPort
@@ -105,19 +106,22 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %s", err)
+			return
 		}
 		if opts.stop {
 			output.Infoln("Stopping development server...")
 			err := stopDev(cmd.Context(), opts)
 			if err != nil {
-				output.Fatalf("Failed to stop dev server: %s", err)
+				output.Errorf("Failed to stop dev server: %s", err)
+				return
 			}
 			output.Infoln("Development server stopped")
 			return
 		}
 		err := runDev(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalf("Failed to start dev server: %s", err)
+			output.Errorf("Failed to start dev server: %s", err)
+			os.Exit(1)
 		}
 		output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
 		output.Infof("Use \"kit dev --stop\" to stop the development server")
