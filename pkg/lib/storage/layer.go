@@ -165,9 +165,7 @@ func writeHeaderToTar(name string, fi os.FileInfo, tw *tar.Writer) error {
 		return fmt.Errorf("failed to generate header for %s: %w", name, err)
 	}
 	header.Name = name
-	header.AccessTime = time.Time{}
-	header.ModTime = time.Time{}
-	header.ChangeTime = time.Time{}
+	sanitizeTarHeader(header)
 	if err := tw.WriteHeader(header); err != nil {
 		return fmt.Errorf("failed to write header: %w", err)
 	}
@@ -203,4 +201,14 @@ func removeTempFile(filepath string) {
 	if err := os.Remove(filepath); err != nil && !os.IsNotExist(err) {
 		output.Errorf("Failed to clean up temporary file %s: %s", filepath, err)
 	}
+}
+
+func sanitizeTarHeader(header *tar.Header) {
+	header.AccessTime = time.Time{}
+	header.ModTime = time.Time{}
+	header.ChangeTime = time.Time{}
+	header.Uid = 0
+	header.Gid = 0
+	header.Uname = ""
+	header.Gname = ""
 }
