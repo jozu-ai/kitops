@@ -220,7 +220,7 @@ func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.De
 func ResolveManifest(ctx context.Context, store oras.Target, reference string) (ocispec.Descriptor, *ocispec.Manifest, error) {
 	desc, err := store.Resolve(ctx, reference)
 	if err != nil {
-		return ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("reference %s not found in remote repository: %w", reference, err)
+		return ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("reference %s not found in repository: %w", reference, err)
 	}
 	manifest, err := GetManifest(ctx, store, desc)
 	if err != nil {

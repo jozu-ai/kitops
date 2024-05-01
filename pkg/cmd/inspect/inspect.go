@@ -25,6 +25,7 @@ import (
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2"
 )
 
 // Utility struct for formatting output of inspect
@@ -37,35 +38,22 @@ type inspectInfo struct {
 
 func inspectReference(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	if opts.checkRemote {
-		return getRemoteManifest(ctx, opts)
+		return getRemoteInspect(ctx, opts)
 	} else {
-		return getLocalManifest(ctx, opts)
+		return getLocalInspect(ctx, opts)
 	}
 }
 
-func getLocalManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
+func getLocalInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
 	store, err := repo.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	desc, manifest, config, err := repo.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
-	if err != nil {
-		return nil, err
-	}
-	version := "unknown"
-	if manifest.Annotations != nil && manifest.Annotations[constants.CliVersionAnnotation] != "" {
-		version = manifest.Annotations[constants.CliVersionAnnotation]
-	}
-	return &inspectInfo{
-		Digest:     desc.Digest,
-		CLIVersion: version,
-		Kitfile:    config,
-		Manifest:   manifest,
-	}, nil
+	return getInspectInfo(ctx, store, opts.modelRef.Reference)
 }
 
-func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
+func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	repository, err := repo.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
@@ -74,7 +62,11 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo,
 	if err != nil {
 		return nil, err
 	}
-	desc, manifest, config, err := repo.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
+	return getInspectInfo(ctx, repository, opts.modelRef.Reference)
+}
+
+func getInspectInfo(ctx context.Context, repository oras.Target, ref string) (*inspectInfo, error) {
+	desc, manifest, kitfile, err := repo.ResolveManifestAndConfig(ctx, repository, ref)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +77,7 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*inspectInfo,
 	return &inspectInfo{
 		Digest:     desc.Digest,
 		CLIVersion: version,
-		Kitfile:    config,
+		Kitfile:    kitfile,
 		Manifest:   manifest,
 	}, nil
 }
