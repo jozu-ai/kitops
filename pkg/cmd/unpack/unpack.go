@@ -196,7 +196,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	var cr io.ReadCloser
 	var cErr error
 	switch compression {
-	case constants.GzipCompression:
+	case constants.GzipCompression, constants.GzipFastestCompression:
 		cr, cErr = gzip.NewReader(rc)
 	case constants.ZstdCompression:
 		var zr *zstd.Decoder
@@ -210,13 +210,6 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	}
 	defer cr.Close()
 	tr := tar.NewReader(cr)
-
-	gzr, err := gzip.NewReader(rc)
-	if err != nil {
-		return fmt.Errorf("error extracting gzipped file: %w", err)
-	}
-	defer gzr.Close()
-	tr := tar.NewReader(gzr)
 
 	unpackDir := filepath.Dir(unpackPath)
 	if err := os.MkdirAll(unpackDir, 0755); err != nil {

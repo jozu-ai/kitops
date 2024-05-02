@@ -122,11 +122,8 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 		opts.modelRef = repo.DefaultReference()
 	}
 
-	switch opts.compression {
-	case constants.NoneCompression, constants.GzipCompression, constants.ZstdCompression:
-		break
-	default:
-		return fmt.Errorf("Invalid option for --compression flag: must be one of 'none', 'gzip', or 'zstd'")
+	if err := constants.IsValidCompression(opts.compression); err != nil {
+		return err
 	}
 
 	printConfig(opts)

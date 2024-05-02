@@ -71,6 +71,12 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	case constants.GzipCompression:
 		cw = gzip.NewWriter(mw)
 		tw = tar.NewWriter(cw)
+	case constants.GzipFastestCompression:
+		cw, err = gzip.NewWriterLevel(mw, gzip.BestSpeed)
+		if err != nil {
+			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to set up gzip compression: %w", err)
+		}
+		tw = tar.NewWriter(cw)
 	case constants.ZstdCompression:
 		// Need "BetterCompression" to see any compression for some layers
 		cw, err = zstd.NewWriter(mw, zstd.WithEncoderLevel(zstd.SpeedBetterCompression))
