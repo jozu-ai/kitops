@@ -85,7 +85,7 @@ func (w *wrappedRepo) Push(ctx context.Context, expected ocispec.Descriptor, con
 // WrapTarget wraps an oras.Target so that calls to Push print a progress bar.
 // If output is configured to not print progress bars, this is a no-op.
 func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
-	if !shouldPrintProgress() {
+	if !progressEnabled {
 		return wrap, &ProgressLogger{stdout}
 	}
 	p := mpb.New(
@@ -99,7 +99,7 @@ func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
 }
 
 func WrapReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogger) {
-	if !shouldPrintProgress() {
+	if !progressEnabled {
 		return rc, &ProgressLogger{stdout}
 	}
 
@@ -148,7 +148,7 @@ func (t *ProgressTar) Close() error {
 }
 
 func TarProgress(total int64, tw *tar.Writer) (*ProgressTar, *ProgressLogger) {
-	if !shouldPrintProgress() {
+	if !progressEnabled {
 		return &ProgressTar{tw: tw}, &ProgressLogger{stdout}
 	}
 
