@@ -22,10 +22,11 @@ import (
 )
 
 var (
-	printDebug              = false
-	progressStyle           = "plain"
-	stdout        io.Writer = os.Stdout
-	stderr        io.Writer = os.Stderr
+	printDebug                = false
+	progressStyle             = "plain"
+	progressEnabled           = false
+	stdout          io.Writer = os.Stdout
+	stderr          io.Writer = os.Stderr
 )
 
 func SetDebug(debug bool) {
@@ -34,6 +35,11 @@ func SetDebug(debug bool) {
 
 func SetProgressBars(style string) {
 	progressStyle = style
+	progressEnabled = shouldPrintProgress()
+}
+
+func ProgressEnabled() bool {
+	return progressEnabled
 }
 
 func SetOut(w io.Writer) {
