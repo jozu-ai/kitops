@@ -33,6 +33,7 @@ import (
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
+	"github.com/klauspost/compress/zstd"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/content"
 )
@@ -191,6 +192,24 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	rc, logger = output.WrapReadCloser(desc.Size, rc)
 	defer rc.Close()
 	defer logger.Wait()
+
+	var cr io.ReadCloser
+	var cErr error
+	switch compression {
+	case constants.GzipCompression:
+		cr, cErr = gzip.NewReader(rc)
+	case constants.ZstdCompression:
+		var zr *zstd.Decoder
+		zr, cErr = zstd.NewReader(rc)
+		cr = zr.IOReadCloser()
+	case constants.NoneCompression:
+		cr = rc
+	}
+	if cErr != nil {
+		return fmt.Errorf("error setting up decompress: %w", err)
+	}
+	defer cr.Close()
+	tr := tar.NewReader(cr)
 
 	gzr, err := gzip.NewReader(rc)
 	if err != nil {
