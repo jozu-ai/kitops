@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
 	"os"
@@ -53,6 +54,11 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 		}
 		return "", ocispec.DescriptorEmptyJSON, err
 	}
+	totalSize, err := getTotalSize(path, pathInfo, ignore)
+	if err != nil {
+		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get size of layer: %w", err)
+	}
+
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to create temporary file: %w", err)
@@ -66,10 +72,12 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
 	gzw := gzip.NewWriter(mw)
 	tw := tar.NewWriter(gzw)
+	ptw, plog := output.TarProgress(totalSize, tw)
 
 	// Wrapper function for closing writers before returning an error
 	handleErr := func(err error) (string, ocispec.Descriptor, error) {
 		// Don't care about these errors since we'll be deleting the file anyways
+		_ = ptw.Close()
 		_ = tw.Close()
 		_ = gzw.Close()
 		_ = tempFile.Close()
@@ -78,20 +86,21 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 	}
 
 	if pathInfo.Mode().IsRegular() {
-		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, tw); err != nil {
+		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, ptw, plog); err != nil {
 			return handleErr(err)
 		}
-		if err := writeFileToTar(path, pathInfo, tw); err != nil {
+		if err := writeFileToTar(path, pathInfo, ptw, plog); err != nil {
 			return handleErr(err)
 		}
 	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(path, ignore, tw); err != nil {
+		if err := writeDirToTar(path, ignore, ptw, plog); err != nil {
 			return handleErr(err)
 		}
 	} else {
 		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", path))
 	}
 
+	callAndPrintError(ptw.Close, "Failed to close writer: %s")
 	callAndPrintError(tw.Close, "Failed to close tar writer: %s")
 	callAndPrintError(gzw.Close, "Failed to close gzip writer: %s")
 
@@ -112,7 +121,7 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 
 // writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
 // Any non-regular files and directories (e.g. symlinks) are skipped.
-func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, tw *tar.Writer) error {
+func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
 	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
 	// to compress the directory pointed at by basePath
 	trimPath := filepath.Dir(basePath)
@@ -137,10 +146,10 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, tw *tar.Write
 			return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
 		} else if shouldIgnore {
 			if !ignore.HasExclusions() && fi.IsDir() {
-				output.Debugf("Skipping directory %s: ignored", file)
+				plog.Debugf("Skipping directory %s: ignored", file)
 				return filepath.SkipDir
 			}
-			output.Debugf("Skipping file %s: ignored", file)
+			plog.Debugf("Skipping file %s: ignored", file)
 			return nil
 		}
 
@@ -149,44 +158,79 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, tw *tar.Write
 			return fmt.Errorf("failed to find relative path for %s", file)
 		}
 
-		if err := writeHeaderToTar(relPath, fi, tw); err != nil {
+		if err := writeHeaderToTar(relPath, fi, ptw, plog); err != nil {
 			return err
 		}
 		if fi.IsDir() {
 			return nil
 		}
-		return writeFileToTar(file, fi, tw)
+		return writeFileToTar(file, fi, ptw, plog)
 	})
 }
 
-func writeHeaderToTar(name string, fi os.FileInfo, tw *tar.Writer) error {
+func writeHeaderToTar(name string, fi os.FileInfo, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
 	header, err := tar.FileInfoHeader(fi, "")
 	if err != nil {
 		return fmt.Errorf("failed to generate header for %s: %w", name, err)
 	}
 	header.Name = name
 	sanitizeTarHeader(header)
-	if err := tw.WriteHeader(header); err != nil {
+	if err := ptw.WriteHeader(header); err != nil {
 		return fmt.Errorf("failed to write header: %w", err)
 	}
-	output.Debugf("Wrote header %s to tar file", header.Name)
+	plog.Debugf("Wrote header %s to tar file", header.Name)
 	return nil
 }
 
-func writeFileToTar(file string, fi os.FileInfo, tw *tar.Writer) error {
+func writeFileToTar(file string, fi os.FileInfo, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
 	f, err := os.Open(file)
 	if err != nil {
 		return fmt.Errorf("failed to open file for archiving: %w", err)
 	}
 	defer f.Close()
 
-	if written, err := io.Copy(tw, f); err != nil {
+	if written, err := io.Copy(ptw, f); err != nil {
 		return fmt.Errorf("failed to add file to archive: %w", err)
 	} else if written != fi.Size() {
 		return fmt.Errorf("error writing file: %w", err)
 	}
-	output.Debugf("Wrote file %s to tar file", file)
+	plog.Debugf("Wrote file %s to tar file", file)
 	return nil
+}
+
+func getTotalSize(basePath string, pathInfo fs.FileInfo, ignore filesystem.IgnorePaths) (int64, error) {
+	if pathInfo.Mode().IsRegular() {
+		return pathInfo.Size(), nil
+	} else if pathInfo.IsDir() {
+		var total int64
+		err := filepath.WalkDir(basePath, func(file string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if shouldIgnore, err := ignore.Matches(file, basePath); err != nil {
+				return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
+			} else if shouldIgnore {
+				if !ignore.HasExclusions() && d.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
+			}
+			if d.Type().IsRegular() {
+				fi, err := d.Info()
+				if err != nil {
+					return fmt.Errorf("failed to stat %s: %w", file, err)
+				}
+				total += fi.Size()
+			}
+			return nil
+		})
+		if err != nil {
+			return 0, err
+		}
+		return total, nil
+	} else {
+		return 0, fmt.Errorf("path %s is neither a file nor a directory", basePath)
+	}
 }
 
 // callAndPrintError is a wrapper to print an error message for a function that
