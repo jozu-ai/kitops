@@ -41,17 +41,6 @@ const (
 	HarnessProcessFile  = "process.pid"
 	HarnessLogFile      = "harness.log"
 
-	// Media type for the model layer
-	ModelLayerMediaType = "application/vnd.kitops.modelkit.model.v1.tar+gzip"
-	// Media type for model part layer
-	ModelPartLayerMediaType = "application/vnd.kitops.modelkit.modelpart.v1.tar+gzip"
-	// Media type for the dataset layer
-	DataSetLayerMediaType = "application/vnd.kitops.modelkit.dataset.v1.tar+gzip"
-	// Media type for the code layer
-	CodeLayerMediaType = "application/vnd.kitops.modelkit.code.v1.tar+gzip"
-	// Media type for the model config (Kitfile)
-	ModelConfigMediaType = "application/vnd.kitops.modelkit.config.v1+json"
-
 	// Kitops-specific annotations for modelkit artifacts
 	CliVersionAnnotation = "ml.kitops.modelkit.cli-version"
 

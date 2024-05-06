@@ -192,7 +192,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 	if err := json.Unmarshal(manifestBytes, &manifest); err != nil {
 		return nil, fmt.Errorf("failed to parse manifest %s: %w", manifestDesc.Digest, err)
 	}
-	if manifest.Config.MediaType != constants.ModelConfigMediaType {
+	if manifest.Config.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, fmt.Errorf("reference exists but is not a model")
 	}
 
@@ -202,7 +202,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 // GetConfig returns the config (Kitfile) described by a descriptor. Returns an error if the config blob cannot
 // be resolved or if the descriptor does not describe a Kitfile.
 func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.Descriptor) (*artifact.KitFile, error) {
-	if configDesc.MediaType != constants.ModelConfigMediaType {
+	if configDesc.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, fmt.Errorf("configuration descriptor does not describe a Kitfile")
 	}
 	configBytes, err := content.FetchAll(ctx, store, configDesc)

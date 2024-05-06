@@ -89,7 +89,7 @@ func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.R
 	if err := json.Unmarshal(manifestBytes, manifest); err != nil {
 		return nil, fmt.Errorf("failed to parse manifest: %w", err)
 	}
-	if manifest.Config.MediaType != constants.ModelConfigMediaType {
+	if manifest.Config.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, nil
 	}
 

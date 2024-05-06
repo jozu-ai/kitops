@@ -46,6 +46,7 @@ type packOptions struct {
 	configHome  string
 	storageHome string
 	fullTagRef  string
+	compression string
 	modelRef    *registry.Reference
 	extraRefs   []string
 }
@@ -62,6 +63,7 @@ func PackCommand() *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile explictly (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
+	cmd.Flags().StringVar(&opts.compression, "compression", "gzip", "Compression format to use for layers")
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }
@@ -119,6 +121,14 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 	} else {
 		opts.modelRef = repo.DefaultReference()
 	}
+
+	switch opts.compression {
+	case constants.NoneCompression, constants.GzipCompression:
+		break
+	default:
+		return fmt.Errorf("Invalid option for --compression flag: must be one of 'none' or 'gzip'")
+	}
+
 	printConfig(opts)
 	return nil
 }

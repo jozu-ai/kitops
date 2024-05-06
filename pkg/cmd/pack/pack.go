@@ -91,7 +91,7 @@ func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, sto
 		return nil, err
 	}
 
-	manifestDesc, err := storage.SaveModel(ctx, store, kitfile, ignore)
+	manifestDesc, err := storage.SaveModel(ctx, store, kitfile, ignore, opts.compression)
 	if err != nil {
 		return nil, err
 	}
