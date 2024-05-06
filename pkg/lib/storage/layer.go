@@ -252,6 +252,10 @@ func removeTempFile(filepath string) {
 }
 
 func sanitizeTarHeader(header *tar.Header) {
+	// On windows, store paths linux-style (forward slashes). This is a no-op if
+	// filepath.Separator is '/'
+	header.Name = filepath.ToSlash(header.Name)
+	// Clear fields that break reproducible tars
 	header.AccessTime = time.Time{}
 	header.ModTime = time.Time{}
 	header.ChangeTime = time.Time{}

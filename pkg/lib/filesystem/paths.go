@@ -32,6 +32,10 @@ func VerifySubpath(context, subDir string) (absPath, relPath string, err error) 
 		return "", "", fmt.Errorf("absolute paths are not supported (%s)", subDir)
 	}
 
+	if !filepath.IsLocal(subDir) {
+		return "", "", fmt.Errorf("layer paths must stay within context directory")
+	}
+
 	// Get absolute path for context
 	absContext, err := filepath.Abs(context)
 	if err != nil {
@@ -50,7 +54,7 @@ func VerifySubpath(context, subDir string) (absPath, relPath string, err error) 
 	if _, exists := PathExists(fullPath); exists {
 		res, err := filepath.EvalSymlinks(fullPath)
 		if err != nil {
-			return "", "", fmt.Errorf("error resolving %s: %w", absContext, err)
+			return "", "", fmt.Errorf("error resolving %s: %w", fullPath, err)
 		}
 		fullPath = res
 	}
