@@ -30,8 +30,9 @@ const (
 )
 
 const (
-	NoneCompression = "none"
-	GzipCompression = "gzip"
+	NoneCompression        = "none"
+	GzipCompression        = "gzip"
+	GzipFastestCompression = "gzip-fastest"
 )
 
 var mediaTypeRegexp = regexp.MustCompile(`^application/vnd.kitops.modelkit.(\w+).v1.tar(?:\+(\w+))?`)
@@ -52,7 +53,11 @@ func (t MediaType) String() string {
 	if t.Compression == NoneCompression {
 		return fmt.Sprintf("application/vnd.kitops.modelkit.%s.v1.tar", t.BaseType)
 	}
-	return fmt.Sprintf("application/vnd.kitops.modelkit.%s.v1.tar+%s", t.BaseType, t.Compression)
+	comp := t.Compression
+	if comp == GzipFastestCompression {
+		comp = GzipCompression
+	}
+	return fmt.Sprintf("application/vnd.kitops.modelkit.%s.v1.tar+%s", t.BaseType, comp)
 }
 
 func ParseMediaType(s string) MediaType {
@@ -73,4 +78,13 @@ func ParseMediaType(s string) MediaType {
 		mediaType.Compression = NoneCompression
 	}
 	return mediaType
+}
+
+func IsValidCompression(compression string) error {
+	switch compression {
+	case NoneCompression, GzipCompression, GzipFastestCompression:
+		return nil
+	default:
+		return fmt.Errorf("Invalid option for --compression flag: must be one of 'none', 'gzip', or 'gzip-fastest'")
+	}
 }
