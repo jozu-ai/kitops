@@ -81,8 +81,9 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 	var modelPartIdx, codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
 		var relPath string
-		switch layerDesc.MediaType {
-		case constants.ModelLayerMediaType:
+		mediaType := constants.ParseMediaType(layerDesc.MediaType)
+		switch mediaType.BaseType {
+		case constants.ModelType:
 			if !opts.unpackConf.unpackModels {
 				continue
 			}
@@ -92,7 +93,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			}
 			output.Infof("Unpacking model %s to %s", config.Model.Name, relPath)
 
-		case constants.ModelPartLayerMediaType:
+		case constants.ModelPartType:
 			if !opts.unpackConf.unpackModels {
 				continue
 			}
@@ -104,7 +105,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			output.Infof("Unpacking model part %s to %s", part.Name, relPath)
 			modelPartIdx += 1
 
-		case constants.CodeLayerMediaType:
+		case constants.CodeType:
 			if !opts.unpackConf.unpackCode {
 				continue
 			}
@@ -116,7 +117,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			output.Infof("Unpacking code to %s", relPath)
 			codeIdx += 1
 
-		case constants.DataSetLayerMediaType:
+		case constants.DatasetType:
 			if !opts.unpackConf.unpackDatasets {
 				continue
 			}
@@ -128,7 +129,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
 		}
-		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite); err != nil {
+		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
 			return fmt.Errorf("Failed to unpack: %w", err)
 		}
 	}
@@ -181,7 +182,7 @@ func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) er
 	return nil
 }
 
-func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, unpackPath string, overwrite bool) error {
+func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, unpackPath string, overwrite bool, compression string) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)

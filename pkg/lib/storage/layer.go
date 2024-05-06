@@ -23,11 +23,13 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"kitops/pkg/lib/filesystem"
-	"kitops/pkg/output"
 	"os"
 	"path/filepath"
 	"time"
+
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/output"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -37,7 +39,7 @@ import (
 // a descriptor (including hash) for the compressed file, the layer is saved to a temporary file
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
-func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+func compressLayer(path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
 	// Clean path to ensure consistent format (./path vs path/ vs path)
 	path = filepath.Clean(path)
 
@@ -50,7 +52,7 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 	pathInfo, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("%s path %s does not exist", layerTypeForMediaType(mediaType), path)
+			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("%s path %s does not exist", mediaType.BaseType, path)
 		}
 		return "", ocispec.DescriptorEmptyJSON, err
 	}
@@ -69,17 +71,26 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 	digester := digest.Canonical.Digester()
 	mw := io.MultiWriter(tempFile, digester.Hash())
 
-	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
-	gzw := gzip.NewWriter(mw)
-	tw := tar.NewWriter(gzw)
+	var cw io.WriteCloser
+	var tw *tar.Writer
+	switch mediaType.Compression {
+	case constants.GzipCompression:
+		cw = gzip.NewWriter(mw)
+		tw = tar.NewWriter(cw)
+	case constants.NoneCompression:
+		tw = tar.NewWriter(mw)
+	}
 	ptw, plog := output.TarProgress(totalSize, tw)
 
 	// Wrapper function for closing writers before returning an error
+	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
 	handleErr := func(err error) (string, ocispec.Descriptor, error) {
 		// Don't care about these errors since we'll be deleting the file anyways
 		_ = ptw.Close()
 		_ = tw.Close()
-		_ = gzw.Close()
+		if cw != nil {
+			_ = cw.Close()
+		}
 		_ = tempFile.Close()
 		removeTempFile(tempFileName)
 		return "", ocispec.DescriptorEmptyJSON, err
@@ -102,7 +113,9 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 
 	callAndPrintError(ptw.Close, "Failed to close writer: %s")
 	callAndPrintError(tw.Close, "Failed to close tar writer: %s")
-	callAndPrintError(gzw.Close, "Failed to close gzip writer: %s")
+	if cw != nil {
+		callAndPrintError(cw.Close, "Failed to close compression writer: %s")
+	}
 
 	tempFileInfo, err := tempFile.Stat()
 	if err != nil {
@@ -112,7 +125,7 @@ func compressLayer(path, mediaType string, ignore filesystem.IgnorePaths) (tempF
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
 
 	desc = ocispec.Descriptor{
-		MediaType: mediaType,
+		MediaType: mediaType.String(),
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
 	}
