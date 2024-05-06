@@ -195,7 +195,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	var cr io.ReadCloser
 	var cErr error
 	switch compression {
-	case constants.GzipCompression:
+	case constants.GzipCompression, constants.GzipFastestCompression:
 		cr, cErr = gzip.NewReader(rc)
 	case constants.NoneCompression:
 		cr = rc
