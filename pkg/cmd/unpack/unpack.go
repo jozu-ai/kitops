@@ -192,12 +192,19 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer rc.Close()
 	defer logger.Wait()
 
-	gzr, err := gzip.NewReader(rc)
-	if err != nil {
-		return fmt.Errorf("error extracting gzipped file: %w", err)
+	var cr io.ReadCloser
+	var cErr error
+	switch compression {
+	case constants.GzipCompression:
+		cr, cErr = gzip.NewReader(rc)
+	case constants.NoneCompression:
+		cr = rc
 	}
-	defer gzr.Close()
-	tr := tar.NewReader(gzr)
+	if cErr != nil {
+		return fmt.Errorf("error setting up decompress: %w", err)
+	}
+	defer cr.Close()
+	tr := tar.NewReader(cr)
 
 	unpackDir := filepath.Dir(unpackPath)
 	if err := os.MkdirAll(unpackDir, 0755); err != nil {
