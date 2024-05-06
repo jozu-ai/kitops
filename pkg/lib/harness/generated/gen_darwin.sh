@@ -1,9 +1,11 @@
 set -ex
 set -o pipefail
-echo "Build kit harness for darwin"
+echo "Starting Darwin LLM Harneess build"
 source $(dirname $0)/gen_common.sh
 init_vars
 git_module_setup
+
+COMMON_DARWIN_DEFS="-DCMAKE_OSX_DEPLOYMENT_TARGET=11.3 -DLLAMA_METAL_MACOSX_VERSION_MIN=11.3 -DCMAKE_SYSTEM_NAME=Darwin -DLLAMA_METAL_EMBED_LIBRARY=on"
 
 ## Build devmode UI
 build_ui
