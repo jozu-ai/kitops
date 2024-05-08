@@ -1,8 +1,12 @@
 import { URL, fileURLToPath } from 'node:url'
+import { createWriteStream } from 'node:fs'
+import { resolve } from 'path'
 
 import { defineConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
-import { resolve } from 'path'
+import { SitemapStream } from 'sitemap'
+
+const links = []
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -121,6 +125,25 @@ export default defineConfig({
       'link',
       { rel: 'canonical', href: canonicalUrl }
     ])
+  },
+
+  // Generate the sitemap.xml
+  transformHtml: (_, id, { pageData }) => {
+    if (!/[\\/]404\.html$/.test(id)) {
+      links.push({
+        url: pageData.relativePath.replace(/\/index\.md$/, '/').replace(/\.md$/, '.html'),
+        lastmod: pageData.lastUpdated,
+      })
+    }
+  },
+
+  buildEnd: async ({ outDir }) => {
+    const sitemap = new SitemapStream({ hostname: 'https://kitops.ml/' })
+    const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
+    sitemap.pipe(writeStream)
+    links.forEach((link) => sitemap.write(link))
+    sitemap.end()
+    await new Promise((r) => writeStream.on('finish', r))
   },
 
   vite: {
