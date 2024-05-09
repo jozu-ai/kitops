@@ -192,7 +192,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 	if err := json.Unmarshal(manifestBytes, &manifest); err != nil {
 		return nil, fmt.Errorf("failed to parse manifest %s: %w", manifestDesc.Digest, err)
 	}
-	if manifest.Config.MediaType != constants.ModelConfigMediaType {
+	if manifest.Config.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, fmt.Errorf("reference exists but is not a model")
 	}
 
@@ -202,7 +202,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 // GetConfig returns the config (Kitfile) described by a descriptor. Returns an error if the config blob cannot
 // be resolved or if the descriptor does not describe a Kitfile.
 func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.Descriptor) (*artifact.KitFile, error) {
-	if configDesc.MediaType != constants.ModelConfigMediaType {
+	if configDesc.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, fmt.Errorf("configuration descriptor does not describe a Kitfile")
 	}
 	configBytes, err := content.FetchAll(ctx, store, configDesc)
@@ -217,26 +217,30 @@ func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.De
 }
 
 // ResolveManifest returns the manifest for a reference (tag), if present in the target store
-func ResolveManifest(ctx context.Context, store oras.Target, reference string) (*ocispec.Manifest, error) {
+func ResolveManifest(ctx context.Context, store oras.Target, reference string) (ocispec.Descriptor, *ocispec.Manifest, error) {
 	desc, err := store.Resolve(ctx, reference)
 	if err != nil {
-		return nil, fmt.Errorf("reference %s not found in remote repository: %w", reference, err)
+		return ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("reference %s not found in repository: %w", reference, err)
 	}
-	return GetManifest(ctx, store, desc)
+	manifest, err := GetManifest(ctx, store, desc)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, nil, err
+	}
+	return desc, manifest, nil
 }
 
 // ResolveManifestAndConfig returns the manifest and config (Kitfile) for a given reference (tag), if present
 // in the store. Calls ResolveManifest and GetConfig.
-func ResolveManifestAndConfig(ctx context.Context, store oras.Target, reference string) (*ocispec.Manifest, *artifact.KitFile, error) {
-	manifest, err := ResolveManifest(ctx, store, reference)
+func ResolveManifestAndConfig(ctx context.Context, store oras.Target, reference string) (ocispec.Descriptor, *ocispec.Manifest, *artifact.KitFile, error) {
+	desc, manifest, err := ResolveManifest(ctx, store, reference)
 	if err != nil {
-		return nil, nil, err
+		return ocispec.DescriptorEmptyJSON, nil, nil, err
 	}
 	config, err := GetConfig(ctx, store, manifest.Config)
 	if err != nil {
-		return nil, nil, err
+		return ocispec.DescriptorEmptyJSON, nil, nil, err
 	}
-	return manifest, config, nil
+	return desc, manifest, config, nil
 }
 
 // GetTagsForDescriptor returns the list of tags that reference a particular descriptor (SHA256 hash) in LocalStorage.

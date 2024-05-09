@@ -5,6 +5,7 @@ project_name: kitops
 before:
   hooks:
     - go mod tidy
+    - ./build/scripts/generate-arch
 
 builds:
   - id: "kit-macos"
@@ -35,7 +36,6 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    wrap_in_directory: true
     rlcp: true
     files:
       - LICENSE

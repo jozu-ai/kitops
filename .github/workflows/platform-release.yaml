@@ -26,6 +26,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      ## install build dependencies for frontend generation
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: './frontend/dev-mode/.nvmrc'
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8.0.0
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -182,6 +193,7 @@ jobs:
         run: |
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           PR_BRANCH="${{ github.ref_name }}-docs-update"
+          git fetch origin main
           git branch "$PR_BRANCH"
           git checkout "$PR_BRANCH"
           git pull origin --ff-only "${PR_BRANCH}" || true

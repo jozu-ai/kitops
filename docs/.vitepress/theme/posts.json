@@ -35,5 +35,29 @@
     "tags": ["mlops", "kitops", "ModelKits"],
     "author": "Gorkem Ercan",
     "published_time": "2024-04-19"
+  },
+    {
+    "url": "https://dev.to/kitops/why-enterprise-ai-projects-are-moving-too-slowly-29ik",
+    "tags": ["mlops", "kitops", "ModelKits"],
+    "author": "Brad Micklea",
+    "published_time": "2024-04-22"
+  },
+  {
+    "url": "https://dev.to/github20k/i-fine-tuned-my-model-on-a-new-programming-language-you-can-do-it-too-449",
+    "tags": ["kitops", "ModelKits", "LLMs", "Community"],
+    "author": "Nevo David",
+    "published_time": "2024-04-25"
+  },
+  {
+    "url": "https://dev.to/kitops/fine-tune-your-first-large-language-model-llm-with-lora-llamacpp-and-kitops-in-5-easy-steps-1g7f",
+    "tags": ["kitops", "ModelKits", "LLMs", "Llama"],
+    "author": "Rajat Raina",
+    "published_time": "2024-04-30"
+  },
+  {
+    "url": "https://dev.to/kitops/kitops-release-v02-introducing-dev-mode-and-the-ability-to-chain-modelkits-4n39",
+    "tags": ["kitops", "Dev Mode", "Release Notes"],
+    "author": "Gorkem Ercan",
+    "published_time": "2024-05-01"
   }
 ]

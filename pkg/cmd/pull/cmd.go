@@ -25,7 +25,6 @@ import (
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
-	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -73,7 +72,7 @@ func PullCommand() *cobra.Command {
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
-		Run:     runCommand(opts),
+		RunE:    runCommand(opts),
 	}
 
 	cmd.Args = cobra.ExactArgs(1)
@@ -82,33 +81,18 @@ func PullCommand() *cobra.Command {
 	return cmd
 }
 
-func runCommand(opts *pullOptions) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+func runCommand(opts *pullOptions) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			output.Fatalf("Invalid arguments: %s", err)
-		}
-		remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
-			PlainHTTP:       opts.PlainHTTP,
-			SkipTLSVerify:   !opts.TlsVerify,
-			CredentialsPath: constants.CredentialsPath(opts.configHome),
-		})
-		if err != nil {
-			output.Fatalln(err)
-		}
-
-		storageHome := constants.StoragePath(opts.configHome)
-		localStorePath := repo.RepoPath(storageHome, opts.modelRef)
-		localStore, err := oci.New(localStorePath)
-		if err != nil {
-			output.Fatalln(err)
+			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
 		output.Infof("Pulling %s", opts.modelRef.String())
-		desc, err := pullModel(cmd.Context(), remoteRegistry, localStore, opts.modelRef)
+		desc, err := runPull(cmd.Context(), opts)
 		if err != nil {
-			output.Fatalf("Failed to pull: %s", err)
-			return
+			return output.Fatalf("Failed to pull: %s", err)
 		}
 		output.Infof("Pulled %s", desc.Digest)
+		return nil
 	}
 }

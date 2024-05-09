@@ -22,87 +22,142 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
-	"os"
-	"path/filepath"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content"
-	"oras.land/oras-go/v2/registry"
 )
 
-// unpackModel fetches and unpacks a *registry.Reference from an oras.Target. It returns an error if
+// runUnpack fetches and unpacks a *registry.Reference from an oras.Target. It returns an error if
 // unpacking fails, or if any path specified in the modelkit is not a subdirectory of the current
 // unpack target directory.
-func unpackModel(ctx context.Context, store oras.Target, ref *registry.Reference, options *unpackOptions) error {
+func runUnpack(ctx context.Context, opts *unpackOptions) error {
+	return runUnpackRecursive(ctx, opts, []string{})
+}
+
+func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []string) error {
+	if len(visitedRefs) > constants.MaxModelRefChain {
+		return fmt.Errorf("Reached maximum number of model references: [%s]", strings.Join(visitedRefs, "=>"))
+	}
+
+	ref := opts.modelRef
+	store, err := getStoreForRef(ctx, opts)
+	if err != nil {
+		ref := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+		return output.Fatalf("Failed to find reference %s: %s", ref, err)
+	}
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
-		return fmt.Errorf("Failed to resolve local reference: %w", err)
+		return fmt.Errorf("Failed to resolve reference: %w", err)
 	}
 	manifest, config, err := repo.GetManifestAndConfig(ctx, store, manifestDesc)
 	if err != nil {
-		return fmt.Errorf("Failed to read local model: %s", err)
+		return fmt.Errorf("Failed to read model: %s", err)
+	}
+	if config.Model != nil && kfutils.IsModelKitReference(config.Model.Path) {
+		output.Infof("Unpacking referenced modelkit %s", config.Model.Path)
+		if err := unpackParent(ctx, config.Model.Path, opts, visitedRefs); err != nil {
+			return err
+		}
 	}
 
-	if options.unpackConf.unpackKitfile {
-		if err := unpackConfig(config, options.unpackDir, options.overwrite); err != nil {
+	if opts.unpackConf.unpackKitfile {
+		if err := unpackConfig(config, opts.unpackDir, opts.overwrite); err != nil {
 			return err
 		}
 	}
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for unpacking
-	var codeIdx, datasetIdx int
+	var modelPartIdx, codeIdx, datasetIdx int
 	for _, layerDesc := range manifest.Layers {
 		var relPath string
-		switch layerDesc.MediaType {
-		case constants.ModelLayerMediaType:
-			if !options.unpackConf.unpackModels {
+		mediaType := constants.ParseMediaType(layerDesc.MediaType)
+		switch mediaType.BaseType {
+		case constants.ModelType:
+			if !opts.unpackConf.unpackModels {
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, config.Model.Path)
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, config.Model.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving model path: %w", err)
 			}
-			output.Infof("Unpacking model to %s", relPath)
+			output.Infof("Unpacking model %s to %s", config.Model.Name, relPath)
 
-		case constants.CodeLayerMediaType:
-			if !options.unpackConf.unpackCode {
+		case constants.ModelPartType:
+			if !opts.unpackConf.unpackModels {
+				continue
+			}
+			part := config.Model.Parts[modelPartIdx]
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, part.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving code path: %w", err)
+			}
+			output.Infof("Unpacking model part %s to %s", part.Name, relPath)
+			modelPartIdx += 1
+
+		case constants.CodeType:
+			if !opts.unpackConf.unpackCode {
 				continue
 			}
 			codeEntry := config.Code[codeIdx]
-			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, codeEntry.Path)
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, codeEntry.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving code path: %w", err)
 			}
 			output.Infof("Unpacking code to %s", relPath)
 			codeIdx += 1
 
-		case constants.DataSetLayerMediaType:
-			if !options.unpackConf.unpackDatasets {
+		case constants.DatasetType:
+			if !opts.unpackConf.unpackDatasets {
 				continue
 			}
 			datasetEntry := config.DataSets[datasetIdx]
-			_, relPath, err = filesystem.VerifySubpath(options.unpackDir, datasetEntry.Path)
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, datasetEntry.Path)
 			if err != nil {
 				return fmt.Errorf("Error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
 			}
 			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
 		}
-		if err := unpackLayer(ctx, store, layerDesc, relPath, options.overwrite); err != nil {
+		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
 			return fmt.Errorf("Failed to unpack: %w", err)
 		}
 	}
+	output.Debugf("Unpacked %d model part layers", modelPartIdx)
 	output.Debugf("Unpacked %d code layers", codeIdx)
 	output.Debugf("Unpacked %d dataset layers", datasetIdx)
 
 	return nil
+}
+
+func unpackParent(ctx context.Context, ref string, optsIn *unpackOptions, visitedRefs []string) error {
+	if idx := getIndex(visitedRefs, ref); idx != -1 {
+		cycleStr := fmt.Sprintf("[%s=>%s]", strings.Join(visitedRefs[idx:], "=>"), ref)
+		return fmt.Errorf("Found cycle in modelkit references: %s", cycleStr)
+	}
+
+	parentRef, _, err := repo.ParseReference(ref)
+	if err != nil {
+		return err
+	}
+	opts := *optsIn
+	opts.modelRef = parentRef
+	// Unpack only model, ignore code/datasets
+	opts.unpackConf.unpackKitfile = false
+	opts.unpackConf.unpackCode = false
+	opts.unpackConf.unpackDatasets = false
+
+	return runUnpackRecursive(ctx, &opts, append(visitedRefs, ref))
 }
 
 func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) error {
@@ -127,7 +182,7 @@ func unpackConfig(config *artifact.KitFile, unpackDir string, overwrite bool) er
 	return nil
 }
 
-func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, unpackPath string, overwrite bool) error {
+func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descriptor, unpackPath string, overwrite bool, compression string) error {
 	rc, err := store.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
@@ -137,12 +192,19 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer rc.Close()
 	defer logger.Wait()
 
-	gzr, err := gzip.NewReader(rc)
-	if err != nil {
-		return fmt.Errorf("error extracting gzipped file: %w", err)
+	var cr io.ReadCloser
+	var cErr error
+	switch compression {
+	case constants.GzipCompression, constants.GzipFastestCompression:
+		cr, cErr = gzip.NewReader(rc)
+	case constants.NoneCompression:
+		cr = rc
 	}
-	defer gzr.Close()
-	tr := tar.NewReader(gzr)
+	if cErr != nil {
+		return fmt.Errorf("error setting up decompress: %w", err)
+	}
+	defer cr.Close()
+	tr := tar.NewReader(cr)
 
 	unpackDir := filepath.Dir(unpackPath)
 	if err := os.MkdirAll(unpackDir, 0755); err != nil {
@@ -206,4 +268,13 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 		}
 	}
 	return nil
+}
+
+func getIndex(list []string, s string) int {
+	for idx, item := range list {
+		if s == item {
+			return idx
+		}
+	}
+	return -1
 }

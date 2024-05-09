@@ -1,6 +1,7 @@
 ---
 layout: page
 sidebar: false
+title: Blog
 ---
 <script setup lang="ts">
 import { computed } from 'vue'

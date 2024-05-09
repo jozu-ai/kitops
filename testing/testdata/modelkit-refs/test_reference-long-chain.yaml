@@ -1,0 +1,65 @@
+description: "Test that long modelkit reference chains fail to pack"
+modelkits:
+  - tag: test-ref:model-1
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: file-1.txt
+    files:
+      - file-1.txt
+  - tag: test-ref:model-2
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-1
+  - tag: test-ref:model-3
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-2
+  - tag: test-ref:model-4
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-3
+  - tag: test-ref:model-5
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-4
+  - tag: test-ref:model-6
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-5
+  - tag: test-ref:model-7
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-6
+  - tag: test-ref:model-8
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-7
+  - tag: test-ref:model-9
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-8
+  - tag: test-ref:model-10
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-9
+  - tag: test-ref:model-11
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-10
+  - tag: test-ref:model-12
+    kitfile: |
+      manifestVersion: 1.0.0
+      model:
+        path: test-ref:model-11
+    packErrRegexp: Reached maximum number of model references

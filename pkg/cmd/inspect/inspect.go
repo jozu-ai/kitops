@@ -19,30 +19,41 @@ package inspect
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 
+	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"oras.land/oras-go/v2"
 )
 
-func inspectReference(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+// Utility struct for formatting output of inspect
+type inspectInfo struct {
+	Digest     digest.Digest     `json:"digest,omitempty" yaml:"digest,omitempty"`
+	CLIVersion string            `json:"cliVersion,omitempty" yaml:"cliVersion,omitempty"`
+	Kitfile    *artifact.KitFile `json:"kitfile,omitempty" yaml:"kitfile,omitempty"`
+	Manifest   *ocispec.Manifest `json:"manifest,omitempty" yaml:"manifest,omitempty"`
+}
+
+func inspectReference(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	if opts.checkRemote {
-		return getRemoteManifest(ctx, opts)
+		return getRemoteInspect(ctx, opts)
 	} else {
-		return getLocalManifest(ctx, opts)
+		return getLocalInspect(ctx, opts)
 	}
 }
 
-func getLocalManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+func getLocalInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
 	store, err := repo.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	return repo.ResolveManifest(ctx, store, opts.modelRef.Reference)
+	return getInspectInfo(ctx, store, opts.modelRef.Reference)
 }
 
-func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Manifest, error) {
+func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	repository, err := repo.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
@@ -51,5 +62,22 @@ func getRemoteManifest(ctx context.Context, opts *inspectOptions) (*ocispec.Mani
 	if err != nil {
 		return nil, err
 	}
-	return repo.ResolveManifest(ctx, repository, opts.modelRef.Reference)
+	return getInspectInfo(ctx, repository, opts.modelRef.Reference)
+}
+
+func getInspectInfo(ctx context.Context, repository oras.Target, ref string) (*inspectInfo, error) {
+	desc, manifest, kitfile, err := repo.ResolveManifestAndConfig(ctx, repository, ref)
+	if err != nil {
+		return nil, err
+	}
+	version := "unknown"
+	if manifest.Annotations != nil && manifest.Annotations[constants.CliVersionAnnotation] != "" {
+		version = manifest.Annotations[constants.CliVersionAnnotation]
+	}
+	return &inspectInfo{
+		Digest:     desc.Digest,
+		CLIVersion: version,
+		Kitfile:    kitfile,
+		Manifest:   manifest,
+	}, nil
 }

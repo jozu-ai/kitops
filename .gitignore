@@ -1,4 +1,6 @@
 .DS_Store
 .vscode
 kit
+kit.exe
 dist/
+pkg/lib/harness/ui.tar.gz

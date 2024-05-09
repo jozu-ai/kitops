@@ -28,12 +28,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type packUnpackTestcase struct {
+	Name         string
+	Description  string   `yaml:"description"`
+	Kitfile      string   `yaml:"kitfile"`
+	Kitignore    string   `yaml:"kitignore"`
+	Files        []string `yaml:"files"`
+	IgnoredFiles []string `yaml:"ignored"`
+}
+
+func (t packUnpackTestcase) withName(name string) packUnpackTestcase {
+	t.Name = name
+	return t
+}
+
 // TestPackUnpack tests kit functionality by generating a file tree, packing it,
 // unpacking it, and verifying that the unpacked contents match expectations.
 // We work in a new temporary directory for each test to avoid interaction between
 // tests.
 func TestPackUnpack(t *testing.T) {
-	tests := loadAllTestCasesOrPanic(t, "testdata/pack-unpack")
+	cleanup := testPreflight(t)
+	defer cleanup(t)
+	tests := loadAllTestCasesOrPanic[packUnpackTestcase](t, filepath.Join("testdata", "pack-unpack"))
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s (%s)", tt.Name, tt.Description), func(t *testing.T) {
 			// Set up temporary directory for work
@@ -45,23 +61,13 @@ func TestPackUnpack(t *testing.T) {
 			t.Setenv("KITOPS_HOME", contextPath)
 
 			// Create Kitfile
-			kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
-			if err := os.WriteFile(kitfilePath, []byte(tt.Kitfile), 0644); err != nil {
-				t.Fatal(err)
-			}
-			// Create .kitignore, if it exists
-			if tt.Kitignore != "" {
-				ignorePath := filepath.Join(modelKitPath, constants.IgnoreFileName)
-				if err := os.WriteFile(ignorePath, []byte(tt.Kitignore), 0644); err != nil {
-					t.Fatal(err)
-				}
-			}
+			setupKitfileAndKitignore(t, modelKitPath, tt.Kitfile, tt.Kitignore)
 			// Create files for test case
 			setupFiles(t, modelKitPath, append(tt.Files, tt.IgnoredFiles...))
 
-			runCommand(t, "pack", modelKitPath, "-t", modelKitTag, "-v")
-			runCommand(t, "list")
-			runCommand(t, "unpack", modelKitTag, "-d", unpackPath, "-v")
+			runCommand(t, expectNoError, "pack", modelKitPath, "-t", modelKitTag, "-v")
+			runCommand(t, expectNoError, "list")
+			runCommand(t, expectNoError, "unpack", modelKitTag, "-d", unpackPath, "-v")
 
 			checkFilesExist(t, unpackPath, tt.Files)
 			checkFilesDoNotExist(t, unpackPath, append(tt.IgnoredFiles, ".kitignore"))
@@ -91,7 +97,7 @@ dataset:
 	}
 	setupFiles(t, modelKitPath, []string{"test-file.txt", "test-dir/test-subfile.txt"})
 
-	packOut := runCommand(t, "pack", modelKitPath, "-t", "test:repack1", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack1", "-v")
 	digestOne := digestFromPack(t, packOut)
 
 	// Change timestamps on file to simulate an unpacked modelkit at a future time
@@ -106,7 +112,7 @@ dataset:
 		t.Fatal(err)
 	}
 
-	packOut = runCommand(t, "pack", modelKitPath, "-t", "test:repack2", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack2", "-v")
 	digestTwo := digestFromPack(t, packOut)
 
 	assert.Equal(t, digestOne, digestTwo, "Digests should be the same")
