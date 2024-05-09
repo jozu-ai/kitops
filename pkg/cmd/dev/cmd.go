@@ -16,10 +16,6 @@
 package dev
 
 import (
-	"context"
-	"fmt"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/harness"
 	"kitops/pkg/output"
 	"net"
@@ -30,76 +26,58 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	shortDesc = `Start development server (experimental)`
-	longDesc  = `Start development server (experimental) with the specified context directory and kitfile`
-	example   = `kit dev ./my-model --port 8080`
-)
-
-type DevOptions struct {
-	host       string
-	port       int
-	modelFile  string
-	contextDir string
-	configHome string
-	stop       bool
-	printLogs  bool
-}
-
-func (opts *DevOptions) complete(ctx context.Context, args []string) error {
-
-	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
-	if !ok {
-		return fmt.Errorf("default config path not set on command context")
-	}
-	opts.configHome = configHome
-	if !opts.stop && !opts.printLogs {
-		opts.contextDir = ""
-		if len(args) == 1 {
-			opts.contextDir = args[0]
-		}
-		if opts.modelFile == "" {
-			foundKitfile, err := filesystem.FindKitfileInPath(opts.contextDir)
-			if err != nil {
-				return err
-			}
-			opts.modelFile = foundKitfile
-		}
-		if opts.host == "" {
-			opts.host = "127.0.0.1"
-		}
-
-		if opts.port == 0 {
-			availPort, err := findAvailablePort()
-			if err != nil {
-				output.Fatalf("Invalid arguments: %s", err)
-				return err
-			}
-			opts.port = availPort
-		}
-	}
-	return nil
-}
-
 func DevCommand() *cobra.Command {
-	opts := &DevOptions{}
 	cmd := &cobra.Command{
 		Use:     "dev <directory> [flags]",
-		Short:   shortDesc,
-		Long:    longDesc,
-		Example: example,
-		Run:     runCommand(opts),
+		Short:   devShortDesc,
+		Long:    devLongDesc,
+		Example: devExample,
+	}
+	cmd.AddCommand(DevStartCommand())
+	cmd.AddCommand(DevStopCommand())
+	cmd.AddCommand(DevLogsCommand())
+	return cmd
+}
+
+func DevStartCommand() *cobra.Command {
+	opts := &DevStartOptions{}
+	cmd := &cobra.Command{
+		Use:     "start <directory> [flags]",
+		Short:   devStartShortDesc,
+		Long:    devStartLongDesc,
+		Example: devStartExample,
+		Run:     runStartCommand(opts),
 	}
 	cmd.Args = cobra.MaximumNArgs(1)
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Path to the kitfile")
 	cmd.Flags().StringVar(&opts.host, "host", "127.0.0.1", "Host for the development server")
 	cmd.Flags().IntVar(&opts.port, "port", 0, "Port for development server to listen on")
-	cmd.Flags().BoolVar(&opts.stop, "stop", false, "Stop the development server")
-	cmd.Flags().BoolVar(&opts.printLogs, "logs", false, "Print logs for the running development server")
 	return cmd
 }
 
-func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
+func DevStopCommand() *cobra.Command {
+	opts := &DevBaseOptions{}
+	cmd := &cobra.Command{
+		Use:   "stop",
+		Short: devStopShortDesc,
+		Long:  devStopLongDesc,
+		Run:   runStopCommand(opts),
+	}
+	return cmd
+}
+
+func DevLogsCommand() *cobra.Command {
+	opts := &DevBaseOptions{}
+	cmd := &cobra.Command{
+		Use:   "logs",
+		Short: devLogsShortDesc,
+		Long:  devLogsLongDesc,
+		Run:   runLogsCommand(opts),
+	}
+	return cmd
+}
+
+func runStartCommand(opts *DevStartOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
 			output.Infoln("Development server is not yet supported in this platform")
@@ -111,29 +89,45 @@ func runCommand(opts *DevOptions) func(cmd *cobra.Command, args []string) {
 			output.Errorf("failed to complete options: %s", err)
 			return
 		}
-		switch {
-		case opts.stop:
-			output.Infoln("Stopping development server...")
-			err := stopDev(cmd.Context(), opts)
-			if err != nil {
-				output.Errorf("Failed to stop dev server: %s", err)
-				os.Exit(1)
-			}
-			output.Infoln("Development server stopped")
-		case opts.printLogs:
-			err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout())
-			if err != nil {
-				output.Errorln(err)
-				os.Exit(1)
-			}
-		default:
-			err := runDev(cmd.Context(), opts)
-			if err != nil {
-				output.Errorf("Failed to start dev server: %s", err)
-				os.Exit(1)
-			}
-			output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
-			output.Infof("Use \"kit dev --stop\" to stop the development server")
+
+		err := runDev(cmd.Context(), opts)
+		if err != nil {
+			output.Errorf("Failed to start dev server: %s", err)
+			os.Exit(1)
+		}
+		output.Infof("Development server started at http://%s:%d", opts.host, opts.port)
+		output.Infof("Use \"kit dev stop\" to stop the development server")
+	}
+}
+
+func runStopCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string) {
+	return func(cmd *cobra.Command, args []string) {
+		if err := opts.complete(cmd.Context(), args); err != nil {
+			output.Errorf("failed to complete options: %s", err)
+			return
+		}
+
+		output.Infoln("Stopping development server...")
+		err := stopDev(cmd.Context(), opts)
+		if err != nil {
+			output.Errorf("Failed to stop dev server: %s", err)
+			os.Exit(1)
+		}
+		output.Infoln("Development server stopped")
+	}
+}
+
+func runLogsCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string) {
+	return func(cmd *cobra.Command, args []string) {
+		if err := opts.complete(cmd.Context(), args); err != nil {
+			output.Errorf("failed to complete options: %s", err)
+			return
+		}
+
+		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout())
+		if err != nil {
+			output.Errorln(err)
+			os.Exit(1)
 		}
 	}
 }
