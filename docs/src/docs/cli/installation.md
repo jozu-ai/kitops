@@ -71,7 +71,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-3. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-windows-arm64.zip"
+3. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-windows-i386.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (x86_32)',
