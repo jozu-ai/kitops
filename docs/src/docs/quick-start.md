@@ -11,11 +11,8 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 ## Before we start...
 
-1. Make sure you've got the [Kit CLI setup](./cli/installation.md) on your machine. If you'd like to learn more about ModelKits [check out the overview](./modelkit/intro.md). If you are wondering about specific flags you can check out everything in the [CLI command reference](./cli/cli-reference.md)
-
-2. Create and navigate to a new folder on your filesystem. We'd suggest calling it `KitStart` but any name works.
-
-One more note...with Kit, packing and pushing are separate steps (same with unpacking and pulling). Packing builds the ModelKit using the content outlined in the `Kitfile` manifest. Pushing takes a built ModelKit from your local registry and sends it to any remote registry. We strongly recommend tagging your ModelKits with a version number and any other tags that will help your team (e.g., challenger, champion, v1.3, dev, production, etc...)
+1. Make sure you've got the [Kit CLI setup](./cli/installation.md).
+2. Create and navigate to a new folder on your filesystem - we suggest calling it `KitStart` but any name works.
 
 ## Learning to use the CLI
 
@@ -49,7 +46,7 @@ You'll see `Log in successful`.
 
 ### 3/ Get a Sample ModelKit
 
-Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the thigs you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
+Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
 
 You can grab <a href="https://github.com/orgs/jozu-ai/packages"
   v-ga-track="{
@@ -109,6 +106,10 @@ You're already logged in to your remote repository, so now you can just push. Th
 ```sh
 kit push docker.io/jozubrad/mymodelkit:latest
 ```
+
+As you noticed, with Kit the `pack` and `push` commands are separate, as are the `unpack` and `pull` commands.
+
+If you only need part of a ModelKit (e.g., the dataset) then you can skip the pull command and just run `unpack` with the `--datasets` flag. Just remember that a ModelKit will only be transferred to your local registry if you use the pull command. You can learn more about this in the [Next Steps](./next-steps.md) guide.
 
 ### Congratulations
 

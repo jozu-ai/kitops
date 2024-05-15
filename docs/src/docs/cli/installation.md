@@ -6,12 +6,12 @@ import vGaTrack from '@theme/directives/ga'
 
 This page includes instructions for:
 
-* Installing from [MacOS packages](#🍎-macos-package-download)
-* Installing from [Windows packages](#🪟-windows-package-download)
-* Installing from [Linux packages](#🐧-linux-package-download)
-* Building from [source code](#🛠️-install-from-source)
+* Installing on [MacOS](#🍎-macos-package-download)
+* Installing on [Windows](#🪟-windows-package-download)
+* Installing on [Linux](#🐧-linux-package-download)
+* Building from the [source code](#🛠️-install-from-source)
 
-## 🍎 MacOS Package Download
+## 🍎 MacOS Install
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
@@ -49,7 +49,7 @@ Now that everything is set up you can follow our [Quick Start](https://kitops.ml
 
 That's it!
 
-## 🪟 Windows Package Download
+## 🪟 Windows Install
 
 Make sure you get the correct download for your hardware.
 
@@ -96,7 +96,7 @@ Now that everything is set up you can follow our [Quick Start](https://kitops.ml
 
 That's it!
 
-## 🐧 Linux Package Download
+## 🐧 Linux Install
 
 Make sure you get the correct download for your hardware.
 
