@@ -5,30 +5,123 @@ outline: 2
 
 ## kit dev
 
+Run models locally (experimental)
+
+### Synopsis
+
+Start a local server and interact with a model in the browser
+
+### Examples
+
+```
+kit dev start
+```
+
+### Options
+
+```
+  -h, --help   help for dev
+```
+
+### Options inherited from parent commands
+
+```
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
+```
+
+## kit dev logs
+
+View logs for development server
+
+### Synopsis
+
+Print any logs output by the development server.
+
+If the development server is currently running, the logs for this server will
+be printed. If it is stopped, the logs for the previous run of the server, if
+available, will be printed instead.
+
+
+```
+kit dev logs [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for logs
+```
+
+### Options inherited from parent commands
+
+```
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
+```
+
+## kit dev start
+
 Start development server (experimental)
 
 ### Synopsis
 
-Start development server (experimental) with the specified context directory and kitfile
+Start development server (experimental) from a modelkit
+
+Start a development server for an unpacked modelkit, using a context directory
+that includes the model and a kitfile.
+
 
 ```
-kit dev <directory> [flags]
+kit dev start <directory> [flags]
 ```
 
 ### Examples
 
 ```
-kit dev ./my-model --port 8080
+# Serve the model located in the current directory
+kit dev start
+
+# Serve the modelkit in ./my-model on port 8080
+kit dev start ./my-model --port 8080
+
 ```
 
 ### Options
 
 ```
   -f, --file string   Path to the kitfile
-  -h, --help          help for dev
+  -h, --help          help for start
       --host string   Host for the development server (default "127.0.0.1")
       --port int      Port for development server to listen on
-      --stop          Stop the development server
+```
+
+### Options inherited from parent commands
+
+```
+      --config string     Alternate path to root storage directory for CLI
+      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose           Include additional information in output (default false)
+```
+
+## kit dev stop
+
+Stop development server
+
+### Synopsis
+
+Stop the development server if it is running
+
+```
+kit dev stop [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for stop
 ```
 
 ### Options inherited from parent commands
@@ -294,9 +387,10 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 ### Options
 
 ```
-  -f, --file string   Specifies the path to the Kitfile explictly (use "-" to read from standard input)
-  -h, --help          help for pack
-  -t, --tag string    Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
+      --compression string   Compression format to use for layers. Valid options: 'none' (default), 'gzip', 'gzip-fastest' (default "none")
+  -f, --file string          Specifies the path to the Kitfile explictly (use "-" to read from standard input)
+  -h, --help                 help for pack
+  -t, --tag string           Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
 ```
 
 ### Options inherited from parent commands
