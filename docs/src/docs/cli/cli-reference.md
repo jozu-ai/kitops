@@ -3,9 +3,10 @@ outline: 2
 title: "Kit CLI Reference"
 ---
 <script setup>
-  import { version } from '../../../package.json'
+import VersionInfo from '@theme/components/VersionInfo.vue'
 </script>
-# Kit CLI Reference {{ version }}
+
+<VersionInfo />
 
 ## kit dev
 
