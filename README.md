@@ -26,6 +26,8 @@ Teams and enterprises use KitOps to speed up and de-risk all types of AI project
 * 🎁 **[Unified packaging](https://kitops.ml/docs/modelkit/intro.html):** A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.
 * 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each ModelKit is tagged so everyone knows which dataset and model work together.
 * 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
+* 🪛 **[LLM fine-tuning](https://dev.to/kitops/fine-tune-your-first-large-language-model-llm-with-lora-llamacpp-and-kitops-in-5-easy-steps-1g7f):** Use KitOps to fine-tune a large language model using LoRA.
+* 🎯 **RAG pipelines:** Create a RAG pipeline for tailoring an LLM with KitOps.
 * 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
@@ -58,6 +60,7 @@ For those who prefer to build from the source, follow [these steps](https://kito
 
 We've been busy and shipping quickly!
 
+* 🎯 Use KitOps to do LLM fine-tuning or package a RAG pipeline
 * 👩‍💻 Use Kit Dev mode to run an LLM instantly (no GPUs or internet required)
 * 🏎️ Reduced ModelKit packing time by >97%
 * 🤓 Read Kitfile from `stdin`
