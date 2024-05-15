@@ -15,7 +15,7 @@ This page includes instructions for:
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-darwin-arm64.zip"
+1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Apple Silicon)',
@@ -24,7 +24,7 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Apple Silicon / ARM64
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-darwin-x86_64.zip"
+2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Intel)',
@@ -53,7 +53,7 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-windows-x86_64.zip"
+1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (AMD64)',
@@ -62,7 +62,7 @@ Make sure you get the correct download for your hardware.
   AMD 64-bit
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-windows-arm64.zip"
+2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (ARM64)',
@@ -71,7 +71,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-3. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-windows-i386.zip"
+3. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (x86_32)',
@@ -100,7 +100,7 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-linux-arm64.tar.gz"
+1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (ARM64)',
@@ -109,7 +109,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-linux-x86_64.tar.gz"
+2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (AMD64)',
@@ -118,7 +118,7 @@ Make sure you get the correct download for your hardware.
   AMD 64-bit
 </a>
 
-3. <a href="https://github.com/jozu-ai/kitops/releases/download/v0.2.3/kitops-linux-i386.tar.gz"
+3. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (x86_32)',
