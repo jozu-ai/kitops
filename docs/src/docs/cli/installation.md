@@ -6,16 +6,16 @@ import vGaTrack from '@theme/directives/ga'
 
 This page includes instructions for:
 
-* Installing on [MacOS](#🍎-macos-package-download)
-* Installing on [Windows](#🪟-windows-package-download)
-* Installing on [Linux](#🐧-linux-package-download)
-* Building from the [source code](#🛠️-install-from-source)
+* Installing on [MacOS](#🍎-macos-install)
+* Installing on [Windows](#🪟-windows-install)
+* Installing on [Linux](#🐧-linux-install)
+* Building from the [source code](#🛠️-build-from-source-code)
 
 ## 🍎 MacOS Install
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
+1. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Apple Silicon)',
@@ -24,7 +24,7 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Apple Silicon / ARM64
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
+2. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Intel)',
@@ -41,7 +41,7 @@ You can verify that `kit` is correctly installed by opening a new terminal or co
 kit version
 ```
 
-This command should display the version number of `kit` you have installed, indicating that the installation was successful.
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
 ### Follow the Quick Start
 
@@ -53,16 +53,16 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (AMD64)',
     location: 'docs/installation'
   }">
-  AMD 64-bit
+  Intel / AMD, 64-bit
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (ARM64)',
@@ -71,7 +71,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-3. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (x86_32)',
@@ -80,7 +80,7 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 32-bit
 </a>
 
-Once downloaded, right-click on the `.zip` file and select "Extract All..." to unzip the archive. Now, Move the extracted `kit.exe` to a directory that is included in your system's PATH variable. This will allow you to run `kit` from any command prompt or terminal window.
+Once downloaded, right-click on the `.zip` file and select "Extract All..." to unzip the archive. Now, Move the extracted `kit.exe` to a directory that is included in your system's PATH variable. This will allow you to run the Kit CLI from any command prompt or terminal window.
 
 You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
 
@@ -88,7 +88,7 @@ You can verify that `kit` is correctly installed by opening a new terminal or co
 kit version
 ```
 
-This command should display the version number of `kit` you have installed, indicating that the installation was successful.
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
 ### Follow the Quick Start
 
@@ -100,7 +100,16 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
-1. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
+  v-ga-track="{
+    category: 'link',
+    label: 'Linux (AMD64)',
+    location: 'docs/installation'
+  }">
+  Intel / AMD, AMD 64-bit
+</a>
+
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (ARM64)',
@@ -109,16 +118,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-2. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
-  v-ga-track="{
-    category: 'link',
-    label: 'Linux (AMD64)',
-    location: 'docs/installation'
-  }">
-  AMD 64-bit
-</a>
-
-3. <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (x86_32)',
@@ -147,7 +147,7 @@ After installation, you can verify that `kit` is correctly installed by opening 
 kit version
 ```
 
-This command should display the version number of `kit` you have installed, indicating that the installation was successful.
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
 ### Follow the Quick Start
 
