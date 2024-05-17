@@ -19,7 +19,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 ### 1/ Check your CLI Version
 
-Check that the Kit CLI is properly installed.
+Check that the Kit CLI is properly installed by using the [version command](./cli/cli-reference.md#kit-version).
 
 ```sh
 kit version
@@ -29,7 +29,7 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can log into any container registry, but below are a few popular ones.
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any container registry, but below are a few popular ones.
 
 **Docker Hub**
 
@@ -47,7 +47,7 @@ You'll see `Log in successful`.
 
 ### 3/ Get a Sample ModelKit
 
-Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
+Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
 You can grab <a href="https://github.com/orgs/jozu-ai/packages"
   v-ga-track="{
@@ -70,7 +70,7 @@ You'll see a single file (`Kitfile`) which is the manifest for our ModelKit, and
 
 ### 4/ Check the Local Repository
 
-Now let's check that we don't have anything in our local repository.
+Use the [list command](./cli/cli-reference.md#kit-list) to check what's in our local repository.
 
 ```sh
 kit list
@@ -80,11 +80,9 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 ### 5/ Pack the ModelKit
 
-Since our repository is empty we'll need to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like:
+Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like: `kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
 
-`kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
-
-In my case I am pushing to my `jozubrad` repository on Docker Hub, so I use:
+In my case I am pushing to the `jozubrad` repository on Docker Hub:
 
 ```sh
 kit pack . -t docker.io/jozubrad/mymodelkit:latest
@@ -92,17 +90,17 @@ kit pack . -t docker.io/jozubrad/mymodelkit:latest
 
 You'll see a set of `Saved ...` messages as each piece of the ModelKit is saved to the local repository.
 
-Let's check our local registry now:
+Checking your local registry again you should see an entry:
 
 ```sh
 kit list
 ```
 
-You'll see a new entry named the same as your pack command.
+The new entry will be named based on whatever you used in your pack command.
 
 ### 6/ Push the ModelKit to a Remote Repository
 
-The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
+The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
 ```sh
 kit push docker.io/jozubrad/mymodelkit:latest
@@ -125,20 +123,24 @@ Now unpack an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/p
 kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
 ```
 
-Note that unpack includes an implicit pull. You can also only unpack parts of a ModelKit which can make cloning much faster. Learn more in our [Next Steps](./next-steps.md) guide.
-
-Now start your LLM dev server locally:
+Now start your LLM dev server locally using the [dev start command](./cli/cli-reference.md#kit-dev-start):
 
 ```sh
-kit dev .
+kit dev start .
 ```
 
-In the command output you'll see a URL you can use to interact with the LLM. You can control parameters of the model, change the prompt, or chat with the LLM.
+In the command output you'll see a URL you can use to interact with the LLM (there's a command flag if you want to always use the same port). You can control parameters of the model, change the prompt, or chat with the LLM.
+
+If you need to get logs use the [dev logs command](./cli/cli-reference.md#kit-dev-logs):
+
+```sh
+kit dev logs
+```
 
 When you're done don't forget to stop the LLM dev server:
 
 ```sh
-kit dev --stop
+kit dev stop
 ```
 
 ### Congratulations
