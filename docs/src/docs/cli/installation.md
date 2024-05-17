@@ -53,6 +53,15 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
+  v-ga-track="{
+    category: 'link',
+    label: 'Windows (AMD64)',
+    location: 'docs/installation'
+  }">
+  Intel / AMD, 64-bit
+</a>
+
 1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
   v-ga-track="{
     category: 'link',
@@ -60,15 +69,6 @@ Make sure you get the correct download for your hardware.
     location: 'docs/installation'
   }">
   ARM 64-bit
-</a>
-
-1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
-  v-ga-track="{
-    category: 'link',
-    label: 'Windows (AMD64)',
-    location: 'docs/installation'
-  }">
-  AMD 64-bit
 </a>
 
 1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
@@ -100,6 +100,15 @@ That's it!
 
 Make sure you get the correct download for your hardware.
 
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
+  v-ga-track="{
+    category: 'link',
+    label: 'Linux (AMD64)',
+    location: 'docs/installation'
+  }">
+  Intel / AMD, AMD 64-bit
+</a>
+
 1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
   v-ga-track="{
     category: 'link',
@@ -107,15 +116,6 @@ Make sure you get the correct download for your hardware.
     location: 'docs/installation'
   }">
   ARM 64-bit
-</a>
-
-1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
-  v-ga-track="{
-    category: 'link',
-    label: 'Linux (AMD64)',
-    location: 'docs/installation'
-  }">
-  AMD 64-bit
 </a>
 
 1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
