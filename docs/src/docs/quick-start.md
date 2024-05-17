@@ -8,6 +8,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
 * Push the ModelKit package to a public or private registry
 * Grab only the assets you need from the ModelKit for testing, integration, local running, or deployment
+* Run an LLM locally to speed app integration, testing, or experimentation
 
 ## Before we start...
 
@@ -53,7 +54,7 @@ You can grab <a href="https://github.com/orgs/jozu-ai/packages"
     category: 'link',
     label: 'grab any of the ModelKits',
     location: 'docs/quick-start'
-  }">any of the ModelKits</a>from our site, but we've chosen a small language model example below.
+  }">any of the ModelKits</a> from our site, but we've chosen a small language model example below.
 
 ```sh
 kit unpack ghcr.io/jozu-ai/modelkit-examples/finetuning_slm:latest
@@ -67,7 +68,7 @@ ls
 
 You'll see a single file (`Kitfile`) which is the manifest for our ModelKit, and a set of files or directories including adapters, a Jupyter notebook, and dataset.
 
-### 4/ Check our Local Repository
+### 4/ Check the Local Repository
 
 Now let's check that we don't have anything in our local repository.
 
@@ -101,25 +102,54 @@ You'll see a new entry named the same as your pack command.
 
 ### 6/ Push the ModelKit to a Remote Repository
 
-You're already logged in to your remote repository, so now you can just push. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
+The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
 ```sh
 kit push docker.io/jozubrad/mymodelkit:latest
 ```
 
-As you noticed, with Kit the `pack` and `push` commands are separate, as are the `unpack` and `pull` commands.
+### 7/ Run an LLM Locally
 
-If you only need part of a ModelKit (e.g., the dataset) then you can skip the pull command and just run `unpack` with the `--datasets` flag. Just remember that a ModelKit will only be transferred to your local registry if you use the pull command. You can learn more about this in the [Next Steps](./next-steps.md) guide.
+If you're using Kit with LLMs you can quickly run the model locally to speed integration, testing, or experimentation.
+
+Create a new directory for your LLM:
+
+```sh
+mkdir devmode
+cd devmode
+```
+
+Now unpack an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/packages), but I've chosen Phi3:
+
+```sh
+kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
+```
+
+Note that unpack includes an implicit pull. You can also only unpack parts of a ModelKit which can make cloning much faster. Learn more in our [Next Steps](./next-steps.md) guide.
+
+Now start your LLM dev server locally:
+
+```sh
+kit dev .
+```
+
+In the command output you'll see a URL you can use to interact with the LLM. You can control parameters of the model, change the prompt, or chat with the LLM.
+
+When you're done don't forget to stop the LLM dev server:
+
+```sh
+kit dev --stop
+```
 
 ### Congratulations
 
-You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model:
+You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model:
 
 ```sh
 kit pull docker.io/jozubrad/mymodelkit:latest
 ```
 
-If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+If you'd like to learn more about using Kit, try our [Next Steps with Kit]( document that covers:
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
