@@ -121,10 +121,9 @@ mkdir devmode
 cd devmode
 ```
 
-Now pull and unpack an LLM ModelKit (we have [several](https://github.com/orgs/jozu-ai/packages)), I've chosen Phi3:
+Now unpack (unpack includes an implicit pull) an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/packages), but I've chosen Phi3:
 
 ```sh
-kit pull ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
 kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
 ```
 

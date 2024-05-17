@@ -15,7 +15,7 @@ A few examples in alphabetical order:
 * Domino
 * Docker and Docker Hub
 * DvC
-* git and git lfs
+* Git and Git LFS
 * GitHub
 * GitLab
 * Google Vertex, GKS, GCP, Artifact Registry, etc...

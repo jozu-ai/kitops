@@ -15,8 +15,8 @@ As a public community project the KitOps roadmap is always open to feedback. If 
 
 A ModelKit can refer to another ModelKit's model as its "base model." This is useful for situations where a user wants to take an existing model (e.g., Llama 3) but create their own model based on it. The new ModelKit would include a reference to the Llama 3 ModelKit and Kit would understand to pull both when the user asks for the new ModelKit.
 
-* Add chaining to ModelKit schema 
-* Add support for chaining to relevant Kit CLI commands 
+* Add chaining to ModelKit schema
+* Add support for chaining to relevant Kit CLI commands
 
 ### Dev Mode 🏃‍➡️
 
