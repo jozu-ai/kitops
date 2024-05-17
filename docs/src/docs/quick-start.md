@@ -12,10 +12,8 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 ## Before we start...
 
-1. Make sure you've got the [Kit CLI setup](./cli/installation.md) on your machine.
-1. Create and navigate to a new folder on your filesystem. We'd suggest calling it `KitStart` but any name works.
-
-One more note...with Kit, packing and pushing are separate steps (same with unpacking and pulling). Packing builds the ModelKit, and pushing takes a built ModelKit from your local registry and sends it to any remote registry. We strongly recommend tagging your ModelKits with a version number and any other tags that will help your team (e.g., challenger, champion, v1.3, dev, production, etc...)
+1. Make sure you've got the [Kit CLI setup](./cli/installation.md).
+2. Create and navigate to a new folder on your filesystem - we suggest calling it `KitStart` but any name works.
 
 ## Learning to use the CLI
 
@@ -49,7 +47,7 @@ You'll see `Log in successful`.
 
 ### 3/ Get a Sample ModelKit
 
-Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the thigs you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
+Let's unpack a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md) for details.
 
 You can grab <a href="https://github.com/orgs/jozu-ai/packages"
   v-ga-track="{
@@ -121,11 +119,13 @@ mkdir devmode
 cd devmode
 ```
 
-Now unpack (unpack includes an implicit pull) an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/packages), but I've chosen Phi3:
+Now unpack an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/packages), but I've chosen Phi3:
 
 ```sh
 kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
 ```
+
+Note that unpack includes an implicit pull. You can also only unpack parts of a ModelKit which can make cloning much faster. Learn more in our [Next Steps](./next-steps.md) guide.
 
 Now start your LLM dev server locally:
 
@@ -149,7 +149,7 @@ You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM lo
 kit pull docker.io/jozubrad/mymodelkit:latest
 ```
 
-If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+If you'd like to learn more about using Kit, try our [Next Steps with Kit]( document that covers:
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
