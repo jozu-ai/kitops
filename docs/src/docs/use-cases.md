@@ -8,18 +8,16 @@ Organizations have spent the last 15+ years building up a suite of developer and
 
 Here’s how we used ModelKits along with the tools we already used in our data science, software development, and infrastructure management teams.
 
-Here's how we implemented those tags and changes in our repo throughout the AI project development lifecycle.
-
 ### Data Access 💾
 
-Each time our team has built AI/ML models for use in our products they needed to be trained on customer data that we couldn't let out of our private compute environment. We also had to be careful about who could even access that data at all. To help with this we would create two ModelKit repos in our registry for each project:
+Each time our team has built AI/ML models for use in our products they needed to be trained on customer data that we couldn't let out of our private compute environment. We also had to be careful about who internally could access data for compliance reasons. To help with this we would create two ModelKit repos in our registry for each project:
 
-* One for the data science team with all the datasets they needed ("project-X-DS")
-* One for the software development and infrastructure teams with only "safe" datasets that could be used for testing and in-production validation ("project-X")
+* **Narrow Access**: For only users who needed access to even sensitive data - this included the data science team
+* **Broad Access**: For the rest of the team, this repo only included the "safe" datasets that could be used for testing and in-production validation
 
-When the data science team had finished training the model, they would create a new ModelKit that included only safe data and push that to the non-data science repo.
+If the AI project required sensitive data then the Data Science team would start by using their Jupyter notebooks with data housed in ModelKits stored in the Narrow Access repo. Once the model was ready for testing and integration they would create a new ModelKit that didn't include the sensitive dataset and push it to the Broad Access repo. If sensitive data wasn't needed at all then the ModelKit for the project would start in the Broad Access repo.
 
-This guaranteed that anyone could quickly see exactly what datasets were used for each model and project for auditing, security, or compliance reasons. This is often challenging without a mechanism like ModelKits because at most organizations, datasets aren’t housed in a versioned repository and can easily (and silently) change during the course of model development.
+This guaranteed that anyone could quickly see which datasets were used for each model and project. This helped with auditing, security, and compliance checks. It's challenging without a mechanism like ModelKits to do this kind of clean delineation because at most organizations, datasets aren’t housed in a single versioned repository, and can easily (and silently) change during the course of model development.
 
 ### Development 🛒
 
