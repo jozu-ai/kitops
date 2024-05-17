@@ -100,7 +100,7 @@ More information on Kitfiles can be found in the [Overview](./kitfile/kf-overvie
 
 ### Using the Kitfile to Pack a ModelKit
 
-When you're done writing the Kitfile, name it `Kitfile` without an extension. Now you can use the `kit pack` command to build your ModelKit.
+When you're done writing the Kitfile, name it `Kitfile` without an extension. Now you can use the [kit pack command](./cli/cli-reference.md#kit-pack) to build your ModelKit.
 
 To pack a ModelKit with a Kitfile in the current directory, name it "film-slm", attach the "champion" tag, and store it in the local registry:
 
@@ -119,7 +119,7 @@ kit pack . -f /path/to/your/Kitfile -t film-slm:champion
 In each case this will pack a ModelKit and store it in your local registry. To push it to a remote registry for sharing with others, there are two steps:
 
 1. Tagging the local copy with the remote registry's name
-1. Pushing the remote-named copy from your local to the remote regisry
+1. Pushing the remote-named copy from your local to the remote registry
 
 Let's imagine we want to push our new ModelKit to Docker Hub:
 
@@ -129,7 +129,7 @@ First, you need to tag the image in your local registry with the remote registry
 kit pack . -t docker.io/jozubrad/film-slm:champion
 ```
 
-Second, you push your local image to the remote registry:
+Second, you [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
 
 ```sh
 kit push docker.io/jozubrad/film-slm:champion
@@ -137,7 +137,7 @@ kit push docker.io/jozubrad/film-slm:champion
 
 # The Power of Unpack
 
-Models and their datasets can be very large and take a long time to push or pull, so Kit includes the `unpack` command that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
+Models and their datasets can be very large and take a long time to push or pull, so Kit includes a unique and flexible [unpack command](./cli/cli-reference.md#kit-unpack) that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
 
 `unpack` can take arguments for partial unpacking of a ModelKit:
 * `--model` to unpack only the model to the destination file system
@@ -161,7 +161,7 @@ The `unpack` command is part of the typical push and pull commands:
 
 ## Read the Kitfile or Manifest from a ModelKit
 
-For any ModelKit in your local or remote registry you can easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull comamnds.
+For any ModelKit in your local or remote registry you can use the [info command](./cli/cli-reference.md#kit-info) to easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull commands.
 
 
 ```sh
@@ -193,7 +193,7 @@ datasets:
     description: UCF Video Dataset
 ```
 
-If you need more details, like the size or file format of the contents, you can print the manifest to the terminal using the inspect command:
+If you need more details, like the size, file format, or SHA digest of the contents, you can use [kit inspect](./cli/cli-reference.md#kit-inspect) to print the manifest to the terminal using the inspect command:
 
 ```sh
 kit inspect mymodel:challenger
@@ -235,13 +235,13 @@ Tagging is a great way to version your ModelKits as they move through the develo
 
 However, after testing my latest model, if I find that its scores are much higher than the current champion model I may tag it `challenger` so everyone knows that this is likely to be the next model we deploy to production, replacing our current champion model.
 
-To do that I can create a new ModelKit with the updated tag. For example to change from `latest` to `challenger`:
+To do that I can create a new ModelKit and use the [tag command](./cli/cli-reference.md#kit-tag). For example to change from `latest` to `challenger`:
 
 ```sh
 kit tag mymodel:latest mymodel:challenger
 ```
 
-If you run `kit list` you'll now see that you have two models in your local registry:
+If you run [kit list](./cli/cli-reference.md#kit-list) you'll now see that you have two models in your local registry:
 
 ```sh
 kit list
@@ -273,7 +273,7 @@ mymodel     challenger  Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74ff85a00f2a68400dfc17b045bc7c1638da7f096c7ae400ad5bdfd520c
 ```
 
-However, we no longer want this ModelKit to be tagged as `challenger` since it's the `champion` now. Let's remove it from our registry to keep things clean and clear:
+However, we no longer want this ModelKit to be tagged as `challenger` since it's the `champion` now. Let's [remove](./cli/cli-reference.md#kit-remove) it from our registry to keep things clean:
 
 ```sh
 kit remove mymodel:challenger
