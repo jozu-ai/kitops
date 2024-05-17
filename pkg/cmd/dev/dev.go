@@ -26,7 +26,7 @@ import (
 	"os"
 )
 
-func runDev(ctx context.Context, options *DevOptions) error {
+func runDev(ctx context.Context, options *DevStartOptions) error {
 
 	kitfile := &artifact.KitFile{}
 
@@ -67,7 +67,7 @@ func runDev(ctx context.Context, options *DevOptions) error {
 	return nil
 }
 
-func stopDev(ctx context.Context, options *DevOptions) error {
+func stopDev(_ context.Context, options *DevBaseOptions) error {
 
 	llmHarness := &harness.LLMHarness{}
 	llmHarness.ConfigHome = options.configHome

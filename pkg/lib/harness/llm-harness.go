@@ -18,6 +18,7 @@ package harness
 
 import (
 	"fmt"
+	"io"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 	"os"
@@ -133,6 +134,24 @@ func (harness *LLMHarness) Stop() error {
 		return fmt.Errorf("Error removing PID file: %s\n", err)
 	}
 
+	return nil
+}
+
+func PrintLogs(configHome string, w io.Writer) error {
+	harnessPath := constants.HarnessPath(configHome)
+	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
+	logFile, err := os.Open(logPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			output.Errorf("No log file found")
+			return nil
+		}
+		return fmt.Errorf("Error reading log file: %w", err)
+	}
+	defer logFile.Close()
+	if _, err = io.Copy(w, logFile); err != nil {
+		return fmt.Errorf("Failed to print log file: %w", err)
+	}
 	return nil
 }
 

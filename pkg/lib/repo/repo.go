@@ -39,8 +39,7 @@ const (
 )
 
 var (
-	validTagRegex        = regexp.MustCompile(`^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$`)
-	startEndAlphanumeric = regexp.MustCompile(`[a-z0-9].*[a-z0-9]`)
+	startEndAlphanumeric = regexp.MustCompile(`[a-z0-9](.*[a-z0-9])?`)
 )
 
 // ParseReference parses a reference string into a Reference struct. It attempts to make
