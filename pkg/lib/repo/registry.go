@@ -51,13 +51,23 @@ func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, erro
 }
 
 func NewRepository(ctx context.Context, hostname, repository string, opts *RegistryOptions) (registry.Repository, error) {
-	registry, err := NewRegistry(hostname, opts)
+	reg, err := NewRegistry(hostname, opts)
 	if err != nil {
 		return nil, err
 	}
-	repo, err := registry.Repository(ctx, repository)
+	repo, err := reg.Repository(ctx, repository)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repository: %w", err)
 	}
-	return repo, nil
+	ref := registry.Reference{
+		Registry:   hostname,
+		Repository: repository,
+	}
+
+	return &Repository{
+		Repository: repo,
+		Reference:  ref,
+		PlainHttp:  opts.PlainHTTP,
+		Client:     reg.Client,
+	}, nil
 }
