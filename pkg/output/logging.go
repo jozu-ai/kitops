@@ -26,7 +26,7 @@ import (
 )
 
 func Infoln(s any) {
-	fmt.Fprintln(stdout, s)
+	printLn(stdout, s)
 }
 
 func Infof(s string, args ...any) {
@@ -34,7 +34,7 @@ func Infof(s string, args ...any) {
 }
 
 func Errorln(s any) {
-	fmt.Fprintln(stderr, s)
+	printLn(stderr, s)
 }
 
 func Errorf(s string, args ...any) {
@@ -43,7 +43,7 @@ func Errorf(s string, args ...any) {
 
 // Fatalln is the equivalent of Errorln except it returns a basic error to signal the command has failed
 func Fatalln(s any) error {
-	fmt.Fprintln(stderr, s)
+	printLn(stderr, s)
 	return errors.New("failed to run")
 }
 
@@ -55,7 +55,7 @@ func Fatalf(s string, args ...any) error {
 
 func Debugln(s any) {
 	if printDebug {
-		fmt.Fprintln(stdout, s)
+		printLn(stdout, s)
 	}
 }
 
@@ -82,7 +82,7 @@ func (pw *ProgressLogger) Wait() {
 }
 
 func (pw *ProgressLogger) Infoln(s any) {
-	fmt.Fprintln(pw.output, s)
+	printLn(pw.output, s)
 }
 
 func (pw *ProgressLogger) Infof(s string, args ...any) {
@@ -91,7 +91,7 @@ func (pw *ProgressLogger) Infof(s string, args ...any) {
 
 func (pw *ProgressLogger) Debugln(s any) {
 	if printDebug {
-		fmt.Fprintln(pw.output, s)
+		printLn(pw.output, s)
 	}
 }
 
@@ -101,10 +101,20 @@ func (pw *ProgressLogger) Debugf(s string, args ...any) {
 	}
 }
 
+func printLn(w io.Writer, s any) {
+	str := fmt.Sprintln(s)
+	// Capitalize first letter in string for nicer output, in case it's not already capitalized
+	str = strings.ToUpper(str[:1]) + str[1:]
+	fmt.Fprint(w, str)
+}
+
 func printFmt(w io.Writer, s string, args ...any) {
 	// Avoid printing incomplete lines
 	if !strings.HasSuffix(s, "\n") {
 		s = s + "\n"
 	}
-	fmt.Fprintf(w, s, args...)
+	str := fmt.Sprintf(s, args...)
+	// Capitalize first letter in string for nicer output, in case it's not already capitalized
+	str = strings.ToUpper(str[:1]) + str[1:]
+	fmt.Fprint(w, str)
 }
