@@ -18,10 +18,12 @@ package remove
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
+	"net/http"
 	"strings"
 
 	"github.com/opencontainers/go-digest"
@@ -29,6 +31,7 @@ import (
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote/errcode"
 )
 
 // removeAllModels removes all modelkits from local storage, including tagged ones
@@ -128,6 +131,35 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 		} else {
 			output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
 		}
+	}
+	return nil
+}
+
+func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
+	registry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
+		PlainHTTP:       opts.PlainHTTP,
+		SkipTLSVerify:   !opts.TlsVerify,
+		CredentialsPath: constants.CredentialsPath(opts.configHome),
+	})
+	if err != nil {
+		return err
+	}
+	repository, err := registry.Repository(ctx, opts.modelRef.Repository)
+	if err != nil {
+		return err
+	}
+	desc, err := repository.Resolve(ctx, opts.modelRef.Reference)
+	if err != nil {
+		if errors.Is(err, errdef.ErrNotFound) {
+			return fmt.Errorf("Model %s not found", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+		}
+		return fmt.Errorf("Error resolving modelkit: %w", err)
+	}
+	if err := repository.Delete(ctx, desc); err != nil {
+		if errResp, ok := err.(*errcode.ErrorResponse); ok && errResp.StatusCode == http.StatusMethodNotAllowed {
+			return fmt.Errorf("Removing models is unsupported by registry %s", opts.modelRef.Registry)
+		}
+		return fmt.Errorf("Failed to remove remote model: %w", err)
 	}
 	return nil
 }

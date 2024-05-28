@@ -19,6 +19,7 @@ package remove
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
@@ -55,9 +56,11 @@ kit remove --all --force`
 )
 
 type removeOptions struct {
+	options.NetworkOptions
 	configHome  string
 	forceDelete bool
 	removeAll   bool
+	remote      bool
 	modelRef    *registry.Reference
 	extraTags   []string
 }
@@ -78,6 +81,10 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 		opts.extraTags = extraTags
 	}
 
+	if opts.remote && (opts.forceDelete || opts.removeAll) {
+		return fmt.Errorf("cannot use --all or --force with --remote")
+	}
+
 	printConfig(opts)
 	return nil
 }
@@ -94,6 +101,8 @@ func RemoveCommand() *cobra.Command {
 	// cmd.Args = cobra.ExactArgs(1)
 	cmd.Flags().BoolVarP(&opts.forceDelete, "force", "f", false, "remove modelkit and all other tags that refer to it")
 	cmd.Flags().BoolVarP(&opts.removeAll, "all", "a", false, "remove all untagged modelkits")
+	cmd.Flags().BoolVarP(&opts.remote, "remote", "r", false, "remove modelkit from remote registry")
+	opts.AddNetworkFlags(cmd)
 
 	cmd.Args = func(cmd *cobra.Command, args []string) error {
 		switch len(args) {
@@ -124,7 +133,11 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) error {
 		var err error
 		switch {
 		case opts.modelRef != nil:
-			err = removeModel(cmd.Context(), opts)
+			if opts.remote {
+				err = removeRemoteModel(cmd.Context(), opts)
+			} else {
+				err = removeModel(cmd.Context(), opts)
+			}
 		case opts.removeAll && !opts.forceDelete:
 			err = removeUntaggedModels(cmd.Context(), opts)
 		case opts.removeAll && opts.forceDelete:
