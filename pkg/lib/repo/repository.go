@@ -49,8 +49,7 @@ func (r *Repository) Push(ctx context.Context, expected ocispec.Descriptor, cont
 
 	// Otherwise, push a blob according to the OCI spec
 	ctx = auth.AppendRepositoryScope(ctx, r.Reference, auth.ActionPull, auth.ActionPush)
-	chunked := expected.Size > 100<<20
-	sessionURL, postResp, err := r.initiateUploadSession(ctx, chunked)
+	sessionURL, postResp, err := r.initiateUploadSession(ctx)
 	if err != nil {
 		return err
 	}
@@ -64,15 +63,11 @@ func (r *Repository) Push(ctx context.Context, expected ocispec.Descriptor, cont
 	return nil
 }
 
-func (r *Repository) initiateUploadSession(ctx context.Context, chunked bool) (*url.URL, *http.Response, error) {
+func (r *Repository) initiateUploadSession(ctx context.Context) (*url.URL, *http.Response, error) {
 	uploadUrl := buildRepositoryBlobUploadURL(r.PlainHttp, r.Reference)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, uploadUrl, nil)
 	if err != nil {
 		return nil, nil, err
-	}
-	if chunked {
-		// Set Content-Length: 0 to signify that we want to upload as chunks (distribution spec)
-		req.ContentLength = 0
 	}
 
 	// TODO: Handle warnings from remote
