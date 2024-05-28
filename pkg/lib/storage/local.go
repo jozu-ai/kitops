@@ -165,7 +165,17 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string,
 	// and verify that it exists afterwards.
 	blobPath := repo.BlobPathForManifest(store, desc)
 	if err := os.Rename(tempPath, blobPath); err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to add layer to storage: %w", err)
+		// This may fail on some systems (e.g. linux where / and /home are different partitions)
+		// Fallback to regular push which is basically a copy
+		output.Debugf("Failed to move temp file into storage: %s", err)
+		file, err := os.Open(tempPath)
+		if err != nil {
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to open temporary file: %s", err)
+		}
+		defer file.Close()
+		if err := store.Push(ctx, desc, file); err != nil {
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to add layer to storage: %w", err)
+		}
 	}
 
 	// Verify blob is in store now
@@ -174,7 +184,7 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string,
 		return ocispec.DescriptorEmptyJSON, err
 	}
 	if !exists {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to move layer to storage: file is not stored")
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to move layer to storage: file is not stored")
 	}
 
 	output.Infof("Saved %s layer: %s", mediaType.BaseType, desc.Digest)
