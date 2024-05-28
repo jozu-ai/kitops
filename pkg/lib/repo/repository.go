@@ -85,7 +85,7 @@ func (r *Repository) initiateUploadSession(ctx context.Context, chunked bool) (*
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusAccepted {
-		return nil, nil, fmt.Errorf("Expected %d status but got %d", http.StatusCreated, resp.StatusCode)
+		return nil, nil, handleRemoteError(resp)
 	}
 	location, err := resp.Location()
 	if err != nil {
@@ -154,7 +154,7 @@ func (r *Repository) uploadBlobMonolithic(ctx context.Context, location *url.URL
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("Expected %d status but got %d", http.StatusCreated, resp.StatusCode)
+		return "", handleRemoteError(resp)
 	}
 
 	blobLocation, err := resp.Location()
@@ -203,7 +203,8 @@ func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, p
 			return "", fmt.Errorf("failed to upload blob chunk: %w", err)
 		}
 		if resp.StatusCode != http.StatusAccepted {
-			return "", fmt.Errorf("Expected %d status but got %d", http.StatusCreated, resp.StatusCode)
+			defer resp.Body.Close()
+			return "", handleRemoteError(resp)
 		}
 		resp.Body.Close()
 
@@ -260,7 +261,7 @@ func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, p
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("Expected %d status but got %d", http.StatusCreated, resp.StatusCode)
+		return "", handleRemoteError(resp)
 	}
 
 	blobLocation, err := resp.Location()
