@@ -65,6 +65,22 @@ func Debugf(s string, args ...any) {
 	}
 }
 
+// SafeDebugln is the same as Debugln except it will only print if progress bars
+// are disabled to avoid confusing output
+func SafeDebugln(s any) {
+	if !progressEnabled {
+		Debugln(s)
+	}
+}
+
+// SafeDebugf is the same as Debugf except it will only print if progress bars
+// are disabled to avoid confusing output
+func SafeDebugf(s string, args ...any) {
+	if !progressEnabled {
+		Debugf(s, args...)
+	}
+}
+
 // ProgressLogger allows for printing info and debug lines while a progress bar
 // is filling, and should be used instead of the standard output functions to prevent
 // progress bars from removing log lines. Once the progress bar is done, the Wait()
