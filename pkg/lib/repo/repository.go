@@ -24,6 +24,7 @@ import (
 	"math"
 	"net/http"
 	"net/url"
+	"path"
 	"strconv"
 	"strings"
 
@@ -58,7 +59,7 @@ func (r *Repository) Push(ctx context.Context, expected ocispec.Descriptor, cont
 	if err != nil {
 		return err
 	}
-	output.Debugf("Blob uploaded, available at url %s", blobUrl)
+	output.SafeDebugf("Blob uploaded, available at url %s", blobUrl)
 
 	return nil
 }
@@ -96,7 +97,7 @@ func (r *Repository) initiateUploadSession(ctx context.Context) (*url.URL, *http
 	if origPort == "443" && locationHostname == origHostname && locationPort == "" {
 		location.Host = locationHostname + ":" + origPort
 	}
-	output.Debugf("Using location %s for blob upload", location.String())
+	output.SafeDebugf("Using location %s for blob upload", path.Join(location.Hostname(), location.Path))
 
 	return location, resp, nil
 }
@@ -137,7 +138,7 @@ func (r *Repository) uploadBlobMonolithic(ctx context.Context, location *url.URL
 		req.Header.Set("Authorization", auth)
 	}
 
-	output.Debugf("Uploading blob monolithically to %s", req.URL)
+	output.SafeDebugf("Uploading blob as one chunk")
 	// TODO: Handle warnings from remote
 	// References:
 	//   - https://github.com/opencontainers/distribution-spec/blob/v1.1.0-rc4/spec.md#warnings
@@ -174,7 +175,7 @@ func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, p
 	rangeEnd := min(chunkSize-1, expected.Size-1)
 	nextLocation := location
 	for i := 0; i < numChunks; i++ {
-		output.Debugf("Uploading chunk %d/%d, range %d-%d", i+1, numChunks, rangeStart, rangeEnd)
+		output.SafeDebugf("Uploading chunk %d/%d, range %d-%d", i+1, numChunks, rangeStart, rangeEnd)
 
 		bodyLength := rangeEnd - rangeStart + 1
 		lr := io.LimitReader(content, int64(bodyLength))
@@ -248,7 +249,7 @@ func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, p
 		req.Header.Set("Authorization", auth)
 	}
 
-	output.Debugf("Finalizing upload")
+	output.SafeDebugf("Finalizing upload")
 	resp, err := r.client().Do(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to finalize blob upload: %w", err)
