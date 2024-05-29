@@ -46,7 +46,7 @@ jobs:
           if ! addlicense --check -s -l apache -c "The KitOps Authors." $(find . -name '*.go'); then
             echo "License headers missing from Go files (see above)."
             echo "Install addlicense via 'go install github.com/google/addlicense@latest'"
-            echo "And run 'addlicense -s -l apache -c "The KitOps Authors." $(find . -name '*.go')"
+            echo "And run 'addlicense -s -l apache -c \"The KitOps Authors.\" \$(find . -name '*.go')'"
             exit 1
           fi
 
