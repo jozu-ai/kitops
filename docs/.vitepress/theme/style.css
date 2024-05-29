@@ -134,11 +134,11 @@
 }
 
 .vp-doc a {
-  color: var(--color-salmon);
+  color: var(--color-aero);
 }
 
 .vp-doc a:hover {
-  color: var(--color-salmon);
+  color: var(--color-aero);
   opacity: 0.6;
 }
 
