@@ -170,7 +170,7 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string,
 		output.Debugf("Failed to move temp file into storage: %s", err)
 		file, err := os.Open(tempPath)
 		if err != nil {
-			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to open temporary file: %s", err)
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to open temporary file: %w", err)
 		}
 		defer file.Close()
 		if err := store.Push(ctx, desc, file); err != nil {

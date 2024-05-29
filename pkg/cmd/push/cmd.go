@@ -93,11 +93,15 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		remoteRepo, err := repo.NewRepository(cmd.Context(), opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
-			PlainHTTP:       opts.PlainHTTP,
-			SkipTLSVerify:   !opts.TlsVerify,
-			CredentialsPath: constants.CredentialsPath(opts.configHome),
-		})
+		remoteRepo, err := repo.NewRepository(
+			cmd.Context(),
+			opts.modelRef.Registry,
+			opts.modelRef.Repository,
+			&repo.RegistryOptions{
+				PlainHTTP:       opts.PlainHTTP,
+				SkipTLSVerify:   !opts.TlsVerify,
+				CredentialsPath: constants.CredentialsPath(opts.configHome),
+			})
 		if err != nil {
 			return output.Fatalln(err)
 		}

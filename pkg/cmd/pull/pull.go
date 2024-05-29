@@ -36,11 +36,11 @@ func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOpti
 	refStr := repo.FormatRepositoryForDisplay(opts.modelRef.String())
 	if idx := getIndex(pulledRefs, refStr); idx != -1 {
 		cycleStr := fmt.Sprintf("[%s=>%s]", strings.Join(pulledRefs[idx:], "=>"), refStr)
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Found cycle in modelkit references: %s", cycleStr)
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("found cycle in modelkit references: %s", cycleStr)
 	}
 	pulledRefs = append(pulledRefs, refStr)
 	if len(pulledRefs) > constants.MaxModelRefChain {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Reached maximum number of model references: [%s]", strings.Join(pulledRefs, "=>"))
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("reached maximum number of model references: [%s]", strings.Join(pulledRefs, "=>"))
 	}
 
 	remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
@@ -49,7 +49,7 @@ func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOpti
 		CredentialsPath: constants.CredentialsPath(opts.configHome),
 	})
 	if err != nil {
-		return ocispec.DescriptorEmptyJSON, err
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("could not resolve registry: %w", err)
 	}
 
 	desc, err := pullModel(ctx, remoteRegistry, localStore, opts.modelRef)
@@ -58,7 +58,7 @@ func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOpti
 	}
 
 	if err := pullParents(ctx, localStore, desc, opts, pulledRefs); err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to pull referenced modelkits: %w", err)
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to pull referenced modelkits: %w", err)
 	}
 
 	return desc, nil
