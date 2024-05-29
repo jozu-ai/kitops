@@ -1,11 +1,57 @@
 <script setup lang="ts">
+import { isClient } from '@vueuse/core'
+import { ref, computed } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
+
+const activeQuote = ref(0)
+const quotes = [
+  {
+    text: `When you start producing many models, you need to have a way to store them, track where they are deployed,
+      on what data they were trained on, which version of the runtime (if any) they are compatible with, and so on.
+      It's inevitable for any company dealing with data science projects.`,
+    authorName: 'Marco',
+    authorTitle: 'Data Scientist',
+    authorCompany: 'Orobix',
+  },
+  {
+    text: `The whole idea [of KitOps] is awesome... the development process used to be a struggle.
+      By creating a middle ground between Devs and Data Scientists, you brought both sides together.`,
+    authorName: 'Paulo',
+    authorTitle: 'Data Engineer',
+    authorCompany: 'Zwift',
+  },
+  {
+    text: `Currently we have a system that resembles half-MLOps but lacks data versioning tied to model versioning and configurations, and makes it difficult to deploy and keep track [of AI projects]`,
+    authorName: 'Majid',
+    authorTitle: 'Data Scientist',
+    authorCompany: 'Siemens',
+  },
+  {
+    text: `As we have an open source first policy we are forced to go with tools like MLflow.
+      But I really don’t like their 'opinionated' approach how practitioners should log artifacts.
+      I like the idea of using existing best practices in the MLOps space.`,
+    authorName: 'Niklas',
+    authorTitle: 'MLOps Engineer',
+    authorCompany: 'Bundesdruckerei',
+  },
+]
+
+const quotesOffsetMobile = computed(() => {
+  if (isClient) {
+    return `translateX(${(activeQuote.value * window.innerWidth - (activeQuote.value * 6)) * -1}px)`
+  }
+
+  return `translateX(0)`
+})
+
+// current quote * card width + margin + half card)
+const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
 </script>
 
 <template>
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
   <p class="h4 !font-normal !text-off-white">Share and run your AI projects anywhere</p>
   <h1 class="mt-4">Ease handoffs between AI/ML and Application teams</h1>
 
@@ -15,7 +61,7 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] mx-auto">
+<div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
   <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
   <div class="p1 mt-8 mx-8">
     Kit is a free open source MLOps tool that packages and versions your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
@@ -27,7 +73,7 @@ import vGaTrack from '../directives/ga'
   </video>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <h2 class="text-center">Key feAtuRes</h2>
   <p class="p2 text-center mt-16">Visit our <a href="https://github.com/jozu-ai/kitops" target="_blank" class="underline">GitHub repo</a> for a list of all features and our roadmap.</p>
 
@@ -87,7 +133,7 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12" id="whykitops">
+<div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
 
   <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
@@ -112,7 +158,7 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <div class="kit-cards md:!grid-cols-2 w-fit mx-auto">
     <div class="kit-card max-w-[370px] flex flex-col">
       <h3 class="!text-cornflower">ModelKit</h3>
@@ -142,7 +188,7 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
   <h2>WhAt’s suppoRted<span class="font-heading font-extralight">?</span></h2>
   <p class="p1 mt-8 mb-22">Kit was designed to work with the tools your team already uses.</p>
 
@@ -228,7 +274,38 @@ import vGaTrack from '../directives/ga'
   <a href="/docs/modelkit/compatibility.html" class="kit-button mt-22">SEE FULL LIST</a>
 </div>
 
-<div class="max-w-3xl mx-auto my-32 md:my-40 lg:my-60 faq-section">
+<div class="mt-32 md:mt-40 xl:mt-60 overflow-x-hidden">
+  <h2 class="text-center">WhAt people sAy About us</h2>
+
+  <div class="my-22 inline-flex items-center gap-0 md:gap-4 relative md:left-1/2 transition quotes-container">
+    <button
+      v-for="(quote, index) in quotes" :key="index"
+      class="quote-bg p-10 pt-24 md:pt-10 md:pl-32 border border-solid border-gray-02 hover:border-white
+        flex flex-col justify-between xs:items-center
+        text-left md:self-stretch min-h-[344px] lg:basis-auto md:min-w-[664px] max-w-[664px] space-y-10 opacity-50 cursor-pointer text-off-white hover:text-white
+        xs:min-w-[calc(100vw-3rem)] mx-6 md:mx-0"
+      :class="{ '!opacity-100': activeQuote === index }"
+      @click="activeQuote = index">
+      <p class="p2">{{ quote.text }}</p>
+      <p class="text-gray-06 text-xl">
+        <strong>{{ quote.authorName }}</strong>, {{ quote.authorTitle }} @ {{ quote.authorCompany }}
+      </p>
+    </button>
+  </div>
+
+  <nav class="flex gap-4 items-center justify-center">
+    <button v-for="(_, index) in quotes" :key="index"
+     @click="activeQuote = index">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none"
+        class="opacity-20"
+        :class="{ '!opacity-100': activeQuote === index }">
+        <path d="M0.333496 16V0H17.0002L0.333496 16Z" fill="#FFF"/>
+      </svg>
+    </button>
+  </nav>
+</div>
+
+<div class="max-w-3xl mx-auto my-32 md:my-40 lg:my-60 faq-section content-container">
   <h2 class="text-center mb-10 md:mb-14 lg:mb-22">fAq</h2>
 
   <Accordion content-class="space-y-[1em]">
@@ -311,7 +388,7 @@ import vGaTrack from '../directives/ga'
   </Accordion>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <h2 class="text-center">Get stArted</h2>
 
   <div class="kit-cards mt-22 min-h-[32.5rem]">
@@ -341,7 +418,7 @@ import vGaTrack from '../directives/ga'
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <h2 class="text-center">How to Get inVolVeD<span class="font-heading font-extralight">?</span></h2>
 
   <div class="space-y-6 w-fit mx-auto mt-22">
@@ -390,3 +467,21 @@ import vGaTrack from '../directives/ga'
 
 <!-- Our custom home styles -->
 <style scoped src="@theme/assets/css/home.css"></style>
+
+<style scoped>
+.quote-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='30' height='23' viewBox='0 0 30 23' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.0875627 15.504C0.0875627 14.4 0.375563 13.32 0.951563 12.264V12.192L7.57556 0.887997H10.5996L5.84756 9.024L6.63956 8.952C8.41556 8.952 9.92756 9.6 11.1756 10.896C12.4716 12.144 13.1196 13.68 13.1196 15.504C13.1196 17.328 12.4716 18.888 11.1756 20.184C9.92756 21.432 8.41556 22.056 6.63956 22.056C4.81556 22.056 3.25556 21.432 1.95956 20.184C0.711563 18.888 0.0875627 17.328 0.0875627 15.504ZM23.4156 8.952C25.2396 8.952 26.7756 9.6 28.0236 10.896C29.3196 12.144 29.9676 13.68 29.9676 15.504C29.9676 17.28 29.3196 18.816 28.0236 20.112C26.7756 21.408 25.2396 22.056 23.4156 22.056C21.6396 22.056 20.1036 21.408 18.8076 20.112C17.5116 18.816 16.8636 17.28 16.8636 15.504C16.8636 14.352 17.1756 13.272 17.7996 12.264V12.192L24.3516 0.887997H27.4476L22.6956 9.024L23.4156 8.952Z' fill='%23FFAF52'/%3E%3C/svg%3E%0A");
+  background-position: 40px 40px;
+  background-repeat: no-repeat;
+}
+
+.quotes-container {
+  transform: v-bind(quotesOffsetMobile);
+}
+
+@media screen(md) {
+  .quotes-container {
+    transform: v-bind(quotesOffsetDesktop);
+  }
+}
+</style>

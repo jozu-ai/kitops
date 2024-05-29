@@ -180,7 +180,7 @@
     transition: background 150ms, color 150ms;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    background-image: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,0) 10.1%, rgba(255,255,255,0) 100%);
+    background-image: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) min(15px, 10%), rgba(255,255,255,0) min(15px, 10.1%), rgba(255,255,255,0) 100%);
 
     @media screen(md) {
       @apply text-left;
