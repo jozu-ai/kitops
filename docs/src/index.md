@@ -9,7 +9,7 @@ import Home from '@theme/components/Home.vue'
 <Home />
 
 <style>
-.VPHome {
+.VPHome .content-container {
   @apply mx-auto;
   /* Vitepress max-width */
   max-width: calc(var(--vp-layout-max-width) - 64px);
