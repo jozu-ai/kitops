@@ -133,6 +133,15 @@
   list-style: circle;
 }
 
+.vp-doc a {
+  color: var(--color-aero);
+}
+
+.vp-doc a:hover {
+  color: var(--color-aero);
+  opacity: 0.6;
+}
+
 /**
  * Component: Button
  * -------------------------------------------------------------------------- */
