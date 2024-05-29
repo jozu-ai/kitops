@@ -151,7 +151,7 @@ You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM lo
 kit pull docker.io/jozubrad/mymodelkit:latest
 ```
 
-If you'd like to learn more about using Kit, try our [Next Steps with Kit]( document that covers:
+If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
