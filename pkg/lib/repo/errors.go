@@ -76,13 +76,17 @@ func handleRemoteError(resp *http.Response) error {
 
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 8*1024))
 	if err != nil {
-		respErr.ExtraMessage = fmt.Sprintf("Failed to read response body: %s", err)
+		respErr.ExtraMessage = fmt.Sprintf("failed to read response body: %s", err)
 		return respErr
 	}
 
-	if err := json.Unmarshal(body, &respErr); err != nil {
-		respErr.ExtraMessage = fmt.Sprintf("response body: %s", string(body))
-		return respErr
+	if resp.Header.Get("Content-Type") == "application/json" {
+		if err := json.Unmarshal(body, &respErr); err != nil {
+			respErr.ExtraMessage = fmt.Sprintf("failed to unmarshal response body: %s, body: %s", err, string(body))
+			return respErr
+		}
+	} else if len(body) > 0 {
+		respErr.ExtraMessage = string(body)
 	}
 
 	return respErr

@@ -53,7 +53,7 @@ func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, erro
 func NewRepository(ctx context.Context, hostname, repository string, opts *RegistryOptions) (registry.Repository, error) {
 	reg, err := NewRegistry(hostname, opts)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not resolve registry: %w", err)
 	}
 	repo, err := reg.Repository(ctx, repository)
 	if err != nil {
