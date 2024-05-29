@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isClient } from '@vueuse/core'
 import { ref, computed } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
@@ -37,7 +38,13 @@ const quotes = [
   },
 ]
 
-const quotesOffsetMobile = computed(() => `translateX(${(activeQuote.value * window.innerWidth - (activeQuote.value * 6)) * -1}px)`)
+const quotesOffsetMobile = computed(() => {
+  if (isClient) {
+    return `translateX(${(activeQuote.value * window.innerWidth - (activeQuote.value * 6)) * -1}px)`
+  }
+
+  return `translateX(0)`
+})
 
 // current quote * card width + margin + half card)
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
