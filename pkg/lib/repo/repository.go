@@ -103,11 +103,15 @@ func (r *Repository) initiateUploadSession(ctx context.Context) (*url.URL, *http
 }
 
 func (r *Repository) uploadBlob(ctx context.Context, location *url.URL, postResp *http.Response, expected ocispec.Descriptor, content io.Reader) (string, error) {
-	// If the entire blob is going to be less than 100 MiB, upload it in one piece. Otherwise,
-	if expected.Size < 100<<20 {
+	output.SafeDebugf("Size: %d", expected.Size)
+	uploadFormat := getUploadFormat(location.Hostname(), expected.Size)
+	switch uploadFormat {
+	case uploadMonolithicPut:
 		return r.uploadBlobMonolithic(ctx, location, postResp, expected, content)
-	} else {
+	case uploadChunkedPatch:
 		return r.uploadBlobChunked(ctx, location, postResp, expected, content)
+	default:
+		return "", fmt.Errorf("unknown registry %s, cannot upload", location.Hostname())
 	}
 }
 
