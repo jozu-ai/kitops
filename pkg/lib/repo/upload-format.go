@@ -26,6 +26,10 @@ const (
 	uploadUndefined
 )
 
+const (
+	uploadChunkDefaultSize int64 = 100 << 20
+)
+
 func getUploadFormat(registry string, size int64) uploadFormat {
 	output.SafeDebugf("Getting upload format for: %s", registry)
 	switch registry {
@@ -33,11 +37,12 @@ func getUploadFormat(registry string, size int64) uploadFormat {
 		// ghcr.io returns 416 is a PATCH has Content-Length greater than 4.0 MiB for some reason
 		// Transfer-Encoding: chunked is supported by the registry, but not implemented yet.
 		return uploadMonolithicPut
-	}
-	// No matches above, use heuristic
-	if size < 100<<20 {
-		return uploadMonolithicPut
-	} else {
-		return uploadChunkedPatch
+	default:
+		// No matches above, use heuristic
+		if size < uploadChunkDefaultSize {
+			return uploadMonolithicPut
+		} else {
+			return uploadChunkedPatch
+		}
 	}
 }

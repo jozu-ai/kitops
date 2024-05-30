@@ -171,12 +171,11 @@ func (r *Repository) uploadBlobMonolithic(ctx context.Context, location *url.URL
 // size.
 func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, postResp *http.Response, expected ocispec.Descriptor, content io.Reader) (string, error) {
 	// TODO: Handle 'OCI-Chunk-Min-Length' header in post response
-	chunkSize := int64(100 << 20) // 100 MiB
-	numChunks := int(math.Ceil(float64(expected.Size) / float64(chunkSize)))
+	numChunks := int(math.Ceil(float64(expected.Size) / float64(uploadChunkDefaultSize)))
 	authHeader := postResp.Request.Header.Get("Authorization")
 
 	rangeStart := int64(0)
-	rangeEnd := min(chunkSize-1, expected.Size-1)
+	rangeEnd := min(uploadChunkDefaultSize-1, expected.Size-1)
 	nextLocation := location
 	for i := 0; i < numChunks; i++ {
 		output.SafeDebugf("Uploading chunk %d/%d, range %d-%d", i+1, numChunks, rangeStart, rangeEnd)
@@ -235,7 +234,7 @@ func (r *Repository) uploadBlobChunked(ctx context.Context, location *url.URL, p
 
 		// Prepare next range
 		rangeStart = rangeEnd + 1
-		rangeEnd = min(expected.Size-1, rangeEnd+chunkSize)
+		rangeEnd = min(expected.Size-1, rangeEnd+uploadChunkDefaultSize)
 	}
 
 	// Final PUT request to mark upload as completed for server. Note that the final chunk _could_ be included in this
