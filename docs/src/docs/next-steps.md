@@ -9,9 +9,9 @@ In this guide you'll learn how to:
 
 ## Signing your ModelKit
 
-Because ModelKits are OCI artifacts, they can be signed the same way you sign your other containers.
+Because ModelKits are OCI artifacts, they can be signed like any other OCI artifact (you may already sign your containers, for example.)
 
-If you need a quick way to sign your containers, check out [Cosign](https://docs.sigstore.dev/signing/quickstart).
+If you need a quick way to sign a ModelKit you can follow the same instructions as for a container, using something like [Cosign](https://docs.sigstore.dev/signing/quickstart).
 
 
 ## Making your own Kitfile
