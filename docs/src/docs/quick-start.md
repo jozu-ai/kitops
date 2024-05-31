@@ -74,7 +74,7 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like: `kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
 
-In my case I am pushing to the `jozubrad` repository on Docker Hub:
+In my case I am pushing to the `jozubrad` repository:
 
 ```sh
 kit pack . -t ghcr.io/jozubrad/mymodelkit:latest
@@ -111,7 +111,7 @@ Next, we would repeat the `kit pack` command in the previous step, being sure to
 The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
 ```sh
-kit push docker.io/jozubrad/mymodelkit:latest
+kit push ghcr.io/jozubrad/mymodelkit:latest
 ```
 
 ### 8/ Run an LLM Locally
@@ -156,7 +156,7 @@ kit dev stop
 You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model:
 
 ```sh
-kit pull docker.io/jozubrad/mymodelkit:latest
+kit pull ghcr.io/jozubrad/mymodelkit:latest
 ```
 
 If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
