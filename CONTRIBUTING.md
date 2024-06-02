@@ -35,37 +35,44 @@ If you think there's something else you can help with please contact us in the [
 ## Development Environment Setup
 
 ### Prerequisites
-- Go (Golang): The latest version of Go, as the project is written in this language. Go's installation guide can be found at https://golang.org/doc/install.
-- Git: Version control system for cloning the repository and managing code changes. Installation instructions are available at https://git-scm.com/book/en/v2/Getting-Started-Installing-Git.
 
+* Go (Golang): The latest version of Go, as the project is written in this language. Go's installation guide can be found at https://golang.org/doc/install.
+* Git: Version control system for cloning the repository and managing code changes. Installation instructions are available at https://git-scm.com/book/en/v2/Getting-Started-Installing-Git.
 
 ### Setting up the project
 
 1. Clone the Repository: Clone the KitOps source code to your local machine:
 
-```shell
-git clone https://github.com/jozu-ai/kitops.git
-cd kitops
-```
+    ```shell
+    git clone https://github.com/jozu-ai/kitops.git
+    cd kitops
+    ```
 
-2. Install Go Dependencies: Inside the project directory, fetch and install the project's dependencies using the Go command:
+1. Install Go Dependencies: Inside the project directory, fetch and install the project's dependencies using the Go command:
 
-```shell
-go mod tidy
-```
+    ```shell
+    go mod tidy
+    ```
 
-3. Build the Kit CLI: Compile the source code into an executable named kit:
-```shell
-go build -o kit
-```
+1. Generate the dev mode harness and ui
 
-4. Run Your Build: Execute the built CLI to see all available commands:
+    ```shell
+    go generate ./...
+    ```
 
-```shell
-go run .
-```
-5. Updating Dependencies: If you add or update dependencies, ensure to update the go.mod and go.sum files by running `go mod tidy` again and include these changes in your commits.
+1. Build the Kit CLI: Compile the source code into an executable named kit:
 
+    ```shell
+    go build -o kit
+    ```
+
+1. Run Your Build: Execute the built CLI to see all available commands:
+
+    ```shell
+    go run .
+    ```
+
+1. Updating Dependencies: If you add or update dependencies, ensure to update the go.mod and go.sum files by running `go mod tidy` again and include these changes in your commits.
 
 ## Pull Request Lifecycle
 
