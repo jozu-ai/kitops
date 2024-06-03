@@ -282,8 +282,8 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
       v-for="(quote, index) in quotes" :key="index"
       class="quote-bg p-10 pt-24 md:pt-10 md:pl-32 border border-solid border-gray-02 hover:border-white
         flex flex-col justify-between xs:items-center
-        text-left md:self-stretch min-h-[344px] lg:basis-auto md:min-w-[664px] max-w-[664px] space-y-10 opacity-50 cursor-pointer text-off-white hover:text-white
-        xs:min-w-[calc(100vw-3rem)] mx-6 md:mx-0"
+        text-left md:self-stretch min-h-[344px] lg:basis-auto max-w-[664px] space-y-10 opacity-50 cursor-pointer text-off-white hover:text-white
+        min-w-[calc(100vw-3rem)] md:min-w-[664px] mx-6 md:mx-0"
       :class="{ '!opacity-100': activeQuote === index }"
       @click="activeQuote = index">
       <p class="p2">{{ quote.text }}</p>
