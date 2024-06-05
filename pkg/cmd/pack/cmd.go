@@ -78,7 +78,7 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) error
 		// Change working directory to context path to make sure relative paths within
 		// tarballs are correct. This is the equivalent of using the -C parameter for tar
 		if err := os.Chdir(opts.contextDir); err != nil {
-			return output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
+			return output.Fatalf("Failed to use context path %s: %s", opts.contextDir, err)
 		}
 
 		err = runPack(cmd.Context(), opts)

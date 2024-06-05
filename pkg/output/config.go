@@ -17,20 +17,62 @@
 package output
 
 import (
+	"fmt"
 	"io"
 	"os"
 )
 
+type LogLevel int
+
+const (
+	LogLevelTrace LogLevel = iota
+	LogLevelDebug
+	LogLevelInfo
+	LogLevelWarn
+	LogLevelError
+)
+
+func (l LogLevel) shouldPrint(atLevel LogLevel) bool {
+	return l <= atLevel
+}
+
+func (l LogLevel) getOutput() io.Writer {
+	switch l {
+	case LogLevelError, LogLevelWarn:
+		return stderr
+	default:
+		return stdout
+	}
+}
+
 var (
-	printDebug                = false
+	logLevel                  = LogLevelInfo
 	progressStyle             = "plain"
-	progressEnabled           = false
+	progressEnabled           = true
 	stdout          io.Writer = os.Stdout
 	stderr          io.Writer = os.Stderr
 )
 
-func SetDebug(debug bool) {
-	printDebug = debug
+func SetLogLevel(level LogLevel) {
+	logLevel = level
+}
+
+func SetLogLevelFromString(level string) error {
+	switch level {
+	case "trace":
+		logLevel = LogLevelTrace
+	case "debug":
+		logLevel = LogLevelDebug
+	case "info":
+		logLevel = LogLevelInfo
+	case "warn":
+		logLevel = LogLevelWarn
+	case "error":
+		logLevel = LogLevelError
+	default:
+		return fmt.Errorf("invalid log level '%s'. Options are 'trace', 'debug', 'info', 'warn', 'error'", level)
+	}
+	return nil
 }
 
 func SetProgressBars(style string) {

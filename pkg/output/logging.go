@@ -26,58 +26,92 @@ import (
 )
 
 func Infoln(s any) {
-	printLn(stdout, s)
+	Logln(LogLevelInfo, s)
 }
 
 func Infof(s string, args ...any) {
-	printFmt(stdout, s, args...)
+	Logf(LogLevelInfo, s, args...)
 }
 
 func Errorln(s any) {
-	printLn(stderr, s)
+	Logln(LogLevelError, s)
 }
 
 func Errorf(s string, args ...any) {
-	printFmt(stderr, s, args...)
+	Logf(LogLevelError, s, args...)
 }
 
 // Fatalln is the equivalent of Errorln except it returns a basic error to signal the command has failed
 func Fatalln(s any) error {
-	printLn(stderr, s)
+	Logln(LogLevelError, s)
 	return errors.New("failed to run")
 }
 
 // Fatalf is the equivalent of Errorf except it returns a basic error to signal the command has failed
 func Fatalf(s string, args ...any) error {
-	printFmt(stderr, s, args...)
+	Logf(LogLevelError, s, args...)
 	return errors.New("failed to run")
 }
 
 func Debugln(s any) {
-	if printDebug {
-		printLn(stdout, s)
-	}
+	Logln(LogLevelDebug, s)
 }
 
 func Debugf(s string, args ...any) {
-	if printDebug {
-		printFmt(stdout, s, args...)
-	}
+	Logf(LogLevelDebug, s, args...)
 }
 
 // SafeDebugln is the same as Debugln except it will only print if progress bars
 // are disabled to avoid confusing output
 func SafeDebugln(s any) {
-	if !progressEnabled {
-		Debugln(s)
-	}
+	SafeLogln(LogLevelDebug, s)
 }
 
 // SafeDebugf is the same as Debugf except it will only print if progress bars
 // are disabled to avoid confusing output
 func SafeDebugf(s string, args ...any) {
+	SafeLogf(LogLevelDebug, s, args...)
+}
+
+func Logln(level LogLevel, s any) {
+	loglnTo(level.getOutput(), level, s)
+}
+
+func loglnTo(output io.Writer, level LogLevel, s any) {
+	if logLevel.shouldPrint(level) {
+		str := fmt.Sprintln(s)
+		// Capitalize first letter in string for nicer output, in case it's not already capitalized
+		str = strings.ToUpper(str[:1]) + str[1:]
+		fmt.Fprint(output, str)
+	}
+}
+
+func Logf(level LogLevel, s string, args ...any) {
+	logfTo(level.getOutput(), level, s, args...)
+}
+
+func logfTo(output io.Writer, level LogLevel, s string, args ...any) {
+	if logLevel.shouldPrint(level) {
+		// Avoid printing incomplete lines
+		if !strings.HasSuffix(s, "\n") {
+			s = s + "\n"
+		}
+		str := fmt.Sprintf(s, args...)
+		// Capitalize first letter in string for nicer output, in case it's not already capitalized
+		str = strings.ToUpper(str[:1]) + str[1:]
+		fmt.Fprint(output, str)
+	}
+}
+
+func SafeLogln(level LogLevel, s any) {
 	if !progressEnabled {
-		Debugf(s, args...)
+		Logln(level, s)
+	}
+}
+
+func SafeLogf(level LogLevel, s string, args ...any) {
+	if !progressEnabled {
+		Logf(level, s, args...)
 	}
 }
 
@@ -98,39 +132,25 @@ func (pw *ProgressLogger) Wait() {
 }
 
 func (pw *ProgressLogger) Infoln(s any) {
-	printLn(pw.output, s)
+	if !logLevel.shouldPrint(LogLevelInfo) {
+		loglnTo(pw.output, LogLevelInfo, s)
+	}
 }
 
 func (pw *ProgressLogger) Infof(s string, args ...any) {
-	printFmt(pw.output, s, args...)
+	if !logLevel.shouldPrint(LogLevelInfo) {
+		logfTo(pw.output, LogLevelInfo, s, args...)
+	}
 }
 
 func (pw *ProgressLogger) Debugln(s any) {
-	if printDebug {
-		printLn(pw.output, s)
+	if logLevel.shouldPrint(LogLevelDebug) {
+		loglnTo(pw.output, LogLevelDebug, s)
 	}
 }
 
 func (pw *ProgressLogger) Debugf(s string, args ...any) {
-	if printDebug {
-		printFmt(pw.output, s, args...)
+	if logLevel.shouldPrint(LogLevelDebug) {
+		logfTo(pw.output, LogLevelDebug, s, args...)
 	}
-}
-
-func printLn(w io.Writer, s any) {
-	str := fmt.Sprintln(s)
-	// Capitalize first letter in string for nicer output, in case it's not already capitalized
-	str = strings.ToUpper(str[:1]) + str[1:]
-	fmt.Fprint(w, str)
-}
-
-func printFmt(w io.Writer, s string, args ...any) {
-	// Avoid printing incomplete lines
-	if !strings.HasSuffix(s, "\n") {
-		s = s + "\n"
-	}
-	str := fmt.Sprintf(s, args...)
-	// Capitalize first letter in string for nicer output, in case it's not already capitalized
-	str = strings.ToUpper(str[:1]) + str[1:]
-	fmt.Fprint(w, str)
 }
