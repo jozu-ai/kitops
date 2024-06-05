@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"kitops/pkg/lib/network"
+	"kitops/pkg/output"
 
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
@@ -44,8 +45,8 @@ func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, erro
 	if err != nil {
 		return nil, err
 	}
-	client := network.ClientWithAuth(credentialStore, &network.ClientOpts{TLSSkipVerify: opts.SkipTLSVerify})
-	reg.Client = client
+	authClient := network.ClientWithAuth(credentialStore, &network.ClientOpts{TLSSkipVerify: opts.SkipTLSVerify})
+	reg.Client = output.WrapClient(authClient)
 
 	return reg, nil
 }
