@@ -22,49 +22,6 @@ import (
 	"os"
 )
 
-type LogLevel int
-
-const (
-	LogLevelTrace LogLevel = iota
-	LogLevelDebug
-	LogLevelInfo
-	LogLevelWarn
-	LogLevelError
-)
-
-func (l LogLevel) shouldPrint(atLevel LogLevel) bool {
-	return l <= atLevel
-}
-
-func (l LogLevel) getOutput() io.Writer {
-	switch l {
-	case LogLevelError, LogLevelWarn:
-		return stderr
-	default:
-		return stdout
-	}
-}
-
-func (l LogLevel) getPrefix() string {
-	if logLevel == LogLevelInfo {
-		// By default, don't include log level in message
-		return ""
-	}
-	switch l {
-	case LogLevelTrace:
-		return "[TRACE] "
-	case LogLevelDebug:
-		return "[DEBUG] "
-	case LogLevelInfo:
-		return "[INFO]  "
-	case LogLevelWarn:
-		return "[WARN]  "
-	case LogLevelError:
-		return "[ERROR] "
-	}
-	return ""
-}
-
 var (
 	logLevel                  = LogLevelInfo
 	progressStyle             = "plain"
