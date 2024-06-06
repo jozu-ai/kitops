@@ -45,6 +45,26 @@ func (l LogLevel) getOutput() io.Writer {
 	}
 }
 
+func (l LogLevel) getPrefix() string {
+	if logLevel == LogLevelInfo {
+		// By default, don't include log level in message
+		return ""
+	}
+	switch l {
+	case LogLevelTrace:
+		return "[TRACE] "
+	case LogLevelDebug:
+		return "[DEBUG] "
+	case LogLevelInfo:
+		return "[INFO]  "
+	case LogLevelWarn:
+		return "[WARN]  "
+	case LogLevelError:
+		return "[ERROR] "
+	}
+	return ""
+}
+
 var (
 	logLevel                  = LogLevelInfo
 	progressStyle             = "plain"
