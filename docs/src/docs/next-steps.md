@@ -1,10 +1,18 @@
 # Next Steps with Kit
 
 In this guide you'll learn how to:
+* Sign your ModelKit
 * Make your own Kitfile
 * The power of `unpack`
 * Read the Kitfile or manifest from a ModelKit
 * Tag ModelKits and keep your registry tidy
+
+## Signing your ModelKit
+
+Because ModelKits are OCI artifacts, they can be signed like any other OCI artifact (you may already sign your containers, for example).
+
+If you need a quick way to sign a ModelKit you can follow the same instructions as for a container, using something like [Cosign](https://docs.sigstore.dev/signing/quickstart).
+
 
 ## Making your own Kitfile
 

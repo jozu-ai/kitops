@@ -29,15 +29,7 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any container registry, but below are a few popular ones.
-
-**Docker Hub**
-
-```sh
-kit login docker.io
-```
-
-**GitHub Registry**
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any container registry, but we'll use **GitHub Registry** throughout this guide.
 
 ```sh
 kit login ghcr.io
@@ -82,10 +74,10 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like: `kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
 
-In my case I am pushing to the `jozubrad` repository on Docker Hub:
+In my case I am pushing to the `jozubrad` repository:
 
 ```sh
-kit pack . -t docker.io/jozubrad/mymodelkit:latest
+kit pack . -t ghcr.io/jozubrad/mymodelkit:latest
 ```
 
 You'll see a set of `Saved ...` messages as each piece of the ModelKit is saved to the local repository.
@@ -98,15 +90,31 @@ kit list
 
 The new entry will be named based on whatever you used in your pack command.
 
-### 6/ Push the ModelKit to a Remote Repository
+### 6/ (Optional) Remove a ModelKit from a Local Repository
+
+Let's pretend that the `pack` command we ran in the previous step contained a typo in the ModelKit's repository name causing the word 'model' to be entered as 'modle'.The output from the `kit list` command would display the ModelKit as:
+
+```sh
+ghcr.io/jozubrad/mymodlekit:latest
+```
+
+To correct this, we would `remove` the misspelled ModelKit from our local repository using the [remove command](./cli/cli-reference.md#kit-remove), being sure to provide reference the ModelKit using its mispelled name:
+
+```sh
+kit remove ghcr.io/jozubrad/mymodlekit:latest
+```
+
+Next, we would repeat the `kit pack` command in the previous step, being sure to provide the correct repository name for our ModelKit.
+
+### 7/ Push the ModelKit to a Remote Repository
 
 The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
 ```sh
-kit push docker.io/jozubrad/mymodelkit:latest
+kit push ghcr.io/jozubrad/mymodelkit:latest
 ```
 
-### 7/ Run an LLM Locally
+### 8/ Run an LLM Locally
 
 If you're using Kit with LLMs you can quickly run the model locally to speed integration, testing, or experimentation.
 
@@ -148,10 +156,11 @@ kit dev stop
 You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model:
 
 ```sh
-kit pull docker.io/jozubrad/mymodelkit:latest
+kit pull ghcr.io/jozubrad/mymodelkit:latest
 ```
 
 If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+* Signing your ModeKit
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
