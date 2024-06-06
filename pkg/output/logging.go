@@ -82,6 +82,9 @@ func loglnTo(output io.Writer, level LogLevel, s any) {
 		str := fmt.Sprintln(s)
 		// Capitalize first letter in string for nicer output, in case it's not already capitalized
 		str = strings.ToUpper(str[:1]) + str[1:]
+		if logLevel != LogLevelInfo {
+			str = level.getPrefix() + str
+		}
 		fmt.Fprint(output, str)
 	}
 }
@@ -99,6 +102,9 @@ func logfTo(output io.Writer, level LogLevel, s string, args ...any) {
 		str := fmt.Sprintf(s, args...)
 		// Capitalize first letter in string for nicer output, in case it's not already capitalized
 		str = strings.ToUpper(str[:1]) + str[1:]
+		if logLevel != LogLevelInfo {
+			str = level.getPrefix() + str
+		}
 		fmt.Fprint(output, str)
 	}
 }
