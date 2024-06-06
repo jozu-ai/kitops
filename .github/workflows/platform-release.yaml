@@ -190,6 +190,7 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
         run: |
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           PR_BRANCH="${{ github.ref_name }}-docs-update"
