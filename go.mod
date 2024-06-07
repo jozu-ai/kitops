@@ -10,7 +10,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/vbauerster/mpb/v8 v8.7.2
 	golang.org/x/sync v0.6.0
-	golang.org/x/sys v0.17.0
+	golang.org/x/sys v0.21.0
 	golang.org/x/term v0.17.0
 	gopkg.in/yaml.v3 v3.0.1
 	oras.land/oras-go/v2 v2.4.0
