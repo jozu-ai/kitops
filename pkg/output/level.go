@@ -37,10 +37,10 @@ const (
 
 var (
 	colorNone  = "\033[0m"
-	colorTrace = "\033[0;92m" // Bright green
+	colorTrace = "\033[0m"    // No color
 	colorDebug = "\033[0;34m" // Blue
-	colorInfo  = "\033[0;36m" // Cyan
-	colorWarn  = "\033[0;33m" // Yellow
+	colorInfo  = "\033[0;32m" // Green
+	colorWarn  = "\033[0;93m" // Yellow
 	colorError = "\033[0;31m" // Red
 )
 
@@ -69,20 +69,27 @@ func (l LogLevel) getOutput() io.Writer {
 
 func (l LogLevel) getPrefix() string {
 	if logLevel == LogLevelInfo {
-		// By default, don't include log level in message
-		return ""
-	}
-	switch l {
-	case LogLevelTrace:
-		return fmt.Sprintf("%s[TRACE] %s", colorTrace, colorNone)
-	case LogLevelDebug:
-		return fmt.Sprintf("%s[DEBUG] %s", colorDebug, colorNone)
-	case LogLevelInfo:
-		return fmt.Sprintf("%s[INFO ] %s", colorInfo, colorNone)
-	case LogLevelWarn:
-		return fmt.Sprintf("%s[WARN ] %s", colorWarn, colorNone)
-	case LogLevelError:
-		return fmt.Sprintf("%s[ERROR] %s", colorError, colorNone)
+		switch l {
+		case LogLevelInfo:
+			return ""
+		case LogLevelWarn:
+			return fmt.Sprintf("%s[WARN ] %s", colorWarn, colorNone)
+		case LogLevelError:
+			return fmt.Sprintf("%s[ERROR] %s", colorError, colorNone)
+		}
+	} else {
+		switch l {
+		case LogLevelTrace:
+			return fmt.Sprintf("%s[TRACE] %s", colorTrace, colorNone)
+		case LogLevelDebug:
+			return fmt.Sprintf("%s[DEBUG] %s", colorDebug, colorNone)
+		case LogLevelInfo:
+			return fmt.Sprintf("%s[INFO ] %s", colorInfo, colorNone)
+		case LogLevelWarn:
+			return fmt.Sprintf("%s[WARN ] %s", colorWarn, colorNone)
+		case LogLevelError:
+			return fmt.Sprintf("%s[ERROR] %s", colorError, colorNone)
+		}
 	}
 	return ""
 }
