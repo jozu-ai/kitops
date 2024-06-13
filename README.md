@@ -15,9 +15,9 @@
 
 ### What is KitOps?
 
-KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise registry.
+KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise registry. It's tamper-proof, signable, and auditable.
 
-KitOps simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, and codebases. ModelKits are portable, reproducible, and work with the tools you already use.
+KitOps makes it easy for organizations to track, control, and audit access and changes to their AI project artifacts. It simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, and codebases. ModelKits are portable, reproducible, and work with the tools you already use.
 
 Teams and enterprises use KitOps to speed up and de-risk all types of AI projects from small analysis models to large language models, including fine-tuning and RAG.
 
@@ -31,8 +31,8 @@ Teams and enterprises use KitOps to speed up and de-risk all types of AI project
 * 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
-* 🏃‍♂️‍➡️ **Run locally:** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly (coming soon).
-* 📝 **Signed packages:** ModelKits and their assets can be signed so you can be confident of their provenance.
+* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/quick-start.md#_8-run-an-llm-locally):** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly.
+* 📝 **[Signed packages](./docs/src/docs/next-steps.md):** ModelKits and their assets can be signed so you can be confident of their provenance.
 * 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
 * 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
 * 🤗 **Flexible:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
@@ -64,8 +64,8 @@ We've been busy and shipping quickly!
 * 👩‍💻 Use Kit Dev mode to run an LLM instantly (no GPUs or internet required)
 * 🏎️ Reduced ModelKit packing time by >97%
 * 🤓 Read Kitfile from `stdin`
-* 🐞 Check directory exists before unpacking
-* 🐞 Fix license header automation
+* 🔼 Automatic chunking of uploads to registries
+* 🪵 New log-levels and per-request trace logging
 
 You can see all the gory details in our [release changelogs](https://github.com/jozu-ai/kitops/releases).
 
