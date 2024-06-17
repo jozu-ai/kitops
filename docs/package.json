@@ -16,7 +16,7 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "@vueuse/core": "^10.10.0",
+    "@vueuse/core": "^10.11.0",
     "cheerio": "1.0.0-rc.12",
     "sitemap": "^8.0.0",
     "vue3-marquee": "^4.2.0"
