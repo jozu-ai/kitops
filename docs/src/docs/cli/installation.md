@@ -33,7 +33,7 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Intel / x86_64
 </a>
 
-Once the file is downloaded, open your Finder and double-click the `.zip` file to unpack it. Then select the unpacked folder and move it to `/usr/local/bin`.
+Once the file is downloaded, open your Finder and double-click the `.zip` file to unpack it. Then select the executable file named `kit` from unpacked folder and move it to `/usr/local/bin`.
 
 You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
 
