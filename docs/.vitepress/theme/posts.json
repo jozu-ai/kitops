@@ -59,5 +59,29 @@
     "tags": ["kitops", "Dev Mode", "Release Notes"],
     "author": "Gorkem Ercan",
     "published_time": "2024-05-01"
+  },
+  {
+    "url": "https://jozu.com/blog/when-to-dockerize-vs-when-to-use-modelkit",
+    "tags": ["kitops", "ModelKit", "Open Source"],
+    "author": "Jesse Williams",
+    "published_time": "2024-05-30"
+  },
+  {
+    "url": "https://jozu.com/blog/a-step-by-step-guide-to-building-an-mlops-pipeline",
+    "tags": ["kitops", "MLOps", "Open Source"],
+    "author": "Jesse Williams",
+    "published_time": "2024-06-04"
+  },
+  {
+    "url": "https://jozu.com/blog/10-open-source-tools-for-building-mlops-pipelines/",
+    "tags": ["kitops", "MLOps", "Open Source"],
+    "author": "Jesse Williams",
+    "published_time": "2024-06-06"
+  },
+  {
+    "url": "https://thejeffbullasshow.libsyn.com/the-secret-world-of-ai-what-businesses-are-doing-behind-closed-doors",
+    "tags": ["kitops", "MLOps", "Podcast"],
+    "author": "Brad Micklea",
+    "published_time": "2024-06-13"
   }
 ]
