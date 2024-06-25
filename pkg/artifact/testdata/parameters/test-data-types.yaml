@@ -1,0 +1,16 @@
+description: "Can round-trip basic data types"
+kitfileYaml: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-kitfile
+  model:
+    name: test-model
+    path: /tmp/path/to/model
+    parameters:
+      test-bool: true
+      test-bool-str: "true"
+      test-float: 12.3
+      test-negative: -123
+      test-number: 123
+      test-string: string
+kitfileJson: '{"manifestVersion":"1.0.0","package":{"name":"test-kitfile"},"model":{"name":"test-model","path":"/tmp/path/to/model","parameters":{"test-bool":true,"test-bool-str":"true","test-float":12.3,"test-negative":-123,"test-number":123,"test-string":"string"}}}'
