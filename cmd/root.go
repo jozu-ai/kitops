@@ -5,7 +5,9 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
@@ -117,13 +119,21 @@ func Execute() {
 func getConfigHome(opts *rootOptions) (string, error) {
 	if opts.configHome != "" {
 		output.Debugf("Using config directory from flag: %s", opts.configHome)
-		return opts.configHome, nil
+		absHome, err := filepath.Abs(opts.configHome)
+		if err != nil {
+			return "", fmt.Errorf("failed to get absolute path for %s: %w", opts.configHome, err)
+		}
+		return absHome, nil
 	}
 
 	envHome := os.Getenv("KITOPS_HOME")
 	if envHome != "" {
 		output.Debugf("Using config directory from environment variable: %s", envHome)
-		return envHome, nil
+		absHome, err := filepath.Abs(envHome)
+		if err != nil {
+			return "", fmt.Errorf("failed to get absolute path for $KITOPS_HOME: %w", err)
+		}
+		return absHome, nil
 	}
 
 	defaultHome, err := constants.DefaultConfigPath()
