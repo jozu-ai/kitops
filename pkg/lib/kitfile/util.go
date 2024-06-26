@@ -47,6 +47,9 @@ func LayerPathsFromKitfile(kitfile *artifact.KitFile) []string {
 	for _, dataset := range kitfile.DataSets {
 		layerPaths = append(layerPaths, cleanPath(dataset.Path))
 	}
+	for _, docs := range kitfile.Docs {
+		layerPaths = append(layerPaths, docs.Path)
+	}
 
 	if kitfile.Model != nil {
 		if kitfile.Model.Path != "" {

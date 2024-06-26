@@ -66,6 +66,7 @@ type unpackConf struct {
 	unpackModels   bool
 	unpackCode     bool
 	unpackDatasets bool
+	unpackDocs     bool
 }
 
 func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
@@ -89,6 +90,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		opts.unpackConf.unpackModels = true
 		opts.unpackConf.unpackCode = true
 		opts.unpackConf.unpackDatasets = true
+		opts.unpackConf.unpackDocs = true
 	}
 
 	absDir, err := filepath.Abs(opts.unpackDir)
@@ -119,6 +121,7 @@ func UnpackCommand() *cobra.Command {
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackDocs, "docs", false, "Unpack only docs")
 	opts.AddNetworkFlags(cmd)
 
 	return cmd

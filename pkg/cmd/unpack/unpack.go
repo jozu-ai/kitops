@@ -78,7 +78,7 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 
 	// Since there might be multiple models, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for unpacking
-	var modelPartIdx, codeIdx, datasetIdx int
+	var modelPartIdx, codeIdx, datasetIdx, docsIdx int
 	for _, layerDesc := range manifest.Layers {
 		var relPath string
 		mediaType := constants.ParseMediaType(layerDesc.MediaType)
@@ -128,7 +128,17 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			}
 			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
 			datasetIdx += 1
+
+		case constants.DocsType:
+			docsEntry := config.Docs[docsIdx]
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, docsEntry.Path)
+			if err != nil {
+				return fmt.Errorf("Error resolving path %s for docs: %w", docsEntry.Path, err)
+			}
+			output.Infof("Unpacking docs to %s", docsEntry.Path)
+			docsIdx += 1
 		}
+
 		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
 			return fmt.Errorf("Failed to unpack: %w", err)
 		}
