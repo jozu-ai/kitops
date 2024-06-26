@@ -69,6 +69,9 @@ func ValidateKitfile(kf *artifact.KitFile) error {
 	for idx, code := range kf.Code {
 		addPath(code.Path, fmt.Sprintf("code layer %d", idx))
 	}
+	for idx, docs := range kf.Docs {
+		addPath(docs.Path, fmt.Sprintf("docs layer %d", idx))
+	}
 
 	for layerPath, layerIds := range paths {
 		if len := len(layerIds); len > 1 {
