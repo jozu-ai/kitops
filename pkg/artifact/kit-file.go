@@ -32,6 +32,12 @@ type (
 		Model           *TrainedModel `json:"model,omitempty" yaml:"model,omitempty"`
 		Code            []Code        `json:"code,omitempty" yaml:"code,omitempty"`
 		DataSets        []DataSet     `json:"datasets,omitempty" yaml:"datasets,omitempty"`
+		Docs            []Docs        `json:"docs,omitempty" yaml:"docs,omitempty"`
+	}
+
+	Docs struct {
+		Path        string `json:"path" yaml:"path"`
+		Description string `json:"description" yaml:"description"`
 	}
 
 	ModelKit struct {
