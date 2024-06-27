@@ -14,7 +14,7 @@ COPY . .
 RUN \
     CGO_ENABLED=0 go build \
     -o kit \
-    -ldflags="-s -w -X kitops/pkg/cmd/version.Version=${version} -X kitops/pkg/cmd/version.GitCommit=$gitCommit -X kitops/pkg/cmd/version.BuildTime=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+    -ldflags="-s -w -X kitops/pkg/lib/constants.Version=${version} -X kitops/pkg/lib/constants.GitCommit=$gitCommit -X kitops/pkg/lib/constants.BuildTime=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
 FROM docker.io/library/alpine
 ENV USER_ID=1001 \
