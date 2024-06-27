@@ -18,7 +18,7 @@ builds:
       - arm64
     binary: kit
     ldflags:
-      - -s -w -X kitops/pkg/cmd/version.Version={{.Version}} -X kitops/pkg/cmd/version.GitCommit={{.Commit}} -X kitops/pkg/cmd/version.BuildTime={{.CommitDate}}
+      - -s -w -X kitops/pkg/lib/constants.Version={{.Version}} -X kitops/pkg/lib/constants.GitCommit={{.Commit}} -X kitops/pkg/lib/constants.BuildTime={{.CommitDate}}
     hooks:
       post:
         - cmd: ./build/scripts/sign '{{ .Path }}'

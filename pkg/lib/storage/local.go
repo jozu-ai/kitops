@@ -25,7 +25,6 @@ import (
 	"os"
 
 	"kitops/pkg/artifact"
-	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	kfutils "kitops/pkg/lib/kitfile"
@@ -51,7 +50,7 @@ func SaveModel(ctx context.Context, store repo.LocalStorage, kitfile *artifact.K
 		return nil, err
 	}
 
-	manifest := CreateManifest(configDesc, layerDescs)
+	manifest := createManifest(configDesc, layerDescs)
 
 	manifestDesc, err := saveModelManifest(ctx, store, manifest)
 	if err != nil {
@@ -230,13 +229,13 @@ func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.
 	return &desc, nil
 }
 
-func CreateManifest(configDesc ocispec.Descriptor, layerDescs []ocispec.Descriptor) ocispec.Manifest {
+func createManifest(configDesc ocispec.Descriptor, layerDescs []ocispec.Descriptor) ocispec.Manifest {
 	manifest := ocispec.Manifest{
 		Versioned: specs.Versioned{SchemaVersion: 2},
 		Config:    configDesc,
 		Layers:    layerDescs,
 		Annotations: map[string]string{
-			constants.CliVersionAnnotation: version.Version,
+			constants.CliVersionAnnotation: constants.Version,
 		},
 	}
 

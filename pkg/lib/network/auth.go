@@ -17,7 +17,7 @@
 package network
 
 import (
-	"kitops/pkg/cmd/version"
+	"kitops/pkg/lib/constants"
 	"net/http"
 
 	"oras.land/oras-go/v2/registry/remote/auth"
@@ -59,7 +59,7 @@ func DefaultClient(opts *ClientOpts) *auth.Client {
 		},
 		Cache: auth.NewCache(),
 		Header: http.Header{
-			"User-Agent": {"kitops-cli/" + version.Version},
+			"User-Agent": {"kitops-cli/" + constants.Version},
 		},
 	}
 
