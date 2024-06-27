@@ -19,6 +19,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/network"
 	"kitops/pkg/output"
 
@@ -30,6 +31,14 @@ type RegistryOptions struct {
 	PlainHTTP       bool
 	SkipTLSVerify   bool
 	CredentialsPath string
+}
+
+func DefaultRegistryOptions(configHome string) *RegistryOptions {
+	return &RegistryOptions{
+		PlainHTTP:       false,
+		SkipTLSVerify:   false,
+		CredentialsPath: constants.CredentialsPath(configHome),
+	}
 }
 
 // NewRegistry returns a new *remote.Registry for hostname, with credentials and TLS
