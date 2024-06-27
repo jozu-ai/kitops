@@ -137,6 +137,18 @@ func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *ar
 		}
 		layers = append(layers, layer)
 	}
+	for _, docs := range kitfile.Docs {
+		mediaType := constants.MediaType{
+			BaseType:    constants.DocsType,
+			Compression: compression,
+		}
+		layer, err := saveContentLayer(ctx, store, docs.Path, mediaType, ignore)
+		if err != nil {
+			return nil, err
+		}
+		layers = append(layers, layer)
+	}
+
 	return layers, nil
 }
 
