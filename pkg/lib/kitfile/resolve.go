@@ -20,10 +20,43 @@ import (
 	"context"
 	"fmt"
 	"kitops/pkg/artifact"
-	"kitops/pkg/cmd/info"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo"
 	"strings"
+
+	"oras.land/oras-go/v2/registry"
 )
+
+func GetKitfileForRefString(ctx context.Context, configHome string, ref string) (*artifact.KitFile, error) {
+	modelRef, _, err := repo.ParseReference(ref)
+	if err != nil {
+		return nil, err
+	}
+
+	return GetKitfileForRef(ctx, configHome, modelRef)
+}
+
+func GetKitfileForRef(ctx context.Context, configHome string, ref *registry.Reference) (*artifact.KitFile, error) {
+	storageRoot := constants.StoragePath(configHome)
+	store, err := repo.NewLocalStore(storageRoot, ref)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read local storage: %w", err)
+	}
+	_, _, localKitfile, err := repo.ResolveManifestAndConfig(ctx, store, ref.Reference)
+	if err == nil {
+		return localKitfile, nil
+	}
+
+	repository, err := repo.NewRepository(ctx, ref.Registry, ref.Repository, repo.DefaultRegistryOptions(configHome))
+	if err != nil {
+		return nil, err
+	}
+	_, _, remoteKitfile, err := repo.ResolveManifestAndConfig(ctx, repository, ref.Reference)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch Kitfile for %s: %w", ref, err)
+	}
+	return remoteKitfile, nil
+}
 
 // ResolveKitfile returns the Kitfile for a reference. Any references to other modelkits
 // are fetched and included in the resolved Kitfile, giving the equivalent Kitfile including
@@ -32,7 +65,7 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 	resolved := &artifact.KitFile{}
 	refChain := []string{baseRef, kitfileRef}
 	for i := 0; i < constants.MaxModelRefChain; i++ {
-		kitfile, err := info.GetKitfileForRefString(ctx, configHome, kitfileRef)
+		kitfile, err := GetKitfileForRefString(ctx, configHome, kitfileRef)
 		if err != nil {
 			return nil, err
 		}
@@ -50,7 +83,7 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 		refChain = append(refChain, resolved.Model.Path)
 		kitfileRef = resolved.Model.Path
 	}
-	return nil, fmt.Errorf("Reached maximum number of model references: [%s]", strings.Join(refChain, "=>"))
+	return nil, fmt.Errorf("reached maximum number of model references: [%s]", strings.Join(refChain, "=>"))
 }
 
 func mergeKitfiles(into, from *artifact.KitFile) *artifact.KitFile {
