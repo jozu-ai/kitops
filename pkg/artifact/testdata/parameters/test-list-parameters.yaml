@@ -1,0 +1,13 @@
+description: "Can round-trip parameters as a list"
+kitfileYaml: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-kitfile
+  model:
+    name: test-model
+    path: /tmp/path/to/model
+    parameters:
+      - item-a
+      - item-b
+      - item-c
+kitfileJson: '{"manifestVersion":"1.0.0","package":{"name":"test-kitfile"},"model":{"name":"test-model","path":"/tmp/path/to/model","parameters":["item-a","item-b","item-c"]}}'

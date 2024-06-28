@@ -66,6 +66,13 @@ type (
 		Training    *Training   `json:"training,omitempty" yaml:"training,omitempty"`
 		Validation  *Validation `json:"validation,omitempty" yaml:"validation,omitempty"`
 		Parts       []ModelPart `json:"parts,omitempty" yaml:"parts,omitempty"`
+		// Parameters is an arbitrary section of yaml that can be used to store any additional
+		// data that may be relevant to the current model, with a few caveats:
+		//  * Only a json-compatible subset of yaml is supported
+		//  * Strings will be serialized without flow parameters, etc.
+		//  * Numbers will be converted to decimal representations (0xFF -> 255, 1.2e+3 -> 1200)
+		//  * Maps will be sorted alphabetically by key
+		Parameters any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 	}
 
 	ModelPart struct {
