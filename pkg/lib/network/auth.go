@@ -17,8 +17,9 @@
 package network
 
 import (
-	"kitops/pkg/lib/constants"
 	"net/http"
+
+	"kitops/pkg/lib/constants"
 
 	"oras.land/oras-go/v2/registry/remote/auth"
 	"oras.land/oras-go/v2/registry/remote/credentials"

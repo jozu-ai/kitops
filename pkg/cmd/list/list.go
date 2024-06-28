@@ -6,9 +6,11 @@ package list
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -21,7 +23,7 @@ const (
 
 func listLocalKits(ctx context.Context, opts *listOptions) ([]string, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
-	stores, err := repo.GetAllLocalStores(storageRoot)
+	stores, err := local.GetAllLocalStores(storageRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +39,7 @@ func listLocalKits(ctx context.Context, opts *listOptions) ([]string, error) {
 	return allInfoLines, nil
 }
 
-func listKits(ctx context.Context, store repo.LocalStorage) ([]string, error) {
+func listKits(ctx context.Context, store local.LocalStorage) ([]string, error) {
 	index, err := store.GetIndex()
 	if err != nil {
 		return nil, err
@@ -45,7 +47,7 @@ func listKits(ctx context.Context, store repo.LocalStorage) ([]string, error) {
 
 	var infolines []string
 	for _, manifestDesc := range index.Manifests {
-		manifest, config, err := repo.GetManifestAndConfig(ctx, store, manifestDesc)
+		manifest, config, err := util.GetManifestAndConfig(ctx, store, manifestDesc)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +65,7 @@ func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *o
 	}
 
 	// Strip localhost from repo if present, since we added it
-	repository = repo.FormatRepositoryForDisplay(repository)
+	repository = util.FormatRepositoryForDisplay(repository)
 	if repository == "" {
 		repository = "<none>"
 	}

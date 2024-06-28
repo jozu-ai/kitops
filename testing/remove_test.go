@@ -18,12 +18,13 @@ package testing
 
 import (
 	"fmt"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
+
+	"kitops/pkg/lib/constants"
 )
 
 const (

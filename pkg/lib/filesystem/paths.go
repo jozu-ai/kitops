@@ -19,10 +19,11 @@ package filesystem
 import (
 	"fmt"
 	"io/fs"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"kitops/pkg/lib/constants"
 )
 
 // VerifySubpath checks that filepath.Join(context, subDir) is a subdirectory of context, following

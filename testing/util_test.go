@@ -21,12 +21,13 @@ import (
 	"errors"
 	"io"
 	"io/fs"
-	"kitops/cmd"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"kitops/cmd"
+	"kitops/pkg/lib/constants"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"

@@ -20,11 +20,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
-	"kitops/pkg/output"
 	"net/http"
 	"strings"
+
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
+	"kitops/pkg/output"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -36,12 +39,12 @@ import (
 
 // removeAllModels removes all modelkits from local storage, including tagged ones
 func removeAllModels(ctx context.Context, opts *removeOptions) error {
-	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	stores, err := local.GetAllLocalStores(constants.StoragePath(opts.configHome))
 	if err != nil {
 		return fmt.Errorf("failed to read local storage: %w", err)
 	}
 	for _, store := range stores {
-		repository := repo.FormatRepositoryForDisplay(store.GetRepo())
+		repository := util.FormatRepositoryForDisplay(store.GetRepo())
 
 		index, err := store.GetIndex()
 		if err != nil {
@@ -57,7 +60,7 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 			if skipManifests[manifestDesc.Digest] {
 				continue
 			}
-			tags, err := repo.GetTagsForDescriptor(ctx, store, manifestDesc)
+			tags, err := local.GetTagsForDescriptor(ctx, store, manifestDesc)
 			if err != nil {
 				output.Errorf("Failed to get tags for modelkit %s@%s: %w", repository, manifestDesc.Digest, err)
 			}
@@ -83,13 +86,13 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 
 // removeUntaggedModels removes all untagged modelkits from local storage
 func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
-	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	stores, err := local.GetAllLocalStores(constants.StoragePath(opts.configHome))
 	if err != nil {
 		return fmt.Errorf("failed to read local storage: %w", err)
 	}
 	for _, store := range stores {
 		index, err := store.GetIndex()
-		repo := repo.FormatRepositoryForDisplay(store.GetRepo())
+		repo := util.FormatRepositoryForDisplay(store.GetRepo())
 		if err != nil {
 			return fmt.Errorf("failed to read index for %s: %w", repo, err)
 		}
@@ -110,7 +113,7 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 
 func removeModel(ctx context.Context, opts *removeOptions) error {
 	storageRoot := constants.StoragePath(opts.configHome)
-	localStore, err := repo.NewLocalStore(storageRoot, opts.modelRef)
+	localStore, err := local.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
 		return fmt.Errorf("failed to read local storage at path %s: %w", storageRoot, err)
 	}
@@ -118,13 +121,13 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 	if err != nil {
 		return fmt.Errorf("failed to remove: %s", err)
 	}
-	displayRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+	displayRef := util.FormatRepositoryForDisplay(opts.modelRef.String())
 	output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
 
 	for _, tag := range opts.extraTags {
 		ref := *opts.modelRef
 		ref.Reference = tag
-		displayRef := repo.FormatRepositoryForDisplay(ref.String())
+		displayRef := util.FormatRepositoryForDisplay(ref.String())
 		desc, err := removeModelRef(ctx, localStore, &ref, opts.forceDelete)
 		if err != nil {
 			output.Errorf("Failed to remove tag %s: %s", tag, err)
@@ -136,7 +139,7 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 }
 
 func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
-	registry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
+	registry, err := remote.NewRegistry(opts.modelRef.Registry, &remote.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
 		CredentialsPath: constants.CredentialsPath(opts.configHome),
@@ -151,7 +154,7 @@ func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
 	desc, err := repository.Resolve(ctx, opts.modelRef.Reference)
 	if err != nil {
 		if errors.Is(err, errdef.ErrNotFound) {
-			return fmt.Errorf("model %s not found", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+			return fmt.Errorf("model %s not found", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 		}
 		return fmt.Errorf("error resolving modelkit: %w", err)
 	}
@@ -164,11 +167,11 @@ func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
 	return nil
 }
 
-func removeModelRef(ctx context.Context, store repo.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
+func removeModelRef(ctx context.Context, store local.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
 	desc, err := oras.Resolve(ctx, store, ref.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
-			return ocispec.DescriptorEmptyJSON, fmt.Errorf("model %s not found", repo.FormatRepositoryForDisplay(ref.String()))
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("model %s not found", util.FormatRepositoryForDisplay(ref.String()))
 		}
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("error resolving model: %s", err)
 	}
@@ -182,7 +185,7 @@ func removeModelRef(ctx context.Context, store repo.LocalStorage, ref *registry.
 		return desc, nil
 	}
 
-	tags, err := repo.GetTagsForDescriptor(ctx, store, desc)
+	tags, err := local.GetTagsForDescriptor(ctx, store, desc)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}

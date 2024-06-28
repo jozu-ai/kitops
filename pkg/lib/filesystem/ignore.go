@@ -22,9 +22,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	kfutils "kitops/pkg/lib/repo/util"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	kfutils "kitops/pkg/lib/kitfile"
 
 	"github.com/moby/patternmatcher"
 	"github.com/moby/patternmatcher/ignorefile"

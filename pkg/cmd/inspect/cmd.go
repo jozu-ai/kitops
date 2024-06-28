@@ -21,11 +21,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/errdef"
@@ -80,7 +81,7 @@ func runCommand(opts *inspectOptions) func(*cobra.Command, []string) error {
 		inspectInfo, err := inspectReference(cmd.Context(), opts)
 		if err != nil {
 			if errors.Is(err, errdef.ErrNotFound) {
-				return output.Fatalf("Could not find modelkit %s", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+				return output.Fatalf("Could not find modelkit %s", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
 			return output.Fatalf("Error resolving modelkit: %s", err)
 		}
@@ -100,7 +101,7 @@ func (opts *inspectOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	ref, extraTags, err := repo.ParseReference(args[0])
+	ref, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return err
 	}
@@ -109,8 +110,8 @@ func (opts *inspectOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = ref
 
-	if opts.modelRef.Registry == repo.DefaultRegistry && opts.checkRemote {
-		return fmt.Errorf("can not check remote: %s does not contain registry", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+	if opts.modelRef.Registry == util.DefaultRegistry && opts.checkRemote {
+		return fmt.Errorf("can not check remote: %s does not contain registry", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 	}
 
 	return nil

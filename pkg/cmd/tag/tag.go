@@ -19,8 +19,9 @@ package tag
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
 
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/errdef"
@@ -28,7 +29,7 @@ import (
 
 func RunTag(ctx context.Context, options *tagOptions) error {
 	storageHome := constants.StoragePath(options.configHome)
-	sourceStore, err := repo.NewLocalStore(storageHome, options.sourceRef)
+	sourceStore, err := local.NewLocalStore(storageHome, options.sourceRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
@@ -47,7 +48,7 @@ func RunTag(ctx context.Context, options *tagOptions) error {
 		return nil
 	}
 	// model kit is on a different registry and/or repo, copy the model to the target store
-	targetStore, err := repo.NewLocalStore(storageHome, options.targetRef)
+	targetStore, err := local.NewLocalStore(storageHome, options.targetRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}

@@ -14,19 +14,20 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package repo
+package remote
 
 import (
 	"context"
 	"fmt"
 	"io"
-	"kitops/pkg/output"
 	"math"
 	"net/http"
 	"net/url"
 	"path"
 	"strconv"
 	"strings"
+
+	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"

@@ -10,9 +10,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"kitops/pkg/lib/repo/util"
+
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
-	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -112,14 +113,14 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 	opts.storageHome = constants.StoragePath(opts.configHome)
 
 	if opts.fullTagRef != "" {
-		modelRef, extraRefs, err := repo.ParseReference(opts.fullTagRef)
+		modelRef, extraRefs, err := util.ParseReference(opts.fullTagRef)
 		if err != nil {
 			return fmt.Errorf("failed to parse reference: %w", err)
 		}
 		opts.modelRef = modelRef
 		opts.extraRefs = extraRefs
 	} else {
-		opts.modelRef = repo.DefaultReference()
+		opts.modelRef = util.DefaultReference()
 	}
 
 	if err := constants.IsValidCompression(opts.compression); err != nil {
