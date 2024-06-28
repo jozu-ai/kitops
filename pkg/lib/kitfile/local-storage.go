@@ -14,7 +14,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package storage
+package kitfile
 
 import (
 	"bytes"
@@ -24,11 +24,12 @@ import (
 	"fmt"
 	"os"
 
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/util"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
-	kfutils "kitops/pkg/lib/kitfile"
-	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
 	"github.com/opencontainers/go-digest"
@@ -40,7 +41,7 @@ import (
 // SaveModel saves an *artifact.Model to the provided oras.Target, compressing layers. It attempts to block
 // modelkits that include paths that leave the base context directory, allowing only subdirectories of the root
 // context to be included in the modelkit.
-func SaveModel(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) (*ocispec.Descriptor, error) {
+func SaveModel(ctx context.Context, store local.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) (*ocispec.Descriptor, error) {
 	configDesc, err := saveConfig(ctx, store, kitfile)
 	if err != nil {
 		return nil, err
@@ -59,7 +60,7 @@ func SaveModel(ctx context.Context, store repo.LocalStorage, kitfile *artifact.K
 	return manifestDesc, nil
 }
 
-func saveConfig(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile) (ocispec.Descriptor, error) {
+func saveConfig(ctx context.Context, store local.LocalStorage, kitfile *artifact.KitFile) (ocispec.Descriptor, error) {
 	modelBytes, err := kitfile.MarshalToJSON()
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
@@ -88,10 +89,10 @@ func saveConfig(ctx context.Context, store repo.LocalStorage, kitfile *artifact.
 	return desc, nil
 }
 
-func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
+func saveKitfileLayers(ctx context.Context, store local.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
 	var layers []ocispec.Descriptor
 	if kitfile.Model != nil {
-		if kitfile.Model.Path != "" && !kfutils.IsModelKitReference(kitfile.Model.Path) {
+		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
 			mediaType := constants.MediaType{
 				BaseType:    constants.ModelType,
 				Compression: compression,
@@ -151,7 +152,7 @@ func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *ar
 	return layers, nil
 }
 
-func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
+func saveContentLayer(ctx context.Context, store local.LocalStorage, path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
 	// We want to store a gzipped tar file in store, but to do so we need a descriptor, so we have to compress
 	// to a temporary file. Ideally, we'd also add this to the internal store by moving the file to avoid
 	// copying if possible.
@@ -174,7 +175,7 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string,
 
 	// Workaround to avoid copying a potentially very large file: move it to the expected path
 	// and verify that it exists afterwards.
-	blobPath := repo.BlobPathForManifest(store, desc)
+	blobPath := local.BlobPathForManifest(store, desc)
 	if err := os.Rename(tempPath, blobPath); err != nil {
 		// This may fail on some systems (e.g. linux where / and /home are different partitions)
 		// Fallback to regular push which is basically a copy

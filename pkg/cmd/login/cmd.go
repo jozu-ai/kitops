@@ -8,12 +8,13 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"kitops/pkg/cmd/options"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/output"
 	"os"
 	"strings"
 	"syscall"
+
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/term"

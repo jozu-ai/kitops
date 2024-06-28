@@ -19,16 +19,19 @@ package kitfile
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
-	"strings"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 
 	"oras.land/oras-go/v2/registry"
 )
 
 func GetKitfileForRefString(ctx context.Context, configHome string, ref string) (*artifact.KitFile, error) {
-	modelRef, _, err := repo.ParseReference(ref)
+	modelRef, _, err := util.ParseReference(ref)
 	if err != nil {
 		return nil, err
 	}
@@ -38,20 +41,20 @@ func GetKitfileForRefString(ctx context.Context, configHome string, ref string) 
 
 func GetKitfileForRef(ctx context.Context, configHome string, ref *registry.Reference) (*artifact.KitFile, error) {
 	storageRoot := constants.StoragePath(configHome)
-	store, err := repo.NewLocalStore(storageRoot, ref)
+	store, err := local.NewLocalStore(storageRoot, ref)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	_, _, localKitfile, err := repo.ResolveManifestAndConfig(ctx, store, ref.Reference)
+	_, _, localKitfile, err := util.ResolveManifestAndConfig(ctx, store, ref.Reference)
 	if err == nil {
 		return localKitfile, nil
 	}
 
-	repository, err := repo.NewRepository(ctx, ref.Registry, ref.Repository, repo.DefaultRegistryOptions(configHome))
+	repository, err := remote.NewRepository(ctx, ref.Registry, ref.Repository, remote.DefaultRegistryOptions(configHome))
 	if err != nil {
 		return nil, err
 	}
-	_, _, remoteKitfile, err := repo.ResolveManifestAndConfig(ctx, repository, ref.Reference)
+	_, _, remoteKitfile, err := util.ResolveManifestAndConfig(ctx, repository, ref.Reference)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch Kitfile for %s: %w", ref, err)
 	}
@@ -70,7 +73,7 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 			return nil, err
 		}
 		resolved = mergeKitfiles(resolved, kitfile)
-		if resolved.Model == nil || !IsModelKitReference(resolved.Model.Path) {
+		if resolved.Model == nil || !util.IsModelKitReference(resolved.Model.Path) {
 			if err := ValidateKitfile(resolved); err != nil {
 				return nil, err
 			}

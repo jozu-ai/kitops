@@ -19,11 +19,12 @@ package remove
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -73,7 +74,7 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 
 	if len(args) > 0 {
-		modelRef, extraTags, err := repo.ParseReference(args[0])
+		modelRef, extraTags, err := util.ParseReference(args[0])
 		if err != nil {
 			return fmt.Errorf("failed to parse reference: %w", err)
 		}
@@ -152,7 +153,7 @@ func runCommand(opts *removeOptions) func(*cobra.Command, []string) error {
 
 func printConfig(opts *removeOptions) {
 	if opts.modelRef != nil {
-		displayRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+		displayRef := util.FormatRepositoryForDisplay(opts.modelRef.String())
 		output.Debugf("Removing %s and additional tags: [%s]", displayRef, strings.Join(opts.extraTags, ", "))
 	}
 	if opts.removeAll {

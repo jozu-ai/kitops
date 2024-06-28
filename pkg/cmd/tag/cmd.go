@@ -19,8 +19,9 @@ package tag
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -80,13 +81,13 @@ func (opts *tagOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	modelRef, _, err := repo.ParseReference(args[0])
+	modelRef, _, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}
 	opts.sourceRef = modelRef
 
-	modelRef, _, err = repo.ParseReference(args[1])
+	modelRef, _, err = util.ParseReference(args[1])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}

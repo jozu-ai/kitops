@@ -21,16 +21,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/remote"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"
 )
 
 func listRemoteKits(ctx context.Context, opts *listOptions) ([]string, error) {
-	remoteRegistry, err := repo.NewRegistry(opts.remoteRef.Registry, &repo.RegistryOptions{
+	remoteRegistry, err := remote.NewRegistry(opts.remoteRef.Registry, &remote.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
 		CredentialsPath: constants.CredentialsPath(opts.configHome),

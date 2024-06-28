@@ -14,16 +14,18 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package repo
+package local
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path"
 	"path/filepath"
+
+	"kitops/pkg/lib/constants"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
@@ -161,4 +163,19 @@ func parseIndexJson(storageHome string) (*ocispec.Index, error) {
 	}
 
 	return index, nil
+}
+
+// GetTagsForDescriptor returns the list of tags that reference a particular descriptor (SHA256 hash) in LocalStorage.
+func GetTagsForDescriptor(ctx context.Context, store LocalStorage, desc ocispec.Descriptor) ([]string, error) {
+	index, err := store.GetIndex()
+	if err != nil {
+		return nil, err
+	}
+	var tags []string
+	for _, manifest := range index.Manifests {
+		if manifest.Digest == desc.Digest && manifest.Annotations[ocispec.AnnotationRefName] != "" {
+			tags = append(tags, manifest.Annotations[ocispec.AnnotationRefName])
+		}
+	}
+	return tags, nil
 }

@@ -14,11 +14,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package repo
+package remote
 
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/network"
 	"kitops/pkg/output"

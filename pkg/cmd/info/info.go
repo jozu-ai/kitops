@@ -19,9 +19,12 @@ package info
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 )
 
 func getInfo(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) {
@@ -34,11 +37,11 @@ func getInfo(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) 
 
 func getLocalConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
-	store, err := repo.NewLocalStore(storageRoot, opts.modelRef)
+	store, err := local.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	_, _, config, err := repo.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
+	_, _, config, err := util.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +49,7 @@ func getLocalConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile, 
 }
 
 func getRemoteConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile, error) {
-	repository, err := repo.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
+	repository, err := remote.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &remote.RegistryOptions{
 		PlainHTTP:       opts.PlainHTTP,
 		SkipTLSVerify:   !opts.TlsVerify,
 		CredentialsPath: constants.CredentialsPath(opts.configHome),
@@ -54,7 +57,7 @@ func getRemoteConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile,
 	if err != nil {
 		return nil, err
 	}
-	_, _, config, err := repo.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
+	_, _, config, err := util.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}

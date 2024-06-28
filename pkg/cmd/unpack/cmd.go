@@ -19,12 +19,13 @@ package unpack
 import (
 	"context"
 	"fmt"
-	"kitops/pkg/cmd/options"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
-	"kitops/pkg/output"
 	"os"
 	"path/filepath"
+
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/util"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -75,7 +76,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	modelRef, extraTags, err := repo.ParseReference(args[0])
+	modelRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}

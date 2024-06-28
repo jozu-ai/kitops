@@ -26,11 +26,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"kitops/pkg/lib/repo/util"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
-	kfutils "kitops/pkg/lib/kitfile"
-	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -52,18 +52,18 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 	ref := opts.modelRef
 	store, err := getStoreForRef(ctx, opts)
 	if err != nil {
-		ref := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+		ref := util.FormatRepositoryForDisplay(opts.modelRef.String())
 		return output.Fatalf("Failed to find reference %s: %s", ref, err)
 	}
 	manifestDesc, err := store.Resolve(ctx, ref.Reference)
 	if err != nil {
 		return fmt.Errorf("Failed to resolve reference: %w", err)
 	}
-	manifest, config, err := repo.GetManifestAndConfig(ctx, store, manifestDesc)
+	manifest, config, err := util.GetManifestAndConfig(ctx, store, manifestDesc)
 	if err != nil {
 		return fmt.Errorf("Failed to read model: %s", err)
 	}
-	if config.Model != nil && kfutils.IsModelKitReference(config.Model.Path) {
+	if config.Model != nil && util.IsModelKitReference(config.Model.Path) {
 		output.Infof("Unpacking referenced modelkit %s", config.Model.Path)
 		if err := unpackParent(ctx, config.Model.Path, opts, visitedRefs); err != nil {
 			return err
@@ -156,7 +156,7 @@ func unpackParent(ctx context.Context, ref string, optsIn *unpackOptions, visite
 		return fmt.Errorf("Found cycle in modelkit references: %s", cycleStr)
 	}
 
-	parentRef, _, err := repo.ParseReference(ref)
+	parentRef, _, err := util.ParseReference(ref)
 	if err != nil {
 		return err
 	}

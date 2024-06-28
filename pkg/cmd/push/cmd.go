@@ -19,9 +19,11 @@ package push
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -56,7 +58,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := repo.ParseReference(args[0])
+	modelRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}
@@ -93,11 +95,11 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		remoteRepo, err := repo.NewRepository(
+		remoteRepo, err := remote.NewRepository(
 			cmd.Context(),
 			opts.modelRef.Registry,
 			opts.modelRef.Repository,
-			&repo.RegistryOptions{
+			&remote.RegistryOptions{
 				PlainHTTP:       opts.PlainHTTP,
 				SkipTLSVerify:   !opts.TlsVerify,
 				CredentialsPath: constants.CredentialsPath(opts.configHome),
@@ -107,7 +109,7 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 		}
 
 		storageHome := constants.StoragePath(opts.configHome)
-		localStorePath := repo.RepoPath(storageHome, opts.modelRef)
+		localStorePath := util.RepoPath(storageHome, opts.modelRef)
 		localStore, err := oci.New(localStorePath)
 		if err != nil {
 			return output.Fatalln(err)

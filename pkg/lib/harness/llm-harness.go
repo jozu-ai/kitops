@@ -19,13 +19,14 @@ package harness
 import (
 	"fmt"
 	"io"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/output"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"syscall"
+
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 )
 
 type LLMHarness struct {

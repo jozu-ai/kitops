@@ -19,8 +19,9 @@ package main
 import (
 	"log"
 
-	"github.com/spf13/cobra/doc"
 	"kitops/cmd"
+
+	"github.com/spf13/cobra/doc"
 )
 
 func main() {
