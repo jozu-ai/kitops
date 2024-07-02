@@ -39,17 +39,14 @@ import (
 
 // removeAllModels removes all modelkits from local storage, including tagged ones
 func removeAllModels(ctx context.Context, opts *removeOptions) error {
-	stores, err := local.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	localRepos, err := local.GetAllLocalRepos(constants.StoragePath(opts.configHome))
 	if err != nil {
 		return fmt.Errorf("failed to read local storage: %w", err)
 	}
-	for _, store := range stores {
-		repository := util.FormatRepositoryForDisplay(store.GetRepo())
+	for _, localRepo := range localRepos {
+		repository := util.FormatRepositoryForDisplay(localRepo.GetRepoName())
 
-		index, err := store.GetIndex()
-		if err != nil {
-			return fmt.Errorf("failed to read index for %s: %w", repository, err)
-		}
+		index := localRepo.GetIndex()
 
 		// Store a list of removed manifests for this LocalStore. This is necessary
 		// as index.Manifests may have multiple manifest descriptors with the same
@@ -60,19 +57,19 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 			if skipManifests[manifestDesc.Digest] {
 				continue
 			}
-			tags, err := local.GetTagsForDescriptor(ctx, store, manifestDesc)
+			tags, err := local.GetTagsForDescriptor(ctx, localRepo, manifestDesc)
 			if err != nil {
 				output.Errorf("Failed to get tags for modelkit %s@%s: %w", repository, manifestDesc.Digest, err)
 			}
 			// First untag all manifests for this digest
 			for _, tag := range tags {
-				if err := store.Untag(ctx, tag); err != nil {
+				if err := localRepo.Untag(ctx, tag); err != nil {
 					output.Errorf("Failed to untag %s:%s: %w", repository, tag, err)
 				}
 				output.Infof("Untagged %s:%s", repository, tag)
 			}
 
-			if err := store.Delete(ctx, manifestDesc); err != nil {
+			if err := localRepo.Delete(ctx, manifestDesc); err != nil {
 				output.Errorf("Failed to remove %s@%s: %s", repository, manifestDesc.Digest, err)
 				continue
 			}
@@ -86,13 +83,13 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 
 // removeUntaggedModels removes all untagged modelkits from local storage
 func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
-	stores, err := local.GetAllLocalStores(constants.StoragePath(opts.configHome))
+	localRepos, err := local.GetAllLocalRepos(constants.StoragePath(opts.configHome))
 	if err != nil {
 		return fmt.Errorf("failed to read local storage: %w", err)
 	}
-	for _, store := range stores {
-		index, err := store.GetIndex()
-		repo := util.FormatRepositoryForDisplay(store.GetRepo())
+	for _, localRepo := range localRepos {
+		index := localRepo.GetIndex()
+		repo := util.FormatRepositoryForDisplay(localRepo.GetRepoName())
 		if err != nil {
 			return fmt.Errorf("failed to read index for %s: %w", repo, err)
 		}
@@ -101,7 +98,7 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 				output.Debugf("Skipping %s (tag: %s)", manifestDesc.Digest, tag)
 				continue
 			}
-			if err := store.Delete(ctx, manifestDesc); err != nil {
+			if err := localRepo.Delete(ctx, manifestDesc); err != nil {
 				output.Errorf("Failed to remove %s@%s: %s", repo, manifestDesc.Digest, err)
 				continue
 			}
@@ -113,11 +110,11 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 
 func removeModel(ctx context.Context, opts *removeOptions) error {
 	storageRoot := constants.StoragePath(opts.configHome)
-	localStore, err := local.NewLocalStore(storageRoot, opts.modelRef)
+	localRepo, err := local.NewLocalRepo(storageRoot, opts.modelRef)
 	if err != nil {
 		return fmt.Errorf("failed to read local storage at path %s: %w", storageRoot, err)
 	}
-	desc, err := removeModelRef(ctx, localStore, opts.modelRef, opts.forceDelete)
+	desc, err := removeModelRef(ctx, localRepo, opts.modelRef, opts.forceDelete)
 	if err != nil {
 		return fmt.Errorf("failed to remove: %s", err)
 	}
@@ -128,7 +125,7 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 		ref := *opts.modelRef
 		ref.Reference = tag
 		displayRef := util.FormatRepositoryForDisplay(ref.String())
-		desc, err := removeModelRef(ctx, localStore, &ref, opts.forceDelete)
+		desc, err := removeModelRef(ctx, localRepo, &ref, opts.forceDelete)
 		if err != nil {
 			output.Errorf("Failed to remove tag %s: %s", tag, err)
 		} else {
@@ -167,8 +164,8 @@ func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
 	return nil
 }
 
-func removeModelRef(ctx context.Context, store local.LocalStorage, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
-	desc, err := oras.Resolve(ctx, store, ref.Reference, oras.ResolveOptions{})
+func removeModelRef(ctx context.Context, localRepo local.LocalRepo, ref *registry.Reference, forceDelete bool) (ocispec.Descriptor, error) {
+	desc, err := oras.Resolve(ctx, localRepo, ref.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("model %s not found", util.FormatRepositoryForDisplay(ref.String()))
@@ -179,25 +176,25 @@ func removeModelRef(ctx context.Context, store local.LocalStorage, ref *registry
 	// If reference passed in is a digest, remove the manifest ignoring any tags the manifest might have
 	if err := ref.ValidateReferenceAsDigest(); err == nil || forceDelete {
 		output.Debugf("Deleting manifest with digest %s", ref.Reference)
-		if err := store.Delete(ctx, desc); err != nil {
+		if err := localRepo.Delete(ctx, desc); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to delete model: %ws", err)
 		}
 		return desc, nil
 	}
 
-	tags, err := local.GetTagsForDescriptor(ctx, store, desc)
+	tags, err := local.GetTagsForDescriptor(ctx, localRepo, desc)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
 	if len(tags) <= 1 {
 		output.Debugf("Deleting manifest tagged %s", ref.Reference)
-		if err := store.Delete(ctx, desc); err != nil {
+		if err := localRepo.Delete(ctx, desc); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to delete model: %w", err)
 		}
 	} else {
 		output.Debugf("Found other tags for manifest: [%s]", strings.Join(tags, ", "))
 		output.Debugf("Untagging %s", ref.Reference)
-		if err := store.Untag(ctx, ref.Reference); err != nil {
+		if err := localRepo.Untag(ctx, ref.Reference); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to untag model: %w", err)
 		}
 	}

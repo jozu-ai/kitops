@@ -47,25 +47,25 @@ func runPack(ctx context.Context, options *packOptions) error {
 	}
 
 	storageHome := constants.StoragePath(options.configHome)
-	localStore, err := local.NewLocalStore(storageHome, options.modelRef)
+	localRepo, err := local.NewLocalRepo(storageHome, options.modelRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
 
-	manifestDesc, err := pack(ctx, options, kitfile, localStore)
+	manifestDesc, err := pack(ctx, options, kitfile, localRepo)
 	if err != nil {
 		return err
 	}
 
 	if options.modelRef != nil && options.modelRef.Reference != "" {
-		if err := localStore.Tag(ctx, *manifestDesc, options.modelRef.Reference); err != nil {
+		if err := localRepo.Tag(ctx, *manifestDesc, options.modelRef.Reference); err != nil {
 			return fmt.Errorf("failed to tag manifest: %w", err)
 		}
 		output.Debugf("Added tag to manifest: %s", options.modelRef.Reference)
 	}
 
 	for _, tag := range options.extraRefs {
-		if err := localStore.Tag(ctx, *manifestDesc, tag); err != nil {
+		if err := localRepo.Tag(ctx, *manifestDesc, tag); err != nil {
 			return err
 		}
 	}
@@ -75,7 +75,7 @@ func runPack(ctx context.Context, options *packOptions) error {
 	return nil
 }
 
-func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, store local.LocalStorage) (*ocispec.Descriptor, error) {
+func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, localRepo local.LocalRepo) (*ocispec.Descriptor, error) {
 	var extraLayerPaths []string
 	if kitfile.Model != nil && util.IsModelKitReference(kitfile.Model.Path) {
 		baseRef := util.FormatRepositoryForDisplay(opts.modelRef.String())
@@ -91,7 +91,7 @@ func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, sto
 		return nil, err
 	}
 
-	manifestDesc, err := kfutils.SaveModel(ctx, store, kitfile, ignore, opts.compression)
+	manifestDesc, err := kfutils.SaveModel(ctx, localRepo, kitfile, ignore, opts.compression)
 	if err != nil {
 		return nil, err
 	}
