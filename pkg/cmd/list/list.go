@@ -6,6 +6,7 @@ package list
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
@@ -23,38 +24,36 @@ const (
 
 func listLocalKits(ctx context.Context, opts *listOptions) ([]string, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
-	stores, err := local.GetAllLocalStores(storageRoot)
+
+	localRepos, err := local.GetAllLocalRepos(storageRoot)
 	if err != nil {
 		return nil, err
 	}
-
 	var allInfoLines []string
-	for _, store := range stores {
-		infolines, err := listKits(ctx, store)
+	for _, repo := range localRepos {
+		infolines, err := readInfoFromRepo(ctx, repo)
 		if err != nil {
 			return nil, err
 		}
 		allInfoLines = append(allInfoLines, infolines...)
 	}
+
 	return allInfoLines, nil
 }
 
-func listKits(ctx context.Context, store local.LocalStorage) ([]string, error) {
-	index, err := store.GetIndex()
-	if err != nil {
-		return nil, err
-	}
-
+func readInfoFromRepo(ctx context.Context, repo local.LocalRepo) ([]string, error) {
 	var infolines []string
+	index := repo.GetIndex()
 	for _, manifestDesc := range index.Manifests {
-		manifest, config, err := util.GetManifestAndConfig(ctx, store, manifestDesc)
+		manifest, config, err := util.GetManifestAndConfig(ctx, repo, manifestDesc)
 		if err != nil {
 			return nil, err
 		}
-		infoline := getManifestInfoLine(store.GetRepo(), manifestDesc, manifest, config)
+		infoline := getManifestInfoLine(repo.GetRepoName(), manifestDesc, manifest, config)
 		infolines = append(infolines, infoline)
 	}
 
+	sort.Strings(infolines)
 	return infolines, nil
 }
 
