@@ -65,26 +65,25 @@ func mergeKitfiles(into, from *artifact.KitFile) *artifact.KitFile {
 
 	result := &artifact.KitFile{}
 	result.ManifestVersion = firstNonEmpty(into.ManifestVersion, from.ManifestVersion)
-	result.Kit.Name = firstNonEmpty(into.Kit.Name, from.Kit.Name)
-	result.Kit.Description = firstNonEmpty(into.Kit.Description, from.Kit.Description)
-	result.Kit.License = firstNonEmpty(into.Kit.License, from.Kit.License)
-	result.Kit.Version = firstNonEmpty(into.Kit.Version, from.Kit.Version)
-	result.Kit.Authors = append(into.Kit.Authors, from.Kit.Authors...)
+	result.Package.Name = firstNonEmpty(into.Package.Name, from.Package.Name)
+	result.Package.Description = firstNonEmpty(into.Package.Description, from.Package.Description)
+	result.Package.License = firstNonEmpty(into.Package.License, from.Package.License)
+	result.Package.Version = firstNonEmpty(into.Package.Version, from.Package.Version)
+	result.Package.Authors = append(into.Package.Authors, from.Package.Authors...)
 
 	if into.Model != nil || from.Model != nil {
-		result.Model = &artifact.TrainedModel{}
+		result.Model = &artifact.Model{}
 		intoModel := into.Model
 		fromModel := from.Model
 		if intoModel == nil {
-			intoModel = &artifact.TrainedModel{}
+			intoModel = &artifact.Model{}
 		}
 		if fromModel == nil {
-			fromModel = &artifact.TrainedModel{}
+			fromModel = &artifact.Model{}
 		}
 		result.Model.Path = fromModel.Path
 		result.Model.Name = firstNonEmpty(intoModel.Name, fromModel.Name)
 		result.Model.Description = firstNonEmpty(intoModel.Description, fromModel.Description)
-		result.Model.License = firstNonEmpty(intoModel.License, fromModel.License)
 		result.Model.Framework = firstNonEmpty(intoModel.Framework, fromModel.Framework)
 		result.Model.Version = firstNonEmpty(intoModel.Version, fromModel.Version)
 		result.Model.Parts = append(intoModel.Parts, fromModel.Parts...)
