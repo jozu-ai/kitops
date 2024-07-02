@@ -29,11 +29,11 @@ import (
 
 func RunTag(ctx context.Context, options *tagOptions) error {
 	storageHome := constants.StoragePath(options.configHome)
-	sourceStore, err := local.NewLocalStore(storageHome, options.sourceRef)
+	sourceRepo, err := local.NewLocalRepo(storageHome, options.sourceRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
-	descriptor, err := oras.Resolve(ctx, sourceStore, options.sourceRef.Reference, oras.ResolveOptions{})
+	descriptor, err := oras.Resolve(ctx, sourceRepo, options.sourceRef.Reference, oras.ResolveOptions{})
 	if err != nil {
 		if err == errdef.ErrNotFound {
 			return fmt.Errorf("model %s not found", options.sourceRef.String())
@@ -41,18 +41,20 @@ func RunTag(ctx context.Context, options *tagOptions) error {
 		return fmt.Errorf("error resolving model: %s", err)
 	}
 	if options.sourceRef.Registry == options.targetRef.Registry && options.sourceRef.Repository == options.targetRef.Repository {
-		err = sourceStore.Tag(ctx, descriptor, options.targetRef.Reference)
+		err = sourceRepo.Tag(ctx, descriptor, options.targetRef.Reference)
 		if err != nil {
 			return fmt.Errorf("failed to tag reference %s: %w", options.targetRef, err)
 		}
 		return nil
 	}
-	// model kit is on a different registry and/or repo, copy the model to the target store
-	targetStore, err := local.NewLocalStore(storageHome, options.targetRef)
+
+	// Target is under a different repo name (org/repo pair); manifest needs to be pushed to _that_ local store
+	// Note that since local repos all share the same blob storage, only the manifest will need to be copied.
+	targetRepo, err := local.NewLocalRepo(storageHome, options.targetRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
-	_, err = oras.Copy(ctx, sourceStore, options.sourceRef.Reference, targetStore, options.targetRef.Reference, oras.CopyOptions{})
+	_, err = oras.Copy(ctx, sourceRepo, options.sourceRef.Reference, targetRepo, options.targetRef.Reference, oras.CopyOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to tag model: %w", err)
 	}
