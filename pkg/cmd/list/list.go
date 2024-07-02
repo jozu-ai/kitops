@@ -74,12 +74,12 @@ func getManifestInfoLine(repository string, desc ocispec.Descriptor, manifest *o
 	}
 	sizeStr := output.FormatBytes(size)
 	var author string
-	if len(config.Kit.Authors) > 0 {
-		author = config.Kit.Authors[0]
+	if len(config.Package.Authors) > 0 {
+		author = config.Package.Authors[0]
 	} else {
 		author = "<none>"
 	}
 
-	info := fmt.Sprintf(listTableFmt, repository, ref, author, config.Kit.Name, sizeStr, desc.Digest)
+	info := fmt.Sprintf(listTableFmt, repository, ref, author, config.Package.Name, sizeStr, desc.Digest)
 	return info
 }
