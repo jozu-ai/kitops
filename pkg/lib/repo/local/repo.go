@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
+	"strings"
 
 	"kitops/pkg/lib/constants"
 
@@ -37,9 +39,14 @@ type localRepo struct {
 }
 
 func NewLocalRepo(storagePath string, ref *registry.Reference) (LocalRepo, error) {
+	nameRef := path.Join(ref.Registry, ref.Repository)
+	return newLocalRepoForName(storagePath, nameRef)
+}
+
+func newLocalRepoForName(storagePath, name string) (LocalRepo, error) {
 	repo := &localRepo{}
 	repo.storagePath = storagePath
-	repo.nameRef = path.Join(ref.Registry, ref.Repository)
+	repo.nameRef = name
 
 	store, err := oci.New(storagePath)
 	if err != nil {
@@ -56,6 +63,39 @@ func NewLocalRepo(storagePath string, ref *registry.Reference) (LocalRepo, error
 	repo.localIndex = localIndex
 
 	return repo, nil
+}
+
+func GetAllLocalRepos(storagePath string) ([]LocalRepo, error) {
+	entries, err := os.ReadDir(storagePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read local storage: %w", err)
+	}
+
+	var repos []LocalRepo
+	for _, dirEntry := range entries {
+		if dirEntry.IsDir() {
+			continue
+		}
+		if !constants.FileIsLocalIndex(dirEntry.Name()) {
+			continue
+		}
+		repoName, err := constants.RepoForIndexJsonPath(dirEntry.Name())
+		if err != nil {
+			return nil, err
+		}
+		repo, err := newLocalRepoForName(storagePath, repoName)
+		if err != nil {
+			return nil, err
+		}
+		repos = append(repos, repo)
+	}
+
+	// Sort alphabetically
+	slices.SortFunc(repos, func(a, b LocalRepo) int {
+		return strings.Compare(a.GetRepoName(), b.GetRepoName())
+	})
+
+	return repos, nil
 }
 
 func (r *localRepo) GetIndex() *ocispec.Index {
