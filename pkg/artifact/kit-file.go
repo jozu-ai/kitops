@@ -19,7 +19,6 @@ package artifact
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 
 	"gopkg.in/yaml.v3"
@@ -83,15 +82,9 @@ type (
 )
 
 func (kf *KitFile) LoadModel(kitfileContent io.ReadCloser) error {
-	data, err := io.ReadAll(kitfileContent)
-	if err != nil {
-		return err
-	}
-	if len(data) == 0 {
-		return fmt.Errorf("empty kitfile")
-	}
-	err = yaml.Unmarshal(data, kf)
-	if err != nil {
+	decoder := yaml.NewDecoder(kitfileContent)
+	decoder.KnownFields(true)
+	if err := decoder.Decode(kf); err != nil {
 		return err
 	}
 	return nil
