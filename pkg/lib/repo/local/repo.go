@@ -13,7 +13,6 @@ import (
 
 	"kitops/pkg/lib/constants"
 
-	"github.com/opencontainers/image-spec/specs-go"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/content"
@@ -267,30 +266,4 @@ func (li *localIndex) untag(_ context.Context, reference string) error {
 		return errdef.ErrNotFound
 	}
 	return li.save()
-}
-
-// parseIndexJson parses an OCI index at specified path
-func parseIndex(indexPath string) (*localIndex, error) {
-	index := &localIndex{
-		Index: ocispec.Index{
-			Versioned: specs.Versioned{
-				SchemaVersion: 2,
-			},
-		},
-		indexPath: indexPath,
-	}
-
-	indexBytes, err := os.ReadFile(indexPath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return index, nil
-		}
-		return nil, fmt.Errorf("failed to read index: %w", err)
-	}
-
-	if err := json.Unmarshal(indexBytes, &index.Index); err != nil {
-		return nil, fmt.Errorf("failed to parse index: %w", err)
-	}
-
-	return index, nil
 }

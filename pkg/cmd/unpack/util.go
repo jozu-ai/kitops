@@ -32,14 +32,14 @@ import (
 
 func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, error) {
 	storageHome := constants.StoragePath(opts.configHome)
-	localStore, err := local.NewLocalStore(storageHome, opts.modelRef)
+	localRepo, err := local.NewLocalRepo(storageHome, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %s\n", err)
 	}
 
-	if _, err := localStore.Resolve(ctx, opts.modelRef.Reference); err == nil {
+	if _, err := localRepo.Resolve(ctx, opts.modelRef.Reference); err == nil {
 		// Reference is present in local storage
-		return localStore, nil
+		return localRepo, nil
 	}
 
 	if opts.modelRef.Registry == util.DefaultRegistry {

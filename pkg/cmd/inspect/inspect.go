@@ -49,11 +49,11 @@ func inspectReference(ctx context.Context, opts *inspectOptions) (*inspectInfo, 
 
 func getLocalInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
-	store, err := local.NewLocalStore(storageRoot, opts.modelRef)
+	localRepo, err := local.NewLocalRepo(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	return getInspectInfo(ctx, store, opts.modelRef.Reference)
+	return getInspectInfo(ctx, localRepo, opts.modelRef.Reference)
 }
 
 func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
