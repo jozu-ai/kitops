@@ -130,10 +130,9 @@ func findStoragePaths(storageRoot string) ([]string, error) {
 			if err != nil {
 				return err
 			}
-			if relDir == "." {
-				relDir = ""
+			if relDir != "." {
+				indexPaths = append(indexPaths, relDir)
 			}
-			indexPaths = append(indexPaths, relDir)
 		}
 		return nil
 	})
