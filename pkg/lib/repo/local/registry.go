@@ -1,8 +1,23 @@
+// Copyright 2024 The KitOps Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package local
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -23,8 +38,9 @@ import (
 
 type LocalRepo interface {
 	GetRepoName() string
-	GetIndex() *ocispec.Index
-	BlobPath(desc ocispec.Descriptor) string
+	BlobPath(ocispec.Descriptor) string
+	GetAllModels() []ocispec.Descriptor
+	GetTags(ocispec.Descriptor) []string
 	oras.Target
 	content.Deleter
 	content.Untagger
@@ -54,8 +70,7 @@ func newLocalRepoForName(storagePath, name string) (LocalRepo, error) {
 	repo.Store = store
 
 	// Initialize repo-specific index.json
-	indexPath := constants.IndexJsonPathForRepo(storagePath, repo.nameRef)
-	localIndex, err := parseIndex(indexPath)
+	localIndex, err := newLocalIndex(storagePath, name)
 	if err != nil {
 		return nil, err
 	}
@@ -97,10 +112,6 @@ func GetAllLocalRepos(storagePath string) ([]LocalRepo, error) {
 	return repos, nil
 }
 
-func (r *localRepo) GetIndex() *ocispec.Index {
-	return &r.localIndex.Index
-}
-
 // GetRepo returns the registry and repository for the current OCI store.
 func (r *localRepo) GetRepoName() string {
 	return r.nameRef
@@ -116,14 +127,14 @@ func (l *localRepo) Delete(ctx context.Context, target ocispec.Descriptor) error
 		return err
 	}
 	if target.MediaType == ocispec.MediaTypeImageManifest {
-		return l.localIndex.delete(ctx, target)
+		return l.localIndex.delete(target)
 	}
 	return nil
 }
 
 func (l *localRepo) Exists(ctx context.Context, target ocispec.Descriptor) (bool, error) {
 	if target.MediaType == ocispec.MediaTypeImageManifest {
-		return l.localIndex.exists(ctx, target)
+		return l.localIndex.exists(target), nil
 	} else {
 		return l.Store.Exists(ctx, target)
 	}
@@ -131,9 +142,7 @@ func (l *localRepo) Exists(ctx context.Context, target ocispec.Descriptor) (bool
 
 func (l *localRepo) Fetch(ctx context.Context, target ocispec.Descriptor) (io.ReadCloser, error) {
 	if target.MediaType == ocispec.MediaTypeImageManifest {
-		if exists, err := l.localIndex.exists(ctx, target); err != nil {
-			return nil, err
-		} else if !exists {
+		if exists := l.localIndex.exists(target); !exists {
 			return nil, errdef.ErrNotFound
 		}
 	}
@@ -160,110 +169,25 @@ func (l *localRepo) Push(ctx context.Context, expected ocispec.Descriptor, conte
 	}
 }
 
-func (l *localRepo) Resolve(ctx context.Context, reference string) (ocispec.Descriptor, error) {
-	return l.localIndex.resolve(ctx, reference)
+func (l *localRepo) Resolve(_ context.Context, reference string) (ocispec.Descriptor, error) {
+	return l.localIndex.resolve(reference)
 }
 
-func (l *localRepo) Tag(ctx context.Context, desc ocispec.Descriptor, reference string) error {
+func (l *localRepo) Tag(_ context.Context, desc ocispec.Descriptor, reference string) error {
 	// TODO: should we tag it in the general index.json too?
-	return l.localIndex.tag(ctx, desc, reference)
+	return l.localIndex.tag(desc, reference)
 }
 
-func (l *localRepo) Untag(ctx context.Context, reference string) error {
-	return l.localIndex.untag(ctx, reference)
+func (l *localRepo) Untag(_ context.Context, reference string) error {
+	return l.localIndex.untag(reference)
+}
+
+func (l *localRepo) GetAllModels() []ocispec.Descriptor {
+	return l.localIndex.Manifests
+}
+
+func (l *localRepo) GetTags(desc ocispec.Descriptor) []string {
+	return l.localIndex.listTags(desc)
 }
 
 var _ LocalRepo = (*localRepo)(nil)
-
-type localIndex struct {
-	indexPath string
-	ocispec.Index
-}
-
-func (li *localIndex) addManifest(manifestDesc ocispec.Descriptor) error {
-	// TODO: consider using ORAS' tag resolver to make this a little cleaner
-	curTag := manifestDesc.Annotations[ocispec.AnnotationRefName]
-	for _, m := range li.Manifests {
-		manifestTag := m.Annotations[ocispec.AnnotationRefName]
-		if m.Digest == manifestDesc.Digest && manifestTag == curTag {
-			// Already included
-			return nil
-		}
-	}
-	li.Manifests = append(li.Manifests, manifestDesc)
-	return li.save()
-}
-
-func (li *localIndex) save() error {
-	indexJson, err := json.Marshal(li.Index)
-	if err != nil {
-		return fmt.Errorf("failed to marshal index: %w", err)
-	}
-	return os.WriteFile(li.indexPath, indexJson, 0666)
-}
-
-func (li *localIndex) exists(_ context.Context, target ocispec.Descriptor) (bool, error) {
-	for _, manifestDesc := range li.Manifests {
-		if manifestDesc.Digest == target.Digest {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
-func (li *localIndex) delete(_ context.Context, target ocispec.Descriptor) error {
-	var newManifests []ocispec.Descriptor
-	for _, manifestDesc := range li.Manifests {
-		if manifestDesc.Digest != target.Digest {
-			newManifests = append(newManifests, manifestDesc)
-		}
-	}
-	li.Manifests = newManifests
-	return li.save()
-}
-
-func (li *localIndex) resolve(_ context.Context, reference string) (ocispec.Descriptor, error) {
-	for _, manifestDesc := range li.Manifests {
-		if manifestDesc.Annotations[ocispec.AnnotationRefName] == reference {
-			return manifestDesc, nil
-		}
-	}
-	return ocispec.DescriptorEmptyJSON, errdef.ErrNotFound
-}
-
-func (li *localIndex) tag(_ context.Context, desc ocispec.Descriptor, reference string) error {
-	// TODO: should probably de-duplicate this (don't store a manifest without a tag)
-	descExists := false
-	for _, m := range li.Manifests {
-		tag := m.Annotations[ocispec.AnnotationRefName]
-		if m.Digest == desc.Digest {
-			if tag == reference {
-				return nil
-			}
-			descExists = true
-		}
-	}
-	if !descExists {
-		return fmt.Errorf("%s: %s: %w", desc.Digest, desc.MediaType, errdef.ErrNotFound)
-	}
-	if desc.Annotations == nil {
-		desc.Annotations = map[string]string{}
-	}
-	desc.Annotations[ocispec.AnnotationRefName] = reference
-	return li.addManifest(desc)
-}
-
-func (li *localIndex) untag(_ context.Context, reference string) error {
-	deleted := false
-	for idx, m := range li.Manifests {
-		tag := m.Annotations[ocispec.AnnotationRefName]
-		if tag == reference {
-			delete(li.Manifests[idx].Annotations, ocispec.AnnotationRefName)
-			deleted = true
-		}
-	}
-	if !deleted {
-		return errdef.ErrNotFound
-	}
-	return li.save()
-}

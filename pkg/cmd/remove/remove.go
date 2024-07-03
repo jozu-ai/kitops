@@ -46,21 +46,18 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 	for _, localRepo := range localRepos {
 		repository := util.FormatRepositoryForDisplay(localRepo.GetRepoName())
 
-		index := localRepo.GetIndex()
+		models := localRepo.GetAllModels()
 
 		// Store a list of removed manifests for this LocalStore. This is necessary
 		// as index.Manifests may have multiple manifest descriptors with the same
 		// digest (and different tags). If we delete a manifest we don't want to try
 		// to delete it (by digest) again.
 		skipManifests := map[digest.Digest]bool{}
-		for _, manifestDesc := range index.Manifests {
+		for _, manifestDesc := range models {
 			if skipManifests[manifestDesc.Digest] {
 				continue
 			}
-			tags, err := local.GetTagsForDescriptor(ctx, localRepo, manifestDesc)
-			if err != nil {
-				output.Errorf("Failed to get tags for modelkit %s@%s: %w", repository, manifestDesc.Digest, err)
-			}
+			tags := localRepo.GetTags(manifestDesc)
 			// First untag all manifests for this digest
 			for _, tag := range tags {
 				if err := localRepo.Untag(ctx, tag); err != nil {
@@ -88,14 +85,15 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 		return fmt.Errorf("failed to read local storage: %w", err)
 	}
 	for _, localRepo := range localRepos {
-		index := localRepo.GetIndex()
+		manifests := localRepo.GetAllModels()
 		repo := util.FormatRepositoryForDisplay(localRepo.GetRepoName())
 		if err != nil {
 			return fmt.Errorf("failed to read index for %s: %w", repo, err)
 		}
-		for _, manifestDesc := range index.Manifests {
-			if tag, ok := manifestDesc.Annotations[ocispec.AnnotationRefName]; ok {
-				output.Debugf("Skipping %s (tag: %s)", manifestDesc.Digest, tag)
+		for _, manifestDesc := range manifests {
+			tags := localRepo.GetTags(manifestDesc)
+			if len(tags) > 0 {
+				output.Debugf("Skipping %s (tags: %s)", manifestDesc.Digest, strings.Join(tags, ", "))
 				continue
 			}
 			if err := localRepo.Delete(ctx, manifestDesc); err != nil {
@@ -182,10 +180,7 @@ func removeModelRef(ctx context.Context, localRepo local.LocalRepo, ref *registr
 		return desc, nil
 	}
 
-	tags, err := local.GetTagsForDescriptor(ctx, localRepo, desc)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, err
-	}
+	tags := localRepo.GetTags(desc)
 	if len(tags) <= 1 {
 		output.Debugf("Deleting manifest tagged %s", ref.Reference)
 		if err := localRepo.Delete(ctx, desc); err != nil {

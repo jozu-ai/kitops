@@ -17,7 +17,6 @@
 package local
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -26,29 +25,13 @@ import (
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
-// // GetTagsForDescriptor returns the list of tags that reference a particular descriptor (SHA256 hash) in LocalStorage.
-func GetTagsForDescriptor(ctx context.Context, localRepo LocalRepo, desc ocispec.Descriptor) ([]string, error) {
-	index := localRepo.GetIndex()
-	var tags []string
-	for _, manifest := range index.Manifests {
-		if manifest.Digest == desc.Digest && manifest.Annotations[ocispec.AnnotationRefName] != "" {
-			tags = append(tags, manifest.Annotations[ocispec.AnnotationRefName])
-		}
-	}
-	return tags, nil
-}
-
 // parseIndexJson parses an OCI index at specified path
-func parseIndex(indexPath string) (*localIndex, error) {
-	index := &localIndex{
-		Index: ocispec.Index{
-			Versioned: specs.Versioned{
-				SchemaVersion: 2,
-			},
+func parseIndex(indexPath string) (*ocispec.Index, error) {
+	index := &ocispec.Index{
+		Versioned: specs.Versioned{
+			SchemaVersion: 2,
 		},
-		indexPath: indexPath,
 	}
-
 	indexBytes, err := os.ReadFile(indexPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -56,10 +39,23 @@ func parseIndex(indexPath string) (*localIndex, error) {
 		}
 		return nil, fmt.Errorf("failed to read index: %w", err)
 	}
-
-	if err := json.Unmarshal(indexBytes, &index.Index); err != nil {
+	if err := json.Unmarshal(indexBytes, index); err != nil {
 		return nil, fmt.Errorf("failed to parse index: %w", err)
 	}
-
 	return index, nil
+}
+
+func parseTagsIndex(tagsIndexPath string) (*tagsIndex, error) {
+	bytes, err := os.ReadFile(tagsIndexPath)
+	tags := emptyTagsIndex(tagsIndexPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return tags, nil
+		}
+		return nil, fmt.Errorf("failed to read tags index: %w", err)
+	}
+	if err := json.Unmarshal(bytes, &tags.tagToDigest); err != nil {
+		return nil, fmt.Errorf("failed to parse tags index: %w", err)
+	}
+	return tags, nil
 }

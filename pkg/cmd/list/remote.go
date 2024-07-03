@@ -18,15 +18,12 @@ package list
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 
-	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 
-	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -78,43 +75,23 @@ func listTags(ctx context.Context, repo registry.Repository, ref *registry.Refer
 }
 
 func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.Reference) ([]string, error) {
-	manifestDesc, manifestReader, err := repo.FetchReference(ctx, ref.Reference)
+	manifestDesc, err := repo.Resolve(ctx, ref.Reference)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read reference: %w", err)
+		return nil, fmt.Errorf("failed to resolve reference: %w", err)
 	}
-	manifestBytes, err := io.ReadAll(manifestReader)
+	manifest, config, err := util.GetManifestAndConfig(ctx, repo, manifestDesc)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read manifest: %w", err)
-	}
-	manifest := &ocispec.Manifest{}
-	if err := json.Unmarshal(manifestBytes, manifest); err != nil {
-		return nil, fmt.Errorf("failed to parse manifest: %w", err)
+		return nil, fmt.Errorf("failed to read modelkit: %w", err)
 	}
 	if manifest.Config.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, nil
 	}
+	info := modelInfo{
+		repo:   ref.Repository,
+		digest: string(manifestDesc.Digest),
+		tags:   []string{ref.Reference},
+	}
+	info.fill(manifest, config)
 
-	configReader, err := repo.Fetch(ctx, manifest.Config)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read config reference: %w", err)
-	}
-	configBytes, err := io.ReadAll(configReader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read config: %w", err)
-	}
-	config := &artifact.KitFile{}
-	if err := json.Unmarshal(configBytes, config); err != nil {
-		return nil, fmt.Errorf("failed to parse config: %w", err)
-	}
-
-	// Manifest descriptor may not have annotation for tag, add it here for safety
-	if _, ok := manifestDesc.Annotations[ocispec.AnnotationRefName]; !ok {
-		if manifestDesc.Annotations == nil {
-			manifestDesc.Annotations = map[string]string{}
-		}
-		manifestDesc.Annotations[ocispec.AnnotationRefName] = ref.Reference
-	}
-
-	info := getManifestInfoLine(ref.Repository, manifestDesc, manifest, config)
-	return []string{info}, nil
+	return info.format(), nil
 }
