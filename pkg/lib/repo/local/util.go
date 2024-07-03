@@ -17,6 +17,7 @@
 package local
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -58,4 +59,23 @@ func parseTagsIndex(tagsIndexPath string) (*tagsIndex, error) {
 		return nil, fmt.Errorf("failed to parse tags index: %w", err)
 	}
 	return tags, nil
+}
+
+// canSafelyDeleteManifest returns true if a manifest can be safely deleted, i.e. if
+// at most one local repository refers to it. Otherwise, deleting the manifest will
+// delete it from all repositories, which is not what's intended.
+func canSafelyDeleteManifest(ctx context.Context, storagePath string, desc ocispec.Descriptor) (bool, error) {
+	allRepos, err := GetAllLocalRepos(storagePath)
+	if err != nil {
+		return false, err
+	}
+	refCount := 0
+	for _, repo := range allRepos {
+		if exists, err := repo.Exists(ctx, desc); err != nil {
+			return false, err
+		} else if exists {
+			refCount += 1
+		}
+	}
+	return refCount <= 1, nil
 }

@@ -122,14 +122,20 @@ func (r *localRepo) BlobPath(desc ocispec.Descriptor) string {
 }
 
 func (l *localRepo) Delete(ctx context.Context, target ocispec.Descriptor) error {
-	err := l.Store.Delete(ctx, target)
+	if target.MediaType != ocispec.MediaTypeImageManifest {
+		return l.Store.Delete(ctx, target)
+	}
+
+	canDelete, err := canSafelyDeleteManifest(ctx, l.storagePath, target)
 	if err != nil {
 		return err
 	}
-	if target.MediaType == ocispec.MediaTypeImageManifest {
-		return l.localIndex.delete(target)
+	if canDelete {
+		if err := l.Store.Delete(ctx, target); err != nil {
+			return err
+		}
 	}
-	return nil
+	return l.localIndex.delete(target)
 }
 
 func (l *localRepo) Exists(ctx context.Context, target ocispec.Descriptor) (bool, error) {

@@ -18,7 +18,9 @@ package local
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"sort"
 
@@ -74,6 +76,18 @@ func (li *localIndex) save() error {
 	if err := li.modelTags.save(); err != nil {
 		return err
 	}
+
+	if len(li.Manifests) == 0 {
+		// If there are no tags left in this repo, delete the file to clean up
+		if err := os.Remove(li.indexPath); err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				return nil
+			}
+			return err
+		}
+		return nil
+	}
+
 	indexJson, err := json.Marshal(li.Index)
 	if err != nil {
 		return fmt.Errorf("failed to marshal index: %w", err)
@@ -177,6 +191,16 @@ func (ti *tagsIndex) get(reference string) (ocispec.Descriptor, error) {
 }
 
 func (ti *tagsIndex) save() error {
+	if len(ti.tagToDigest) == 0 {
+		// If there are no tags left in this repo, delete the file to clean up
+		if err := os.Remove(ti.tagsIndexPath); err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				return nil
+			}
+			return err
+		}
+	}
+
 	jsonBytes, err := json.Marshal(ti.tagToDigest)
 	if err != nil {
 		return fmt.Errorf("failed to marshal tags index: %w", err)
