@@ -145,3 +145,10 @@ func FileIsLocalIndex(indexPath string) bool {
 	filename := filepath.Base(indexPath)
 	return localIndexNameRegexp.MatchString(filename)
 }
+
+func TagIndexPathForRepo(storageBase, repo string) string {
+	// We need to encode the repo as it may contain invalid characters for filenames
+	repoEncoded := base64.URLEncoding.EncodeToString([]byte(repo))
+	indexFileName := fmt.Sprintf("%s-tags.json", repoEncoded)
+	return filepath.Join(storageBase, indexFileName)
+}
