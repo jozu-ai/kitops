@@ -24,6 +24,7 @@ import (
 	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -87,6 +88,17 @@ func RunCommand() *cobra.Command {
 			// returning
 			cmd.SilenceErrors = true
 			cmd.SilenceUsage = true
+
+			storagePath := constants.StoragePath(configHome)
+			needsMigration, err := local.NeedsMigrate(storagePath)
+			if err != nil {
+				return output.Fatalf("Failed to determine if local modelkit needs to be migrated")
+			} else if needsMigration {
+				output.Infof("Migrating local storage to new format")
+				if err := local.MigrateStorage(ctx, storagePath); err != nil {
+					return output.Fatalf("Error migrating storage: %s", err)
+				}
+			}
 			return nil
 		},
 	}
