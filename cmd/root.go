@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -37,7 +38,7 @@ Find more information at: http://kitops.ml`
 
 type rootOptions struct {
 	configHome   string
-	verbose      bool
+	verbosity    int
 	loglevel     string
 	progressBars string
 }
@@ -49,14 +50,19 @@ func RunCommand() *cobra.Command {
 		Use:   `kit`,
 		Short: shortDesc,
 		Long:  longDesc,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())
 			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
-				output.Fatalln(err)
+				return output.Fatalln(err)
 			}
-			if opts.verbose {
+			switch opts.verbosity {
+			case 1:
+				output.Debugf("Setting verbosity to %s", output.LogLevelDebug)
 				output.SetLogLevel(output.LogLevelDebug)
+			case 2:
+				output.Debugf("Setting verbosity to %s", output.LogLevelTrace)
+				output.SetLogLevel(output.LogLevelTrace)
 			}
 
 			output.SetProgressBars(opts.progressBars)
@@ -66,6 +72,7 @@ func RunCommand() *cobra.Command {
 				output.Errorf("Failed to read base config directory")
 				output.Infof("Use the --config flag or set the $KITOPS_HOME environment variable to provide a default")
 				output.Debugf("Error: %s", err)
+				return errors.New("exit")
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
@@ -74,11 +81,12 @@ func RunCommand() *cobra.Command {
 			// returning
 			cmd.SilenceErrors = true
 			cmd.SilenceUsage = true
+			return nil
 		},
 	}
 	addSubcommands(cmd)
 	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
-	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output. Alias for --log-level=debug")
+	cmd.PersistentFlags().CountVarP(&opts.verbosity, "verbose", "v", "Increase verbosity of output (use -vv for more)")
 	cmd.PersistentFlags().StringVar(&opts.loglevel, "log-level", "info", "Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info')")
 	cmd.PersistentFlags().StringVar(&opts.progressBars, "progress", "plain", "Configure progress bars for longer operations (options: none, plain, fancy)")
 
