@@ -81,7 +81,59 @@ func (l *localRepo) pullNode(ctx context.Context, src oras.ReadOnlyTarget, desc 
 	if err != nil {
 		return fmt.Errorf("failed to fetch: %w", err)
 	}
-	return l.downloadFile(desc, blob)
+	if seekBlob, ok := blob.(io.ReadSeekCloser); ok {
+		output.Debugf("Remote supports range requests, using resumable download")
+		return l.resumeAndDownloadFile(desc, seekBlob)
+	} else {
+		return l.downloadFile(desc, blob)
+	}
+}
+
+func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadSeekCloser) error {
+	ingestDir := constants.IngestPath(l.storagePath)
+	ingestFilename := filepath.Join(ingestDir, desc.Digest.Encoded())
+	ingestFile, err := os.OpenFile(ingestFilename, os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to open ingest file for writing: %w", err)
+	}
+	defer func() {
+		if err := ingestFile.Close(); err != nil && !errors.Is(err, fs.ErrClosed) {
+			output.Errorf("Error closing temporary ingest file: %s", err)
+		}
+	}()
+
+	verifier := desc.Digest.Verifier()
+	var offset int64 = 0
+	if stat, err := ingestFile.Stat(); err != nil {
+		return fmt.Errorf("failed to stat ingest file: %w", err)
+	} else if stat.Size() != 0 {
+		output.Debugf("Resuming download for digest %s", desc.Digest.String())
+		numBytes, err := io.Copy(verifier, ingestFile)
+		if err != nil {
+			return fmt.Errorf("failed to resume download: %w", err)
+		}
+		output.Logf(output.LogLevelTrace, "Updating offset to %d bytes", numBytes)
+		offset = numBytes
+	}
+	if _, err := blob.Seek(offset, io.SeekStart); err != nil {
+		return fmt.Errorf("failed to seek in remote resource: %w", err)
+	}
+	mw := io.MultiWriter(ingestFile, verifier)
+	if _, err := io.Copy(mw, blob); err != nil {
+		return fmt.Errorf("failed to write file: %w", err)
+	}
+	if !verifier.Verified() {
+		return fmt.Errorf("downloaded file hash does not match descriptor")
+	}
+	if err := ingestFile.Close(); err != nil {
+		return fmt.Errorf("failed to close temporary ingest file: %w", err)
+	}
+	blobPath := l.BlobPath(desc)
+	if err := os.Rename(ingestFilename, blobPath); err != nil {
+		return fmt.Errorf("failed to move downloaded file into storage: %w", err)
+	}
+
+	return nil
 }
 
 func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser) (ingestErr error) {
