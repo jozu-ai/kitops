@@ -88,7 +88,7 @@ package:
   name: test-repack
 model:
   path: test-file.txt
-dataset:
+datasets:
   - path: test-dir/test-subfile.txt
 `
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
