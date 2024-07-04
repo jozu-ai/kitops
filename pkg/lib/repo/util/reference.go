@@ -176,7 +176,7 @@ func RepoPath(storagePath string, ref *registry.Reference) string {
 
 // GetManifestAndConfig returns the manifest and config (Kitfile) for a manifest Descriptor.
 // Calls GetManifest and GetConfig.
-func GetManifestAndConfig(ctx context.Context, store content.Storage, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, *artifact.KitFile, error) {
+func GetManifestAndConfig(ctx context.Context, store oras.ReadOnlyTarget, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, *artifact.KitFile, error) {
 	manifest, err := GetManifest(ctx, store, manifestDesc)
 	if err != nil {
 		return nil, nil, err
@@ -190,7 +190,7 @@ func GetManifestAndConfig(ctx context.Context, store content.Storage, manifestDe
 
 // GetManifest returns the Manifest described by a Descriptor. Returns an error if the manifest blob cannot be
 // resolved or does not represent a modelkit manifest.
-func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, error) {
+func GetManifest(ctx context.Context, store oras.ReadOnlyTarget, manifestDesc ocispec.Descriptor) (*ocispec.Manifest, error) {
 	manifestBytes, err := content.FetchAll(ctx, store, manifestDesc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read manifest %s: %w", manifestDesc.Digest, err)
@@ -208,7 +208,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 
 // GetConfig returns the config (Kitfile) described by a descriptor. Returns an error if the config blob cannot
 // be resolved or if the descriptor does not describe a Kitfile.
-func GetConfig(ctx context.Context, store content.Storage, configDesc ocispec.Descriptor) (*artifact.KitFile, error) {
+func GetConfig(ctx context.Context, store oras.ReadOnlyTarget, configDesc ocispec.Descriptor) (*artifact.KitFile, error) {
 	if configDesc.MediaType != constants.ModelConfigMediaType.String() {
 		return nil, fmt.Errorf("configuration descriptor does not describe a Kitfile")
 	}

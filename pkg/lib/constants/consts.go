@@ -103,6 +103,10 @@ func StoragePath(configBase string) string {
 	return filepath.Join(configBase, StorageSubpath)
 }
 
+func IngestPath(storageBase string) string {
+	return filepath.Join(storageBase, "ingest")
+}
+
 func HarnessPath(configBase string) string {
 	return filepath.Join(configBase, HarnessSubpath)
 }

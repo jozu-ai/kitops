@@ -18,9 +18,7 @@ import (
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/registry"
-	orasremote "oras.land/oras-go/v2/registry/remote"
 )
 
 func runPull(ctx context.Context, opts *pullOptions) (ocispec.Descriptor, error) {
@@ -43,12 +41,7 @@ func runPullRecursive(ctx context.Context, localRepo local.LocalRepo, opts *pull
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("reached maximum number of model references: [%s]", strings.Join(pulledRefs, "=>"))
 	}
 
-	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("could not resolve registry: %w", err)
-	}
-
-	desc, err := pullModel(ctx, remoteRegistry, localRepo, opts.modelRef)
+	desc, err := pullModel(ctx, localRepo, opts)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
@@ -79,22 +72,29 @@ func pullParents(ctx context.Context, localRepo local.LocalRepo, desc ocispec.De
 	return err
 }
 
-func pullModel(ctx context.Context, remoteRegistry *orasremote.Registry, localRepo local.LocalRepo, ref *registry.Reference) (ocispec.Descriptor, error) {
-	repo, err := remoteRegistry.Repository(ctx, ref.Repository)
+func pullModel(ctx context.Context, localRepo local.LocalRepo, opts *pullOptions) (ocispec.Descriptor, error) {
+	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("could not resolve registry: %w", err)
+	}
+	repo, err := remoteRegistry.Repository(ctx, opts.modelRef.Repository)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)
 	}
-	if err := referenceIsModel(ctx, ref, repo); err != nil {
+	if err := referenceIsModel(ctx, opts.modelRef, repo); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	trackedRepo, logger := output.WrapTarget(localRepo)
-	desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
-	if err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
-	}
-	logger.Wait()
 
-	return desc, err
+	// TODO: progress bars...
+	desc, err := localRepo.PullModel(ctx, repo, *opts.modelRef, &opts.NetworkOptions)
+	// trackedRepo, logger := output.WrapTarget(localRepo)
+	// desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
+	if err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to pull: %w", err)
+	}
+	// logger.Wait()
+
+	return desc, nil
 }
 
 func referenceIsModel(ctx context.Context, ref *registry.Reference, repo registry.Repository) error {

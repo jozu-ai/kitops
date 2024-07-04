@@ -28,6 +28,7 @@ import (
 	"slices"
 	"strings"
 
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -43,6 +44,7 @@ type LocalRepo interface {
 	BlobPath(ocispec.Descriptor) string
 	GetAllModels() []ocispec.Descriptor
 	GetTags(ocispec.Descriptor) []string
+	PullModel(context.Context, oras.ReadOnlyTarget, registry.Reference, *options.NetworkOptions) (ocispec.Descriptor, error)
 	oras.Target
 	content.Deleter
 	content.Untagger
@@ -123,7 +125,7 @@ func (r *localRepo) GetRepoName() string {
 }
 
 func (r *localRepo) BlobPath(desc ocispec.Descriptor) string {
-	return filepath.Join(r.storagePath, "blobs", "sha256", desc.Digest.Encoded())
+	return filepath.Join(r.storagePath, ocispec.ImageBlobsDir, desc.Digest.Algorithm().String(), desc.Digest.Encoded())
 }
 
 func (l *localRepo) Delete(ctx context.Context, target ocispec.Descriptor) error {
