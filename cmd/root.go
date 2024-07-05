@@ -56,16 +56,22 @@ func RunCommand() *cobra.Command {
 			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
 				return output.Fatalln(err)
 			}
+			output.SetProgressBars(opts.progressBars)
+
 			switch opts.verbosity {
+			case 0:
+				break
 			case 1:
 				output.Debugf("Setting verbosity to %s", output.LogLevelDebug)
 				output.SetLogLevel(output.LogLevelDebug)
 			case 2:
 				output.Debugf("Setting verbosity to %s", output.LogLevelTrace)
 				output.SetLogLevel(output.LogLevelTrace)
+			default:
+				output.Debugf("Setting verbosity to %s and disabling progress bars", output.LogLevelTrace)
+				output.SetLogLevel(output.LogLevelTrace)
+				output.SetProgressBars("none")
 			}
-
-			output.SetProgressBars(opts.progressBars)
 
 			configHome, err := getConfigHome(opts)
 			if err != nil {
