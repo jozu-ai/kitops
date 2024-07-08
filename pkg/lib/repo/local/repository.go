@@ -25,7 +25,9 @@ import (
 	"sort"
 
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/util"
 
+	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2/errdef"
 )
@@ -124,7 +126,19 @@ func (li *localIndex) delete(target ocispec.Descriptor) error {
 }
 
 func (li *localIndex) resolve(reference string) (ocispec.Descriptor, error) {
-	return li.modelTags.get(reference)
+	if reference == "" {
+		return ocispec.DescriptorEmptyJSON, errdef.ErrMissingReference
+	}
+	if util.ReferenceIsDigest(reference) {
+		for _, desc := range li.Manifests {
+			if desc.Digest == digest.Digest(reference) {
+				return desc, nil
+			}
+		}
+		return ocispec.DescriptorEmptyJSON, errdef.ErrNotFound
+	} else {
+		return li.modelTags.get(reference)
+	}
 }
 
 func (li *localIndex) tag(desc ocispec.Descriptor, reference string) error {

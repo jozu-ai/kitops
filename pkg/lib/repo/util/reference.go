@@ -140,6 +140,13 @@ func ParseReference(refString string) (reference *registry.Reference, extraTags 
 	return reference, extraTags, nil
 }
 
+// ReferenceIsDigest returns if the reference is a digest. If false, reference should
+// be treated as a tag
+func ReferenceIsDigest(ref string) bool {
+	err := digest.Digest(ref).Validate()
+	return err == nil
+}
+
 // DefaultReference returns a reference that can be used when no reference is supplied. It uses
 // the default registry and repository
 func DefaultReference() *registry.Reference {

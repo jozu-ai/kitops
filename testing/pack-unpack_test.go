@@ -65,9 +65,9 @@ func TestPackUnpack(t *testing.T) {
 			// Create files for test case
 			setupFiles(t, modelKitPath, append(tt.Files, tt.IgnoredFiles...))
 
-			runCommand(t, expectNoError, "pack", modelKitPath, "-t", modelKitTag, "-v")
+			runCommand(t, expectNoError, "pack", modelKitPath, "-t", modelKitTag)
 			runCommand(t, expectNoError, "list")
-			runCommand(t, expectNoError, "unpack", modelKitTag, "-d", unpackPath, "-v")
+			runCommand(t, expectNoError, "unpack", modelKitTag, "-d", unpackPath)
 
 			checkFilesExist(t, unpackPath, tt.Files)
 			checkFilesDoNotExist(t, unpackPath, append(tt.IgnoredFiles, ".kitignore"))
@@ -97,7 +97,7 @@ datasets:
 	}
 	setupFiles(t, modelKitPath, []string{"test-file.txt", "test-dir/test-subfile.txt"})
 
-	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack1", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack1")
 	digestOne := digestFromPack(t, packOut)
 
 	// Change timestamps on file to simulate an unpacked modelkit at a future time
@@ -112,7 +112,7 @@ datasets:
 		t.Fatal(err)
 	}
 
-	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack2", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack2")
 	digestTwo := digestFromPack(t, packOut)
 
 	assert.Equal(t, digestOne, digestTwo, "Digests should be the same")

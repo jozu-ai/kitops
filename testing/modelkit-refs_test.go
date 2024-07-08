@@ -79,13 +79,13 @@ func TestModelKitReferences(t *testing.T) {
 				// Pack the current dir, unpack it into the next dir. If we expect this to fail, assert that
 				// output contains expected text
 				if modelkit.PackErrRegexp != nil {
-					packOutput := runCommand(t, expectError, "pack", curDir, "-t", modelkit.Tag, "-v")
+					packOutput := runCommand(t, expectError, "pack", curDir, "-t", modelkit.Tag)
 					assertContainsLineRegexp(t, packOutput, *modelkit.PackErrRegexp, true)
 					continue
 				}
-				runCommand(t, expectNoError, "pack", curDir, "-t", modelkit.Tag, "-v")
+				runCommand(t, expectNoError, "pack", curDir, "-t", modelkit.Tag)
 				runCommand(t, expectNoError, "list")
-				runCommand(t, expectNoError, "unpack", modelkit.Tag, "-d", nextDir, "-v")
+				runCommand(t, expectNoError, "unpack", modelkit.Tag, "-d", nextDir)
 
 				// Verify unpacked contents
 				checkFilesExist(t, nextDir, allFiles)
