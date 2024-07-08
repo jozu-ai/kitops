@@ -10,6 +10,7 @@ import (
 	"io"
 	"strings"
 
+	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/remote"
 	"kitops/pkg/lib/repo/util"
 
@@ -18,22 +19,20 @@ import (
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
-	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 	orasremote "oras.land/oras-go/v2/registry/remote"
 )
 
 func runPull(ctx context.Context, opts *pullOptions) (ocispec.Descriptor, error) {
 	storageHome := constants.StoragePath(opts.configHome)
-	localStorePath := util.RepoPath(storageHome, opts.modelRef)
-	localStore, err := oci.New(localStorePath)
+	localRepo, err := local.NewLocalRepo(storageHome, opts.modelRef)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	return runPullRecursive(ctx, localStore, opts, []string{})
+	return runPullRecursive(ctx, localRepo, opts, []string{})
 }
 
-func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOptions, pulledRefs []string) (ocispec.Descriptor, error) {
+func runPullRecursive(ctx context.Context, localRepo local.LocalRepo, opts *pullOptions, pulledRefs []string) (ocispec.Descriptor, error) {
 	refStr := util.FormatRepositoryForDisplay(opts.modelRef.String())
 	if idx := getIndex(pulledRefs, refStr); idx != -1 {
 		cycleStr := fmt.Sprintf("[%s=>%s]", strings.Join(pulledRefs[idx:], "=>"), refStr)
@@ -53,20 +52,20 @@ func runPullRecursive(ctx context.Context, localStore *oci.Store, opts *pullOpti
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("could not resolve registry: %w", err)
 	}
 
-	desc, err := pullModel(ctx, remoteRegistry, localStore, opts.modelRef)
+	desc, err := pullModel(ctx, remoteRegistry, localRepo, opts.modelRef)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
 
-	if err := pullParents(ctx, localStore, desc, opts, pulledRefs); err != nil {
+	if err := pullParents(ctx, localRepo, desc, opts, pulledRefs); err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to pull referenced modelkits: %w", err)
 	}
 
 	return desc, nil
 }
 
-func pullParents(ctx context.Context, localStore *oci.Store, desc ocispec.Descriptor, optsIn *pullOptions, pulledRefs []string) error {
-	_, config, err := util.GetManifestAndConfig(ctx, localStore, desc)
+func pullParents(ctx context.Context, localRepo local.LocalRepo, desc ocispec.Descriptor, optsIn *pullOptions, pulledRefs []string) error {
+	_, config, err := util.GetManifestAndConfig(ctx, localRepo, desc)
 	if err != nil {
 		return err
 	}
@@ -80,11 +79,11 @@ func pullParents(ctx context.Context, localStore *oci.Store, desc ocispec.Descri
 	}
 	opts := *optsIn
 	opts.modelRef = parentRef
-	_, err = runPullRecursive(ctx, localStore, &opts, pulledRefs)
+	_, err = runPullRecursive(ctx, localRepo, &opts, pulledRefs)
 	return err
 }
 
-func pullModel(ctx context.Context, remoteRegistry *orasremote.Registry, localStore *oci.Store, ref *registry.Reference) (ocispec.Descriptor, error) {
+func pullModel(ctx context.Context, remoteRegistry *orasremote.Registry, localRepo local.LocalRepo, ref *registry.Reference) (ocispec.Descriptor, error) {
 	repo, err := remoteRegistry.Repository(ctx, ref.Repository)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to read repository: %w", err)
@@ -92,7 +91,7 @@ func pullModel(ctx context.Context, remoteRegistry *orasremote.Registry, localSt
 	if err := referenceIsModel(ctx, ref, repo); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	trackedRepo, logger := output.WrapTarget(localStore)
+	trackedRepo, logger := output.WrapTarget(localRepo)
 	desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)

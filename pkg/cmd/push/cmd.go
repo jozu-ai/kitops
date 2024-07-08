@@ -22,12 +22,12 @@ import (
 
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/remote"
 	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
-	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -108,15 +108,13 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			return output.Fatalln(err)
 		}
 
-		storageHome := constants.StoragePath(opts.configHome)
-		localStorePath := util.RepoPath(storageHome, opts.modelRef)
-		localStore, err := oci.New(localStorePath)
+		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.modelRef)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
 		output.Infof("Pushing %s", opts.modelRef.String())
-		desc, err := PushModel(cmd.Context(), localStore, remoteRepo, opts.modelRef)
+		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts.modelRef)
 		if err != nil {
 			return output.Fatalf("Failed to push: %s", err)
 		}
