@@ -18,8 +18,10 @@ package local
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -82,6 +84,9 @@ func newLocalRepoForName(storagePath, name string) (LocalRepo, error) {
 func GetAllLocalRepos(storagePath string) ([]LocalRepo, error) {
 	entries, err := os.ReadDir(storagePath)
 	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
 
