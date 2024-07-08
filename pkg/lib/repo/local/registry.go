@@ -133,7 +133,7 @@ func (l *localRepo) Delete(ctx context.Context, target ocispec.Descriptor) error
 
 	canDelete, err := canSafelyDeleteManifest(ctx, l.storagePath, target)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to check if manifest can be deleted: %w", err)
 	}
 	if canDelete {
 		if err := l.Store.Delete(ctx, target); err != nil {

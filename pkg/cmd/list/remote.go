@@ -77,7 +77,7 @@ func listTags(ctx context.Context, repo registry.Repository, ref *registry.Refer
 func listImageTag(ctx context.Context, repo registry.Repository, ref *registry.Reference) ([]string, error) {
 	manifestDesc, err := repo.Resolve(ctx, ref.Reference)
 	if err != nil {
-		return nil, fmt.Errorf("failed to resolve reference: %w", err)
+		return nil, fmt.Errorf("failed to resolve reference %s: %w", ref.Reference, err)
 	}
 	manifest, config, err := util.GetManifestAndConfig(ctx, repo, manifestDesc)
 	if err != nil {
