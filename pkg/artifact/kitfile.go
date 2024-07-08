@@ -50,6 +50,7 @@ type (
 	Model struct {
 		Name        string      `json:"name,omitempty" yaml:"name,omitempty"`
 		Path        string      `json:"path,omitempty" yaml:"path,omitempty"`
+		License     string      `json:"license,omitempty" yaml:"license,omitempty"`
 		Framework   string      `json:"framework,omitempty" yaml:"framework,omitempty"`
 		Version     string      `json:"version,omitempty" yaml:"version,omitempty"`
 		Description string      `json:"description,omitempty" yaml:"description,omitempty"`
@@ -64,20 +65,23 @@ type (
 	}
 
 	ModelPart struct {
-		Name string `json:"name,omitempty" yaml:"name,omitempty"`
-		Path string `json:"path,omitempty" yaml:"path,omitempty"`
-		Type string `json:"type,omitempty" yaml:"type,omitempty"`
+		Name    string `json:"name,omitempty" yaml:"name,omitempty"`
+		Path    string `json:"path,omitempty" yaml:"path,omitempty"`
+		License string `json:"license,omitempty" yaml:"license,omitempty"`
+		Type    string `json:"type,omitempty" yaml:"type,omitempty"`
 	}
 
 	Code struct {
 		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
 		Description string `json:"description,omitempty" yaml:"description,omitempty"`
+		License     string `json:"license,omitempty" yaml:"license,omitempty"`
 	}
 
 	DataSet struct {
 		Name        string `json:"name,omitempty" yaml:"name,omitempty"`
 		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
 		Description string `json:"description,omitempty" yaml:"description,omitempty"`
+		License     string `json:"license,omitempty" yaml:"license,omitempty"`
 	}
 )
 
