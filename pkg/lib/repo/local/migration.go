@@ -28,7 +28,6 @@ import (
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-
 	"oras.land/oras-go/v2"
 )
 
@@ -45,6 +44,7 @@ func MigrateStorage(ctx context.Context, baseStoragePath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to migrate local storage: %w", err)
 	}
+	pb := output.GenericProgressBar("Migrating", "Migration done!", int64(len(localStores)))
 	for _, localStore := range localStores {
 		repoName := localStore.GetRepo()
 		localRepo, err := newLocalRepoForName(baseStoragePath, repoName)
@@ -74,7 +74,9 @@ func MigrateStorage(ctx context.Context, baseStoragePath string) error {
 				return fmt.Errorf("migrating modelkit %s:%s failed", repoName, tagOrDigest)
 			}
 		}
+		pb.Increment()
 	}
+	pb.Done()
 
 	// Remove old storage directories
 	for _, localStore := range localStores {
@@ -89,5 +91,6 @@ func MigrateStorage(ctx context.Context, baseStoragePath string) error {
 			return fmt.Errorf("failed to clean up directory %s after migration: %s", rmDir, err)
 		}
 	}
+	output.Debugf("Migration done!")
 	return nil
 }
