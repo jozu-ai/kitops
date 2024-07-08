@@ -87,9 +87,6 @@ func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 	for _, localRepo := range localRepos {
 		manifests := localRepo.GetAllModels()
 		repo := util.FormatRepositoryForDisplay(localRepo.GetRepoName())
-		if err != nil {
-			return fmt.Errorf("failed to read index for %s: %w", repo, err)
-		}
 		for _, manifestDesc := range manifests {
 			tags := localRepo.GetTags(manifestDesc)
 			if len(tags) > 0 {

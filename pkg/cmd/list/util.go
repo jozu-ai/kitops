@@ -55,7 +55,7 @@ func (m *modelInfo) format() []string {
 func (m *modelInfo) fill(manifest *ocispec.Manifest, kitfile *artifact.KitFile) {
 	m.size = getModelSize(manifest)
 	m.author = getModelAuthor(kitfile)
-	m.modelName = getModelAuthor(kitfile)
+	m.modelName = getModelName(kitfile)
 }
 
 func getModelSize(manifest *ocispec.Manifest) string {

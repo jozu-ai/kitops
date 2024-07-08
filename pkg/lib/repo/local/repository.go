@@ -65,9 +65,7 @@ func (li *localIndex) addManifest(manifestDesc ocispec.Descriptor) error {
 	}
 	if curTag != "" {
 		li.modelTags.tagToDigest[curTag] = manifestDesc
-		if err := li.modelTags.save(); err != nil {
-			return err
-		}
+		return li.modelTags.save()
 	}
 	return nil
 }
@@ -79,10 +77,7 @@ func (li *localIndex) save() error {
 
 	if len(li.Manifests) == 0 {
 		// If there are no tags left in this repo, delete the file to clean up
-		if err := os.Remove(li.indexPath); err != nil {
-			if errors.Is(err, fs.ErrNotExist) {
-				return nil
-			}
+		if err := os.Remove(li.indexPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 		return nil
@@ -113,9 +108,6 @@ func (li *localIndex) delete(target ocispec.Descriptor) error {
 		if err := li.untag(tag); err != nil {
 			return err
 		}
-	}
-	if err := li.modelTags.save(); err != nil {
-		return err
 	}
 
 	var newManifests []ocispec.Descriptor
@@ -193,12 +185,10 @@ func (ti *tagsIndex) get(reference string) (ocispec.Descriptor, error) {
 func (ti *tagsIndex) save() error {
 	if len(ti.tagToDigest) == 0 {
 		// If there are no tags left in this repo, delete the file to clean up
-		if err := os.Remove(ti.tagsIndexPath); err != nil {
-			if errors.Is(err, fs.ErrNotExist) {
-				return nil
-			}
+		if err := os.Remove(ti.tagsIndexPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
+		return nil
 	}
 
 	jsonBytes, err := json.Marshal(ti.tagToDigest)
