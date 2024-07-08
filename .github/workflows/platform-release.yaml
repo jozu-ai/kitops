@@ -72,7 +72,7 @@ jobs:
           ./build/scripts/sign ./dist/kitops-darwin-arm64.zip
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808  # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b  # v4.3.4
         with:
             name: dist-macos
             if-no-files-found: error
@@ -100,7 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808  # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b  # v4.3.4
         with:
             name: dist-windows
             if-no-files-found: error
@@ -128,7 +128,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808  # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b  # v4.3.4
         with:
             name: dist-linux
             if-no-files-found: error
@@ -143,7 +143,7 @@ jobs:
     needs: [build-linux, build-macos, build-windows]
     steps:
       - name: Merge built artifacts
-        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
         with:
           path: dist
           pattern: dist-*
