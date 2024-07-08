@@ -62,4 +62,4 @@ modelkits:
       manifestVersion: 1.0.0
       model:
         path: test-ref:model-11
-    packErrRegexp: Reached maximum number of model references
+    packErrRegexp: reached maximum number of model references
