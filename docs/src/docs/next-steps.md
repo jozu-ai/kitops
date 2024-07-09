@@ -16,18 +16,19 @@ If you need a quick way to sign a ModelKit you can follow the same instructions 
 
 ## Making your own Kitfile
 
-A Kitfile is the configuration document for your ModelKit. It's written in YAML so it's easy to read. There are four main parts to a Kitfile:
+A Kitfile is the configuration document for your ModelKit. It's written in YAML so it's easy to read. There are five main parts to a Kitfile:
 
 1. The `package` section: Metadata about the ModelKit, including the author, description, and license
-1. The `code` section: Path and information about codebases related to the project, including Jupyter notebook folders
-1. The `datasets` section: Path and information on included datasets
-1. The `model` section: Path and information on the serialized model
+1. The `model` section: Information about the serialized model
+1. The `docs` section: Information about documentation for the ModelKit
+1. The `code` section: Information about codebases related to the project, including Jupyter notebook folders
+1. The `datasets` section: Information on included datasets
 
-A Kitfile only needs the `package` section, plus one of the other sections.
+A Kitfile only needs the `package` section, plus one or more of the other sections.
 
-The `package` and `model` sections can only contain a single model (you can chain models by using multiple ModelKits).
+The `model` section can only contain a single model (you can chain models by using multiple ModelKits).
 
-The `datasets`, `code`, and `name` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
+The `datasets`, `code`, and `docs` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
 
 Here's a snippet of a KitFile that contains two datasets, notice that each starts with "-":
 
@@ -53,37 +54,43 @@ Any relative paths defined within the Kitfile are interpreted as being relative 
 
 ### Kitfile Examples
 
-Here's a complete Kitfile example, with a model, two datasets, and a codebase:
+Here's a complete Kitfile example, with a model, documentation, two datasets, and a codebase:
 
 ```yaml
 manifestVersion: 1.0
 
 package:
   authors:
-  - Jozu
+    - Jozu
   description: Small language model based on Mistral-7B fine tuned for answering film photography questions.
   license: Apache-2.0
   name: FilmSLM
 
 model:
+  name: FilmSLM
   description: Film photography Q&A model using Mistral-7B
   framework: Mistral-7B
   license: Apache-2.0
-  name: FilmSLM
   path: ./models/film_slm:champion
   version: 1.2.6
 
+docs:
+  - path: ./README.md
+    description: Readme file for this ModelKit
+  - path: ./USAGE.md
+    description: Information on how to use this model for inference
+
 datasets:
-- description: Forum postings from sites like rangefinderforum, DPreview, PhotographyTalk, and r/AnalogCommunity
-  name: training data
-  path: ./data/forum-to-2023-train.csv
-- description: validation data
-  name: validation data
-  path: ./data/test.csv
+  - description: Forum postings from sites like rangefinderforum, DPreview, PhotographyTalk, and r/AnalogCommunity
+    name: training data
+    path: ./data/forum-to-2023-train.csv
+  - description: validation data
+    name: validation data
+    path: ./data/test.csv
 
 code:
-- description: Jupyter notebook with model training code in Python
-  path: ./notebooks
+  - description: Jupyter notebook with model training code in Python
+    path: ./notebooks
 ```
 
 A minimal ModelKit for distributing a pair of datasets looks like this:
@@ -93,15 +100,15 @@ manifestVersion: v1.0.0
 
 package:
   authors:
-  - Jozu
+    - Jozu
 
 datasets:
-- name: training data
-  path: ./data/train.csv
-  license: Apache-2.0
-- description: validation data
-  name: validation data
-  path: ./data/validate.csv
+  - name: training data
+    path: ./data/train.csv
+    license: Apache-2.0
+  - description: validation data
+    name: validation data
+    path: ./data/validate.csv
 ```
 
 More information on Kitfiles can be found in the [Overview](./kitfile/kf-overview.md) and [Format](./kitfile/format.md) documentation.
@@ -149,6 +156,7 @@ Models and their datasets can be very large and take a long time to push or pull
 
 `unpack` can take arguments for partial unpacking of a ModelKit:
 * `--model` to unpack only the model to the destination file system
+* `--docs` to unpack only the documentation to the destination file system
 * `--datasets` to unpack only the datasets to the destination file system
 * `--code` to unpack only the code bases to the destination file system
 * `--config` to unpack only the Kitfile to the destination file system
@@ -170,7 +178,6 @@ The `unpack` command is part of the typical push and pull commands:
 ## Read the Kitfile or Manifest from a ModelKit
 
 For any ModelKit in your local or remote registry you can use the [info command](./cli/cli-reference.md#kit-info) to easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull commands.
-
 
 ```sh
 kit info mymodel:challenger
