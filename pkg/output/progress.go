@@ -211,3 +211,52 @@ func TarProgress(total int64, tw *tar.Writer) (*ProgressTar, *ProgressLogger) {
 	pw := bar.ProxyWriter(tw)
 	return &ProgressTar{tw: tw, pw: pw, bar: bar}, &ProgressLogger{p}
 }
+
+type PullProgress struct {
+	progress *mpb.Progress
+	ProgressLogger
+}
+
+func (p *PullProgress) ProxyWriter(w io.Writer, digest string, size, offset int64) io.Writer {
+	if !progressEnabled || p.progress == nil {
+		return w
+	}
+	shortDigest := digest[0:8]
+
+	bar := p.progress.New(size,
+		barStyle(),
+		mpb.PrependDecorators(
+			decor.Name("Copying "+shortDigest),
+		),
+		mpb.AppendDecorators(
+			decor.OnComplete(decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"), fmt.Sprintf("%-9s", FormatBytes(size))),
+			decor.OnComplete(decor.Name(" | "), " | "),
+			decor.OnComplete(decor.AverageSpeed(decor.SizeB1024(0), "% .2f"), "done"),
+		),
+		mpb.BarFillerOnComplete("|"),
+	)
+	bar.IncrInt64(offset)
+	return bar.ProxyWriter(w)
+}
+
+func (p *PullProgress) Done() {
+	if p.progress != nil {
+		p.progress.Wait()
+	}
+}
+
+func NewPullProgress(ctx context.Context) *PullProgress {
+	if !progressEnabled {
+		return &PullProgress{
+			ProgressLogger: ProgressLogger{stdout},
+		}
+	}
+	p := mpb.NewWithContext(ctx,
+		mpb.WithWidth(60),
+		mpb.WithRefreshRate(150*time.Millisecond),
+	)
+	return &PullProgress{
+		progress:       p,
+		ProgressLogger: ProgressLogger{p},
+	}
+}

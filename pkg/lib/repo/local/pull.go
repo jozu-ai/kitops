@@ -49,19 +49,21 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to set up directories for pull: %w", err)
 	}
 
+	progress := output.NewPullProgress(ctx)
+
 	manifest, err := util.GetManifest(ctx, src, desc)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	if err := l.pullNode(ctx, src, manifest.Config); err != nil {
+	if err := l.pullNode(ctx, src, manifest.Config, progress); err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get config: %w", err)
 	}
 	for _, layerDesc := range manifest.Layers {
-		if err := l.pullNode(ctx, src, layerDesc); err != nil {
+		if err := l.pullNode(ctx, src, layerDesc, progress); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get layer: %w", err)
 		}
 	}
-	if err := l.pullNode(ctx, src, desc); err != nil {
+	if err := l.pullNode(ctx, src, desc, progress); err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get manifest: %w", err)
 	}
 	if err := l.localIndex.addManifest(desc); err != nil {
@@ -72,6 +74,7 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to save tag: %w", err)
 		}
 	}
+	progress.Done()
 
 	if err := l.cleanupIngestDir(); err != nil {
 		output.Logln(output.LogLevelWarn, err)
@@ -80,20 +83,20 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 	return desc, nil
 }
 
-func (l *localRepo) pullNode(ctx context.Context, src oras.ReadOnlyTarget, desc ocispec.Descriptor) error {
+func (l *localRepo) pullNode(ctx context.Context, src oras.ReadOnlyTarget, desc ocispec.Descriptor, p *output.PullProgress) error {
 	blob, err := src.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed to fetch: %w", err)
 	}
 	if seekBlob, ok := blob.(io.ReadSeekCloser); ok {
-		output.Logf(output.LogLevelTrace, "Remote supports range requests, using resumable download")
-		return l.resumeAndDownloadFile(desc, seekBlob)
+		p.Logf(output.LogLevelTrace, "Remote supports range requests, using resumable download")
+		return l.resumeAndDownloadFile(desc, seekBlob, p)
 	} else {
-		return l.downloadFile(desc, blob)
+		return l.downloadFile(desc, blob, p)
 	}
 }
 
-func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadSeekCloser) error {
+func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadSeekCloser, p *output.PullProgress) error {
 	ingestDir := constants.IngestPath(l.storagePath)
 	ingestFilename := filepath.Join(ingestDir, desc.Digest.Encoded())
 	ingestFile, err := os.OpenFile(ingestFilename, os.O_CREATE|os.O_RDWR, 0644)
@@ -102,7 +105,7 @@ func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadS
 	}
 	defer func() {
 		if err := ingestFile.Close(); err != nil && !errors.Is(err, fs.ErrClosed) {
-			output.Errorf("Error closing temporary ingest file: %s", err)
+			p.Logf(output.LogLevelError, "Error closing temporary ingest file: %s", err)
 		}
 	}()
 
@@ -111,18 +114,20 @@ func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadS
 	if stat, err := ingestFile.Stat(); err != nil {
 		return fmt.Errorf("failed to stat ingest file: %w", err)
 	} else if stat.Size() != 0 {
-		output.Debugf("Resuming download for digest %s", desc.Digest.String())
+		p.Debugf("Resuming download for digest %s", desc.Digest.String())
 		numBytes, err := io.Copy(verifier, ingestFile)
 		if err != nil {
 			return fmt.Errorf("failed to resume download: %w", err)
 		}
-		output.Logf(output.LogLevelTrace, "Updating offset to %d bytes", numBytes)
+		p.Logf(output.LogLevelTrace, "Updating offset to %d bytes", numBytes)
 		offset = numBytes
 	}
 	if _, err := blob.Seek(offset, io.SeekStart); err != nil {
 		return fmt.Errorf("failed to seek in remote resource: %w", err)
 	}
-	mw := io.MultiWriter(ingestFile, verifier)
+
+	pwriter := p.ProxyWriter(ingestFile, desc.Digest.Encoded(), desc.Size, offset)
+	mw := io.MultiWriter(pwriter, verifier)
 	if _, err := io.Copy(mw, blob); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
@@ -140,7 +145,7 @@ func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadS
 	return nil
 }
 
-func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser) (ingestErr error) {
+func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser, p *output.PullProgress) (ingestErr error) {
 	ingestDir := constants.IngestPath(l.storagePath)
 	ingestFile, err := os.CreateTemp(ingestDir, desc.Digest.Encoded()+"_*")
 	if err != nil {
@@ -152,7 +157,7 @@ func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser) (i
 	// working on, since it will never be reused.
 	defer func() {
 		if err := ingestFile.Close(); err != nil && !errors.Is(err, fs.ErrClosed) {
-			output.Errorf("Error closing temporary ingest file: %s", err)
+			p.Logf(output.LogLevelError, "Error closing temporary ingest file: %s", err)
 		}
 		if ingestErr != nil {
 			os.Remove(ingestFilename)
@@ -160,7 +165,8 @@ func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser) (i
 	}()
 
 	verifier := desc.Digest.Verifier()
-	mw := io.MultiWriter(ingestFile, verifier)
+	pwriter := p.ProxyWriter(ingestFile, desc.Digest.Encoded(), desc.Size, 0)
+	mw := io.MultiWriter(pwriter, verifier)
 	if _, err := io.Copy(mw, blob); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}

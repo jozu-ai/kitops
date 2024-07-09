@@ -156,3 +156,15 @@ func (pw *ProgressLogger) Debugf(s string, args ...any) {
 		logfTo(pw.output, LogLevelDebug, s, args...)
 	}
 }
+
+func (pw *ProgressLogger) Logln(level LogLevel, s any) {
+	if logLevel.shouldPrint(level) {
+		loglnTo(pw.output, level, s)
+	}
+}
+
+func (pw *ProgressLogger) Logf(level LogLevel, s string, args ...any) {
+	if logLevel.shouldPrint(level) {
+		logfTo(pw.output, level, s, args...)
+	}
+}
