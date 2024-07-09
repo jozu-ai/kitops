@@ -73,6 +73,10 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 		}
 	}
 
+	if err := l.cleanupIngestDir(); err != nil {
+		output.Logln(output.LogLevelWarn, err)
+	}
+
 	return desc, nil
 }
 
@@ -82,7 +86,7 @@ func (l *localRepo) pullNode(ctx context.Context, src oras.ReadOnlyTarget, desc 
 		return fmt.Errorf("failed to fetch: %w", err)
 	}
 	if seekBlob, ok := blob.(io.ReadSeekCloser); ok {
-		output.Debugf("Remote supports range requests, using resumable download")
+		output.Logf(output.LogLevelTrace, "Remote supports range requests, using resumable download")
 		return l.resumeAndDownloadFile(desc, seekBlob)
 	} else {
 		return l.downloadFile(desc, blob)
@@ -181,4 +185,24 @@ func (l *localRepo) ensurePullDirs() error {
 	}
 	ingestPath := constants.IngestPath(l.storagePath)
 	return os.MkdirAll(ingestPath, 0755)
+}
+
+func (l *localRepo) cleanupIngestDir() error {
+	ingestPath := constants.IngestPath(l.storagePath)
+	err := filepath.WalkDir(ingestPath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		if err := os.Remove(path); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to clean up ingest directory: %w", err)
+	}
+	return nil
 }
