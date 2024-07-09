@@ -87,12 +87,9 @@ func pullModel(ctx context.Context, localRepo local.LocalRepo, opts *pullOptions
 
 	// TODO: progress bars...
 	desc, err := localRepo.PullModel(ctx, repo, *opts.modelRef, &opts.NetworkOptions)
-	// trackedRepo, logger := output.WrapTarget(localRepo)
-	// desc, err := oras.Copy(ctx, repo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to pull: %w", err)
 	}
-	// logger.Wait()
 
 	return desc, nil
 }
