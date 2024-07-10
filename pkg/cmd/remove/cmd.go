@@ -108,6 +108,7 @@ func RemoveCommand() *cobra.Command {
 	cmd.Flags().BoolVarP(&opts.removeAll, "all", "a", false, "remove all untagged modelkits")
 	cmd.Flags().BoolVarP(&opts.remote, "remote", "r", false, "remove modelkit from remote registry")
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	cmd.Args = func(cmd *cobra.Command, args []string) error {
 		switch len(args) {

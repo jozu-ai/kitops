@@ -103,17 +103,18 @@ func RunCommand() *cobra.Command {
 		},
 	}
 	addSubcommands(cmd)
-	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
-	cmd.PersistentFlags().CountVarP(&opts.verbosity, "verbose", "v", "Increase verbosity of output (use -vv for more)")
 	cmd.PersistentFlags().StringVar(&opts.loglevel, "log-level", "info", "Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info')")
 	cmd.PersistentFlags().StringVar(&opts.progressBars, "progress", "plain", "Configure progress bars for longer operations (options: none, plain, fancy)")
+	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
+	cmd.PersistentFlags().CountVarP(&opts.verbosity, "verbose", "v", "Increase verbosity of output (use -vv for more)")
+	cmd.PersistentFlags().SortFlags = false
+	cmd.Flags().SortFlags = false
 
 	cmd.SetHelpTemplate(helpTemplate)
 	cmd.SetUsageTemplate(usageTemplate)
 	cobra.AddTemplateFunc("indent", indentBlock)
 	cobra.AddTemplateFunc("sectionHead", sectionHead)
 	cobra.AddTemplateFunc("ensureTrailingNewline", ensureTrailingNewline)
-
 	return cmd
 }
 
