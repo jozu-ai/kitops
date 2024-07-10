@@ -41,7 +41,10 @@ func NewRegistry(hostname string, opts *options.NetworkOptions) (*remote.Registr
 	if err != nil {
 		return nil, err
 	}
-	authClient := network.ClientWithAuth(credentialStore, opts)
+	authClient, err := network.ClientWithAuth(credentialStore, opts)
+	if err != nil {
+		return nil, err
+	}
 	reg.Client = output.WrapClient(authClient)
 
 	return reg, nil
