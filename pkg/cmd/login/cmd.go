@@ -59,6 +59,7 @@ func LoginCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&opts.password, "password", "p", "", "registry password or token")
 	cmd.Flags().BoolVar(&opts.passwordFromStdIn, "password-stdin", false, "read password from stdin")
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

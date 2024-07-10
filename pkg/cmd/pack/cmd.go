@@ -65,6 +65,7 @@ func PackCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile explictly (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
 	cmd.Flags().StringVar(&opts.compression, "compression", "none", "Compression format to use for layers. Valid options: 'none' (default), 'gzip', 'gzip-fastest'")
+	cmd.Flags().SortFlags = false
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }

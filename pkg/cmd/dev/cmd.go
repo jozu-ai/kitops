@@ -53,6 +53,8 @@ func DevStartCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Path to the kitfile")
 	cmd.Flags().StringVar(&opts.host, "host", "127.0.0.1", "Host for the development server")
 	cmd.Flags().IntVar(&opts.port, "port", 0, "Port for development server to listen on")
+	cmd.Flags().SortFlags = false
+
 	return cmd
 }
 

@@ -70,6 +70,8 @@ func InspectCommand() *cobra.Command {
 
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry instead of local storage")
+	cmd.Flags().SortFlags = false
+
 	return cmd
 }
 

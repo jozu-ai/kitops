@@ -89,6 +89,7 @@ func PushCommand() *cobra.Command {
 
 	cmd.Args = cobra.ExactArgs(1)
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

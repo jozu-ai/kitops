@@ -128,6 +128,7 @@ func UnpackCommand() *cobra.Command {
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackDocs, "docs", false, "Unpack only docs")
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }
