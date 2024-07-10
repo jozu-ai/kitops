@@ -100,6 +100,10 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.unpackDir = absDir
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	printConfig(opts)
 	return nil
 }

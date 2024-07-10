@@ -131,11 +131,7 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 }
 
 func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
-	registry, err := remote.NewRegistry(opts.modelRef.Registry, &remote.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	registry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
 	if err != nil {
 		return err
 	}

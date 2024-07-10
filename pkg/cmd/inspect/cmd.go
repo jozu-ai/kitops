@@ -114,5 +114,9 @@ func (opts *inspectOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("can not check remote: %s does not contain registry", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 	}
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	return nil
 }

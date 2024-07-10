@@ -46,11 +46,7 @@ func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, erro
 		return nil, fmt.Errorf("not found")
 	}
 	// Not in local storage, check remote
-	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &remote.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
 	if err != nil {
 		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.modelRef.Registry, err)
 	}

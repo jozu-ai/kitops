@@ -43,11 +43,7 @@ func runPullRecursive(ctx context.Context, localRepo local.LocalRepo, opts *pull
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("reached maximum number of model references: [%s]", strings.Join(pulledRefs, "=>"))
 	}
 
-	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &remote.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("could not resolve registry: %w", err)
 	}

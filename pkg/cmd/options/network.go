@@ -17,17 +17,40 @@
 package options
 
 import (
+	"context"
+	"fmt"
+
+	"kitops/pkg/lib/constants"
+
 	"github.com/spf13/cobra"
 )
 
 // NetworkOptions represent common networking-related flags that are used by multiple commands.
 // The flags should be added to the command via AddNetworkFlags before running.
 type NetworkOptions struct {
-	PlainHTTP bool
-	TlsVerify bool
+	PlainHTTP       bool
+	TLSVerify       bool
+	CredentialsPath string
 }
 
 func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.PlainHTTP, "plain-http", false, "Use plain HTTP when connecting to remote registries")
-	cmd.Flags().BoolVar(&o.TlsVerify, "tls-verify", true, "Require TLS and verify certificates when connecting to remote registries")
+	cmd.Flags().BoolVar(&o.TLSVerify, "tls-verify", true, "Require TLS and verify certificates when connecting to remote registries")
+}
+
+func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
+	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
+	if !ok {
+		return fmt.Errorf("default config path not set on command context")
+	}
+	o.CredentialsPath = constants.CredentialsPath(configHome)
+	return nil
+}
+
+func DefaultNetworkOptions(configHome string) *NetworkOptions {
+	return &NetworkOptions{
+		PlainHTTP:       false,
+		TLSVerify:       true,
+		CredentialsPath: constants.CredentialsPath(configHome),
+	}
 }
