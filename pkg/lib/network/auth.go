@@ -17,6 +17,8 @@
 package network
 
 import (
+	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	"kitops/pkg/cmd/options"
@@ -36,18 +38,28 @@ func NewCredentialStore(storePath string) (credentials.Store, error) {
 
 // ClientWithAuth returns a default *auth.Client using the provided credentials
 // store
-func ClientWithAuth(store credentials.Store, opts *options.NetworkOptions) *auth.Client {
-	client := DefaultClient(opts)
+func ClientWithAuth(store credentials.Store, opts *options.NetworkOptions) (*auth.Client, error) {
+	client, err := DefaultClient(opts)
+	if err != nil {
+		return nil, err
+	}
 	client.Credential = credentials.Credential(store)
 
-	return client
+	return client, nil
 }
 
 // DefaultClient returns an *auth.Client with a default User-Agent header and TLS
 // configured from opts (optionally disabling TLS verification)
-func DefaultClient(opts *options.NetworkOptions) *auth.Client {
+func DefaultClient(opts *options.NetworkOptions) (*auth.Client, error) {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.TLSClientConfig.InsecureSkipVerify = !opts.TLSVerify
+	if opts.ClientCertKeyPath != "" && opts.ClientCertPath != "" {
+		cert, err := tls.LoadX509KeyPair(opts.ClientCertPath, opts.ClientCertKeyPath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read certificate: %w", err)
+		}
+		transport.TLSClientConfig.Certificates = append(transport.TLSClientConfig.Certificates, cert)
+	}
 
 	client := &auth.Client{
 		Client: &http.Client{
@@ -59,5 +71,5 @@ func DefaultClient(opts *options.NetworkOptions) *auth.Client {
 		},
 	}
 
-	return client
+	return client, nil
 }

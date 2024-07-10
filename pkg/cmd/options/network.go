@@ -28,14 +28,18 @@ import (
 // NetworkOptions represent common networking-related flags that are used by multiple commands.
 // The flags should be added to the command via AddNetworkFlags before running.
 type NetworkOptions struct {
-	PlainHTTP       bool
-	TLSVerify       bool
-	CredentialsPath string
+	PlainHTTP         bool
+	TLSVerify         bool
+	CredentialsPath   string
+	ClientCertPath    string
+	ClientCertKeyPath string
 }
 
 func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.PlainHTTP, "plain-http", false, "Use plain HTTP when connecting to remote registries")
 	cmd.Flags().BoolVar(&o.TLSVerify, "tls-verify", true, "Require TLS and verify certificates when connecting to remote registries")
+	cmd.Flags().StringVar(&o.ClientCertPath, "cert", "", "Path to client certificate used for authentication")
+	cmd.Flags().StringVar(&o.ClientCertKeyPath, "key", "", "Path to client certificate key used for authentication")
 }
 
 func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
