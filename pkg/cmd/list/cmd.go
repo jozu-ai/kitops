@@ -80,6 +80,10 @@ func (opts *listOptions) complete(ctx context.Context, args []string) error {
 		opts.remoteRef = remoteRef
 	}
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	printConfig(opts)
 	return nil
 }

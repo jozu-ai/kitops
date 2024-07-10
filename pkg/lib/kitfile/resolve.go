@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"kitops/pkg/artifact"
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/remote"
@@ -50,7 +51,7 @@ func GetKitfileForRef(ctx context.Context, configHome string, ref *registry.Refe
 		return localKitfile, nil
 	}
 
-	repository, err := remote.NewRepository(ctx, ref.Registry, ref.Repository, remote.DefaultRegistryOptions(configHome))
+	repository, err := remote.NewRepository(ctx, ref.Registry, ref.Repository, options.DefaultNetworkOptions(configHome))
 	if err != nil {
 		return nil, err
 	}

@@ -70,6 +70,10 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = modelRef
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -99,11 +103,8 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			cmd.Context(),
 			opts.modelRef.Registry,
 			opts.modelRef.Repository,
-			&remote.RegistryOptions{
-				PlainHTTP:       opts.PlainHTTP,
-				SkipTLSVerify:   !opts.TlsVerify,
-				CredentialsPath: constants.CredentialsPath(opts.configHome),
-			})
+			&opts.NetworkOptions,
+		)
 		if err != nil {
 			return output.Fatalln(err)
 		}

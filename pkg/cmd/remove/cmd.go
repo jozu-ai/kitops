@@ -86,6 +86,10 @@ func (opts *removeOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("cannot use --all or --force with --remote")
 	}
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	printConfig(opts)
 	return nil
 }

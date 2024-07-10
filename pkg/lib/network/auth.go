@@ -19,16 +19,13 @@ package network
 import (
 	"net/http"
 
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 
 	"oras.land/oras-go/v2/registry/remote/auth"
 	"oras.land/oras-go/v2/registry/remote/credentials"
 	"oras.land/oras-go/v2/registry/remote/retry"
 )
-
-type ClientOpts struct {
-	TLSSkipVerify bool
-}
 
 func NewCredentialStore(storePath string) (credentials.Store, error) {
 	return credentials.NewStore(storePath, credentials.StoreOptions{
@@ -39,7 +36,7 @@ func NewCredentialStore(storePath string) (credentials.Store, error) {
 
 // ClientWithAuth returns a default *auth.Client using the provided credentials
 // store
-func ClientWithAuth(store credentials.Store, opts *ClientOpts) *auth.Client {
+func ClientWithAuth(store credentials.Store, opts *options.NetworkOptions) *auth.Client {
 	client := DefaultClient(opts)
 	client.Credential = credentials.Credential(store)
 
@@ -48,11 +45,9 @@ func ClientWithAuth(store credentials.Store, opts *ClientOpts) *auth.Client {
 
 // DefaultClient returns an *auth.Client with a default User-Agent header and TLS
 // configured from opts (optionally disabling TLS verification)
-func DefaultClient(opts *ClientOpts) *auth.Client {
+func DefaultClient(opts *options.NetworkOptions) *auth.Client {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
-	if opts.TLSSkipVerify {
-		transport.TLSClientConfig.InsecureSkipVerify = true
-	}
+	transport.TLSClientConfig.InsecureSkipVerify = !opts.TLSVerify
 
 	client := &auth.Client{
 		Client: &http.Client{

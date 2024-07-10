@@ -28,11 +28,7 @@ import (
 )
 
 func listRemoteKits(ctx context.Context, opts *listOptions) ([]string, error) {
-	remoteRegistry, err := remote.NewRegistry(opts.remoteRef.Registry, &remote.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	remoteRegistry, err := remote.NewRegistry(opts.remoteRef.Registry, &opts.NetworkOptions)
 	if err != nil {
 		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.remoteRef.Registry, err)
 	}

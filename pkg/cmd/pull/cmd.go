@@ -63,6 +63,10 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = modelRef
 
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
+
 	return nil
 }
 

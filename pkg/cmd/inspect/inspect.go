@@ -57,11 +57,7 @@ func getLocalInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, e
 }
 
 func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
-	repository, err := remote.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &remote.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	repository, err := remote.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &opts.NetworkOptions)
 	if err != nil {
 		return nil, err
 	}
