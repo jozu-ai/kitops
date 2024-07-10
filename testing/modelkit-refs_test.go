@@ -21,6 +21,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"kitops/pkg/lib/constants"
 )
 
 type modelkitRefTestcase struct {
@@ -56,7 +58,7 @@ func TestModelKitReferences(t *testing.T) {
 			if err := os.MkdirAll(contextPath, 0755); err != nil {
 				t.Fatal(err)
 			}
-			t.Setenv("KITOPS_HOME", contextPath)
+			t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 			// Set up temporary directories for modelkits; note we create one extra for the final unpack
 			for i := 0; i <= len(tt.Modelkits); i++ {

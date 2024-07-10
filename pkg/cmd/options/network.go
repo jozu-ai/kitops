@@ -19,6 +19,7 @@ package options
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"kitops/pkg/lib/constants"
 
@@ -38,8 +39,10 @@ type NetworkOptions struct {
 func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.PlainHTTP, "plain-http", false, "Use plain HTTP when connecting to remote registries")
 	cmd.Flags().BoolVar(&o.TLSVerify, "tls-verify", true, "Require TLS and verify certificates when connecting to remote registries")
-	cmd.Flags().StringVar(&o.ClientCertPath, "cert", "", "Path to client certificate used for authentication")
-	cmd.Flags().StringVar(&o.ClientCertKeyPath, "key", "", "Path to client certificate key used for authentication")
+	cmd.Flags().StringVar(&o.ClientCertPath, "cert", "",
+		fmt.Sprintf("Path to client certificate used for authentication (can also be set via environment variable %s)", constants.ClientCertEnvVar))
+	cmd.Flags().StringVar(&o.ClientCertKeyPath, "key", "",
+		fmt.Sprintf("Path to client certificate key used for authentication (can also be set via environment variable %s)", constants.ClientCertKeyEnvVar))
 }
 
 func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
@@ -48,6 +51,14 @@ func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	o.CredentialsPath = constants.CredentialsPath(configHome)
+
+	if certPath := os.Getenv(constants.ClientCertEnvVar); certPath != "" {
+		o.ClientCertPath = certPath
+	}
+	if certKeyPath := os.Getenv(constants.ClientCertKeyEnvVar); certKeyPath != "" {
+		o.ClientCertKeyPath = certKeyPath
+	}
+
 	return nil
 }
 

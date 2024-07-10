@@ -58,7 +58,7 @@ func TestPackUnpack(t *testing.T) {
 
 			// Set up paths to use for test
 			modelKitPath, unpackPath, contextPath := setupTestDirs(t, tmpDir)
-			t.Setenv("KITOPS_HOME", contextPath)
+			t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 			// Create Kitfile
 			setupKitfileAndKitignore(t, modelKitPath, tt.Kitfile, tt.Kitignore)
@@ -80,7 +80,7 @@ func TestPackReproducibility(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	testKitfile := `
 manifestVersion: 1.0.0

@@ -77,7 +77,7 @@ func RunCommand() *cobra.Command {
 			configHome, err := getConfigHome(opts)
 			if err != nil {
 				output.Errorf("Failed to read base config directory")
-				output.Infof("Use the --config flag or set the $KITOPS_HOME environment variable to provide a default")
+				output.Infof("Use the --config flag or set the $%s environment variable to provide a default", constants.KitopsHomeEnvVar)
 				output.Debugf("Error: %s", err)
 				return errors.New("exit")
 			}
@@ -152,12 +152,12 @@ func getConfigHome(opts *rootOptions) (string, error) {
 		return absHome, nil
 	}
 
-	envHome := os.Getenv("KITOPS_HOME")
+	envHome := os.Getenv(constants.KitopsHomeEnvVar)
 	if envHome != "" {
 		output.Debugf("Using config directory from environment variable: %s", envHome)
 		absHome, err := filepath.Abs(envHome)
 		if err != nil {
-			return "", fmt.Errorf("failed to get absolute path for $KITOPS_HOME: %w", err)
+			return "", fmt.Errorf("failed to get absolute path for %s: %w", constants.KitopsHomeEnvVar, err)
 		}
 		return absHome, nil
 	}

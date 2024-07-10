@@ -43,7 +43,7 @@ func TestRemoveSingleModelkitTag(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -71,7 +71,7 @@ func TestRemoveSingleModelkitDigest(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -100,7 +100,7 @@ func TestRemoveSingleModelkitNoTag(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -128,7 +128,7 @@ func TestRemoveModelkitUntagsWhenMultiple(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -161,7 +161,7 @@ func TestRemoveModelkitUntagsAllWhenDigest(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -195,7 +195,7 @@ func TestRemoveModelkitUntagged(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
@@ -238,7 +238,7 @@ func TestRemoveModelkitAll(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
 	if err := os.WriteFile(kitfilePath, []byte(testKitfile), 0644); err != nil {
