@@ -19,6 +19,8 @@ package constants
 import (
 	"fmt"
 	"regexp"
+
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 const (
@@ -88,4 +90,12 @@ func IsValidCompression(compression string) error {
 	default:
 		return fmt.Errorf("Invalid option for --compression flag: must be one of 'none', 'gzip', or 'gzip-fastest'")
 	}
+}
+
+func FormatMediaTypeForUser(mediaType string) string {
+	if mediaType == ocispec.MediaTypeImageManifest {
+		return "manifest"
+	}
+	parsed := ParseMediaType(mediaType)
+	return parsed.BaseType
 }
