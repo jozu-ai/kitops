@@ -85,7 +85,6 @@ func pullModel(ctx context.Context, localRepo local.LocalRepo, opts *pullOptions
 		return ocispec.DescriptorEmptyJSON, err
 	}
 
-	// TODO: progress bars...
 	desc, err := localRepo.PullModel(ctx, repo, *opts.modelRef, &opts.NetworkOptions)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to pull: %w", err)

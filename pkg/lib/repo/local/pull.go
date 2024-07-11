@@ -61,7 +61,7 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 	toPull := []ocispec.Descriptor{manifest.Config}
 	toPull = append(toPull, manifest.Layers...)
 	toPull = append(toPull, desc)
-	sem := semaphore.NewWeighted(5)
+	sem := semaphore.NewWeighted(int64(opts.Concurrency))
 	errs, errCtx := errgroup.WithContext(ctx)
 	fmtErr := func(desc ocispec.Descriptor, err error) error {
 		if err == nil {
