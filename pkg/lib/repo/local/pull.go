@@ -31,6 +31,8 @@ import (
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/registry"
 )
@@ -55,17 +57,33 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	}
-	if err := l.pullNode(ctx, src, manifest.Config, progress); err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get config: %w", err)
-	}
-	for _, layerDesc := range manifest.Layers {
-		if err := l.pullNode(ctx, src, layerDesc, progress); err != nil {
-			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get layer: %w", err)
+
+	toPull := []ocispec.Descriptor{manifest.Config}
+	toPull = append(toPull, manifest.Layers...)
+	toPull = append(toPull, desc)
+	sem := semaphore.NewWeighted(5)
+	errs, errCtx := errgroup.WithContext(ctx)
+	fmtErr := func(desc ocispec.Descriptor, err error) error {
+		if err == nil {
+			return nil
 		}
+		return fmt.Errorf("failed to get %s: %w", constants.FormatMediaTypeForUser(desc.MediaType), err)
 	}
-	if err := l.pullNode(ctx, src, desc, progress); err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get manifest: %w", err)
+	for _, pullDesc := range toPull {
+		pullDesc := pullDesc
+		if err := sem.Acquire(errCtx, 1); err != nil {
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to acquire lock: %w", err)
+		}
+		errs.Go(func() error {
+			defer sem.Release(1)
+			return fmtErr(pullDesc, l.pullNode(errCtx, src, pullDesc, progress))
+		})
 	}
+	if err := errs.Wait(); err != nil {
+		return ocispec.DescriptorEmptyJSON, err
+	}
+
+	// Special handling to make sure local (scoped) repo contains the just-pulled manifest
 	if err := l.localIndex.addManifest(desc); err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to add manifest to index: %w", err)
 	}
