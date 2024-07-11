@@ -84,6 +84,12 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 }
 
 func (l *localRepo) pullNode(ctx context.Context, src oras.ReadOnlyTarget, desc ocispec.Descriptor, p *output.PullProgress) error {
+	if exists, err := l.Exists(ctx, desc); err != nil {
+		return fmt.Errorf("failed to check local storage: %w", err)
+	} else if exists {
+		return nil
+	}
+
 	blob, err := src.Fetch(ctx, desc)
 	if err != nil {
 		return fmt.Errorf("failed to fetch: %w", err)
