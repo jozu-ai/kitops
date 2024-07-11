@@ -35,7 +35,7 @@ You can use the [login command](./cli/cli-reference.md#kit-login) to authenticat
 kit login ghcr.io
 ```
 
-You'll see `Log in successful`.
+You'll see `Log in successful`. If you get an error it may be that you need an HTTP vs HTTPS (default) connection. Try the login command again but with `--plain-http`.
 
 ### 3/ Get a Sample ModelKit
 
