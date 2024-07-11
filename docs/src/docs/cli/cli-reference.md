@@ -7,7 +7,6 @@ import VersionInfo from '@theme/components/VersionInfo.vue'
 </script>
 
 <VersionInfo />
-
 ## kit dev
 
 Run models locally (experimental)
@@ -31,9 +30,10 @@ kit dev start
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit dev logs
@@ -62,9 +62,10 @@ kit dev logs [flags]
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit dev start
@@ -98,17 +99,18 @@ kit dev start ./my-model --port 8080
 
 ```
   -f, --file string   Path to the kitfile
-  -h, --help          help for start
       --host string   Host for the development server (default "127.0.0.1")
       --port int      Port for development server to listen on
+  -h, --help          help for start
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit dev stop
@@ -132,9 +134,10 @@ kit dev stop [flags]
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit info
@@ -169,18 +172,21 @@ kit info --remote registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-  -h, --help         help for info
-      --plain-http   Use plain HTTP when connecting to remote registries
-  -r, --remote       Check remote registry instead of local storage
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -r, --remote        Check remote registry instead of local storage
+  -h, --help          help for info
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit inspect
@@ -214,18 +220,21 @@ kit inspect --remote registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-  -h, --help         help for inspect
-      --plain-http   Use plain HTTP when connecting to remote registries
-  -r, --remote       Check remote registry instead of local storage
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -r, --remote        Check remote registry instead of local storage
+  -h, --help          help for inspect
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit list
@@ -268,17 +277,20 @@ kit list registry.example.com/my-namespace/my-model
 ### Options
 
 ```
-  -h, --help         help for list
-      --plain-http   Use plain HTTP when connecting to remote registries
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help          help for list
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit login
@@ -307,20 +319,23 @@ kit login docker.io --password-stdin -u docker_user
 ### Options
 
 ```
-  -h, --help              help for login
+  -u, --username string   registry username
   -p, --password string   registry password or token
       --password-stdin    read password from stdin
       --plain-http        Use plain HTTP when connecting to remote registries
       --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
-  -u, --username string   registry username
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help              help for login
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit logout
@@ -352,9 +367,10 @@ kit logout ghcr.io
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit pack
@@ -392,18 +408,19 @@ kit pack . -f /path/to/your/Kitfile -t registry/repository:modelv1
 ### Options
 
 ```
-      --compression string   Compression format to use for layers. Valid options: 'none' (default), 'gzip', 'gzip-fastest' (default "none")
   -f, --file string          Specifies the path to the Kitfile explictly (use "-" to read from standard input)
-  -h, --help                 help for pack
   -t, --tag string           Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2
+      --compression string   Compression format to use for layers. Valid options: 'none' (default), 'gzip', 'gzip-fastest' (default "none")
+  -h, --help                 help for pack
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit pull
@@ -429,17 +446,20 @@ kit pull registry.example.com/my-model:latest
 ### Options
 
 ```
-  -h, --help         help for pull
-      --plain-http   Use plain HTTP when connecting to remote registries
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help          help for pull
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit push
@@ -470,17 +490,20 @@ kit push registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-  -h, --help         help for push
-      --plain-http   Use plain HTTP when connecting to remote registries
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help          help for push
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit remove
@@ -523,17 +546,23 @@ kit remove --all --force
 ### Options
 
 ```
-  -a, --all     remove all untagged modelkits
-  -f, --force   remove modelkit and all other tags that refer to it
-  -h, --help    help for remove
+  -f, --force         remove modelkit and all other tags that refer to it
+  -a, --all           remove all untagged modelkits
+  -r, --remote        remove modelkit from remote registry
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help          help for remove
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit tag
@@ -596,9 +625,10 @@ kit tag myregistry.com/myrepo/mykit:latest myregistry.com/myrepo/mykit:v1.0.0
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit unpack
@@ -637,23 +667,27 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 ### Options
 
 ```
-      --code         Unpack only code
-      --datasets     Unpack only datasets
-  -d, --dir string   The target directory to unpack components into. This directory will be created if it does not exist
-  -h, --help         help for unpack
-      --kitfile      Unpack only Kitfile
-      --model        Unpack only model
-  -o, --overwrite    Overwrites existing files and directories in the target unpack directory without prompting
-      --plain-http   Use plain HTTP when connecting to remote registries
-      --tls-verify   Require TLS and verify certificates when connecting to remote registries (default true)
+  -d, --dir string    The target directory to unpack components into. This directory will be created if it does not exist
+  -o, --overwrite     Overwrites existing files and directories in the target unpack directory without prompting
+      --kitfile       Unpack only Kitfile
+      --model         Unpack only model
+      --code          Unpack only code
+      --datasets      Unpack only datasets
+      --docs          Unpack only docs
+      --plain-http    Use plain HTTP when connecting to remote registries
+      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+  -h, --help          help for unpack
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
 ## kit version
@@ -681,8 +715,9 @@ kit version [flags]
 ### Options inherited from parent commands
 
 ```
-      --config string     Alternate path to root storage directory for CLI
-      --progress string   Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
-  -v, --verbose           Include additional information in output (default false)
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
