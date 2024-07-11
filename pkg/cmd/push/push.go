@@ -15,9 +15,12 @@ import (
 	"oras.land/oras-go/v2/registry"
 )
 
-func PushModel(ctx context.Context, localRepo local.LocalRepo, repo registry.Repository, ref *registry.Reference) (ocispec.Descriptor, error) {
+func PushModel(ctx context.Context, localRepo local.LocalRepo, repo registry.Repository, opts *pushOptions) (ocispec.Descriptor, error) {
 	trackedRepo, logger := output.WrapTarget(repo)
-	desc, err := oras.Copy(ctx, localRepo, ref.Reference, trackedRepo, ref.Reference, oras.DefaultCopyOptions)
+	ref := opts.modelRef.Reference
+	copyOpts := oras.CopyOptions{}
+	copyOpts.Concurrency = opts.Concurrency
+	desc, err := oras.Copy(ctx, localRepo, ref, trackedRepo, ref, copyOpts)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}

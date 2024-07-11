@@ -34,6 +34,7 @@ type NetworkOptions struct {
 	CredentialsPath   string
 	ClientCertPath    string
 	ClientCertKeyPath string
+	Concurrency       int
 }
 
 func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
@@ -43,6 +44,7 @@ func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
 		fmt.Sprintf("Path to client certificate used for authentication (can also be set via environment variable %s)", constants.ClientCertEnvVar))
 	cmd.Flags().StringVar(&o.ClientCertKeyPath, "key", "",
 		fmt.Sprintf("Path to client certificate key used for authentication (can also be set via environment variable %s)", constants.ClientCertKeyEnvVar))
+	cmd.Flags().IntVar(&o.Concurrency, "concurrency", 5, "Maximum number of simultaneous uploads/downloads")
 }
 
 func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
@@ -57,6 +59,9 @@ func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
 	}
 	if certKeyPath := os.Getenv(constants.ClientCertKeyEnvVar); certKeyPath != "" {
 		o.ClientCertKeyPath = certKeyPath
+	}
+	if o.Concurrency < 1 {
+		o.Concurrency = 5
 	}
 
 	return nil
