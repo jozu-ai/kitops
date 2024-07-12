@@ -5,6 +5,7 @@ package list
 
 import (
 	"context"
+	"errors"
 	"sort"
 
 	"kitops/pkg/lib/constants"
@@ -36,7 +37,7 @@ func readInfoFromRepo(ctx context.Context, repo local.LocalRepo) ([]string, erro
 	manifestDescs := repo.GetAllModels()
 	for _, manifestDesc := range manifestDescs {
 		manifest, config, err := util.GetManifestAndConfig(ctx, repo, manifestDesc)
-		if err != nil {
+		if err != nil && !errors.Is(err, util.ErrNotAModelKit) {
 			return nil, err
 		}
 		tags := repo.GetTags(manifestDesc)

@@ -200,7 +200,7 @@ func GetManifest(ctx context.Context, store content.Storage, manifestDesc ocispe
 		return nil, fmt.Errorf("failed to parse manifest %s: %w", manifestDesc.Digest, err)
 	}
 	if manifest.Config.MediaType != constants.ModelConfigMediaType.String() {
-		return nil, fmt.Errorf("reference exists but is not a model")
+		return nil, ErrNotAModelKit
 	}
 
 	return manifest, nil
