@@ -18,6 +18,7 @@ package list
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"kitops/pkg/lib/constants"
@@ -61,7 +62,7 @@ func listTags(ctx context.Context, repo registry.Repository, ref *registry.Refer
 			Reference:  tag,
 		}
 		infoLines, err := listImageTag(ctx, repo, tagRef)
-		if err != nil {
+		if err != nil && !errors.Is(err, util.ErrNotAModelKit) {
 			return nil, err
 		}
 		allLines = append(allLines, infoLines...)
