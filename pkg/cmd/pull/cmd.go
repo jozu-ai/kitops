@@ -96,7 +96,7 @@ func runCommand(opts *pullOptions) func(*cobra.Command, []string) error {
 		output.Infof("Pulling %s", opts.modelRef.String())
 		desc, err := runPull(cmd.Context(), opts)
 		if err != nil {
-			return output.Fatalf("Failed to pull: %s", err)
+			return output.Fatalln(err)
 		}
 		output.Infof("Pulled %s", desc.Digest)
 		return nil

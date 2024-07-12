@@ -67,12 +67,15 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 		if err == nil {
 			return nil
 		}
-		return fmt.Errorf("failed to get %s: %w", constants.FormatMediaTypeForUser(desc.MediaType), err)
+		return fmt.Errorf("failed to get %s layer: %w", constants.FormatMediaTypeForUser(desc.MediaType), err)
 	}
+	var semErr error
 	for _, pullDesc := range toPull {
 		pullDesc := pullDesc
 		if err := sem.Acquire(errCtx, 1); err != nil {
-			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to acquire lock: %w", err)
+			// Save error and break to get the _actual_ error
+			semErr = err
+			break
 		}
 		errs.Go(func() error {
 			defer sem.Release(1)
@@ -81,6 +84,9 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 	}
 	if err := errs.Wait(); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
+	}
+	if semErr != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to acquire lock: %w", semErr)
 	}
 
 	// Special handling to make sure local (scoped) repo contains the just-pulled manifest
