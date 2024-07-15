@@ -171,6 +171,9 @@ func (l *localRepo) resumeAndDownloadFile(desc ocispec.Descriptor, blob io.ReadS
 	if err := os.Rename(ingestFilename, blobPath); err != nil {
 		return fmt.Errorf("failed to move downloaded file into storage: %w", err)
 	}
+	if err := os.Chmod(blobPath, 0600); err != nil {
+		return fmt.Errorf("failed to set permissions on blob: %w", err)
+	}
 
 	return nil
 }
@@ -211,6 +214,10 @@ func (l *localRepo) downloadFile(desc ocispec.Descriptor, blob io.ReadCloser, p 
 	if err := os.Rename(ingestFilename, blobPath); err != nil {
 		return fmt.Errorf("failed to move downloaded file into storage: %w", err)
 	}
+	if err := os.Chmod(blobPath, 0600); err != nil {
+		return fmt.Errorf("failed to set permissions on blob: %w", err)
+	}
+
 	return nil
 }
 
