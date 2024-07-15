@@ -5,7 +5,10 @@ package cmd
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
@@ -21,6 +24,7 @@ import (
 	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -35,7 +39,7 @@ Find more information at: http://kitops.ml`
 
 type rootOptions struct {
 	configHome   string
-	verbose      bool
+	verbosity    int
 	loglevel     string
 	progressBars string
 }
@@ -47,23 +51,35 @@ func RunCommand() *cobra.Command {
 		Use:   `kit`,
 		Short: shortDesc,
 		Long:  longDesc,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())
 			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
-				output.Fatalln(err)
+				return output.Fatalln(err)
 			}
-			if opts.verbose {
-				output.SetLogLevel(output.LogLevelDebug)
-			}
-
 			output.SetProgressBars(opts.progressBars)
+
+			switch opts.verbosity {
+			case 0:
+				break
+			case 1:
+				output.Debugf("Setting verbosity to %s", output.LogLevelDebug)
+				output.SetLogLevel(output.LogLevelDebug)
+			case 2:
+				output.Debugf("Setting verbosity to %s", output.LogLevelTrace)
+				output.SetLogLevel(output.LogLevelTrace)
+			default:
+				output.Debugf("Setting verbosity to %s and disabling progress bars", output.LogLevelTrace)
+				output.SetLogLevel(output.LogLevelTrace)
+				output.SetProgressBars("none")
+			}
 
 			configHome, err := getConfigHome(opts)
 			if err != nil {
 				output.Errorf("Failed to read base config directory")
-				output.Infof("Use the --config flag or set the $KITOPS_HOME environment variable to provide a default")
+				output.Infof("Use the --config flag or set the $%s environment variable to provide a default", constants.KitopsHomeEnvVar)
 				output.Debugf("Error: %s", err)
+				return errors.New("exit")
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
@@ -72,20 +88,33 @@ func RunCommand() *cobra.Command {
 			// returning
 			cmd.SilenceErrors = true
 			cmd.SilenceUsage = true
+
+			storagePath := constants.StoragePath(configHome)
+			needsMigration, err := local.NeedsMigrate(storagePath)
+			if err != nil {
+				return output.Fatalf("Failed to determine if local modelkit needs to be migrated")
+			} else if needsMigration {
+				output.Infof("Migrating local storage to new format")
+				if err := local.MigrateStorage(ctx, storagePath); err != nil {
+					return output.Fatalf("Error migrating storage: %s", err)
+				}
+			}
+			return nil
 		},
 	}
 	addSubcommands(cmd)
-	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
-	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output. Alias for --log-level=debug")
 	cmd.PersistentFlags().StringVar(&opts.loglevel, "log-level", "info", "Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info')")
 	cmd.PersistentFlags().StringVar(&opts.progressBars, "progress", "plain", "Configure progress bars for longer operations (options: none, plain, fancy)")
+	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
+	cmd.PersistentFlags().CountVarP(&opts.verbosity, "verbose", "v", "Increase verbosity of output (use -vv for more)")
+	cmd.PersistentFlags().SortFlags = false
+	cmd.Flags().SortFlags = false
 
 	cmd.SetHelpTemplate(helpTemplate)
 	cmd.SetUsageTemplate(usageTemplate)
 	cobra.AddTemplateFunc("indent", indentBlock)
 	cobra.AddTemplateFunc("sectionHead", sectionHead)
 	cobra.AddTemplateFunc("ensureTrailingNewline", ensureTrailingNewline)
-
 	return cmd
 }
 
@@ -117,13 +146,21 @@ func Execute() {
 func getConfigHome(opts *rootOptions) (string, error) {
 	if opts.configHome != "" {
 		output.Debugf("Using config directory from flag: %s", opts.configHome)
-		return opts.configHome, nil
+		absHome, err := filepath.Abs(opts.configHome)
+		if err != nil {
+			return "", fmt.Errorf("failed to get absolute path for %s: %w", opts.configHome, err)
+		}
+		return absHome, nil
 	}
 
-	envHome := os.Getenv("KITOPS_HOME")
+	envHome := os.Getenv(constants.KitopsHomeEnvVar)
 	if envHome != "" {
 		output.Debugf("Using config directory from environment variable: %s", envHome)
-		return envHome, nil
+		absHome, err := filepath.Abs(envHome)
+		if err != nil {
+			return "", fmt.Errorf("failed to get absolute path for %s: %w", constants.KitopsHomeEnvVar, err)
+		}
+		return absHome, nil
 	}
 
 	defaultHome, err := constants.DefaultConfigPath()

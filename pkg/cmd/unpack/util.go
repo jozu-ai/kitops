@@ -20,8 +20,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/errdef"
@@ -29,25 +32,21 @@ import (
 
 func getStoreForRef(ctx context.Context, opts *unpackOptions) (oras.Target, error) {
 	storageHome := constants.StoragePath(opts.configHome)
-	localStore, err := repo.NewLocalStore(storageHome, opts.modelRef)
+	localRepo, err := local.NewLocalRepo(storageHome, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %s\n", err)
 	}
 
-	if _, err := localStore.Resolve(ctx, opts.modelRef.Reference); err == nil {
+	if _, err := localRepo.Resolve(ctx, opts.modelRef.Reference); err == nil {
 		// Reference is present in local storage
-		return localStore, nil
+		return localRepo, nil
 	}
 
-	if opts.modelRef.Registry == repo.DefaultRegistry {
+	if opts.modelRef.Registry == util.DefaultRegistry {
 		return nil, fmt.Errorf("not found")
 	}
 	// Not in local storage, check remote
-	remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	remoteRegistry, err := remote.NewRegistry(opts.modelRef.Registry, &opts.NetworkOptions)
 	if err != nil {
 		return nil, fmt.Errorf("could not resolve registry %s: %w", opts.modelRef.Registry, err)
 	}

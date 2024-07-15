@@ -14,16 +14,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package repo
+package local
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path"
 	"path/filepath"
+
+	"kitops/pkg/lib/constants"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"oras.land/oras-go/v2"
@@ -129,10 +130,9 @@ func findStoragePaths(storageRoot string) ([]string, error) {
 			if err != nil {
 				return err
 			}
-			if relDir == "." {
-				relDir = ""
+			if relDir != "." {
+				indexPaths = append(indexPaths, relDir)
 			}
-			indexPaths = append(indexPaths, relDir)
 		}
 		return nil
 	})

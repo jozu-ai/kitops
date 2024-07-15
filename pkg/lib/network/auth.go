@@ -17,17 +17,17 @@
 package network
 
 import (
-	"kitops/pkg/cmd/version"
+	"crypto/tls"
+	"fmt"
 	"net/http"
+
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
 
 	"oras.land/oras-go/v2/registry/remote/auth"
 	"oras.land/oras-go/v2/registry/remote/credentials"
 	"oras.land/oras-go/v2/registry/remote/retry"
 )
-
-type ClientOpts struct {
-	TLSSkipVerify bool
-}
 
 func NewCredentialStore(storePath string) (credentials.Store, error) {
 	return credentials.NewStore(storePath, credentials.StoreOptions{
@@ -38,19 +38,27 @@ func NewCredentialStore(storePath string) (credentials.Store, error) {
 
 // ClientWithAuth returns a default *auth.Client using the provided credentials
 // store
-func ClientWithAuth(store credentials.Store, opts *ClientOpts) *auth.Client {
-	client := DefaultClient(opts)
+func ClientWithAuth(store credentials.Store, opts *options.NetworkOptions) (*auth.Client, error) {
+	client, err := DefaultClient(opts)
+	if err != nil {
+		return nil, err
+	}
 	client.Credential = credentials.Credential(store)
 
-	return client
+	return client, nil
 }
 
 // DefaultClient returns an *auth.Client with a default User-Agent header and TLS
 // configured from opts (optionally disabling TLS verification)
-func DefaultClient(opts *ClientOpts) *auth.Client {
+func DefaultClient(opts *options.NetworkOptions) (*auth.Client, error) {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
-	if opts.TLSSkipVerify {
-		transport.TLSClientConfig.InsecureSkipVerify = true
+	transport.TLSClientConfig.InsecureSkipVerify = !opts.TLSVerify
+	if opts.ClientCertKeyPath != "" && opts.ClientCertPath != "" {
+		cert, err := tls.LoadX509KeyPair(opts.ClientCertPath, opts.ClientCertKeyPath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read certificate: %w", err)
+		}
+		transport.TLSClientConfig.Certificates = append(transport.TLSClientConfig.Certificates, cert)
 	}
 
 	client := &auth.Client{
@@ -59,9 +67,9 @@ func DefaultClient(opts *ClientOpts) *auth.Client {
 		},
 		Cache: auth.NewCache(),
 		Header: http.Header{
-			"User-Agent": {"kitops-cli/" + version.Version},
+			"User-Agent": {"kitops-cli/" + constants.Version},
 		},
 	}
 
-	return client
+	return client, nil
 }

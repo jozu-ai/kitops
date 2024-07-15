@@ -1,14 +1,14 @@
 {
-  "version": "v0.2.4",
+  "version": "v0.3.0",
   "peerDependencies": {
     "vue": "^3.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
+    "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
     "vitepress": "1.2.3",
-    "vue": "^3.4.29"
+    "vue": "^3.4.31"
   },
   "scripts": {
     "docs:dev": "vitepress dev",

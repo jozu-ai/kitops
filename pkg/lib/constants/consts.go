@@ -17,9 +17,11 @@
 package constants
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 )
 
@@ -47,6 +49,10 @@ const (
 	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
 	// by e.g. referring to another modelkit in its .model.path
 	MaxModelRefChain = 10
+)
+
+var (
+	localIndexNameRegexp = regexp.MustCompile(`^([-A-Za-z0-9_-]*={0,3})-index.json$`)
 )
 
 func DefaultKitfileNames() []string {
@@ -109,4 +115,40 @@ func CredentialsPath(configBase string) string {
 // based off the base path of the index.
 func IndexJsonPath(storageBase string) string {
 	return filepath.Join(storageBase, "index.json")
+}
+
+// IndexJsonPathForRepo returns the path to an index.json that is scoped for a specific repo (org/name)
+func IndexJsonPathForRepo(storageBase, repo string) string {
+	// We need to encode the repo as it may contain invalid characters for filenames
+	repoEncoded := base64.URLEncoding.EncodeToString([]byte(repo))
+	indexFileName := fmt.Sprintf("%s-index.json", repoEncoded)
+	return filepath.Join(storageBase, indexFileName)
+}
+
+// RepoForIndexJsonPath returns the repository for an OCI index JSON file as generated
+// by IndexJsonPathForRepo
+func RepoForIndexJsonPath(indexPath string) (string, error) {
+	filename := filepath.Base(indexPath)
+	matches := localIndexNameRegexp.FindStringSubmatch(filename)
+	if len(matches) == 0 {
+		return "", fmt.Errorf("invalid local OCI index name: %s", filename)
+	}
+
+	repoBytes, err := base64.URLEncoding.DecodeString(matches[1])
+	if err != nil {
+		return "", fmt.Errorf("failed to parse repo from index %s: %w", indexPath, err)
+	}
+	return string(repoBytes), nil
+}
+
+func FileIsLocalIndex(indexPath string) bool {
+	filename := filepath.Base(indexPath)
+	return localIndexNameRegexp.MatchString(filename)
+}
+
+func TagIndexPathForRepo(storageBase, repo string) string {
+	// We need to encode the repo as it may contain invalid characters for filenames
+	repoEncoded := base64.URLEncoding.EncodeToString([]byte(repo))
+	indexFileName := fmt.Sprintf("%s-tags.json", repoEncoded)
+	return filepath.Join(storageBase, indexFileName)
 }

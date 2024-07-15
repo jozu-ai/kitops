@@ -6,7 +6,7 @@ kitfile: |
   model:
     name: test-model
     path: main-dir
-  dataset:
+  datasets:
     - name: test-dataset
       path: main-dir/subdir
   code:

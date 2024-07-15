@@ -26,8 +26,8 @@ import (
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	kfutils "kitops/pkg/lib/kitfile"
-	"kitops/pkg/lib/repo"
-	"kitops/pkg/lib/storage"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -47,25 +47,25 @@ func runPack(ctx context.Context, options *packOptions) error {
 	}
 
 	storageHome := constants.StoragePath(options.configHome)
-	localStore, err := repo.NewLocalStore(storageHome, options.modelRef)
+	localRepo, err := local.NewLocalRepo(storageHome, options.modelRef)
 	if err != nil {
 		return fmt.Errorf("failed to open local storage: %w", err)
 	}
 
-	manifestDesc, err := pack(ctx, options, kitfile, localStore)
+	manifestDesc, err := pack(ctx, options, kitfile, localRepo)
 	if err != nil {
 		return err
 	}
 
 	if options.modelRef != nil && options.modelRef.Reference != "" {
-		if err := localStore.Tag(ctx, *manifestDesc, options.modelRef.Reference); err != nil {
+		if err := localRepo.Tag(ctx, *manifestDesc, options.modelRef.Reference); err != nil {
 			return fmt.Errorf("failed to tag manifest: %w", err)
 		}
 		output.Debugf("Added tag to manifest: %s", options.modelRef.Reference)
 	}
 
 	for _, tag := range options.extraRefs {
-		if err := localStore.Tag(ctx, *manifestDesc, tag); err != nil {
+		if err := localRepo.Tag(ctx, *manifestDesc, tag); err != nil {
 			return err
 		}
 	}
@@ -75,15 +75,15 @@ func runPack(ctx context.Context, options *packOptions) error {
 	return nil
 }
 
-func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, store repo.LocalStorage) (*ocispec.Descriptor, error) {
+func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, localRepo local.LocalRepo) (*ocispec.Descriptor, error) {
 	var extraLayerPaths []string
-	if kitfile.Model != nil && kfutils.IsModelKitReference(kitfile.Model.Path) {
-		baseRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
+	if kitfile.Model != nil && util.IsModelKitReference(kitfile.Model.Path) {
+		baseRef := util.FormatRepositoryForDisplay(opts.modelRef.String())
 		parentKitfile, err := kfutils.ResolveKitfile(ctx, opts.configHome, kitfile.Model.Path, baseRef)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to resolve referenced modelkit %s: %w", kitfile.Model.Path, err)
 		}
-		extraLayerPaths = kfutils.LayerPathsFromKitfile(parentKitfile)
+		extraLayerPaths = util.LayerPathsFromKitfile(parentKitfile)
 	}
 
 	ignore, err := filesystem.NewIgnoreFromContext(opts.contextDir, kitfile, extraLayerPaths...)
@@ -91,7 +91,7 @@ func pack(ctx context.Context, opts *packOptions, kitfile *artifact.KitFile, sto
 		return nil, err
 	}
 
-	manifestDesc, err := storage.SaveModel(ctx, store, kitfile, ignore, opts.compression)
+	manifestDesc, err := kfutils.SaveModel(ctx, localRepo, kitfile, ignore, opts.compression)
 	if err != nil {
 		return nil, err
 	}

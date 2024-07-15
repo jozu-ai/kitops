@@ -8,12 +8,13 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"kitops/pkg/cmd/options"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/output"
 	"os"
 	"strings"
 	"syscall"
+
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -58,6 +59,7 @@ func LoginCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&opts.password, "password", "p", "", "registry password or token")
 	cmd.Flags().BoolVar(&opts.passwordFromStdIn, "password-stdin", false, "read password from stdin")
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

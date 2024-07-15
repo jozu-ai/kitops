@@ -19,9 +19,10 @@ package pull
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -50,7 +51,7 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := repo.ParseReference(args[0])
+	modelRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}
@@ -61,6 +62,10 @@ func (opts *pullOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("reference cannot include multiple tags")
 	}
 	opts.modelRef = modelRef
+
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -77,6 +82,7 @@ func PullCommand() *cobra.Command {
 
 	cmd.Args = cobra.ExactArgs(1)
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

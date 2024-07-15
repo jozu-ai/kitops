@@ -14,13 +14,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package kitfile
+package util
 
 import (
-	"kitops/pkg/artifact"
-	"kitops/pkg/lib/repo"
 	"path/filepath"
 	"strings"
+
+	"kitops/pkg/artifact"
 )
 
 // IsModelKitReference returns true if the ref string "looks" like a modelkit reference
@@ -30,7 +30,7 @@ func IsModelKitReference(ref string) bool {
 		return false
 	}
 	// Does it parse?
-	if _, _, err := repo.ParseReference(ref); err != nil {
+	if _, _, err := ParseReference(ref); err != nil {
 		return false
 	}
 	return true
@@ -46,6 +46,9 @@ func LayerPathsFromKitfile(kitfile *artifact.KitFile) []string {
 	}
 	for _, dataset := range kitfile.DataSets {
 		layerPaths = append(layerPaths, cleanPath(dataset.Path))
+	}
+	for _, docs := range kitfile.Docs {
+		layerPaths = append(layerPaths, docs.Path)
 	}
 
 	if kitfile.Model != nil {

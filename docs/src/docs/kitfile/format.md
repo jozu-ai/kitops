@@ -1,1 +1,1 @@
-<!--@include: ../../../../pkg/artifact/kit-file.md-->
+<!--@include: ../../../../pkg/artifact/kitfile.md-->

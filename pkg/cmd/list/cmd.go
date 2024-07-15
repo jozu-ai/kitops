@@ -20,11 +20,12 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"text/tabwriter"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
-	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -69,7 +70,7 @@ func (opts *listOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 	if len(args) > 0 {
-		remoteRef, extraTags, err := repo.ParseReference(args[0])
+		remoteRef, extraTags, err := util.ParseReference(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid reference: %w", err)
 		}
@@ -77,6 +78,10 @@ func (opts *listOptions) complete(ctx context.Context, args []string) error {
 			return fmt.Errorf("repository cannot reference multiple tags")
 		}
 		opts.remoteRef = remoteRef
+	}
+
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
 	}
 
 	printConfig(opts)
@@ -97,6 +102,7 @@ func ListCommand() *cobra.Command {
 
 	cmd.Args = cobra.MaximumNArgs(1)
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

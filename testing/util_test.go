@@ -21,12 +21,13 @@ import (
 	"errors"
 	"io"
 	"io/fs"
-	"kitops/cmd"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"kitops/cmd"
+	"kitops/pkg/lib/constants"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -60,6 +61,7 @@ func testPreflight(t *testing.T) func(t *testing.T) {
 // calls `os.Exit`, this command will terminate without generating any logs.
 // Returns the stdout and stderr output of the command.
 func runCommand(t *testing.T, e shouldExpectError, args ...string) string {
+	args = append(args, "-vvv")
 	t.Logf("Running command: kit %s", strings.Join(args, " "))
 	runCmd := cmd.RunCommand()
 	runCmd.SetArgs(args)

@@ -19,9 +19,10 @@ package login
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/network"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/remote"
 	"kitops/pkg/output"
 
 	"oras.land/oras-go/v2/registry/remote/credentials"
@@ -33,11 +34,7 @@ func login(ctx context.Context, opts *loginOptions) error {
 	if err != nil {
 		return err
 	}
-	registry, err := repo.NewRegistry(opts.registry, &repo.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: credentialsStorePath,
-	})
+	registry, err := remote.NewRegistry(opts.registry, &opts.NetworkOptions)
 	if err != nil {
 		return fmt.Errorf("could not resolve registry %s: %w", opts.registry, err)
 	}

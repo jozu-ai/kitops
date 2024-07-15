@@ -56,6 +56,46 @@ func barStyle() mpb.BarStyleComposer {
 	}
 }
 
+func GenericProgressBar(name, doneMsg string, total int64) *ProgressBar {
+	if !progressEnabled {
+		return &ProgressBar{}
+	}
+	p := mpb.New(
+		mpb.WithWidth(60),
+		mpb.WithAutoRefresh(),
+	)
+	return &ProgressBar{
+		bar: p.New(total,
+			barStyle(),
+			mpb.PrependDecorators(
+				decor.OnComplete(decor.Name(name, decor.WC{C: decor.DindentRight | decor.DextraSpace}), doneMsg),
+			),
+			mpb.AppendDecorators(
+				decor.OnComplete(decor.Percentage(decor.WC{W: 5}), ""),
+			),
+			mpb.BarFillerClearOnComplete(),
+		),
+		progress: p,
+	}
+}
+
+type ProgressBar struct {
+	bar      *mpb.Bar
+	progress *mpb.Progress
+}
+
+func (b *ProgressBar) Increment() {
+	if b.bar != nil {
+		b.bar.Increment()
+	}
+}
+
+func (b *ProgressBar) Done() {
+	if b.progress != nil {
+		b.progress.Wait()
+	}
+}
+
 // wrappedRepo wraps oras.Target to show a progress bar on Push() operations.
 type wrappedRepo struct {
 	oras.Target

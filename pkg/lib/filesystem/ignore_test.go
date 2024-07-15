@@ -17,8 +17,9 @@
 package filesystem
 
 import (
-	"kitops/pkg/artifact"
 	"testing"
+
+	"kitops/pkg/artifact"
 
 	"github.com/stretchr/testify/assert"
 )

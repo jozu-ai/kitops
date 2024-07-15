@@ -21,6 +21,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"kitops/pkg/lib/constants"
 )
 
 type modelkitRefTestcase struct {
@@ -56,7 +58,7 @@ func TestModelKitReferences(t *testing.T) {
 			if err := os.MkdirAll(contextPath, 0755); err != nil {
 				t.Fatal(err)
 			}
-			t.Setenv("KITOPS_HOME", contextPath)
+			t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 			// Set up temporary directories for modelkits; note we create one extra for the final unpack
 			for i := 0; i <= len(tt.Modelkits); i++ {
@@ -79,13 +81,13 @@ func TestModelKitReferences(t *testing.T) {
 				// Pack the current dir, unpack it into the next dir. If we expect this to fail, assert that
 				// output contains expected text
 				if modelkit.PackErrRegexp != nil {
-					packOutput := runCommand(t, expectError, "pack", curDir, "-t", modelkit.Tag, "-v")
+					packOutput := runCommand(t, expectError, "pack", curDir, "-t", modelkit.Tag)
 					assertContainsLineRegexp(t, packOutput, *modelkit.PackErrRegexp, true)
 					continue
 				}
-				runCommand(t, expectNoError, "pack", curDir, "-t", modelkit.Tag, "-v")
+				runCommand(t, expectNoError, "pack", curDir, "-t", modelkit.Tag)
 				runCommand(t, expectNoError, "list")
-				runCommand(t, expectNoError, "unpack", modelkit.Tag, "-d", nextDir, "-v")
+				runCommand(t, expectNoError, "unpack", modelkit.Tag, "-d", nextDir)
 
 				// Verify unpacked contents
 				checkFilesExist(t, nextDir, allFiles)

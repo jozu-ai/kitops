@@ -19,12 +19,13 @@ package unpack
 import (
 	"context"
 	"fmt"
-	"kitops/pkg/cmd/options"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
-	"kitops/pkg/output"
 	"os"
 	"path/filepath"
+
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/util"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -66,6 +67,7 @@ type unpackConf struct {
 	unpackModels   bool
 	unpackCode     bool
 	unpackDatasets bool
+	unpackDocs     bool
 }
 
 func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
@@ -74,7 +76,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-	modelRef, extraTags, err := repo.ParseReference(args[0])
+	modelRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}
@@ -89,6 +91,7 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		opts.unpackConf.unpackModels = true
 		opts.unpackConf.unpackCode = true
 		opts.unpackConf.unpackDatasets = true
+		opts.unpackConf.unpackDocs = true
 	}
 
 	absDir, err := filepath.Abs(opts.unpackDir)
@@ -96,6 +99,10 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("failed to resolve absolute path %s: %w", opts.unpackDir, err)
 	}
 	opts.unpackDir = absDir
+
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
 
 	printConfig(opts)
 	return nil
@@ -119,7 +126,9 @@ func UnpackCommand() *cobra.Command {
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code")
 	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackDocs, "docs", false, "Unpack only docs")
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }

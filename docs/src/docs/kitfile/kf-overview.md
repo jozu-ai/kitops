@@ -16,6 +16,8 @@ Crafted with simplicity and efficiency in mind, the Kitfile organizes project de
 
 **Model Specifications:** Insights into the models themselves, including framework details, training parameters, and validation metrics, to foster understanding and further development.
 
+**Documentation:** Conveniently separated documentation files, to make getting started faster.
+
 ## Designed for Collaboration
 
 By encapsulating the essence of your AI/ML project into a singular, version-controlled document, the Kitfile not only simplifies the packaging process but also enhances collaborative efforts. Whether you're sharing projects within your team or with the global AI/ML community, the Kitfile ensures that every artifact, from datasets to models, is accurately represented and easily accessible.
@@ -35,6 +37,7 @@ There are four main parts to a Kitfile:
 1. Path to the Jupyter notebook folder in the `code` section
 1. Path to the serialized model in the `model` section
 1. Path to the datasets in the `datasets` section (you can have multiple datasets in the same page)
+1. Paths to documentation in the `docs` section
 
 Here's an example Kitfile:
 
@@ -71,7 +74,7 @@ datasets:
 
 The only mandatory parts of the Kitfile are:
 * `manifestVersion`
-* At least one of `code`, `model`, `or datasets` sections
+* At least one of `code`, `model`, `docs` or `datasets` sections
 
 A ModelKit can only contain one model, but multiple datasets or code bases are allowed. Also note that you can only use relative paths (no absolute paths) in your Kitfile. Right now you can only build ModelKits from files on your local system...but don't worry we're already working towards allowing you to reference remote files. For example, building a ModelKit from a local notebook and model, but a dataset hosted on DvC, S3, or anywhere else.
 

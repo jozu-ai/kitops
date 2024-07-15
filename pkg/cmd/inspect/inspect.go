@@ -19,9 +19,12 @@ package inspect
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -46,19 +49,15 @@ func inspectReference(ctx context.Context, opts *inspectOptions) (*inspectInfo, 
 
 func getLocalInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
 	storageRoot := constants.StoragePath(opts.configHome)
-	store, err := repo.NewLocalStore(storageRoot, opts.modelRef)
+	localRepo, err := local.NewLocalRepo(storageRoot, opts.modelRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	return getInspectInfo(ctx, store, opts.modelRef.Reference)
+	return getInspectInfo(ctx, localRepo, opts.modelRef.Reference)
 }
 
 func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, error) {
-	repository, err := repo.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &repo.RegistryOptions{
-		PlainHTTP:       opts.PlainHTTP,
-		SkipTLSVerify:   !opts.TlsVerify,
-		CredentialsPath: constants.CredentialsPath(opts.configHome),
-	})
+	repository, err := remote.NewRepository(ctx, opts.modelRef.Registry, opts.modelRef.Repository, &opts.NetworkOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +65,7 @@ func getRemoteInspect(ctx context.Context, opts *inspectOptions) (*inspectInfo, 
 }
 
 func getInspectInfo(ctx context.Context, repository oras.Target, ref string) (*inspectInfo, error) {
-	desc, manifest, kitfile, err := repo.ResolveManifestAndConfig(ctx, repository, ref)
+	desc, manifest, kitfile, err := util.ResolveManifestAndConfig(ctx, repository, ref)
 	if err != nil {
 		return nil, err
 	}

@@ -18,6 +18,7 @@ package logout
 
 import (
 	"context"
+
 	"kitops/pkg/lib/network"
 	"kitops/pkg/output"
 

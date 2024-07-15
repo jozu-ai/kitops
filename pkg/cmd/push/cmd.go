@@ -19,13 +19,15 @@ package push
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/repo"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
-	"oras.land/oras-go/v2/content/oci"
 	"oras.land/oras-go/v2/registry"
 )
 
@@ -56,7 +58,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := repo.ParseReference(args[0])
+	modelRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
 		return fmt.Errorf("failed to parse reference: %w", err)
 	}
@@ -67,6 +69,10 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("reference cannot include multiple tags")
 	}
 	opts.modelRef = modelRef
+
+	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -83,6 +89,7 @@ func PushCommand() *cobra.Command {
 
 	cmd.Args = cobra.ExactArgs(1)
 	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 
 	return cmd
 }
@@ -93,28 +100,23 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		remoteRepo, err := repo.NewRepository(
+		remoteRepo, err := remote.NewRepository(
 			cmd.Context(),
 			opts.modelRef.Registry,
 			opts.modelRef.Repository,
-			&repo.RegistryOptions{
-				PlainHTTP:       opts.PlainHTTP,
-				SkipTLSVerify:   !opts.TlsVerify,
-				CredentialsPath: constants.CredentialsPath(opts.configHome),
-			})
+			&opts.NetworkOptions,
+		)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
-		storageHome := constants.StoragePath(opts.configHome)
-		localStorePath := repo.RepoPath(storageHome, opts.modelRef)
-		localStore, err := oci.New(localStorePath)
+		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.modelRef)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
 		output.Infof("Pushing %s", opts.modelRef.String())
-		desc, err := PushModel(cmd.Context(), localStore, remoteRepo, opts.modelRef)
+		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts.modelRef)
 		if err != nil {
 			return output.Fatalf("Failed to push: %s", err)
 		}

@@ -14,11 +14,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package repo
+package remote
 
 import (
 	"context"
 	"fmt"
+
+	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/network"
 	"kitops/pkg/output"
 
@@ -26,15 +28,9 @@ import (
 	"oras.land/oras-go/v2/registry/remote"
 )
 
-type RegistryOptions struct {
-	PlainHTTP       bool
-	SkipTLSVerify   bool
-	CredentialsPath string
-}
-
 // NewRegistry returns a new *remote.Registry for hostname, with credentials and TLS
 // configured.
-func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, error) {
+func NewRegistry(hostname string, opts *options.NetworkOptions) (*remote.Registry, error) {
 	reg, err := remote.NewRegistry(hostname)
 	if err != nil {
 		return nil, err
@@ -45,13 +41,16 @@ func NewRegistry(hostname string, opts *RegistryOptions) (*remote.Registry, erro
 	if err != nil {
 		return nil, err
 	}
-	authClient := network.ClientWithAuth(credentialStore, &network.ClientOpts{TLSSkipVerify: opts.SkipTLSVerify})
+	authClient, err := network.ClientWithAuth(credentialStore, opts)
+	if err != nil {
+		return nil, err
+	}
 	reg.Client = output.WrapClient(authClient)
 
 	return reg, nil
 }
 
-func NewRepository(ctx context.Context, hostname, repository string, opts *RegistryOptions) (registry.Repository, error) {
+func NewRepository(ctx context.Context, hostname, repository string, opts *options.NetworkOptions) (registry.Repository, error) {
 	reg, err := NewRegistry(hostname, opts)
 	if err != nil {
 		return nil, fmt.Errorf("could not resolve registry: %w", err)

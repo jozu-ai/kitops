@@ -27,6 +27,7 @@ const (
 	ModelPartType = "modelpart"
 	DatasetType   = "dataset"
 	CodeType      = "code"
+	DocsType      = "docs"
 )
 
 const (

@@ -19,11 +19,48 @@ package kitfile
 import (
 	"context"
 	"fmt"
-	"kitops/pkg/artifact"
-	"kitops/pkg/cmd/info"
-	"kitops/pkg/lib/constants"
 	"strings"
+
+	"kitops/pkg/artifact"
+	"kitops/pkg/cmd/options"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/remote"
+	"kitops/pkg/lib/repo/util"
+
+	"oras.land/oras-go/v2/registry"
 )
+
+func GetKitfileForRefString(ctx context.Context, configHome string, ref string) (*artifact.KitFile, error) {
+	modelRef, _, err := util.ParseReference(ref)
+	if err != nil {
+		return nil, err
+	}
+
+	return GetKitfileForRef(ctx, configHome, modelRef)
+}
+
+func GetKitfileForRef(ctx context.Context, configHome string, ref *registry.Reference) (*artifact.KitFile, error) {
+	storageRoot := constants.StoragePath(configHome)
+	localRepo, err := local.NewLocalRepo(storageRoot, ref)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read local storage: %w", err)
+	}
+	_, _, localKitfile, err := util.ResolveManifestAndConfig(ctx, localRepo, ref.Reference)
+	if err == nil {
+		return localKitfile, nil
+	}
+
+	repository, err := remote.NewRepository(ctx, ref.Registry, ref.Repository, options.DefaultNetworkOptions(configHome))
+	if err != nil {
+		return nil, err
+	}
+	_, _, remoteKitfile, err := util.ResolveManifestAndConfig(ctx, repository, ref.Reference)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch Kitfile for %s: %w", ref, err)
+	}
+	return remoteKitfile, nil
+}
 
 // ResolveKitfile returns the Kitfile for a reference. Any references to other modelkits
 // are fetched and included in the resolved Kitfile, giving the equivalent Kitfile including
@@ -32,12 +69,12 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 	resolved := &artifact.KitFile{}
 	refChain := []string{baseRef, kitfileRef}
 	for i := 0; i < constants.MaxModelRefChain; i++ {
-		kitfile, err := info.GetKitfileForRefString(ctx, configHome, kitfileRef)
+		kitfile, err := GetKitfileForRefString(ctx, configHome, kitfileRef)
 		if err != nil {
 			return nil, err
 		}
 		resolved = mergeKitfiles(resolved, kitfile)
-		if resolved.Model == nil || !IsModelKitReference(resolved.Model.Path) {
+		if resolved.Model == nil || !util.IsModelKitReference(resolved.Model.Path) {
 			if err := ValidateKitfile(resolved); err != nil {
 				return nil, err
 			}
@@ -50,7 +87,7 @@ func ResolveKitfile(ctx context.Context, configHome, kitfileRef, baseRef string)
 		refChain = append(refChain, resolved.Model.Path)
 		kitfileRef = resolved.Model.Path
 	}
-	return nil, fmt.Errorf("Reached maximum number of model references: [%s]", strings.Join(refChain, "=>"))
+	return nil, fmt.Errorf("reached maximum number of model references: [%s]", strings.Join(refChain, "=>"))
 }
 
 func mergeKitfiles(into, from *artifact.KitFile) *artifact.KitFile {
@@ -65,26 +102,25 @@ func mergeKitfiles(into, from *artifact.KitFile) *artifact.KitFile {
 
 	result := &artifact.KitFile{}
 	result.ManifestVersion = firstNonEmpty(into.ManifestVersion, from.ManifestVersion)
-	result.Kit.Name = firstNonEmpty(into.Kit.Name, from.Kit.Name)
-	result.Kit.Description = firstNonEmpty(into.Kit.Description, from.Kit.Description)
-	result.Kit.License = firstNonEmpty(into.Kit.License, from.Kit.License)
-	result.Kit.Version = firstNonEmpty(into.Kit.Version, from.Kit.Version)
-	result.Kit.Authors = append(into.Kit.Authors, from.Kit.Authors...)
+	result.Package.Name = firstNonEmpty(into.Package.Name, from.Package.Name)
+	result.Package.Description = firstNonEmpty(into.Package.Description, from.Package.Description)
+	result.Package.License = firstNonEmpty(into.Package.License, from.Package.License)
+	result.Package.Version = firstNonEmpty(into.Package.Version, from.Package.Version)
+	result.Package.Authors = append(into.Package.Authors, from.Package.Authors...)
 
 	if into.Model != nil || from.Model != nil {
-		result.Model = &artifact.TrainedModel{}
+		result.Model = &artifact.Model{}
 		intoModel := into.Model
 		fromModel := from.Model
 		if intoModel == nil {
-			intoModel = &artifact.TrainedModel{}
+			intoModel = &artifact.Model{}
 		}
 		if fromModel == nil {
-			fromModel = &artifact.TrainedModel{}
+			fromModel = &artifact.Model{}
 		}
 		result.Model.Path = fromModel.Path
 		result.Model.Name = firstNonEmpty(intoModel.Name, fromModel.Name)
 		result.Model.Description = firstNonEmpty(intoModel.Description, fromModel.Description)
-		result.Model.License = firstNonEmpty(intoModel.License, fromModel.License)
 		result.Model.Framework = firstNonEmpty(intoModel.Framework, fromModel.Framework)
 		result.Model.Version = firstNonEmpty(intoModel.Version, fromModel.Version)
 		result.Model.Parts = append(intoModel.Parts, fromModel.Parts...)
@@ -94,6 +130,8 @@ func mergeKitfiles(into, from *artifact.KitFile) *artifact.KitFile {
 	result.Code = append(result.Code, from.Code...)
 	result.DataSets = into.DataSets
 	result.DataSets = append(result.DataSets, from.DataSets...)
+	result.Docs = into.Docs
+	result.Docs = append(result.Docs, from.Docs...)
 	return result
 }
 

@@ -6,6 +6,7 @@ package logout
 import (
 	"context"
 	"fmt"
+
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 

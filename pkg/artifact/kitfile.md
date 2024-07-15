@@ -4,13 +4,13 @@ The Kitfile manifest for AI/ML is a YAML file designed to encapsulate all the ne
 
 ## Overview
 
-The manifest is structured into several key sections: `version`, `package`,`code`, `datasets` and `model`. Each section serves a specific purpose in describing the AI/ML package components and requirements.
+The manifest is structured into several key sections: `manifestVersion`, `package`, `code`, `datasets`, `docs`, and `model`. Each section serves a specific purpose in describing the AI/ML package components and requirements.
 
-### `ManifestVersion`
+### `manifestVersion`
 
 - **Description**: Specifies the manifest format version.
 - **Type**: String
-- **Example**: `1.0`
+- **Example**: `1.0.0`
 
 ### `package`
 
@@ -54,7 +54,13 @@ This section provides general information about the AI/ML project.
   - `path`: Location of the dataset file or directory relative to the context.
   - `description`: Overview of the dataset.
   - `license`: SPDX license identifier for the dataset.
-  - `preprocessing`: Reference to preprocessing steps.
+
+#### `docs`
+
+- **Description**: Information about included documentation for the model
+- **Type**: Object Array
+ - `description`: Description of the documentation
+ - `path`: Location of the documentation relative to the context
 
 #### `model`
 
@@ -70,12 +76,6 @@ This section provides general information about the AI/ML project.
     - `name`: Identifier for the part
     - `path`: Location of the file or a directory relative to the context
     - `type`: The type of the part (e.g. LoRA weights)
-  - `training`:
-    - `dataset`: Name of the dataset
-    - `parameters`: name value pairs
-  - `validation`:
-    - `dataset`: Name of the dataset
-    - `metrics`: name value pairs
 
 
 ## Example
@@ -97,7 +97,6 @@ datasets:
     path: data/dataset.csv
     description: Description of the dataset.
     license: CC-BY-4.0
-    preprocessing: Preprocessing steps.
 model:
     name: ModelName
     path: models/model.h5
@@ -105,16 +104,5 @@ model:
     version: 1.0
     description: Model description.
     license: Apache-2.0
-    training:
-      dataset: DatasetName
-      parameters:
-        learning_rate: 0.001
-        epochs: 100
-        batch_size: 32
-    validation:
-      - dataset: DatasetName
-        metrics:
-          accuracy: 0.95
-          f1_score: 0.94
 ```
 

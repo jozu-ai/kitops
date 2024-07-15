@@ -58,16 +58,16 @@ func TestPackUnpack(t *testing.T) {
 
 			// Set up paths to use for test
 			modelKitPath, unpackPath, contextPath := setupTestDirs(t, tmpDir)
-			t.Setenv("KITOPS_HOME", contextPath)
+			t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 			// Create Kitfile
 			setupKitfileAndKitignore(t, modelKitPath, tt.Kitfile, tt.Kitignore)
 			// Create files for test case
 			setupFiles(t, modelKitPath, append(tt.Files, tt.IgnoredFiles...))
 
-			runCommand(t, expectNoError, "pack", modelKitPath, "-t", modelKitTag, "-v")
+			runCommand(t, expectNoError, "pack", modelKitPath, "-t", modelKitTag)
 			runCommand(t, expectNoError, "list")
-			runCommand(t, expectNoError, "unpack", modelKitTag, "-d", unpackPath, "-v")
+			runCommand(t, expectNoError, "unpack", modelKitTag, "-d", unpackPath)
 
 			checkFilesExist(t, unpackPath, tt.Files)
 			checkFilesDoNotExist(t, unpackPath, append(tt.IgnoredFiles, ".kitignore"))
@@ -80,7 +80,7 @@ func TestPackReproducibility(t *testing.T) {
 	defer removeTmp()
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
-	t.Setenv("KITOPS_HOME", contextPath)
+	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
 
 	testKitfile := `
 manifestVersion: 1.0.0
@@ -88,7 +88,7 @@ package:
   name: test-repack
 model:
   path: test-file.txt
-dataset:
+datasets:
   - path: test-dir/test-subfile.txt
 `
 	kitfilePath := filepath.Join(modelKitPath, constants.DefaultKitfileName)
@@ -97,7 +97,7 @@ dataset:
 	}
 	setupFiles(t, modelKitPath, []string{"test-file.txt", "test-dir/test-subfile.txt"})
 
-	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack1", "-v")
+	packOut := runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack1")
 	digestOne := digestFromPack(t, packOut)
 
 	// Change timestamps on file to simulate an unpacked modelkit at a future time
@@ -112,7 +112,7 @@ dataset:
 		t.Fatal(err)
 	}
 
-	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack2", "-v")
+	packOut = runCommand(t, expectNoError, "pack", modelKitPath, "-t", "test:repack2")
 	digestTwo := digestFromPack(t, packOut)
 
 	assert.Equal(t, digestOne, digestTwo, "Digests should be the same")
