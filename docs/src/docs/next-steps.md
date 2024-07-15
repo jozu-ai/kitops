@@ -81,7 +81,7 @@ docs:
     description: Information on how to use this model for inference
 
 datasets:
-  - description: Forum postings from sites like rangefinderforum, DPreview, PhotographyTalk, and r/AnalogCommunity
+  - description: Forum postings from sites like rangefinderforum, PhotographyTalk, and r/AnalogCommunity
     name: training data
     path: ./data/forum-to-2023-train.csv
   - description: validation data
@@ -144,9 +144,10 @@ First, you need to tag the image in your local registry with the remote registry
 kit pack . -t docker.io/jozubrad/film-slm:champion
 ```
 
-Second, you [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
+Second, you will need to login, then [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
 
 ```sh
+kit login docker.io
 kit push docker.io/jozubrad/film-slm:champion
 ```
 

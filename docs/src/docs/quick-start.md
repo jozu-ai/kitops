@@ -29,36 +29,43 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any container registry, but we'll use **GitHub Registry** throughout this guide.
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry. Here we'll pull ModelKits from [Jozu Hub](https://jozu.ml/discover), but we'll use **GitHub Registry** to push (the Jozu Hub only supports pull, although push is being worked on now).
 
 ```sh
 kit login ghcr.io
 ```
 
-You'll see `Log in successful`. If you get an error it may be that you need an HTTP vs HTTPS (default) connection. Try the login command again but with `--plain-http`.
+After entering your username and password, you'll see `Log in successful`. If you get an error it may be that you need an HTTP vs HTTPS (default) connection. Try the login command again but with `--plain-http`.
 
 ### 3/ Get a Sample ModelKit
 
 Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
-You can grab <a href="https://github.com/orgs/jozu-ai/packages"
+You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
     category: 'link',
     label: 'grab any of the ModelKits',
     location: 'docs/quick-start'
-  }">any of the ModelKits</a> from our site, but we've chosen a small language model example below.
+  }">any of the ModelKits</a> from the Jozu Hub, but we've chosen a fine-tuned model based on Llama3.
 
 ```sh
-kit unpack ghcr.io/jozu-ai/modelkit-examples/finetuning_slm:latest
+kit unpack jozu.ml/jozu/fine-tuning:tuned
 ```
 
-You'll see a set of messages as Kit unpacked the configuration, code, datasets, and serialized model. Now list the directory contents:
+You'll see a set of messages as Kit unpacks the configuration, code, datasets, and serialized model. Now list the directory contents:
 
 ```sh
 ls
 ```
 
-You'll see a single file (`Kitfile`) which is the manifest for our ModelKit, and a set of files or directories including adapters, a Jupyter notebook, and dataset.
+You'll see:
+* A Llama3 model
+* A LoRA adapter
+* A training dataset
+* A README file
+* A Kitfile
+
+The [Kitfile](./kitfile/kf-overview.md) is the manifest for our ModelKit, the serialized model, and a set of files or directories including the adapter, dataset, and docs. Every ModelKit has a Kitfile and you can use the info and inspect commands to view them from the CLI (there's more on this in our [Next Steps](next-steps.md) doc).
 
 ### 4/ Check the Local Repository
 
@@ -92,7 +99,7 @@ The new entry will be named based on whatever you used in your pack command.
 
 ### 6/ (Optional) Remove a ModelKit from a Local Repository
 
-Let's pretend that the `pack` command we ran in the previous step contained a typo in the ModelKit's repository name causing the word 'model' to be entered as 'modle'.The output from the `kit list` command would display the ModelKit as:
+Let's pretend that the `pack` command we ran in the previous step contained a typo in the ModelKit's repository name causing the word "model" to be entered as "modle". The output from the `kit list` command would display the ModelKit as:
 
 ```sh
 ghcr.io/jozubrad/mymodlekit:latest
@@ -118,7 +125,12 @@ kit push ghcr.io/jozubrad/mymodelkit:latest
 
 If you're using Kit with LLMs you can quickly run the model locally to speed integration, testing, or experimentation.
 
-Create a new directory for your LLM:
+<!-- The syntax below makes an Info callout box in Vitpress at compile time -->
+::: info
+If you're not interested in running the ModelKit locally you can jump to the [Next Steps](next-steps.md) where you'll learn how to sign ModelKits, write your own Kitfiles, and maintain your repository.
+:::
+
+To run the ModelKit locally, first create a new directory for your LLM:
 
 ```sh
 mkdir devmode
