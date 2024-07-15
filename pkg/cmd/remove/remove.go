@@ -18,10 +18,12 @@ package remove
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo"
 	"kitops/pkg/output"
+	"net/http"
 	"strings"
 
 	"github.com/opencontainers/go-digest"
@@ -29,20 +31,21 @@ import (
 	"oras.land/oras-go/v2"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote/errcode"
 )
 
 // removeAllModels removes all modelkits from local storage, including tagged ones
 func removeAllModels(ctx context.Context, opts *removeOptions) error {
 	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
 	if err != nil {
-		return fmt.Errorf("Failed to read local storage: %w", err)
+		return fmt.Errorf("failed to read local storage: %w", err)
 	}
 	for _, store := range stores {
 		repository := repo.FormatRepositoryForDisplay(store.GetRepo())
 
 		index, err := store.GetIndex()
 		if err != nil {
-			return fmt.Errorf("Failed to read index for %s: %w", repository, err)
+			return fmt.Errorf("failed to read index for %s: %w", repository, err)
 		}
 
 		// Store a list of removed manifests for this LocalStore. This is necessary
@@ -82,13 +85,13 @@ func removeAllModels(ctx context.Context, opts *removeOptions) error {
 func removeUntaggedModels(ctx context.Context, opts *removeOptions) error {
 	stores, err := repo.GetAllLocalStores(constants.StoragePath(opts.configHome))
 	if err != nil {
-		return fmt.Errorf("Failed to read local storage: %w", err)
+		return fmt.Errorf("failed to read local storage: %w", err)
 	}
 	for _, store := range stores {
 		index, err := store.GetIndex()
 		repo := repo.FormatRepositoryForDisplay(store.GetRepo())
 		if err != nil {
-			return fmt.Errorf("Failed to read index for %s: %w", repo, err)
+			return fmt.Errorf("failed to read index for %s: %w", repo, err)
 		}
 		for _, manifestDesc := range index.Manifests {
 			if tag, ok := manifestDesc.Annotations[ocispec.AnnotationRefName]; ok {
@@ -109,11 +112,11 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 	storageRoot := constants.StoragePath(opts.configHome)
 	localStore, err := repo.NewLocalStore(storageRoot, opts.modelRef)
 	if err != nil {
-		return fmt.Errorf("Failed to read local storage: %s", storageRoot)
+		return fmt.Errorf("failed to read local storage at path %s: %w", storageRoot, err)
 	}
 	desc, err := removeModelRef(ctx, localStore, opts.modelRef, opts.forceDelete)
 	if err != nil {
-		return fmt.Errorf("Failed to remove: %s", err)
+		return fmt.Errorf("failed to remove: %s", err)
 	}
 	displayRef := repo.FormatRepositoryForDisplay(opts.modelRef.String())
 	output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
@@ -128,6 +131,35 @@ func removeModel(ctx context.Context, opts *removeOptions) error {
 		} else {
 			output.Infof("Removed %s (digest %s)", displayRef, desc.Digest)
 		}
+	}
+	return nil
+}
+
+func removeRemoteModel(ctx context.Context, opts *removeOptions) error {
+	registry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
+		PlainHTTP:       opts.PlainHTTP,
+		SkipTLSVerify:   !opts.TlsVerify,
+		CredentialsPath: constants.CredentialsPath(opts.configHome),
+	})
+	if err != nil {
+		return err
+	}
+	repository, err := registry.Repository(ctx, opts.modelRef.Repository)
+	if err != nil {
+		return err
+	}
+	desc, err := repository.Resolve(ctx, opts.modelRef.Reference)
+	if err != nil {
+		if errors.Is(err, errdef.ErrNotFound) {
+			return fmt.Errorf("model %s not found", repo.FormatRepositoryForDisplay(opts.modelRef.String()))
+		}
+		return fmt.Errorf("error resolving modelkit: %w", err)
+	}
+	if err := repository.Delete(ctx, desc); err != nil {
+		if errResp, ok := err.(*errcode.ErrorResponse); ok && errResp.StatusCode == http.StatusMethodNotAllowed {
+			return fmt.Errorf("removing models is unsupported by registry %s", opts.modelRef.Registry)
+		}
+		return fmt.Errorf("failed to remove remote model: %w", err)
 	}
 	return nil
 }

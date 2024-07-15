@@ -1,3 +1,6 @@
+![node version](https://img.shields.io/badge/node-v20-brightgreen)
+![pnpm version](https://img.shields.io/badge/pnpm-v8-brightgreen)
+
 # KitOps Documentation
 
 This is the documentation for [KitsOps](https://kitops.ml). You can read the docs at https://docs.kitops.ml.
@@ -23,8 +26,8 @@ To get started with our, follow these steps:
 ### Prerequisites
 
 Ensure you have the following installed on your system:
-* Node.js (v18.x or higher)
-* npm or pnpm package manager
+* Node.js (v20.x or higher)
+* npm or pnpm package manager (v8.x or higher)
 
 For local development, [pnpm](https://pnpm.io/) is preferred as package manager.
 

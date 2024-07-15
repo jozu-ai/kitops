@@ -17,6 +17,7 @@
 package output
 
 import (
+	"archive/tar"
 	"context"
 	"fmt"
 	"io"
@@ -84,7 +85,7 @@ func (w *wrappedRepo) Push(ctx context.Context, expected ocispec.Descriptor, con
 // WrapTarget wraps an oras.Target so that calls to Push print a progress bar.
 // If output is configured to not print progress bars, this is a no-op.
 func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
-	if !shouldPrintProgress() {
+	if !progressEnabled {
 		return wrap, &ProgressLogger{stdout}
 	}
 	p := mpb.New(
@@ -98,7 +99,7 @@ func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
 }
 
 func WrapReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogger) {
-	if !shouldPrintProgress() {
+	if !progressEnabled {
 		return rc, &ProgressLogger{stdout}
 	}
 
@@ -120,4 +121,53 @@ func WrapReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogge
 	)
 
 	return bar.ProxyReader(rc), &ProgressLogger{p}
+}
+
+type ProgressTar struct {
+	tw  *tar.Writer
+	pw  io.WriteCloser
+	bar *mpb.Bar
+}
+
+func (t *ProgressTar) Write(b []byte) (int, error) {
+	if t.pw != nil {
+		return t.pw.Write(b)
+	}
+	return t.tw.Write(b)
+}
+
+func (t *ProgressTar) WriteHeader(hdr *tar.Header) error {
+	return t.tw.WriteHeader(hdr)
+}
+
+func (t *ProgressTar) Close() error {
+	if t.pw != nil {
+		return t.pw.Close()
+	}
+	return nil
+}
+
+func TarProgress(total int64, tw *tar.Writer) (*ProgressTar, *ProgressLogger) {
+	if !progressEnabled {
+		return &ProgressTar{tw: tw}, &ProgressLogger{stdout}
+	}
+
+	p := mpb.New(
+		mpb.WithWidth(60),
+		mpb.WithRefreshRate(150*time.Millisecond),
+	)
+	bar := p.New(total,
+		barStyle(),
+		mpb.PrependDecorators(
+			decor.Name("Packing"),
+		),
+		mpb.AppendDecorators(
+			decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"),
+			decor.Name(" | "),
+			decor.AverageSpeed(decor.SizeB1024(0), "% .2f"),
+		),
+		mpb.BarRemoveOnComplete(),
+	)
+	pw := bar.ProxyWriter(tw)
+	return &ProgressTar{tw: tw, pw: pw, bar: bar}, &ProgressLogger{p}
 }

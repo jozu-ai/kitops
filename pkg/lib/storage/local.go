@@ -25,6 +25,7 @@ import (
 	"os"
 
 	"kitops/pkg/artifact"
+	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	kfutils "kitops/pkg/lib/kitfile"
@@ -40,17 +41,18 @@ import (
 // SaveModel saves an *artifact.Model to the provided oras.Target, compressing layers. It attempts to block
 // modelkits that include paths that leave the base context directory, allowing only subdirectories of the root
 // context to be included in the modelkit.
-func SaveModel(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths) (*ocispec.Descriptor, error) {
+func SaveModel(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) (*ocispec.Descriptor, error) {
 	configDesc, err := saveConfig(ctx, store, kitfile)
 	if err != nil {
 		return nil, err
 	}
-	layerDescs, err := saveKitfileLayers(ctx, store, kitfile, ignore)
+	layerDescs, err := saveKitfileLayers(ctx, store, kitfile, ignore, compression)
 	if err != nil {
 		return nil, err
 	}
 
 	manifest := CreateManifest(configDesc, layerDescs)
+
 	manifestDesc, err := saveModelManifest(ctx, store, manifest)
 	if err != nil {
 		return nil, err
@@ -64,7 +66,7 @@ func saveConfig(ctx context.Context, store repo.LocalStorage, kitfile *artifact.
 		return ocispec.DescriptorEmptyJSON, err
 	}
 	desc := ocispec.Descriptor{
-		MediaType: constants.ModelConfigMediaType,
+		MediaType: constants.ModelConfigMediaType.String(),
 		Digest:    digest.FromBytes(modelBytes),
 		Size:      int64(len(modelBytes)),
 	}
@@ -87,18 +89,26 @@ func saveConfig(ctx context.Context, store repo.LocalStorage, kitfile *artifact.
 	return desc, nil
 }
 
-func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths) ([]ocispec.Descriptor, error) {
+func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
 	var layers []ocispec.Descriptor
 	if kitfile.Model != nil {
 		if kitfile.Model.Path != "" && !kfutils.IsModelKitReference(kitfile.Model.Path) {
-			layer, err := saveContentLayer(ctx, store, kitfile.Model.Path, constants.ModelLayerMediaType, ignore)
+			mediaType := constants.MediaType{
+				BaseType:    constants.ModelType,
+				Compression: compression,
+			}
+			layer, err := saveContentLayer(ctx, store, kitfile.Model.Path, mediaType, ignore)
 			if err != nil {
 				return nil, err
 			}
 			layers = append(layers, layer)
 		}
 		for _, part := range kitfile.Model.Parts {
-			layer, err := saveContentLayer(ctx, store, part.Path, constants.ModelPartLayerMediaType, ignore)
+			mediaType := constants.MediaType{
+				BaseType:    constants.ModelPartType,
+				Compression: compression,
+			}
+			layer, err := saveContentLayer(ctx, store, part.Path, mediaType, ignore)
 			if err != nil {
 				return nil, err
 			}
@@ -106,14 +116,22 @@ func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *ar
 		}
 	}
 	for _, code := range kitfile.Code {
-		layer, err := saveContentLayer(ctx, store, code.Path, constants.CodeLayerMediaType, ignore)
+		mediaType := constants.MediaType{
+			BaseType:    constants.CodeType,
+			Compression: compression,
+		}
+		layer, err := saveContentLayer(ctx, store, code.Path, mediaType, ignore)
 		if err != nil {
 			return nil, err
 		}
 		layers = append(layers, layer)
 	}
 	for _, dataset := range kitfile.DataSets {
-		layer, err := saveContentLayer(ctx, store, dataset.Path, constants.DataSetLayerMediaType, ignore)
+		mediaType := constants.MediaType{
+			BaseType:    constants.DatasetType,
+			Compression: compression,
+		}
+		layer, err := saveContentLayer(ctx, store, dataset.Path, mediaType, ignore)
 		if err != nil {
 			return nil, err
 		}
@@ -122,7 +140,7 @@ func saveKitfileLayers(ctx context.Context, store repo.LocalStorage, kitfile *ar
 	return layers, nil
 }
 
-func saveContentLayer(ctx context.Context, store repo.LocalStorage, path, mediaType string, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
+func saveContentLayer(ctx context.Context, store repo.LocalStorage, path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
 	// We want to store a gzipped tar file in store, but to do so we need a descriptor, so we have to compress
 	// to a temporary file. Ideally, we'd also add this to the internal store by moving the file to avoid
 	// copying if possible.
@@ -136,11 +154,10 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path, mediaT
 		}
 	}()
 
-	layerType := layerTypeForMediaType(mediaType)
 	if exists, err := store.Exists(ctx, desc); err != nil {
 		return ocispec.DescriptorEmptyJSON, err
 	} else if exists {
-		output.Infof("Already saved %s layer: %s", layerType, desc.Digest)
+		output.Infof("Already saved %s layer: %s", mediaType.BaseType, desc.Digest)
 		return desc, nil
 	}
 
@@ -148,7 +165,17 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path, mediaT
 	// and verify that it exists afterwards.
 	blobPath := repo.BlobPathForManifest(store, desc)
 	if err := os.Rename(tempPath, blobPath); err != nil {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to add layer to storage: %w", err)
+		// This may fail on some systems (e.g. linux where / and /home are different partitions)
+		// Fallback to regular push which is basically a copy
+		output.Debugf("Failed to move temp file into storage: %s", err)
+		file, err := os.Open(tempPath)
+		if err != nil {
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to open temporary file: %w", err)
+		}
+		defer file.Close()
+		if err := store.Push(ctx, desc, file); err != nil {
+			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to add layer to storage: %w", err)
+		}
 	}
 
 	// Verify blob is in store now
@@ -157,10 +184,10 @@ func saveContentLayer(ctx context.Context, store repo.LocalStorage, path, mediaT
 		return ocispec.DescriptorEmptyJSON, err
 	}
 	if !exists {
-		return ocispec.DescriptorEmptyJSON, fmt.Errorf("Failed to move layer to storage: file is not stored")
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to move layer to storage: file is not stored")
 	}
 
-	output.Infof("Saved %s layer: %s", layerType, desc.Digest)
+	output.Infof("Saved %s layer: %s", mediaType.BaseType, desc.Digest)
 	return desc, nil
 }
 
@@ -193,27 +220,13 @@ func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.
 
 func CreateManifest(configDesc ocispec.Descriptor, layerDescs []ocispec.Descriptor) ocispec.Manifest {
 	manifest := ocispec.Manifest{
-		Versioned:   specs.Versioned{SchemaVersion: 2},
-		Config:      configDesc,
-		Layers:      layerDescs,
-		Annotations: map[string]string{},
+		Versioned: specs.Versioned{SchemaVersion: 2},
+		Config:    configDesc,
+		Layers:    layerDescs,
+		Annotations: map[string]string{
+			constants.CliVersionAnnotation: version.Version,
+		},
 	}
 
 	return manifest
-}
-
-func layerTypeForMediaType(mediaType string) string {
-	switch mediaType {
-	case constants.CodeLayerMediaType:
-		return "code"
-	case constants.DataSetLayerMediaType:
-		return "dataset"
-	case constants.ModelConfigMediaType:
-		return "config"
-	case constants.ModelLayerMediaType:
-		return "model"
-	case constants.ModelPartLayerMediaType:
-		return "modelpart"
-	}
-	return "<unknown>"
 }

@@ -46,6 +46,7 @@ type packOptions struct {
 	configHome  string
 	storageHome string
 	fullTagRef  string
+	compression string
 	modelRef    *registry.Reference
 	extraRefs   []string
 }
@@ -62,6 +63,7 @@ func PackCommand() *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&opts.modelFile, "file", "f", "", "Specifies the path to the Kitfile explictly (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.fullTagRef, "tag", "t", "", "Assigns one or more tags to the built modelkit. Example: -t registry/repository:tag1,tag2")
+	cmd.Flags().StringVar(&opts.compression, "compression", "none", "Compression format to use for layers. Valid options: 'none' (default), 'gzip', 'gzip-fastest'")
 	cmd.Args = cobra.ExactArgs(1)
 	return cmd
 }
@@ -76,7 +78,7 @@ func runCommand(opts *packOptions) func(cmd *cobra.Command, args []string) error
 		// Change working directory to context path to make sure relative paths within
 		// tarballs are correct. This is the equivalent of using the -C parameter for tar
 		if err := os.Chdir(opts.contextDir); err != nil {
-			return output.Fatalf("Failed to use context path %s: %w", opts.contextDir, err)
+			return output.Fatalf("Failed to use context path %s: %s", opts.contextDir, err)
 		}
 
 		err = runPack(cmd.Context(), opts)
@@ -119,6 +121,11 @@ func (opts *packOptions) complete(ctx context.Context, args []string) error {
 	} else {
 		opts.modelRef = repo.DefaultReference()
 	}
+
+	if err := constants.IsValidCompression(opts.compression); err != nil {
+		return err
+	}
+
 	printConfig(opts)
 	return nil
 }

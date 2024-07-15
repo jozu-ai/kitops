@@ -37,6 +37,10 @@ watch(vModel, (value) => {
   :min="props.min"
   :max="props.max"
   class="!border-0">
+  <template #label="labelProps">
+    <slot name="label" v-bind="labelProps" />
+  </template>
+
   <template #leading>
     <span class="text-xs text-gray-06">{{ props.min }}</span>
   </template>

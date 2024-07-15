@@ -36,6 +36,7 @@ Find more information at: http://kitops.ml`
 type rootOptions struct {
 	configHome   string
 	verbose      bool
+	loglevel     string
 	progressBars string
 }
 
@@ -49,7 +50,13 @@ func RunCommand() *cobra.Command {
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())
-			output.SetDebug(opts.verbose)
+			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
+				output.Fatalln(err)
+			}
+			if opts.verbose {
+				output.SetLogLevel(output.LogLevelDebug)
+			}
+
 			output.SetProgressBars(opts.progressBars)
 
 			configHome, err := getConfigHome(opts)
@@ -69,7 +76,8 @@ func RunCommand() *cobra.Command {
 	}
 	addSubcommands(cmd)
 	cmd.PersistentFlags().StringVar(&opts.configHome, "config", "", "Alternate path to root storage directory for CLI")
-	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output (default false)")
+	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Include additional information in output. Alias for --log-level=debug")
+	cmd.PersistentFlags().StringVar(&opts.loglevel, "log-level", "info", "Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info')")
 	cmd.PersistentFlags().StringVar(&opts.progressBars, "progress", "plain", "Configure progress bars for longer operations (options: none, plain, fancy)")
 
 	cmd.SetHelpTemplate(helpTemplate)

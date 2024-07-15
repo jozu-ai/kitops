@@ -93,11 +93,15 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		remoteRegistry, err := repo.NewRegistry(opts.modelRef.Registry, &repo.RegistryOptions{
-			PlainHTTP:       opts.PlainHTTP,
-			SkipTLSVerify:   !opts.TlsVerify,
-			CredentialsPath: constants.CredentialsPath(opts.configHome),
-		})
+		remoteRepo, err := repo.NewRepository(
+			cmd.Context(),
+			opts.modelRef.Registry,
+			opts.modelRef.Repository,
+			&repo.RegistryOptions{
+				PlainHTTP:       opts.PlainHTTP,
+				SkipTLSVerify:   !opts.TlsVerify,
+				CredentialsPath: constants.CredentialsPath(opts.configHome),
+			})
 		if err != nil {
 			return output.Fatalln(err)
 		}
@@ -110,7 +114,7 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 		}
 
 		output.Infof("Pushing %s", opts.modelRef.String())
-		desc, err := PushModel(cmd.Context(), localStore, remoteRegistry, opts.modelRef)
+		desc, err := PushModel(cmd.Context(), localStore, remoteRepo, opts.modelRef)
 		if err != nil {
 			return output.Fatalf("Failed to push: %s", err)
 		}

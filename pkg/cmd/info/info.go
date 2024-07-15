@@ -38,7 +38,7 @@ func getLocalConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile, 
 	if err != nil {
 		return nil, fmt.Errorf("failed to read local storage: %w", err)
 	}
-	_, config, err := repo.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
+	_, _, config, err := repo.ResolveManifestAndConfig(ctx, store, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func getRemoteConfig(ctx context.Context, opts *infoOptions) (*artifact.KitFile,
 	if err != nil {
 		return nil, err
 	}
-	_, config, err := repo.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
+	_, _, config, err := repo.ResolveManifestAndConfig(ctx, repository, opts.modelRef.Reference)
 	if err != nil {
 		return nil, err
 	}

@@ -18,6 +18,7 @@ package harness
 
 import (
 	"fmt"
+	"io"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 	"os"
@@ -36,11 +37,11 @@ type LLMHarness struct {
 func (harness *LLMHarness) Init() error {
 	err := extractServer(constants.HarnessPath(harness.ConfigHome), "llama.cpp/build/*/*/*/bin/**")
 	if err != nil {
-		return fmt.Errorf("Failed to extract dev server files: %s", err)
+		return fmt.Errorf("failed to extract dev server files: %s", err)
 	}
 	err = extractUI(constants.HarnessPath(harness.ConfigHome))
 	if err != nil {
-		return fmt.Errorf("Failed to extract dev UI files: %s", err)
+		return fmt.Errorf("failed to extract dev UI files: %s", err)
 	}
 	return nil
 }
@@ -58,7 +59,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 		}
 		// Check if the process is still running.
 		if isProcessRunning(pid) {
-			return fmt.Errorf("A server process with PID %d is already running", pid)
+			return fmt.Errorf("a server process with PID %d is already running", pid)
 		} else {
 			output.Infoln("The process previously recorded is not running. Proceeding to start a new process.")
 		}
@@ -73,7 +74,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	cmd.Dir = harnessPath
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
-		return fmt.Errorf("Failed to open log file for harness: %w", err)
+		return fmt.Errorf("failed to open log file for harness: %w", err)
 	}
 	defer logs.Close()
 	output.Debugf("Saving server logs to %s", logFile)
@@ -81,12 +82,12 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	cmd.Stderr = logs
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("Error starting llm harness: %s", err)
+		return fmt.Errorf("error starting llm harness: %s", err)
 	}
 
 	pid := cmd.Process.Pid
 	if err := writePIDFile(pidFile, pid); err != nil {
-		return fmt.Errorf("Failed to write PID file: %w", err)
+		return fmt.Errorf("failed to write PID file: %w", err)
 	}
 
 	output.Debugf("Started harness with PID %d and saved to file.\n", pid)
@@ -99,7 +100,7 @@ func (harness *LLMHarness) Stop() error {
 
 	pid, err := readPIDFromFile(pidFile)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("No Running server found")
+		return fmt.Errorf("no Running server found")
 	}
 	if err != nil {
 		return err
@@ -107,13 +108,13 @@ func (harness *LLMHarness) Stop() error {
 
 	// Check if the process is still running.
 	if !isProcessRunning(pid) {
-		return fmt.Errorf("No running process found with PID %d.", pid)
+		return fmt.Errorf("no running process found with PID %d", pid)
 	}
 
 	// Kill the process using the PID.
 	process, err := os.FindProcess(pid)
 	if err != nil {
-		return fmt.Errorf("Error finding process: %s\n", err)
+		return fmt.Errorf("error finding process: %s", err)
 	}
 
 	err = process.Signal(syscall.SIGTERM) // Try to kill it gently
@@ -122,17 +123,35 @@ func (harness *LLMHarness) Stop() error {
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
-			return fmt.Errorf("Error killing process: %s", err)
+			return fmt.Errorf("error killing process: %s", err)
 		}
 	}
 
-	output.Debugf("Process with PID %d has been killed.\n", pid)
+	output.Debugf("Process with PID %d has been killed.", pid)
 	// Delete the PID file to clean up.
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("Error removing PID file: %s\n", err)
+		return fmt.Errorf("error removing PID file: %s", err)
 	}
 
+	return nil
+}
+
+func PrintLogs(configHome string, w io.Writer) error {
+	harnessPath := constants.HarnessPath(configHome)
+	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
+	logFile, err := os.Open(logPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			output.Errorf("No log file found")
+			return nil
+		}
+		return fmt.Errorf("Error reading log file: %w", err)
+	}
+	defer logFile.Close()
+	if _, err = io.Copy(w, logFile); err != nil {
+		return fmt.Errorf("Failed to print log file: %w", err)
+	}
 	return nil
 }
 
