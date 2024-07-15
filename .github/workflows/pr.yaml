@@ -80,6 +80,20 @@ jobs:
             exit 1
           fi
 
+      - name: Test Vitepress includes
+        shell: bash
+        run: |
+          grep -rnw '@include' --exclude-dir docs/node_modules docs | while read -r line; do
+            file="${line%%:*}"
+            include="${line##*@include: }"
+            include="${include%%-->}"
+            expected="$(dirname "$file")/$include"
+            if [ ! -f "$expected" ]; then
+              echo "Broken include in $file: path $expected does exist"
+              exit 1
+            fi
+          done
+
       - name: Check for trailing whitespace
         shell: bash
         run: |
@@ -89,6 +103,7 @@ jobs:
             echo "$files"
             exit 1
           fi
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
