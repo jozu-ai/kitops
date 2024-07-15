@@ -37,7 +37,7 @@ datasets:
 - description: Forum postings from photo sites
   name: training data
   path: ./data/forum-to-2023-train.csv
-  
+
 - name: validation data
   path: ./data/test.csv
 ```
@@ -174,7 +174,7 @@ The `unpack` command is part of the typical push and pull commands:
 * `pack` will pack up a set of assets into a ModelKit package.
 * `push` will push the whole ModelKit to a registry.
 * `pull` will pull the whole ModelKit from a registry.
-* `unpack` will extract all, or selected assets, from the ModelKit. 
+* `unpack` will extract all, or selected assets, from the ModelKit.
 
 ## Read the Kitfile or Manifest from a ModelKit
 

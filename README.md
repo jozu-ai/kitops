@@ -19,7 +19,7 @@ KitOps is a packaging and versioning system for AI/ML projects that uses open st
 
 KitOps makes it easy for organizations to track, control, and audit access and changes to their AI project artifacts. It simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, codebases, features, hyperparmeters, and any other documentation. ModelKits are portable, reproducible, and work with the tools you already use.
 
-Teams and enterprises use KitOps as a gate between development and production deployment. This ensures that projects are complete, versioned, and immutable before they are deployed and makes rollbacks and other production operations simpler and safer. 
+Teams and enterprises use KitOps as a gate between development and production deployment. This ensures that projects are complete, versioned, and immutable before they are deployed and makes rollbacks and other production operations simpler and safer.
 
 Use KitOps to speed up and de-risk all types of AI projects from small analysis models to large language models, including fine-tuning and RAG.
 
