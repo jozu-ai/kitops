@@ -49,10 +49,31 @@
     "published_time": "2024-04-25"
   },
   {
+  "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
+    "description": "From Jupyter Notebook to production-ready artifact: explore our guide to using KitOps and ModelKit for seamless deployment.",
+    "tags": ["KitOps", "MLOps", "ModelKit", "Community"],
+    "author": "Jesse Williams",
+    "published_time": "2024-07-08"
+  },
+  {
+    "url": "https://jozu.com/blog/a-step-by-step-guide-to-building-an-mlops-pipeline/",
+    "description": "Exploring the steps and processes of building an MLOps pipeline.",
+    "tags": ["KitOps", "Podcast", "LLMs", "Community"],
+    "author": "Jesse Williams",
+    "published_time": "2024-06-04"
+  },
+  {
     "url": "https://www.youtube.com/watch?v=jRi3wmaHQBQ",
     "description": "Let's dive into the dynamic relationship between enterprises and AI/ML teams with Brad Micklea, Founder & CEO of Jozu and project lead for Kitops.ml. Brad shares valuable insights on bridging the gap and improving the collaboration between these entities. From common challenges to effective strategies, Brad sheds light on the crucial role of communication, alignment, and AI/ML literacy in driving successful collaborations.",
     "tags": ["KitOps", "Podcast", "LLMs", "Community"],
     "author": "Lights On Data Show",
     "published_time": "2024-04-26"
+  },
+  {
+  "url": "https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing",
+    "description": "In this article, we build a Retrieval-Augmented Generation (RAG) pipeline using KitOps, integrating tools like ChromaDB for embeddings, Llama 3 for language models, and SentenceTransformer for embedding models.",
+    "tags": ["KitOps", "RAG", "Tutorial"],
+    "author": "Gorkem Ercan",
+    "published_time": "2024-07-09"
   }
 ]
