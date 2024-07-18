@@ -18,6 +18,7 @@ package version
 
 import (
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/update"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -32,16 +33,35 @@ the version was built from, the build time, and the version of Go it was
 compiled with.`
 )
 
+const versionNotifFlag = "show-update-notifications"
+
+type versionOpts struct {
+	shouldShowNotifications bool
+}
+
 func VersionCommand() *cobra.Command {
+	opts := &versionOpts{}
 
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: shortDesc,
 		Long:  longDesc,
 		Run: func(cmd *cobra.Command, args []string) {
-			output.Infof("Version: %s\nCommit: %s\nBuilt: %s\nGo version: %s\n", constants.Version, constants.GitCommit, constants.BuildTime, constants.GoVersion)
+			if cmd.Flags().Changed(versionNotifFlag) {
+				configHome, ok := cmd.Context().Value(constants.ConfigKey{}).(string)
+				if !ok {
+					output.Fatalln("default config path not set on command context")
+				}
+				if err := update.SetShowNotifications(configHome, opts.shouldShowNotifications); err != nil {
+					output.Fatalln(err)
+				}
+			} else {
+				output.Infof("Version: %s\nCommit: %s\nBuilt: %s\nGo version: %s\n", constants.Version, constants.GitCommit, constants.BuildTime, constants.GoVersion)
+			}
 		},
 	}
+	cmd.Flags().BoolVar(&opts.shouldShowNotifications, versionNotifFlag, false, "Enable or disable update notifications for the Kit CLI")
+
 	return cmd
 }
 

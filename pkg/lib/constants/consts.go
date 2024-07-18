@@ -34,14 +34,15 @@ const (
 	IgnoreFileName = ".kitignore"
 
 	// Constants for the directory structure of kit's cached images and credentials
-	// Modelkits are stored in <configpath>/kitops/storage/ and
-	// credentials are stored in <configpath>/kitops/credentials.json
-	DefaultConfigSubdir = "kitops"
-	StorageSubpath      = "storage"
-	CredentialsSubpath  = "credentials.json"
-	HarnessSubpath      = "harness"
-	HarnessProcessFile  = "process.pid"
-	HarnessLogFile      = "harness.log"
+	// Modelkits are stored in $KITOPS_HOME/storage/ and
+	// credentials are stored in $KITOPS_HOME/credentials.json
+	DefaultConfigSubdir               = "kitops"
+	StorageSubpath                    = "storage"
+	CredentialsSubpath                = "credentials.json"
+	HarnessSubpath                    = "harness"
+	HarnessProcessFile                = "process.pid"
+	HarnessLogFile                    = "harness.log"
+	UpdateNotificationsConfigFilename = "disable-update-notifications"
 
 	// Kitops-specific annotations for modelkit artifacts
 	CliVersionAnnotation = "ml.kitops.modelkit.cli-version"
