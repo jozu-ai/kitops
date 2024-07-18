@@ -25,6 +25,7 @@ import (
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/update"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
@@ -73,6 +74,8 @@ func RunCommand() *cobra.Command {
 				output.SetLogLevel(output.LogLevelTrace)
 				output.SetProgressBars("none")
 			}
+
+			update.CheckForUpdate()
 
 			configHome, err := getConfigHome(opts)
 			if err != nil {
