@@ -75,8 +75,6 @@ func RunCommand() *cobra.Command {
 				output.SetProgressBars("none")
 			}
 
-			update.CheckForUpdate()
-
 			configHome, err := getConfigHome(opts)
 			if err != nil {
 				output.Errorf("Failed to read base config directory")
@@ -86,6 +84,9 @@ func RunCommand() *cobra.Command {
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
+
+			update.CheckForUpdate(configHome)
+
 			// At this point, we've parsed the command tree and args; the CLI is being correctly
 			// so we don't want to print usage. Each subcommand should print its error message before
 			// returning

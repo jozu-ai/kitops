@@ -18,9 +18,13 @@ package update
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -50,9 +54,13 @@ type ghReleaseInfo struct {
 	Url        string `json:"html_url"`
 }
 
-func CheckForUpdate() {
+func CheckForUpdate(configHome string) {
 	// If this isn't a release version of kit, don't nag the user unnecessarily
 	if constants.Version == "unknown" || !versionTagRegexp.MatchString(constants.Version) {
+		return
+	}
+
+	if !shouldShowNotification(configHome) {
 		return
 	}
 
@@ -84,6 +92,38 @@ func CheckForUpdate() {
 	if semver.Compare(currentVersion, latestVersion) < 0 {
 		output.Infof("Note: A new version of Kit is available! You are using Kit %s. The latest version is %s.", currentVersion, latestVersion)
 		output.Infof("      To see a list of changes, visit %s", info.Url)
+		output.Infof("      To disable this notification, use 'kit version --show-update-notifications=false'")
 		output.Infof("") // Add a newline to not confuse it with regular output
 	}
+}
+
+func SetShowNotifications(configHome string, shouldShow bool) error {
+	flagFile := filepath.Join(configHome, constants.UpdateNotificationsConfigFilename)
+	if shouldShow {
+		if err := os.Remove(flagFile); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return fmt.Errorf("error enabling update notifications: %w", err)
+		}
+	} else {
+		f, err := os.Create(flagFile)
+		if err != nil {
+			if errors.Is(err, fs.ErrExist) {
+				return nil
+			}
+			return fmt.Errorf("error disabling update notifications: %w", err)
+		}
+		f.Close()
+	}
+	return nil
+}
+
+func shouldShowNotification(configHome string) bool {
+	flagFile := filepath.Join(configHome, constants.UpdateNotificationsConfigFilename)
+	_, err := os.Stat(flagFile)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return true
+		}
+		output.Debugf("Error checking if update notifications should be shown: %s", err)
+	}
+	return false
 }
