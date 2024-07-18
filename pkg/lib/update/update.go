@@ -27,6 +27,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -64,7 +65,10 @@ func CheckForUpdate(configHome string) {
 		return
 	}
 
-	resp, err := http.Get(releaseUrl)
+	client := &http.Client{
+		Timeout: 1 * time.Second,
+	}
+	resp, err := client.Get(releaseUrl)
 	if err != nil {
 		output.Debugf("Failed to check for updates: %s", err)
 		return
