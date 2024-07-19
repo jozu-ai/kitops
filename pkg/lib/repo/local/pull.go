@@ -93,6 +93,11 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 	if err := l.localIndex.addManifest(desc); err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to add manifest to index: %w", err)
 	}
+	// This is a workaround to add the manifest to the main index as well; this is necessary for garbage collection to work
+	if err := l.Store.Tag(ctx, desc, desc.Digest.String()); err != nil {
+		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to add manifest to shared index: %w", err)
+	}
+
 	if !util.ReferenceIsDigest(ref.Reference) {
 		if err := l.localIndex.tag(desc, ref.Reference); err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to save tag: %w", err)
