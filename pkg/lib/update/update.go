@@ -60,29 +60,13 @@ func CheckForUpdate(configHome string) {
 	if constants.Version == "unknown" || !versionTagRegexp.MatchString(constants.Version) {
 		return
 	}
-
 	if !shouldShowNotification(configHome) {
 		return
 	}
 
-	client := &http.Client{
-		Timeout: 1 * time.Second,
-	}
-	resp, err := client.Get(releaseUrl)
+	info, err := getLatestReleaseInfo()
 	if err != nil {
-		output.Debugf("Failed to check for updates: %s", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		output.Debugf("Failed to read GitHub response body: %s", err)
-		return
-	}
-	info := &ghReleaseInfo{}
-	if err := json.Unmarshal(respBody, info); err != nil {
-		output.Debugf("Failed to parse GitHub response body: %s", err)
+		output.Debugf("Error checking for CLI updates: %s", err)
 		return
 	}
 	if info.Prerelease || info.Draft {
@@ -130,4 +114,25 @@ func shouldShowNotification(configHome string) bool {
 		output.Debugf("Error checking if update notifications should be shown: %s", err)
 	}
 	return false
+}
+
+func getLatestReleaseInfo() (*ghReleaseInfo, error) {
+	client := &http.Client{
+		Timeout: 1 * time.Second,
+	}
+	resp, err := client.Get(releaseUrl)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check for updates: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read GitHub response body: %w", err)
+	}
+	info := &ghReleaseInfo{}
+	if err := json.Unmarshal(respBody, info); err != nil {
+		return nil, fmt.Errorf("failed to parse GitHub response body: %w", err)
+	}
+	return info, nil
 }
