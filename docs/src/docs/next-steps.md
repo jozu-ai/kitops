@@ -37,7 +37,7 @@ datasets:
 - description: Forum postings from photo sites
   name: training data
   path: ./data/forum-to-2023-train.csv
-  
+
 - name: validation data
   path: ./data/test.csv
 ```
@@ -81,7 +81,7 @@ docs:
     description: Information on how to use this model for inference
 
 datasets:
-  - description: Forum postings from sites like rangefinderforum, DPreview, PhotographyTalk, and r/AnalogCommunity
+  - description: Forum postings from sites like rangefinderforum, PhotographyTalk, and r/AnalogCommunity
     name: training data
     path: ./data/forum-to-2023-train.csv
   - description: validation data
@@ -144,9 +144,10 @@ First, you need to tag the image in your local registry with the remote registry
 kit pack . -t docker.io/jozubrad/film-slm:champion
 ```
 
-Second, you [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
+Second, you will need to login, then [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
 
 ```sh
+kit login docker.io
 kit push docker.io/jozubrad/film-slm:champion
 ```
 
@@ -173,7 +174,7 @@ The `unpack` command is part of the typical push and pull commands:
 * `pack` will pack up a set of assets into a ModelKit package.
 * `push` will push the whole ModelKit to a registry.
 * `pull` will pull the whole ModelKit from a registry.
-* `unpack` will extract all, or selected assets, from the ModelKit. 
+* `unpack` will extract all, or selected assets, from the ModelKit.
 
 ## Read the Kitfile or Manifest from a ModelKit
 
