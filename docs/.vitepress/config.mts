@@ -64,14 +64,14 @@ export default defineConfig({
           { text: 'Quick Start', link: '/docs/quick-start' },
           { text: 'Next Steps', link: '/docs/next-steps' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
-          { text: 'KitOps Workflow', link: '/docs/use-cases' },
+          { text: 'How it is Used', link: '/docs/use-cases' },
           { text: 'KitOps versus...', link: '/docs/versus' },
         ]
       },
       {
         text: 'ModelKit',
         items: [
-          { text: 'Introduction', link: '/docs/modelkit/intro' },
+          { text: 'Overview', link: '/docs/modelkit/intro' },
           { text: 'Specification', link: '/docs/modelkit/spec' },
           { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
