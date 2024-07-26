@@ -1,12 +1,42 @@
-# KitOps Workflow
+# How KitOps Is Used 🛠️
 
-KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. You can read more about why KitOps is a powerful collaboration solution for AI/ML projects in our [Why KitOps](./why-kitops.md) page.
+KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today.
 
-## How KitOps Gets Used 🛠️
+## Level 1: Handoff From Development to Production 🤝
 
-Organizations have spent the last 15+ years building up a suite of developer and DevOps tools to make developing software applications and services faster, safer, and easier. As they start working with AI/ML, they are realizing that those tools are not well suited to a world of massive models and even bigger datasets. ModelKits were created by a team who lived that nightmare and wanted others to avoid it.
+Many organizations have AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
 
-Here’s how we used ModelKits along with the tools we already used in our data science, software development, and infrastructure management teams.
+This ensures that:
+* __Operations teams have all the assets and information they need__ in order to determine how to test, deploy, audit, and manage these new workloads
+* __Organizations are protected against vendor shifts__ in their MLOps and Serving Infrastructure domains (this also gives them negotiating leverage with vendors)
+* __AI versioned packages are held in the same enterprise registry__ as other production assets like containers
+* __Compliance teams have a catalogue of versioned models__ that can be used for [EU AI Act](https://artificialintelligenceact.eu/) or other regulatory reporting
+* __Everyone has a library of immutable and signed ModelKits__ for intellectual property, progress tracking, or other requirements
+
+Using ModelKits as the "gate" between development and production also speeds up the transition between development and staging / production. ModelKit packing can be automated using the Kit [CLI](./cli/cli-reference.md).
+
+At this stage of KitOps usage development artifacts are still solely housed in their various current locations:
+* Datasets in data lakes, databases, files systems, or other similar locations
+* Code in git repositories
+* Models in Jupyter notebooks or MLOps tools
+* Metadata in various locations based on their type
+
+For this reason, organizations that are concerned about end-to-end auditing of their model development (like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) prefer to use Level 2, outlined below.)
+
+## Level 2: Storage for all AI Project Versions 💾
+
+Organizations that are more mature in their handling of AI projects, or are subject to extra scrutiny or regulations extend the use of ModelKits to the development phase as well. This solves the currently scattered storage of artifacts.
+
+This ensures that:
+* The organization uses a standards-based storage (OCI 1.1 artifacts) for all their AI/ML project work
+* Data and AI teams who don't work closely together can share artifacts even if they're using different development tools
+* Development artifacts can't be accidentally or maliciously tampered with
+
+This can be a lightweight process automated with ModelKit packing via the Kit [CLI](./cli/cli-reference.md).
+
+The beauty of KitOps' ModelKits is their flexibility and the fact that they fit into the already standard tools and processes that organizations have built around OCI artifacts and registries.
+
+Below are details on how we have used KitOps internally from development to production.
 
 ### Using Tags 🏷️
 
