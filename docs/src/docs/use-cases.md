@@ -2,7 +2,7 @@
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today.
 
-## Stage 1: Handoff From Development and Production 🤝
+## Level 1: Handoff From Development to Production 🤝
 
 Many organizations have AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
 
@@ -10,7 +10,7 @@ This ensures that:
 * __Operations teams have all the assets and information they need__ in order to determine how to test, deploy, audit, and manage these new workloads
 * __Organizations are protected against vendor shifts__ in their MLOps and Serving Infrastructure domains (this also gives them negotiating leverage with vendors)
 * __AI versioned packages are held in the same enterprise registry__ as other production assets like containers
-* __Compliance teams have a catalogue of versioned models__ that can be used for EU AI Act or other regulatory reporting
+* __Compliance teams have a catalogue of versioned models__ that can be used for [EU AI Act](https://artificialintelligenceact.eu/) or other regulatory reporting
 * __Everyone has a library of immutable and signed ModelKits__ for intellectual property, progress tracking, or other requirements
 
 Using ModelKits as the "gate" between development and production also speeds up the transition between development and staging / production. ModelKit packing can be automated using the Kit [CLI](./cli/cli-reference.md).
@@ -21,7 +21,9 @@ At this stage of KitOps usage development artifacts are still solely housed in t
 * Models in Jupyter notebooks or MLOps tools
 * Metadata in various locations based on their type
 
-## Stage 2: Storage for all AI Project Versions 💾
+For this reason, organizations that are concerned about end-to-end auditing of their model development (like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) prefer to use Level 2, outlined below.)
+
+## Level 2: Storage for all AI Project Versions 💾
 
 Organizations that are more mature in their handling of AI projects, or are subject to extra scrutiny or regulations extend the use of ModelKits to the development phase as well. This solves the currently scattered storage of artifacts.
 
@@ -30,7 +32,7 @@ This ensures that:
 * Data and AI teams who don't work closely together can share artifacts even if they're using different development tools
 * Development artifacts can't be accidentally or maliciously tampered with
 
-This can be a lightweight process that relies on automating the ModelKit packing via the Kit [CLI](./cli/cli-reference.md).
+This can be a lightweight process automated with ModelKit packing via the Kit [CLI](./cli/cli-reference.md).
 
 The beauty of KitOps' ModelKits is their flexibility and the fact that they fit into the already standard tools and processes that organizations have built around OCI artifacts and registries.
 
