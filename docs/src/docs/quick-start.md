@@ -39,7 +39,7 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
-Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a sample ModelKit to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
+Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit](./modelkit/premade-modelkits.md) to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
 You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
@@ -117,59 +117,15 @@ Next, we would repeat the `kit pack` command in the previous step, being sure to
 
 The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
+<!-- replace with Jozu Hub once private repos are ready -->
+
 ```sh
 kit push ghcr.io/jozubrad/mymodelkit:latest
 ```
 
-### 8/ Run an LLM Locally
-
-If you're using Kit with LLMs you can quickly run the model locally to speed integration, testing, or experimentation.
-
-<!-- The syntax below makes an Info callout box in Vitpress at compile time -->
-::: info
-If you're not interested in running the ModelKit locally you can jump to the [Next Steps](next-steps.md) where you'll learn how to sign ModelKits, write your own Kitfiles, and maintain your repository.
-:::
-
-To run the ModelKit locally, first create a new directory for your LLM:
-
-```sh
-mkdir devmode
-cd devmode
-```
-
-Now unpack an LLM ModelKit - we have [several](https://github.com/orgs/jozu-ai/packages), but I've chosen Phi3:
-
-```sh
-kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
-```
-
-Now start your LLM dev server locally using the [dev start command](./cli/cli-reference.md#kit-dev-start):
-
-```sh
-kit dev start .
-```
-
-In the command output you'll see a URL you can use to interact with the LLM (there's a command flag if you want to always use the same port). You can control parameters of the model, change the prompt, or chat with the LLM.
-
-If you need to get logs use the [dev logs command](./cli/cli-reference.md#kit-dev-logs):
-
-```sh
-kit dev logs
-```
-
-When you're done don't forget to stop the LLM dev server:
-
-```sh
-kit dev stop
-```
-
 ### Congratulations
 
-You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model:
-
-```sh
-kit pull ghcr.io/jozubrad/mymodelkit:latest
-```
+You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
 
 If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
 * Signing your ModeKit

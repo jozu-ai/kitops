@@ -7,6 +7,10 @@ In this guide you'll learn how to:
 * Read the Kitfile or manifest from a ModelKit
 * Tag ModelKits and keep your registry tidy
 
+::: info
+If you're interested in running an LLM locally using Kit, you can jump to the [Kit Dev](./dev-mode.md) documentation.
+:::
+
 ## Signing your ModelKit
 
 Because ModelKits are OCI artifacts, they can be signed like any other OCI artifact (you may already sign your containers, for example).
@@ -309,5 +313,7 @@ mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 ```
 
 You can learn more about all the Kit CLI commands from our [command reference doc](./cli/cli-reference.md).
+
+To learn about how to run an LLM locally using Kit, see our [Kit Dev](./dev-mode.md) documentation.
 
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).
