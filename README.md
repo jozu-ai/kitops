@@ -25,7 +25,7 @@ Use KitOps to speed up and de-risk all types of AI projects from small analysis 
 
 ### 🎉 New
 
-Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https://jozu.ml/discover)** repository (don't worry - ModelKits are still compatible with any OCI registry).
+Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https://jozu.ml/discover)** repository (don't worry - ModelKits are compatible with any OCI registry).
 
 
 ### Features
@@ -39,15 +39,15 @@ Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https:
 * 📝 **[Artifact signing](./docs/src/docs/next-steps.md):** ModelKits and their assets can be signed so you can be confident of their provenance.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any OCI 1.1-compliant container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
-* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/quick-start.md#_8-run-an-llm-locally):** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly.
+* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly.
 * 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
 * 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
-* 🩰 **Flexible:** Store key-value pairs, or any YAML-compatible JSON data in your Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments our validation output...whatever you want!
+* 🩰 **[Flexible](./docs/src/docs/kitfile/format.md):** Store key-value pairs, or any YAML-compatible JSON data in your Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments our validation output...whatever you want!
 * 🤗 **Universal:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
 
 ### See KitOps in Action
 
-https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17f8df2
+There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 ### What is in the box?
 
@@ -56,6 +56,8 @@ https://github.com/jozu-ai/kitops/assets/4766570/05ae1362-afd3-4e78-bfce-e982c17
 **[Kitfile](./docs/src/docs/kitfile/kf-overview.md):** A ModelKit is defined by a Kitfile - your AI/ML project's blueprint. It uses YAML to describe where to find each of the artifacts that will be packaged into the ModelKit. Reading the Kitfile gives you a quick understanding of what's involved in each AI project.
 
 **[Kit CLI](./docs/src/docs/cli/cli-reference.md):** The Kit CLI not only enables users to create, manage, run, and deploy ModelKits -- it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model`, or maybe you just want the training datasets? `unpack --datasets`.
+
+You can pull pre-made ModelKits from [Jozu Hub](https://jozu.ml/discover).
 
 ## 🚀 Try Kit in under 15 Minutes
 
