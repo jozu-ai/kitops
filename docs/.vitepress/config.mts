@@ -63,6 +63,7 @@ export default defineConfig({
           { text: 'Overview', link: '/docs/overview' },
           { text: 'Quick Start', link: '/docs/quick-start' },
           { text: 'Next Steps', link: '/docs/next-steps' },
+          { text: 'Kit Dev', link: '/docs/dev-mode' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
           { text: 'How it is Used', link: '/docs/use-cases' },
           { text: 'KitOps versus...', link: '/docs/versus' },
@@ -73,6 +74,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/docs/modelkit/intro' },
           { text: 'Specification', link: '/docs/modelkit/spec' },
+          { text: 'Pre-made ModelKits', link: '/docs/modelkit/premade-modelkits' },
           { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
       },
