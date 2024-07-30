@@ -54,7 +54,3 @@ See the [models](#for-models) or the [datasets](#for-datasets) below.
 * [Databricks Dolly 15K](https://jozu.ml/repositories/36)
 * [MMLU dataset](https://jozu.ml/repositories/35)
 * [Medical QA shared task v1](https://jozu.ml/repositories/38)
-* [Artifact Deduplication A](https://jozu.ml/repositories/15)
-* [Artifact Deduplication B](https://jozu.ml/repositories/16)
-* [Artifact Deduplication C](https://jozu.ml/repositories/17)
-* [KitOps Data Versioning](https://jozu.ml/repositories/14)
