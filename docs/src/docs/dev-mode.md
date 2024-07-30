@@ -15,10 +15,9 @@ cd kitdev
 
 Now unpack an LLM ModelKit - there are several on [Jozu Hub](https://jozu.ml/discover), but here we're using Phi3 Mini because of its size:
 
-<!-- replace with reference to Jozu Hub once bug is fixed -->
 
 ```sh
-kit unpack ghcr.io/jozu-ai/phi3:3.8b-mini-instruct-4k-q4_K_M
+kit unpack jozu.ml/jozu/phi3:3.8b-mini-instruct-4k-q4_K_M
 ```
 
 Now start your LLM dev server locally using the [kit dev start command](./cli/cli-reference.md#kit-dev-start):
