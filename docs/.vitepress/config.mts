@@ -74,7 +74,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/docs/modelkit/intro' },
           { text: 'Specification', link: '/docs/modelkit/spec' },
-          { text: 'Pre-made ModelKits', link: '/docs/modelkit/premade-modelkits' },
+          { text: 'Pre-built ModelKits', link: '/docs/modelkit/prebuilt-modelkits' },
           { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
       },
