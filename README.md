@@ -39,7 +39,7 @@ Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https:
 * 📝 **[Artifact signing](./docs/src/docs/next-steps.md):** ModelKits and their assets can be signed so you can be confident of their provenance.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any OCI 1.1-compliant container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
-* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly.
+* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets you run an LLM locally, configure it, and prompt/chat with it instantly.
 * 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
 * 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
 * 🩰 **[Flexible](./docs/src/docs/kitfile/format.md):** Store key-value pairs, or any YAML-compatible JSON data in your Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments our validation output...whatever you want!
@@ -57,7 +57,7 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 **[Kit CLI](./docs/src/docs/cli/cli-reference.md):** The Kit CLI not only enables users to create, manage, run, and deploy ModelKits -- it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model`, or maybe you just want the training datasets? `unpack --datasets`.
 
-You can pull pre-made ModelKits from [Jozu Hub](https://jozu.ml/discover).
+You can pull pre-built ModelKits from [Jozu Hub](https://jozu.ml/discover).
 
 ## 🚀 Try Kit in under 15 Minutes
 
@@ -80,9 +80,11 @@ We've been busy and shipping quickly!
 
 You can see all the gory details in our [release changelogs](https://github.com/jozu-ai/kitops/releases).
 
-## Your Voice Matters
+## Need Help?
 
-### Need Help?
+### Join KitOps community
+
+For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/Tapeh8agYy). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
 
 If you need help there are several ways to reach our community and [Maintainers](./MAINTAINERS.md) outlined in our [support doc](./SUPPORT.md)
 
@@ -98,11 +100,7 @@ We ❤️ our Kit community and contributors. To learn more about the many ways 
 
 At KitOps, inclusivity, empathy, and responsibility are at our core. Please read our [Code of Conduct](./CODE-OF-CONDUCT.md) to understand the values guiding our community.
 
-### Join KitOps community
-
-For support, release updates, and general KitOps discussion, please join the [KitOps Discord](https://discord.gg/Tapeh8agYy). Follow [KitOps on X](https://twitter.com/Kit_Ops) for daily updates.
-
-### Roadmap
+## Roadmap
 
 We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provide feedback and ideas. Let us know what you'd like to see by pinging us on Discord or creating an issue.
 
