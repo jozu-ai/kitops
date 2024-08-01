@@ -172,12 +172,13 @@ kit info --remote registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -r, --remote        Check remote registry instead of local storage
-  -h, --help          help for info
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -r, --remote            Check remote registry instead of local storage
+  -h, --help              help for info
 ```
 
 ### Options inherited from parent commands
@@ -220,12 +221,13 @@ kit inspect --remote registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -r, --remote        Check remote registry instead of local storage
-  -h, --help          help for inspect
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -r, --remote            Check remote registry instead of local storage
+  -h, --help              help for inspect
 ```
 
 ### Options inherited from parent commands
@@ -277,11 +279,12 @@ kit list registry.example.com/my-namespace/my-model
 ### Options
 
 ```
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -h, --help          help for list
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help              help for list
 ```
 
 ### Options inherited from parent commands
@@ -326,6 +329,7 @@ kit login docker.io --password-stdin -u docker_user
       --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
   -h, --help              help for login
 ```
 
@@ -446,11 +450,12 @@ kit pull registry.example.com/my-model:latest
 ### Options
 
 ```
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -h, --help          help for pull
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help              help for pull
 ```
 
 ### Options inherited from parent commands
@@ -490,11 +495,12 @@ kit push registry.example.com/my-model:1.0.0
 ### Options
 
 ```
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -h, --help          help for push
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help              help for push
 ```
 
 ### Options inherited from parent commands
@@ -546,14 +552,15 @@ kit remove --all --force
 ### Options
 
 ```
-  -f, --force         remove modelkit and all other tags that refer to it
-  -a, --all           remove all untagged modelkits
-  -r, --remote        remove modelkit from remote registry
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -h, --help          help for remove
+  -f, --force             remove modelkit and all other tags that refer to it
+  -a, --all               remove all untagged modelkits
+  -r, --remote            remove modelkit from remote registry
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help              help for remove
 ```
 
 ### Options inherited from parent commands
@@ -667,18 +674,19 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 ### Options
 
 ```
-  -d, --dir string    The target directory to unpack components into. This directory will be created if it does not exist
-  -o, --overwrite     Overwrites existing files and directories in the target unpack directory without prompting
-      --kitfile       Unpack only Kitfile
-      --model         Unpack only model
-      --code          Unpack only code
-      --datasets      Unpack only datasets
-      --docs          Unpack only docs
-      --plain-http    Use plain HTTP when connecting to remote registries
-      --tls-verify    Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string   Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string    Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-  -h, --help          help for unpack
+  -d, --dir string        The target directory to unpack components into. This directory will be created if it does not exist
+  -o, --overwrite         Overwrites existing files and directories in the target unpack directory without prompting
+      --kitfile           Unpack only Kitfile
+      --model             Unpack only model
+      --code              Unpack only code
+      --datasets          Unpack only datasets
+      --docs              Unpack only docs
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help              help for unpack
 ```
 
 ### Options inherited from parent commands
@@ -709,7 +717,8 @@ kit version [flags]
 ### Options
 
 ```
-  -h, --help   help for version
+  -h, --help                        help for version
+      --show-update-notifications   Enable or disable update notifications for the Kit CLI
 ```
 
 ### Options inherited from parent commands
