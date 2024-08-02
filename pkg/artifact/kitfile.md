@@ -59,8 +59,8 @@ This section provides general information about the AI/ML project.
 
 - **Description**: Information about included documentation for the model
 - **Type**: Object Array
- - `description`: Description of the documentation
- - `path`: Location of the documentation relative to the context
+  - `description`: Description of the documentation
+  - `path`: Location of the documentation relative to the context
 
 #### `model`
 
@@ -76,6 +76,7 @@ This section provides general information about the AI/ML project.
     - `name`: Identifier for the part
     - `path`: Location of the file or a directory relative to the context
     - `type`: The type of the part (e.g. LoRA weights)
+  - `parameters`: An arbitrary section of yaml that can be used to store any additional data that may be relevant to the current model, with a few caveats. Only a json-compatible subset of yaml is supported. Strings will be serialized without flow parameters. Numbers will be converted to decimal representations (0xFF -> 255, 1.2e+3 -> 1200). Maps will be sorted alphabetically by key.
 
 
 ## Example
@@ -105,4 +106,3 @@ model:
     description: Model description.
     license: Apache-2.0
 ```
-
