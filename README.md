@@ -15,17 +15,21 @@
 
 ### What is KitOps?
 
-KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise registry. It's tamper-proof, signable, and auditable.
+KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise registry.
 
 KitOps makes it easy for organizations to track, control, and audit access and changes to their AI project artifacts. It simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, codebases, features, hyperparmeters, and any other documentation. ModelKits are portable, reproducible, and work with the tools you already use.
 
-Teams and enterprises use KitOps as a gate between development and production deployment. This ensures that projects are complete, versioned, and immutable before they are deployed and makes rollbacks and other production operations simpler and safer.
+Teams and enterprises use KitOps as a gate between development and production deployment. This ensures that projects are complete, versioned, and compatible with existing pipelines and tools. This makes deployments, rollbacks, and other production operations simpler and safer.
 
 Use KitOps to speed up and de-risk all types of AI projects from small analysis models to large language models, including fine-tuning and RAG.
 
+### 🇪🇺 EU AI Act Compliance 🔒
+For our friends in the EU - ModelKits are the perfect way to create a library of model versions for EU AI Act compliance because they're tamper-proof, signable, and auditable.
+
+
 ### 🎉 New
 
-Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https://jozu.ml/discover)** repository (don't worry - ModelKits are compatible with any OCI registry).
+Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https://jozu.ml/discover)** repository. Or, continue using ModelKits with your existing OCI registry (even on-premises and air-gapped).
 
 
 ### Features
