@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 project_name: kitops
 
@@ -28,10 +28,9 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    rlcp: true
     files:
       - LICENSE
       - README.md
 
 snapshot:
-  name_template: "{{ .Version }}-{{ .ShortCommit }}"
+  name_template: "{{ .Version }}"
