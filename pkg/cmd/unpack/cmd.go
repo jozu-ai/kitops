@@ -41,13 +41,24 @@ filesystem. By default, it attempts to find the modelkit in local storage; if
 not found, it searches the remote registry and retrieves it. This process
 ensures that the necessary components are always available for unpacking,
 optimizing for efficiency by fetching only specified components from the
-remote registry when necessary`
+remote registry when necessary.
+
+The content that is unpacked can be limited via the --filter (-f) flag. For example,
+use
+    --filter=model
+to unpack only the model, or 
+    --filter=datasets:my-dataset
+to unpack only the dataset named 'my-dataset'. Filtering for specific code/datasets/docs
+will match on either name or the path of the field.`
 
 	example = `# Unpack all components of a modelkit to the current directory
 kit unpack myrepo/my-model:latest -d /path/to/unpacked
 
 # Unpack only the model and datasets of a modelkit to a specified directory
-kit unpack myrepo/my-model:latest --model --datasets -d /path/to/unpacked
+kit unpack myrepo/my-model:latest --filter=model,datasets -d /path/to/unpacked
+
+# Unpack only the dataset named "my-dataset" to the current directory
+kit unpack myrepo/my-model:latest --filter=datasets:my-dataset
 
 # Unpack a modelkit from a remote registry with overwrite enabled
 kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked`
@@ -55,13 +66,17 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked`
 
 type unpackOptions struct {
 	options.NetworkOptions
-	configHome string
-	unpackDir  string
-	unpackConf unpackConf
-	modelRef   *registry.Reference
-	overwrite  bool
+	configHome  string
+	unpackDir   string
+	filters     []string
+	filterConfs []filterConf
+	unpackConf  unpackConf
+	modelRef    *registry.Reference
+	overwrite   bool
 }
 
+// unpackConf configures which elements of the modelkit should be unpacked.
+// Deprecated: use filterConf instead, which supports advanced filtering
 type unpackConf struct {
 	unpackKitfile  bool
 	unpackModels   bool
@@ -85,13 +100,20 @@ func (opts *unpackOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelRef = modelRef
 
-	conf := opts.unpackConf
-	if !conf.unpackKitfile && !conf.unpackModels && !conf.unpackCode && !conf.unpackDatasets {
-		opts.unpackConf.unpackKitfile = true
-		opts.unpackConf.unpackModels = true
-		opts.unpackConf.unpackCode = true
-		opts.unpackConf.unpackDatasets = true
-		opts.unpackConf.unpackDocs = true
+	if len(opts.filters) > 0 {
+		for _, filter := range opts.filters {
+			filterConf, err := parseFilter(filter)
+			if err != nil {
+				return err
+			}
+			opts.filterConfs = append(opts.filterConfs, *filterConf)
+		}
+	} else {
+		// Deprecated, but handle original filtering flags as well for now
+		conf := opts.unpackConf
+		if conf.unpackKitfile || conf.unpackModels || conf.unpackCode || conf.unpackDatasets || conf.unpackDocs {
+			opts.filterConfs = filtersFromUnpackConf(conf)
+		}
 	}
 
 	absDir, err := filepath.Abs(opts.unpackDir)
@@ -122,11 +144,12 @@ func UnpackCommand() *cobra.Command {
 	cmd.Args = cobra.ExactArgs(1)
 	cmd.Flags().StringVarP(&opts.unpackDir, "dir", "d", "", "The target directory to unpack components into. This directory will be created if it does not exist")
 	cmd.Flags().BoolVarP(&opts.overwrite, "overwrite", "o", false, "Overwrites existing files and directories in the target unpack directory without prompting")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackKitfile, "kitfile", false, "Unpack only Kitfile")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets")
-	cmd.Flags().BoolVar(&opts.unpackConf.unpackDocs, "docs", false, "Unpack only docs")
+	cmd.Flags().StringArrayVarP(&opts.filters, "filter", "f", []string{}, "Filter what is unpacked from the modelkit based on type and name. Can be specified multiple times")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackKitfile, "kitfile", false, "Unpack only Kitfile (deprecated: use --filter=kitfile)")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackModels, "model", false, "Unpack only model (deprecated: use --filter=model)")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackCode, "code", false, "Unpack only code (deprecated: use --filter=code)")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackDatasets, "datasets", false, "Unpack only datasets (deprecated: use --filter=datasets)")
+	cmd.Flags().BoolVar(&opts.unpackConf.unpackDocs, "docs", false, "Unpack only docs (deprecated: use --filter=docs)")
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().SortFlags = false
 
