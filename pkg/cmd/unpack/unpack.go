@@ -200,7 +200,6 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	var logger *output.ProgressLogger
 	rc, logger = output.WrapReadCloser(desc.Size, rc)
 	defer rc.Close()
-	defer logger.Wait()
 
 	var cr io.ReadCloser
 	var cErr error
@@ -211,7 +210,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 		cr = rc
 	}
 	if cErr != nil {
-		return fmt.Errorf("error setting up decompress: %w", err)
+		return fmt.Errorf("error setting up decompress: %w", cErr)
 	}
 	defer cr.Close()
 	tr := tar.NewReader(cr)
@@ -221,7 +220,11 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 		return fmt.Errorf("failed to create directory %s: %w", unpackDir, err)
 	}
 
-	return extractTar(tr, unpackDir, overwrite, logger)
+	if err := extractTar(tr, unpackDir, overwrite, logger); err != nil {
+		return err
+	}
+	logger.Wait()
+	return nil
 }
 
 func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.ProgressLogger) error {
