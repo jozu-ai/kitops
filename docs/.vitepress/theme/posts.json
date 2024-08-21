@@ -71,7 +71,7 @@
   },
   {
   "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
-    "description": "IHow to turn a Jupyter Notebook into a deployable artifact.",
+    "description": "How to turn a Jupyter Notebook into a deployable artifact.",
     "tags": ["KitOps", "Jupyter", "Tutorial"],
     "author": "Jesse Williams",
     "published_time": "2024-07-08"
