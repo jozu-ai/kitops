@@ -70,10 +70,52 @@
     "published_time": "2024-04-26"
   },
   {
+  "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
+    "description": "IHow to turn a Jupyter Notebook into a deployable artifact.",
+    "tags": ["KitOps", "Jupyter", "Tutorial"],
+    "author": "Jesse Williams",
+    "published_time": "2024-07-08"
+  },
+  {
   "url": "https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing",
     "description": "In this article, we build a Retrieval-Augmented Generation (RAG) pipeline using KitOps, integrating tools like ChromaDB for embeddings, Llama 3 for language models, and SentenceTransformer for embedding models.",
     "tags": ["KitOps", "RAG", "Tutorial"],
     "author": "Gorkem Ercan",
     "published_time": "2024-07-09"
+  },
+  {
+  "url": "https://jozu.com/blog/25-open-source-ai-tools-to-cut-your-development-time-in-half/",
+    "description": "25 Open Source AI Tools to Cut Your Development Time in Half.",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-07-11"
+  },
+  {
+  "url": "https://jozu.com/blog/tools-to-ease-collaboration-between-data-scientists-and-application-developers/",
+    "description": "Tools to ease collaboration between data scientists and application developers.",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-07-16"
+  },
+  {
+  "url": "https://jozu.com/blog/how-to-tune-and-deploy-your-first-small-language-model-sllm/",
+    "description": "How to Tune and Deploy Your First Small Language Model (sLLM).",
+    "tags": ["KitOps", "sLLM", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-07-30"
+  },
+  {
+  "url": "https://jozu.com/blog/10-open-source-mlops-projects-you-didnt-know-about/",
+    "description": "10 Open Source MLOps Projects You Didn’t Know About.",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-08-01"
+  },
+  {
+  "url": "https://jozu.com/blog/from-jupyter-notebook-to-deployed-application-in-4-steps/",
+    "description": "From Jupyter Notebook to deployed application in 4 steps.",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-08-14"
   }
 ]

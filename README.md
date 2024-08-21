@@ -63,7 +63,7 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 You can pull pre-built ModelKits from [Jozu Hub](https://jozu.ml/discover).
 
-## 🚀 Try Kit in under 15 Minutes
+## 🚀 Try KitOps in under 15 Minutes
 
 1. [Install the CLI](./docs/src/docs/cli/installation.md) for your platform.
 1. Follow the [ Quick Start](https://kitops.ml/docs/quick-start.html) to learn to pack, unpack, and share a ModelKit.
@@ -80,7 +80,7 @@ We've been busy and shipping quickly!
 * 🏎️ Reduced ModelKit packing time by >97%
 * 🎯 Use KitOps to do LLM fine-tuning or package a RAG pipeline
 * 🤓 Read Kitfile from `stdin`
-* 👩‍💻 Use Kit Dev mode to run an LLM instantly (no GPUs or internet required)
+* 👩‍💻 Use KitOps Dev mode to run an LLM instantly (no GPUs or internet required)
 
 You can see all the gory details in our [release changelogs](https://github.com/jozu-ai/kitops/releases).
 
@@ -94,11 +94,11 @@ If you need help there are several ways to reach our community and [Maintainers]
 
 ### Reporting Issues and Suggesting Features
 
-Your insights help Kit evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
+Your insights help KitOps evolve as an open standard for AI/ML. We *deeply value* the issues and feature requests we get from users in our community :sparkling_heart:. To contribute your thoughts,navigate to the **Issues** tab and hitting the **New Issue** green button. Our templates guide you in providing essential details to address your request effectively.
 
 ### Joining the KitOps Contributors
 
-We ❤️ our Kit community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
+We ❤️ our KitOps community and contributors. To learn more about the many ways you can contribute (you don't need to be a coder) and how to get started see our [Contributor's Guide](./CONTRIBUTING.md). Please read our [Governance](./GOVERNANCE.md) and our [Code of Conduct](./CODE-OF-CONDUCT.md) before contributing.
 
 ### A Community Built on Respect
 
