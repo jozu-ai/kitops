@@ -64,7 +64,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
   <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
   <div class="p1 mt-8 mx-8">
-    Kit is a free open source MLOps tool that packages and versions your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
+    KitOps is a free open source MLOps tool that packages and versions your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
   </div>
 
   <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
@@ -140,8 +140,8 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <div class="h4 !text-gold">Model handoffs are hard.</div>
     <div class="p2 space-y-4">
       <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
-      <p>Kit is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
-      <p>Kit solves two big problems:</p>
+      <p>KitOps is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
+      <p>KitOps solves two big problems:</p>
     </div>
 
     <div class="h4 !text-gold xs:mt-12">Collaboration–</div>
@@ -190,7 +190,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
   <h2>WhAt’s suppoRted<span class="font-heading font-extralight">?</span></h2>
-  <p class="p1 mt-8 mb-22">Kit was designed to work with the tools your team already uses.</p>
+  <p class="p1 mt-8 mb-22">KitOps was designed to work with the tools your team already uses.</p>
 
   <div class="space-y-12 relative marquee-gradients">
 
@@ -314,7 +314,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <p class="mt-6">
       ModelKits do both. With a ModelKit, you can package all the parts of your AI project in one shareable asset, and tag them with a version.
       ModelKits were designed for the model development lifecycle, where projects are handed off from data science teams to application teams to deployment teams. Versioning and packaging makes it easy for team members to find the datasets and configurations that map to a specific model version.
-      You can <a href="/docs/overview.html" class="underline">read more details about Kit in our overview</a>.
+      You can <a href="/docs/overview.html" class="underline">read more details about KitOps in our overview</a>.
     </p>
   </Accordion>
 
@@ -366,11 +366,11 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
   <Accordion content-class="space-y-[1em]">
     <template #title>Are ModelKits a replacement for Docker containers?</template>
 
-    <p class="mt-6">No, ModelKits complement containers - in fact, Kit can take a ModelKit and generate a container for the model automatically. However, not all models should be deployed inside containers - sometimes it’s more efficient and faster to deploy an init container linked to the model for deployment. Datasets may also not need to be in containers - many datasets are easier to read and manipulate for training and validation when they’re not in a container. Finally, each container is still separate so even if you do want to put everything in its own container it’s not clear to people outside the AI project which datasets go with which models and which configurations.</p>
+    <p class="mt-6">No, ModelKits complement containers - in fact, KitOps can take a ModelKit and generate a container for the model automatically. However, not all models should be deployed inside containers - sometimes it’s more efficient and faster to deploy an init container linked to the model for deployment. Datasets may also not need to be in containers - many datasets are easier to read and manipulate for training and validation when they’re not in a container. Finally, each container is still separate so even if you do want to put everything in its own container it’s not clear to people outside the AI project which datasets go with which models and which configurations.</p>
   </Accordion>
 
   <Accordion content-class="space-y-[1em]">
-    <template #title>Why would I use Kit for versioning instead of Git?</template>
+    <template #title>Why would I use KitOps for versioning instead of Git?</template>
 
     <p class="mt-6">Models and datasets in AI projects are often 10s or 100s of GB in size. Git was designed to work with many small files that can be easily diff’ed between versions. Git treats models and datasets stored in LFS (large file storage) as atomic blobs and can’t differentiate between versions of them. This makes it both inefficient and dangerous since it’s easy for someone to tamper with the models and datasets in the LFS without Git knowing. Finally, once you use LFS, a clone is no longer guaranteed to be the same as the original repo, because the repo refers to an LFS server that is independent of the clone and can change independently.</p>
   </Accordion>
@@ -378,7 +378,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
   <Accordion content-class="space-y-[1em]">
     <template #title>My MLOps tools do versioning, why do I need Kit?</template>
 
-    <p class="mt-6">Kit is the only standards-based and open source solution for packaging and versioning AI project assets. Popular MLOps tools use proprietary and often closed formats to lock you into their ecosystem. This makes handoffs between MLOps tool users and non-MLOps tool users (like your application development and DevOps teams) unnecessarily hard. The future of MLOps tools is still being written, and it’s likely that many will be acquired or shut down and the cost of moving projects from one proprietary format to another is high. By using the OCI standard that’s already supported by nearly every tool on the planet, ModelKits give you a future-proofed solution for packaging and versioning that is compatible with both your MLOps tools and development / DevOps tools so everyone can collaborate regardless of the tools they use.</p>
+    <p class="mt-6">KitOps is the only standards-based and open source solution for packaging and versioning AI project assets. Popular MLOps tools use proprietary and often closed formats to lock you into their ecosystem. This makes handoffs between MLOps tool users and non-MLOps tool users (like your application development and DevOps teams) unnecessarily hard. The future of MLOps tools is still being written, and it’s likely that many will be acquired or shut down and the cost of moving projects from one proprietary format to another is high. By using the OCI standard that’s already supported by nearly every tool on the planet, ModelKits give you a future-proofed solution for packaging and versioning that is compatible with both your MLOps tools and development / DevOps tools so everyone can collaborate regardless of the tools they use.</p>
   </Accordion>
 
   <Accordion content-class="space-y-[1em]">
