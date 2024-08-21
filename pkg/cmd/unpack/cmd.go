@@ -46,10 +46,20 @@ remote registry when necessary.
 The content that is unpacked can be limited via the --filter (-f) flag. For example,
 use
     --filter=model
-to unpack only the model, or 
+to unpack only the model, or
     --filter=datasets:my-dataset
-to unpack only the dataset named 'my-dataset'. Filtering for specific code/datasets/docs
-will match on either name or the path of the field.`
+to unpack only the dataset named 'my-dataset'.
+
+Valid filters have the format
+    <types>:<filters>
+where <types> is a comma-separated list of Kitfile fields (kitfile, model, datasets
+code, or docs) and <filters> is an optional comma-separated list of additional filters
+to apply, which are matched against the Kitfile to further restrict what is extracted.
+Additional filters match elements of the Kitfile on either the name (if present) or
+the path used.
+
+The filter field can be specified multiple times. A layer will be unpacked if it matches
+any of the specified filters`
 
 	example = `# Unpack all components of a modelkit to the current directory
 kit unpack myrepo/my-model:latest -d /path/to/unpacked
@@ -59,6 +69,12 @@ kit unpack myrepo/my-model:latest --filter=model,datasets -d /path/to/unpacked
 
 # Unpack only the dataset named "my-dataset" to the current directory
 kit unpack myrepo/my-model:latest --filter=datasets:my-dataset
+
+# Unpack only the docs layer with path "./README.md" to the current directory
+kit unpack myrepo/my-model:latest --filter=docs:./README.md
+
+# Unpack the model and the dataset named "validation"
+kit unpack myrepo/my-model:latest --filter=model --filter=datasets:validation
 
 # Unpack a modelkit from a remote registry with overwrite enabled
 kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked`
