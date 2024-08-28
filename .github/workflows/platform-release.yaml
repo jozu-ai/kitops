@@ -25,6 +25,8 @@ permissions:
   contents: write
   pull-requests: write
   packages: write
+  id-token: write
+  attestations: write
 
 jobs:
   build-macos:
@@ -254,6 +256,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
 
       - name: Build and push Kit init container
+        id: build-kit-init-container
         uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85    # v6.7.0
         with:
           platforms: linux/amd64,linux/arm64
@@ -265,3 +268,17 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}:${{ github.ref_name }}
+
+      - name: Generate artifact attestation for base container
+        uses: actions/attest-build-provenance@6149ea5740be74af77f260b9db67e633f6b0a9a1   # v1.4.2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.build-kit-container.outputs.digest }}
+          push-to-registry: true
+
+      - name: Generate artifact attestation for base container
+        uses: actions/attest-build-provenance@6149ea5740be74af77f260b9db67e633f6b0a9a1   # v1.4.2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}
+          subject-digest: ${{ steps.build-kit-init-container.outputs.digest }}
+          push-to-registry: true
