@@ -44,3 +44,7 @@ COPY --from=kit-download /kit-cli-download/extracted/README.md /kit-cli-download
 USER ${USER_ID}
 
 ENTRYPOINT ["kit"]
+
+LABEL org.opencontainers.image.description="Official release Kit CLI container"
+LABEL org.opencontainers.image.source="https://github.com/jozu-ai/kitops"
+LABEL org.opencontainers.image.licenses="Apache-2.0"

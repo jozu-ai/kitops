@@ -50,6 +50,10 @@ jobs:
             KIT_VERSION=${{ github.ref_name }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_TAG }}
+          annotations: |
+            index:org.opencontainers.image.description=Kit CLI container built from source
+            index:org.opencontainers.image.source=https://github.com/jozu-ai/kitops
+            index:org.opencontainers.image.licenses=Apache-2.0
 
       - name: Build and push Kit init container
         id: build-kit-init-container
@@ -63,6 +67,10 @@ jobs:
             KIT_BASE_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-kit-container.outputs.digest }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}:${{ env.NEXT_TAG }}
+          annotations: |
+            index:org.opencontainers.image.description=Kit CLI init container
+            index:org.opencontainers.image.source=https://github.com/jozu-ai/kitops
+            index:org.opencontainers.image.licenses=Apache-2.0
 
       # - name: Generate artifact attestation for base container
       #   uses: actions/attest-build-provenance@6149ea5740be74af77f260b9db67e633f6b0a9a1   # v1.4.2
