@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+    paths-ignore: docs/
 
 env:
   REGISTRY: ghcr.io
