@@ -1,4 +1,4 @@
-FROM docker.io/library/golang:alpine AS builder
+FROM docker.io/library/golang:1.22.6-alpine AS builder
 
 RUN apk --no-cache upgrade && apk add --no-cache git
 ARG KIT_VERSION=next

@@ -1,6 +1,6 @@
 module kitops
 
-go 1.21.6
+go 1.22.6
 
 require (
 	github.com/moby/patternmatcher v0.6.0
