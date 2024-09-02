@@ -18,8 +18,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       vue3-marquee:
-        specifier: ^4.2.1
-        version: 4.2.1(vue@3.4.38)
+        specifier: ^4.2.2
+        version: 4.2.2(vue@3.4.38)
     devDependencies:
       autoprefixer:
         specifier: ^10.4.20
@@ -1125,8 +1125,8 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  vue3-marquee@4.2.1:
-    resolution: {integrity: sha512-3nJs2ZNnEre9qZapeRcJ8WUrhE7Z8dm9pH7jR5TYBLmGre46w6vLCht6kcNruOO/c50wuYCx73wQCaXJ0Y/Kvg==}
+  vue3-marquee@4.2.2:
+    resolution: {integrity: sha512-FeFvGUVInKfFilXFcnl8sDRBJBZCZSNLlQDquJErB9db6W2xICRVqbRV/jtdzsEP0rftarLQhx9MeEAU0+TPuQ==}
     engines: {node: '>=12'}
     peerDependencies:
       vue: ^3.2
@@ -2256,7 +2256,7 @@ snapshots:
     dependencies:
       vue: 3.4.38
 
-  vue3-marquee@4.2.1(vue@3.4.38):
+  vue3-marquee@4.2.2(vue@3.4.38):
     dependencies:
       vue: 3.4.38
 
