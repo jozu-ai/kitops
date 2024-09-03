@@ -180,7 +180,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
       </a>
     </li>
     <li class="border border-gray-02 hover:border-gold transition-colors">
-      <a href="https://jozu.ml/repositories/29" class="flex items-center justify-between px-14 py-6">
+      <a href="https://jozu.ml/repositories/41" class="flex items-center justify-between px-14 py-6">
         Object Detection
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
           <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
