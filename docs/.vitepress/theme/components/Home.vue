@@ -133,7 +133,7 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
   </div>
 </div>
 
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-0 w-full max-w-[960px] mx-auto">
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-10 lg:px-0 w-full max-w-[960px] mx-auto">
   <h2 class="text-center">eVeRythinG you need to Run <br class="xs:hidden">youR fiRst Model</h2>
   <p class="p1 text-center mt-16">AI projects are more than just a model, you need a codebase, dataset, documentation, and of course the model.</p>
   <p class="p1 text-center mt-4">Our quickstart ModelKits have everything you need in one easy to find place.</p>
