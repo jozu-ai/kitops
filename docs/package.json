@@ -19,6 +19,6 @@
     "@vueuse/core": "^11.0.3",
     "cheerio": "1.0.0-rc.12",
     "sitemap": "^8.0.0",
-    "vue3-marquee": "^4.2.1"
+    "vue3-marquee": "^4.2.2"
   }
 }
