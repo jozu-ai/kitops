@@ -133,6 +133,63 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
   </div>
 </div>
 
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-10 lg:px-0 w-full max-w-[960px] mx-auto">
+  <h2 class="text-center">eVeRythinG you need to Run <br class="xs:hidden">youR fiRst Model</h2>
+  <p class="p1 text-center mt-16">AI projects are more than just a model, you need a codebase, dataset, documentation, and of course the model.</p>
+  <p class="p1 text-center mt-4">Our quickstart ModelKits have everything you need in one easy to find place.</p>
+
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 my-22">
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/llama3.1-8b" class="flex items-center justify-between px-14 py-6">
+        Meta Llama3.1
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="32" height="32" viewBox="0 0 209 297">
+          <path fill="#fff" d="M22 297c-1-10-3-19-1-29 2-8 8-15 8-22-1-13-13-23-12-37 1-12 11-24 11-35-1-6-6-11-9-16-4-11-4-23 0-33 6-12 17-22 29-25 5-2 12 1 16-2 7-3 10-14 17-18 16-12 36-10 50 3 5 4 8 12 13 15 4 2 10 0 14 1 12 2 23 11 29 22s7 24 2 37c-2 5-8 10-8 16 0 11 10 23 10 35 1 14-10 24-11 37 0 7 6 14 8 22 2 10-1 19-1 29 4 0 10 1 13-1 5-2 4-9 4-13 0-8 0-16-2-23-1-5-5-10-3-15 5-16 9-28 7-44 0-9-6-18-6-26 0-5 4-11 6-16a64 64 0 0 0-10-55c-4-4-9-7-11-12-1-6 1-14 1-19 0-14-1-28-9-41-7-11-22-14-31-3-8 10-9 23-12 35-21-9-38-10-59 0-3-12-4-25-12-35-9-11-25-8-31 3-8 13-9 27-9 41 0 5 2 13 0 19-1 5-7 8-10 12-5 6-8 14-10 21-3 12-3 23 0 35 2 5 6 10 6 15 0 8-6 17-6 26-2 16 2 28 7 44 2 5-2 10-3 15-3 7-2 15-2 23 0 4-1 11 3 13s10 1 14 1M39 86c-1-13-1-25 3-37 1-3 2-11 6-11s6 7 7 10c3 7 8 24 4 32-2 5-15 4-20 6m131 0c-6-2-18-1-20-6-4-8 1-25 4-32 1-3 3-10 6-10 5 0 6 8 7 11 4 12 4 24 3 37m-73 51c-25 4-48 33-27 55 12 12 32 13 48 11 22-4 37-28 24-48a45 45 0 0 0-45-18m-50 3c-11 6-4 25 8 19s4-25-8-19m105 0c-11 6 0 25 11 19 10-6 1-25-11-19m-53 8c13-2 27 2 34 13 9 14-3 29-18 31-11 2-26 2-35-6-18-15 2-36 19-38m-1 14c-6 2 2 21 8 19 3-1 3-6 4-8 3-9-1-14-12-11z"/>
+        </svg>
+      </a>
+    </li>
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/gemma-7b" class="flex items-center justify-between px-14 py-6">
+        Google Gemma
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/phi3" class="flex items-center justify-between px-14 py-6">
+        Microsoft phi3
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/fine-tuning" class="flex items-center justify-between px-14 py-6">
+        Fine-tuning
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/rag-pipeline" class="flex items-center justify-between px-14 py-6">
+        Rag pipeline
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+    <li class="border border-gray-02 hover:border-gold transition-colors">
+      <a href="https://jozu.ml/repository/jozu/yolo-v10" class="flex items-center justify-between px-14 py-6">
+        Object Detection
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M21.5623 14.6665L14.4103 7.51452L16.2959 5.62891L26.6668 15.9999L16.2959 26.3707L14.4103 24.4851L21.5623 17.3332H5.3335V14.6665H21.5623Z" fill="#ECECEC"/>
+        </svg>
+      </a>
+    </li>
+  </ul>
+</div>
+
 <div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
 
