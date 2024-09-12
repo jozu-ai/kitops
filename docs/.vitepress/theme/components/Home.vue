@@ -4,6 +4,28 @@ import { ref, computed } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
+import NewsletterModal from './NewsletterModal.vue'
+
+const ONE_DAY_MS = 1000 * 60 * 60 * 24
+const isSubscribed = localStorage.getItem('subscribed')
+// get the last time we showed the modal, or 1 day ago if it's not set yet
+const newsletterLastOpenedAt = localStorage.getItem('newsletter-last-opened') || (new Date().getTime()) - ONE_DAY_MS
+const newsletterLastOpenDiff = new Date().getTime() - new Date(newsletterLastOpenedAt).getTime()
+
+const isNewsletterVisible = ref(false)
+
+// show the newsletter modal once a day only
+if (newsletterLastOpenDiff >= ONE_DAY_MS && !isSubscribed) {
+  isNewsletterVisible.value = true
+}
+
+// Close the modal for 24 hours
+const closeModal = (shouldReopenIn24Hours = true) => {
+  isNewsletterVisible.value = false
+  if (shouldReopenIn24Hours) {
+    localStorage.setItem('newsletter-last-opened', new Date().getTime())
+  }
+}
 
 const activeQuote = ref(0)
 const quotes = [
@@ -520,6 +542,13 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     </a>
   </div>
 </div>
+
+<Teleport to="body">
+  <NewsletterModal
+    v-if="isNewsletterVisible"
+    @close="closeModal()"
+    @subscribe="closeModal(false)" />
+</Teleport>
 </template>
 
 <!-- Our custom home styles -->

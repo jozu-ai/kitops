@@ -29,7 +29,19 @@ module.exports = {
           '02': '#4D4D4F',
           '05': '#6A6A6A',
           '06': '#AAAAAA'
-        }
+        },
+        elevation: {
+          '0': 'rgb(18, 18, 18)',
+          '01': '#1F1F1F',
+          '02': '#292929',
+          '03': '#333333',
+          '04': '#3D3D3D',
+          '05': '#464646'
+        },
+      },
+
+      boxShadow: {
+        'modal': '0px 6px 24px 0px rgba(0, 0, 0, 0.24), 0px 0px 32px 0px rgba(0, 0, 0, 0.40)'
       },
 
       spacing: {
