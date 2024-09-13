@@ -171,7 +171,6 @@
     @apply inline-block appearance-none;
     @apply px-5 py-3 relative;
     @apply text-gold font-bold uppercase text-center;
-    @apply enabled:hocus:text-white;
     @apply disabled:opacity-50;
 
     border: 2px solid var(--color-gold);
@@ -195,8 +194,13 @@
     }
 
     &:not(:disabled):hover {
+      @apply text-white;
       background-color: var(--color-gold);
       background-size: 0% 0%;
+    }
+
+    &:not(:disabled):focus {
+      @apply text-white;
     }
   }
 
