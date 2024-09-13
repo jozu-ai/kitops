@@ -39,7 +39,7 @@ const onSubmit = () => {
       }, 3000)
     })
     .catch((err) => {
-      error.value = err.response.data.errors.flatMap((e)  => e.message)[0]
+      error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
     })
     .finally(() => {
       isBusy.value = false
