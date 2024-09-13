@@ -16,7 +16,10 @@ const isNewsletterVisible = ref(false)
 
 // show the newsletter modal once a day only
 if (newsletterLastOpenDiff >= ONE_DAY_MS && !isSubscribed) {
-  isNewsletterVisible.value = true
+  // Show the modal 5 seconds after the page load
+  setTimeout(() => {
+    isNewsletterVisible.value = true
+  }, 5000)
 }
 
 // Close the modal for 24 hours
