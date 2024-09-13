@@ -50,9 +50,9 @@ const onSubmit = () => {
 <template>
 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
   <div class="bg-elevation-02 p-12 max-w-[568px]">
-    <header class="flex items-start mb-6">
-      <h3 class="font-brand">stAy infoRmed About Kitops</h3>
-      <button @click="emit('close')">
+    <header class="flex items-start mb-6 relative">
+      <h3 class="font-brand text-center">stAy infoRmed About Kitops</h3>
+      <button class="absolute right-0 top-0" @click="emit('close')">
         <span class="sr-only">close this modal</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z" fill="#ECECEC"/>
@@ -61,7 +61,7 @@ const onSubmit = () => {
     </header>
 
     <template v-if="!isSubscribed">
-      <p>
+      <p class="text-center max-w-[400px] mx-auto">
         Sign up to receive release updates, community content, and ways to get involved with KitOps.
       </p>
 
@@ -86,11 +86,11 @@ const onSubmit = () => {
       </form>
     </template>
 
-    <div v-else class="flex flex-col justify-center items-center gap-6 mt-12">
-      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+    <div v-else class="flex flex-col justify-center items-center gap-6 mt-6">
+      You're on the list, thank you for joining!
+      <svg xmlns="http://www.w3.org/2000/svg" class="mt-12" width="56" height="56" viewBox="0 0 64 64" fill="none">
         <path d="M32 58.6673C17.2724 58.6673 5.33337 46.7281 5.33337 32.0007C5.33337 17.2731 17.2724 5.33398 32 5.33398C46.7275 5.33398 58.6667 17.2731 58.6667 32.0007C58.6667 46.7281 46.7275 58.6673 32 58.6673ZM29.3403 42.6673L48.1966 23.8111L44.4254 20.0399L29.3403 35.1249L21.7979 27.5823L18.0267 31.3537L29.3403 42.6673Z" fill="#ECECEC"/>
       </svg>
-      Thank you for joining!
     </div>
   </div>
 </div>
