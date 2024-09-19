@@ -10,7 +10,7 @@ const ONE_DAY_MS = 1000 * 60 * 60 * 24
 const isSubscribed = localStorage.getItem('subscribed')
 // get the last time we showed the modal, or 1 day ago if it's not set yet
 const newsletterLastOpenedAt = localStorage.getItem('newsletter-last-opened') || (new Date().getTime()) - ONE_DAY_MS
-const newsletterLastOpenDiff = new Date().getTime() - new Date(newsletterLastOpenedAt).getTime()
+const newsletterLastOpenDiff = new Date().getTime() - new Date(Number(newsletterLastOpenedAt)).getTime()
 
 const isNewsletterVisible = ref(false)
 
