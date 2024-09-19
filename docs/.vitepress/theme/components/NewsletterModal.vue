@@ -21,14 +21,12 @@ onBeforeUnmount(() => {
 })
 
 const onSubmit = () => {
-  const LIST_ID = 'cm19ng3g101z90ll73b380b5s'
+  const LIST_ID = '115e5954-d2cc-4e97-b0dd-e6561d59e660'
   isBusy.value = true
 
-  const request = axios.put('https://sendgrid-proxy.gorkem.workers.dev/v1/contacts/update', {
-    email: email.value,
-    mailingLists: {
-      [LIST_ID]: true
-    }
+  const request = axios.put('https://sendgrid-proxy.gorkem.workers.dev/v3/marketing/contacts', {
+    list_ids: [ LIST_ID ],
+    contacts: [ { email: email.value }  ]
   })
 
   request
