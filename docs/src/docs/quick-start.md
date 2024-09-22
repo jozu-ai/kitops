@@ -25,11 +25,11 @@ Check that the Kit CLI is properly installed by using the [version command](./cl
 kit version
 ```
 
-You'll see information about the version of Kit you're running. If you get an error check to make sure you have [Kit installed](./cli/installation.md) and in your path.
+You'll see information about the version of Kit you're running. If you get an error check to make sure you have [Kit installed and in your path](./cli/installation.md).
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry. Here we'll pull ModelKits from [Jozu Hub](https://jozu.ml/discover), but we'll use **GitHub Registry** to push (the Jozu Hub only supports pull, although push is being worked on now).
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote. In this guide we'll use the [Jozu Hub](https://jozu.ml/discover) because it's free to sign-up and provides more detail on what's inside each ModelKit and whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
 kit login ghcr.io
@@ -48,8 +48,10 @@ You can grab <a href="https://jozu.ml/discover"
     location: 'docs/quick-start'
   }">any of the ModelKits</a> from the Jozu Hub, but we've chosen a fine-tuned model based on Llama3.
 
+The unpack command will unpack the ModelKit contents to the current directory by default. If you want it unpacked to a specific directory use the `-d /path/to/unpacked`.
+
 ```sh
-kit unpack jozu.ml/jozu/fine-tuning:tuned
+kit unpack jozu.ml/jozu/fine-tuning:latest
 ```
 
 You'll see a set of messages as Kit unpacks the configuration, code, datasets, and serialized model. Now list the directory contents:
@@ -59,11 +61,11 @@ ls
 ```
 
 You'll see:
-* A Llama3 model
-* A LoRA adapter
-* A training dataset
-* A README file
 * A Kitfile
+* A README file
+* A Llama3 model in GGUF format
+* A LoRA adapter in GGUF format
+* A training dataset
 
 The [Kitfile](./kitfile/kf-overview.md) is the manifest for our ModelKit, the serialized model, and a set of files or directories including the adapter, dataset, and docs. Every ModelKit has a Kitfile and you can use the info and inspect commands to view them from the CLI (there's more on this in our [Next Steps](next-steps.md) doc).
 
@@ -81,46 +83,34 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like: `kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
 
-In my case I am pushing to the `jozubrad` repository:
+In my case I am pushing to the `brad` repository on [Jozu Hub](https://jozu.ml/). You'll need to substitute the name of your own repository:
 
 ```sh
-kit pack . -t ghcr.io/jozubrad/mymodelkit:latest
+kit pack . -t jozu.ml/brad/quick-start:latest
 ```
 
 You'll see a set of `Saved ...` messages as each piece of the ModelKit is saved to the local repository.
 
-Checking your local registry again you should see an entry:
+Check your local registry again:
 
 ```sh
 kit list
 ```
 
-The new entry will be named based on whatever you used in your pack command.
+You should see an entry named based on whatever you used in your pack command.
 
 ### 6/ (Optional) Remove a ModelKit from a Local Repository
 
-Let's pretend that the `pack` command we ran in the previous step contained a typo in the ModelKit's repository name causing the word "model" to be entered as "modle". The output from the `kit list` command would display the ModelKit as:
+If you have a typo when packing a ModelKit you can easily remove it from your repository and try again. The [Next Steps guide includes information on how to remove ModelKits](./next-steps.md#remove-command).
 
-```sh
-ghcr.io/jozubrad/mymodlekit:latest
-```
-
-To correct this, we would `remove` the misspelled ModelKit from our local repository using the [remove command](./cli/cli-reference.md#kit-remove), being sure to provide reference the ModelKit using its mispelled name:
-
-```sh
-kit remove ghcr.io/jozubrad/mymodlekit:latest
-```
-
-Next, we would repeat the `kit pack` command in the previous step, being sure to provide the correct repository name for our ModelKit.
+Once you've removed the mistaken ModelKit from the repository, you can repeat the `kit pack` command in the previous step, being sure to provide the correct repository name for your ModelKit.
 
 ### 7/ Push the ModelKit to a Remote Repository
 
 The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
 
-<!-- replace with Jozu Hub once private repos are ready -->
-
 ```sh
-kit push ghcr.io/jozubrad/mymodelkit:latest
+kit push jozu.ml/brad/quick-start:latest
 ```
 
 ### Congratulations
