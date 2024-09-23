@@ -6,9 +6,8 @@ import vGaTrack from '@theme/directives/ga'
 
 In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
-* Push the ModelKit package to a public or private registry
+* Push that versioned ModelKit package to a registry
 * Grab only the assets you need from the ModelKit for testing, integration, local running, or deployment
-* Run an LLM locally to speed app integration, testing, or experimentation
 
 ## Before we start...
 
@@ -32,7 +31,7 @@ You'll see information about the version of Kit you're running. If you get an er
 You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote. In this guide we'll use the [Jozu Hub](https://jozu.ml/discover) because it's free to sign-up and provides more detail on what's inside each ModelKit and whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
-kit login ghcr.io
+kit login jozu.ml
 ```
 
 After entering your username and password, you'll see `Log in successful`. If you get an error it may be that you need an HTTP vs HTTPS (default) connection. Try the login command again but with `--plain-http`.
