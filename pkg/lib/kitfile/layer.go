@@ -116,6 +116,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	} else {
 		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", path))
 	}
+	plog.Wait()
 
 	callAndPrintError(ptw.Close, "Failed to close writer: %s")
 	callAndPrintError(tw.Close, "Failed to close tar writer: %s")

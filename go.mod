@@ -1,6 +1,6 @@
 module kitops
 
-go 1.21.6
+go 1.22.6
 
 require (
 	github.com/moby/patternmatcher v0.6.0
@@ -8,11 +8,11 @@ require (
 	github.com/opencontainers/image-spec v1.1.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
-	github.com/vbauerster/mpb/v8 v8.7.5
-	golang.org/x/mod v0.20.0
+	github.com/vbauerster/mpb/v8 v8.8.3
+	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
-	golang.org/x/sys v0.24.0
-	golang.org/x/term v0.23.0
+	golang.org/x/sys v0.25.0
+	golang.org/x/term v0.24.0
 	gopkg.in/yaml.v3 v3.0.1
 	oras.land/oras-go/v2 v2.5.0
 )

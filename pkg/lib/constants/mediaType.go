@@ -88,7 +88,7 @@ func IsValidCompression(compression string) error {
 	case NoneCompression, GzipCompression, GzipFastestCompression:
 		return nil
 	default:
-		return fmt.Errorf("Invalid option for --compression flag: must be one of 'none', 'gzip', or 'gzip-fastest'")
+		return fmt.Errorf("invalid compression type: must be one of 'none', 'gzip', or 'gzip-fastest'")
 	}
 }
 

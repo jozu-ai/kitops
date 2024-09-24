@@ -179,7 +179,7 @@ func saveContentLayer(ctx context.Context, localRepo local.LocalRepo, path strin
 	if err := os.Rename(tempPath, blobPath); err != nil {
 		// This may fail on some systems (e.g. linux where / and /home are different partitions)
 		// Fallback to regular push which is basically a copy
-		output.Debugf("Failed to move temp file into storage: %s", err)
+		output.Debugf("Failed to move temp file into storage (will copy instead): %s", err)
 		file, err := os.Open(tempPath)
 		if err != nil {
 			return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to open temporary file: %w", err)

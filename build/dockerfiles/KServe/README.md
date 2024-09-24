@@ -3,13 +3,15 @@
 The Dockerfile in this directory is used to build an image that can run as a ClusterStorageContainer for [KServe](https://kserve.github.io/website/master/).
 
 ## Building
-To build the image, `docker` is required. From the root of this repository, set the `$KIT_KSERVE_IMAGE` to the image tag you want to build and run
+To build the image, `docker` or `podman` is required. From the root of this repository, set the `$KIT_KSERVE_IMAGE` to the image tag you want to build and run
 ```bash
-docker build . \
-  -f build/dockerfiles/KServe/kserve.Dockerfile \
-  -t $KIT_KSERVE_IMAGE \
-  --build-arg version="next" \
-  --build-arg gitCommit=$(git rev-parse HEAD)
+docker build -t $KIT_KSERVE_IMAGE .
+```
+
+By default, the image will be built using `ghcr.io/jozu-ai/kit:next` as a base. This can be overridden (to build using a specific version of Kit, for example) by using the build arg `KIT_BASE_IMAGE`:
+```shell
+# Build the image based on Kit v0.3.2 instead of 'next'
+docker build -t kit-init-container:latest --build-arg KIT_BASE_IMAGE=ghcr.io/jozu-ai/kit:v0.3.2 .
 ```
 
 ## Installing

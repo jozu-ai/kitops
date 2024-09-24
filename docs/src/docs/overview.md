@@ -18,7 +18,7 @@ Bringing everything together is the Kit Command Line Interface (CLI). The Kit CL
 
 ## The Goal of KitOps
 
-The primary goal of KitOps is to bridge the gaps between data science, software development, and operational deployment. By providing a standard pacakaging and versioning solution for AI/ML projects, KitOps drives greater speed, security, and collaboration for teams working with models.
+The primary goal of KitOps is to bridge the gaps between data science, software development, and operational deployment. By providing a standard packaging and versioning solution for AI/ML projects, KitOps drives greater speed, security, and collaboration for teams working with models.
 
 ### 👩‍💻 For application developers
 
@@ -26,11 +26,11 @@ KitOps clears the path to use AI/ML with your existing tools and applications. N
 
 ### 👷 For DevOps teams
 
-ModelKits fit into your existing processes and the Kit CLI lets you pack or unpack ModelKit artifacts in the pipelines and automations you have proven over the last decade.
+ModelKits fit into your existing processes and the Kit CLI lets you pack or unpack ModelKit artifacts in the pipelines and automation you have proven over the last decade.
 
 ### 👩‍🔬 For data scientists
 
-KitOps enables you to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model managementand sharing, fostering closer collaboration with developers. With KitOps, you can spend more time experimenting and less time grappling with traditional software development tools.
+KitOps enables you to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model management and sharing, fostering closer collaboration with developers. With KitOps, you can spend more time experimenting and less time grappling with traditional software development tools.
 
 ## Benefits of KitOps
 
@@ -39,7 +39,7 @@ KitOps is not just another tool; it's a comprehensive CLI and packaging system s
 ### 📊 Management of Unstructured Datasets
 AI/ML projects often deal with large, unstructured datasets, such as images, videos, and audio files. KitOps simplifies the versioning and sharing of these datasets, making them as manageable as traditional code.
 
-### 🤝 Synchronised Data and Code Versioning
+### 🤝 Synchronized Data and Code Versioning
 One of the core strengths of KitOps is its ability to keep data and code versions in sync. This crucial feature solves the reproducibility issues that frequently arise in AI/ML development, ensuring consistency and reliability across project stages.
 
 ### 🚀 Deployment Ready

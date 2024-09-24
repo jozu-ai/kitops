@@ -652,7 +652,25 @@ filesystem. By default, it attempts to find the modelkit in local storage; if
 not found, it searches the remote registry and retrieves it. This process
 ensures that the necessary components are always available for unpacking,
 optimizing for efficiency by fetching only specified components from the
-remote registry when necessary
+remote registry when necessary.
+
+The content that is unpacked can be limited via the --filter (-f) flag. For example,
+use
+    --filter=model
+to unpack only the model, or
+    --filter=datasets:my-dataset
+to unpack only the dataset named 'my-dataset'.
+
+Valid filters have the format
+    [types]:[filters]
+where [types] is a comma-separated list of Kitfile fields (kitfile, model, datasets
+code, or docs) and [filters] is an optional comma-separated list of additional filters
+to apply, which are matched against the Kitfile to further restrict what is extracted.
+Additional filters match elements of the Kitfile on either the name (if present) or
+the path used.
+
+The filter field can be specified multiple times. A layer will be unpacked if it matches
+any of the specified filters
 
 ```
 kit unpack [flags] [registry/]repository[:tag|@digest]
@@ -665,7 +683,16 @@ kit unpack [flags] [registry/]repository[:tag|@digest]
 kit unpack myrepo/my-model:latest -d /path/to/unpacked
 
 # Unpack only the model and datasets of a modelkit to a specified directory
-kit unpack myrepo/my-model:latest --model --datasets -d /path/to/unpacked
+kit unpack myrepo/my-model:latest --filter=model,datasets -d /path/to/unpacked
+
+# Unpack only the dataset named "my-dataset" to the current directory
+kit unpack myrepo/my-model:latest --filter=datasets:my-dataset
+
+# Unpack only the docs layer with path "./README.md" to the current directory
+kit unpack myrepo/my-model:latest --filter=docs:./README.md
+
+# Unpack the model and the dataset named "validation"
+kit unpack myrepo/my-model:latest --filter=model --filter=datasets:validation
 
 # Unpack a modelkit from a remote registry with overwrite enabled
 kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
@@ -674,19 +701,20 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
 ### Options
 
 ```
-  -d, --dir string        The target directory to unpack components into. This directory will be created if it does not exist
-  -o, --overwrite         Overwrites existing files and directories in the target unpack directory without prompting
-      --kitfile           Unpack only Kitfile
-      --model             Unpack only model
-      --code              Unpack only code
-      --datasets          Unpack only datasets
-      --docs              Unpack only docs
-      --plain-http        Use plain HTTP when connecting to remote registries
-      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
-      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
-      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
-      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
-  -h, --help              help for unpack
+  -d, --dir string           The target directory to unpack components into. This directory will be created if it does not exist
+  -o, --overwrite            Overwrites existing files and directories in the target unpack directory without prompting
+  -f, --filter stringArray   Filter what is unpacked from the modelkit based on type and name. Can be specified multiple times
+      --kitfile              Unpack only Kitfile (deprecated: use --filter=kitfile)
+      --model                Unpack only model (deprecated: use --filter=model)
+      --code                 Unpack only code (deprecated: use --filter=code)
+      --datasets             Unpack only datasets (deprecated: use --filter=datasets)
+      --docs                 Unpack only docs (deprecated: use --filter=docs)
+      --plain-http           Use plain HTTP when connecting to remote registries
+      --tls-verify           Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string          Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string           Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int      Maximum number of simultaneous uploads/downloads (default 5)
+  -h, --help                 help for unpack
 ```
 
 ### Options inherited from parent commands
