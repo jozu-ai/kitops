@@ -251,6 +251,8 @@ kit inspect mymodel:challenger
 
 ## Tag ModelKits and Keep Your Registry Tidy
 
+### Tag Command
+
 Tagging is a great way to version your ModelKits as they move through the development lifecycle. For example, during development the model I'm working on currently may always be tagged as the `latest` so my team knows which is most current. At the same time the model that's operating in production for my customers may be tagged the `champion`.
 
 However, after testing my latest model, if I find that its scores are much higher than the current champion model I may tag it `challenger` so everyone knows that this is likely to be the next model we deploy to production, replacing our current champion model.
@@ -293,7 +295,11 @@ mymodel     challenger  Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74ff85a00f2a68400dfc17b045bc7c1638da7f096c7ae400ad5bdfd520c
 ```
 
-However, we no longer want this ModelKit to be tagged as `challenger` since it's the `champion` now. Let's [remove](./cli/cli-reference.md#kit-remove) it from our registry to keep things clean:
+### Remove Command
+
+Sometimes you want to remove a ModelKit that you've packed and stored in the repository. The `kit remove` command comes to the rescue.
+
+In this case, we no longer want the `challenger` ModelKit since it's a duplicate of the `champion` now. [Removing it](./cli/cli-reference.md#kit-remove) from our registry will keep things clean and clearer for other users:
 
 ```sh
 kit remove mymodel:challenger
