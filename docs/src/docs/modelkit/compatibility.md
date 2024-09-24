@@ -53,7 +53,7 @@ A few examples in alphabetical order:
 * Red Hat InstructLab
 * Red Hat OpenShift
 * Red Hat OpenShift AI
-* Red HatQuay.io
+* Red Hat Quay.io
 * Seldon
 * Sonatype Nexus
 * Tensorflow Hub
