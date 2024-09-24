@@ -117,5 +117,40 @@
     "tags": ["KitOps", "Open Source", "MLOps"],
     "author": "Jesse Williams",
     "published_time": "2024-08-14"
+  },
+  {
+  "url": "https://jozu.com/blog/turn-your-existing-devops-pipeline-into-an-mlops-pipeline-with-modelkits/",
+    "description": "Turn Your Existing DevOps Pipeline Into an MLOps Pipeline With ModelKits",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-08-27"
+  },
+  {
+  "url": "https://jozu.com/blog/turn-devops-to-mlops-pipelines-with-this-open-source-tool/",
+    "description": "Turn DevOps to MLOps Pipelines With This Open-Source Tool",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-09-04"
+  },
+  {
+  "url": "https://developers.redhat.com/articles/2024/09/16/enhance-llms-instructlab-kitops",
+    "description": "Enhance LLMs and streamline MLOps using InstructLab and KitOps",
+    "tags": ["KitOps", "Open Source", "MLOps", "Red Hat"],
+    "author": "Cedric Clyburn",
+    "published_time": "2024-09-16"
+  },
+  {
+  "url": "https://jozu.com/blog/critical-llm-security-risks-and-best-practices-for-teams/",
+    "description": "Critical LLM Security Risks and Best Practices for Teams",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-09-17"
+  },
+  {
+  "url": "https://jozu.com/blog/from-proprietary-data-to-expert-ai-with-lamini-and-kitops/",
+    "description": "From Proprietary Data to Expert AI with Lamini and KitOps",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-09-24"
   }
 ]
