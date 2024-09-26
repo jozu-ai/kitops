@@ -76,13 +76,34 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 </script>
 
 <template>
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
+<div class="mt-32 md:mt-40  px-6 md:px-12 text-center content-container">
   <p class="h4 !font-normal !text-off-white">Share and run your AI projects anywhere</p>
   <h1 class="mt-4">Ease handoffs between AI/ML and Application teams</h1>
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
     <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'hero' }" class="kit-button">Install</a>
     <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
+  </div>
+
+  <div class="text-center max-w-[600px] mx-auto mt-16">
+    <p class="p1 font-heading">Stay Informed About KitOps</p>
+
+    <form @submit.prevent="onSubmit" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
+      <input required
+        :disabled="isBusy"
+        id="email"
+        type="email"
+        name="email"
+        placeholder="you@example.com"
+        class="input"
+        v-model="email"
+        autofocus
+        style="border: 1px solid var(--color-off-white)" />
+
+      <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
+    </form>
+
+    <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
   </div>
 </div>
 
@@ -571,6 +592,14 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 <style scoped src="@theme/assets/css/home.css"></style>
 
 <style scoped>
+.input {
+  @apply border border-off-white text-off-white;
+  @apply focus:border-gold;
+  @apply placeholder:text-gray-05 placeholder:opacity-100;
+  @apply block px-4 py-2 flex-1 bg-transparent w-full;
+  @apply outline-none focus:!outline-none;
+}
+
 .quote-bg {
   background-image: url("data:image/svg+xml,%3Csvg width='30' height='23' viewBox='0 0 30 23' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.0875627 15.504C0.0875627 14.4 0.375563 13.32 0.951563 12.264V12.192L7.57556 0.887997H10.5996L5.84756 9.024L6.63956 8.952C8.41556 8.952 9.92756 9.6 11.1756 10.896C12.4716 12.144 13.1196 13.68 13.1196 15.504C13.1196 17.328 12.4716 18.888 11.1756 20.184C9.92756 21.432 8.41556 22.056 6.63956 22.056C4.81556 22.056 3.25556 21.432 1.95956 20.184C0.711563 18.888 0.0875627 17.328 0.0875627 15.504ZM23.4156 8.952C25.2396 8.952 26.7756 9.6 28.0236 10.896C29.3196 12.144 29.9676 13.68 29.9676 15.504C29.9676 17.28 29.3196 18.816 28.0236 20.112C26.7756 21.408 25.2396 22.056 23.4156 22.056C21.6396 22.056 20.1036 21.408 18.8076 20.112C17.5116 18.816 16.8636 17.28 16.8636 15.504C16.8636 14.352 17.1756 13.272 17.7996 12.264V12.192L24.3516 0.887997H27.4476L22.6956 9.024L23.4156 8.952Z' fill='%23FFAF52'/%3E%3C/svg%3E%0A");
   background-position: 40px 40px;
