@@ -150,6 +150,12 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <li>
       <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
       <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/dev-mode.html">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
     </li>
   </ol>
 
@@ -253,6 +259,10 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="mt-10 md:mt-16 xl:mt-20 size-8 md:size-12">
         <path d="M6 16L18.0064 4H39.9956C41.1026 4 42 4.91062 42 5.9836V42.0164C42 43.112 41.1102 44 40.0132 44H7.9868C6.88952 44 6 43.1002 6 41.9864V16ZM20 8V18H10V40H38V8H20Z" class="fill-cornflower" />
       </svg>
+
+      <div>
+        <a href="/docs/modelkit/intro.html">LEARN MORE</a>
+      </div>
     </div>
     <div class="kit-card max-w-[370px] flex flex-col">
       <h3 class="!text-salmon">Kit cli</h3>
@@ -266,6 +276,10 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
         <path d="M36.1238 25.0052H54.7501" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
         <path d="M0 5.25L15.8041 16.8209L0 26.6985" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
       </svg>
+
+      <div>
+        <a href="/docs/cli/installation.html">LEARN MORE</a>
+      </div>
     </div>
   </div>
 </div>
@@ -435,12 +449,11 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 
   <Accordion content-class="space-y-[1em]">
     <template #title>Where are ModelKits stored?</template>
-
-    <p class="mt-6">ModelKits can be stored in any OCI-compliant registry - for example in a container registry like Docker Hub, or your favorite cloud vendor’s container registry, they can even be stored in an artifact repository like Artifactory.</p>
+    <p class="mt-6">ModelKits can be stored in any OCI-compliant registry - for example in a container registry like Docker Hub or Jozu Hub, or your favorite cloud vendor’s container registry, they can even be stored in an artifact repository like Artifactory.</p>
   </Accordion>
 
   <Accordion content-class="space-y-[1em]">
-    <template #title>Where are ModelKits stored?</template>
+    <template #title>Is KitOps open source and free to use?</template>
 
     <p class="mt-6">Yes, it is licensed with the Apache 2.0 license and welcomes all users and contributors. If you’re <a href="https://github.com/jozu-ai/kitops/blob/main/CONTRIBUTING.md" class="underline">interested in contributing</a>, let us know.</p>
   </Accordion>
