@@ -1,34 +1,19 @@
 <script setup lang="ts">
 import { isClient } from '@vueuse/core'
 import { ref, computed } from 'vue'
+import { useReCaptcha } from 'vue-recaptcha-v3'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
-import NewsletterModal from './NewsletterModal.vue'
+import axios from 'axios'
 
-const ONE_DAY_MS = 1000 * 60 * 60 * 24
-const isSubscribed = localStorage.getItem('subscribed')
-// get the last time we showed the modal, or 1 day ago if it's not set yet
-const newsletterLastOpenedAt = localStorage.getItem('newsletter-last-opened') || (new Date().getTime()) - ONE_DAY_MS
-const newsletterLastOpenDiff = new Date().getTime() - new Date(Number(newsletterLastOpenedAt)).getTime()
+const error = ref('')
+const email = ref('')
+const isBusy = ref(false)
+const isSubscribed = ref(false)
+const isSuccess = ref(false)
 
-const isNewsletterVisible = ref(false)
-
-// show the newsletter modal once a day only
-if (newsletterLastOpenDiff >= ONE_DAY_MS && !isSubscribed) {
-  // Show the modal 5 seconds after the page load
-  setTimeout(() => {
-    isNewsletterVisible.value = true
-  }, 5000)
-}
-
-// Close the modal for 24 hours
-const closeModal = (shouldReopenIn24Hours = true) => {
-  isNewsletterVisible.value = false
-  if (shouldReopenIn24Hours) {
-    localStorage.setItem('newsletter-last-opened', new Date().getTime())
-  }
-}
+isSubscribed.value = localStorage.getItem('subscribed') || false
 
 const activeQuote = ref(0)
 const quotes = [
@@ -73,16 +58,93 @@ const quotesOffsetMobile = computed(() => {
 
 // current quote * card width + margin + half card)
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
+
+// initialize a instance
+const recaptchaInstance = useReCaptcha()
+
+const recaptcha = async () => {
+  // optional you can await for the reCaptcha load
+  await recaptchaInstance?.recaptchaLoaded()
+
+  // get the token, a custom action could be added as argument to the method
+  const token = await recaptchaInstance?.executeRecaptcha('validate_captcha')
+
+  return token
+}
+
+const subscribeToNewsletter = async () => {
+  const LIST_ID = '115e5954-d2cc-4e97-b0dd-e6561d59e660'
+  isBusy.value = true
+
+  const token = await recaptcha()
+
+  // Validate the recaptcha token with the server
+  try {
+    const captchaResult = axios.post('https://catchya.gorkem.workers.dev/', null, {
+      headers: {
+        'g-recaptcha': token
+      }
+    })
+
+    const data = captchaResult.data
+
+    if (Number(data.success) !== 1 || data.action !== 'validate_captcha' || data.score < 0.5) {
+      error.value = 'Invalid reCaptcha'
+      return
+    }
+
+    await axios.put('https://sendgrid-proxy.gorkem.workers.dev/v3/marketing/contacts', {
+      list_ids: [ LIST_ID ],
+      contacts: [ { email: email.value }  ]
+    })
+
+    isSuccess.value = true
+    localStorage.setItem('subscribed', true)
+  }
+  catch(err) {
+    error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
+  }
+  finally {
+    isBusy.value = false
+  }
+}
 </script>
 
 <template>
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
+<div class="mt-32 md:mt-40  px-6 md:px-12 text-center content-container">
   <p class="h4 !font-normal !text-off-white">Share and run your AI projects anywhere</p>
   <h1 class="mt-4">Ease handoffs between AI/ML and Application teams</h1>
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
     <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'hero' }" class="kit-button">Install</a>
     <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
+  </div>
+
+  <div v-if="!isSubscribed" class="text-center max-w-[600px] mx-auto mt-16">
+    <p class="p1 font-heading">Stay Informed About KitOps</p>
+
+    <template v-if="!isSuccess">
+      <form @submit.prevent="subscribeToNewsletter" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
+        <input required
+          :disabled="isBusy"
+          id="email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          class="input"
+          v-model="email"
+          autofocus
+          style="border: 1px solid var(--color-off-white)" />
+
+        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
+      </form>
+
+      <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
+    </template>
+
+    <template v-else>
+      <p class="mt-12">You are now subscribed to the newsletter.</p>
+    </template>
   </div>
 </div>
 
@@ -150,6 +212,12 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <li>
       <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
       <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/dev-mode.html">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
     </li>
   </ol>
 
@@ -253,6 +321,10 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="mt-10 md:mt-16 xl:mt-20 size-8 md:size-12">
         <path d="M6 16L18.0064 4H39.9956C41.1026 4 42 4.91062 42 5.9836V42.0164C42 43.112 41.1102 44 40.0132 44H7.9868C6.88952 44 6 43.1002 6 41.9864V16ZM20 8V18H10V40H38V8H20Z" class="fill-cornflower" />
       </svg>
+
+      <div>
+        <a href="/docs/modelkit/intro.html">LEARN MORE</a>
+      </div>
     </div>
     <div class="kit-card max-w-[370px] flex flex-col">
       <h3 class="!text-salmon">Kit cli</h3>
@@ -266,6 +338,10 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
         <path d="M36.1238 25.0052H54.7501" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
         <path d="M0 5.25L15.8041 16.8209L0 26.6985" class="stroke-salmon" stroke-width="6.7732" stroke-linecap="square" stroke-linejoin="round"/>
       </svg>
+
+      <div>
+        <a href="/docs/cli/installation.html">LEARN MORE</a>
+      </div>
     </div>
   </div>
 </div>
@@ -435,12 +511,11 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
 
   <Accordion content-class="space-y-[1em]">
     <template #title>Where are ModelKits stored?</template>
-
-    <p class="mt-6">ModelKits can be stored in any OCI-compliant registry - for example in a container registry like Docker Hub, or your favorite cloud vendor’s container registry, they can even be stored in an artifact repository like Artifactory.</p>
+    <p class="mt-6">ModelKits can be stored in any OCI-compliant registry - for example in a container registry like Docker Hub or Jozu Hub, or your favorite cloud vendor’s container registry, they can even be stored in an artifact repository like Artifactory.</p>
   </Accordion>
 
   <Accordion content-class="space-y-[1em]">
-    <template #title>Where are ModelKits stored?</template>
+    <template #title>Is KitOps open source and free to use?</template>
 
     <p class="mt-6">Yes, it is licensed with the Apache 2.0 license and welcomes all users and contributors. If you’re <a href="https://github.com/jozu-ai/kitops/blob/main/CONTRIBUTING.md" class="underline">interested in contributing</a>, let us know.</p>
   </Accordion>
@@ -545,19 +620,20 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     </a>
   </div>
 </div>
-
-<Teleport to="body">
-  <NewsletterModal
-    v-if="isNewsletterVisible"
-    @close="closeModal()"
-    @subscribe="closeModal(false)" />
-</Teleport>
 </template>
 
 <!-- Our custom home styles -->
 <style scoped src="@theme/assets/css/home.css"></style>
 
 <style scoped>
+.input {
+  @apply border border-off-white text-off-white;
+  @apply focus:border-gold;
+  @apply placeholder:text-gray-05 placeholder:opacity-100;
+  @apply block px-4 py-2 flex-1 bg-transparent w-full;
+  @apply outline-none focus:!outline-none;
+}
+
 .quote-bg {
   background-image: url("data:image/svg+xml,%3Csvg width='30' height='23' viewBox='0 0 30 23' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.0875627 15.504C0.0875627 14.4 0.375563 13.32 0.951563 12.264V12.192L7.57556 0.887997H10.5996L5.84756 9.024L6.63956 8.952C8.41556 8.952 9.92756 9.6 11.1756 10.896C12.4716 12.144 13.1196 13.68 13.1196 15.504C13.1196 17.328 12.4716 18.888 11.1756 20.184C9.92756 21.432 8.41556 22.056 6.63956 22.056C4.81556 22.056 3.25556 21.432 1.95956 20.184C0.711563 18.888 0.0875627 17.328 0.0875627 15.504ZM23.4156 8.952C25.2396 8.952 26.7756 9.6 28.0236 10.896C29.3196 12.144 29.9676 13.68 29.9676 15.504C29.9676 17.28 29.3196 18.816 28.0236 20.112C26.7756 21.408 25.2396 22.056 23.4156 22.056C21.6396 22.056 20.1036 21.408 18.8076 20.112C17.5116 18.816 16.8636 17.28 16.8636 15.504C16.8636 14.352 17.1756 13.272 17.7996 12.264V12.192L24.3516 0.887997H27.4476L22.6956 9.024L23.4156 8.952Z' fill='%23FFAF52'/%3E%3C/svg%3E%0A");
   background-position: 40px 40px;

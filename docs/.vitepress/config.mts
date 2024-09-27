@@ -49,7 +49,7 @@ export default defineConfig({
 
     // Top navigation
     nav: [
-      { text: 'Why Kit?', activeMatch: `^/#whykitops`, link: '/#whykitops' },
+      { text: 'Get Started?', activeMatch: '^/#getstarted', link: '/docs/quick-start.html' },
       { text: 'How does it work?', activeMatch: `^/#howdoesitwork`, link: '/#howdoesitwork' },
       { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
       { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
