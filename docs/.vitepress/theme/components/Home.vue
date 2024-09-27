@@ -80,18 +80,11 @@ const subscribeToNewsletter = async () => {
 
   // Validate the recaptcha token with the server
   try {
-    const captchaResult = axios.post('https://catchya.gorkem.workers.dev/', null, {
+    await axios.post('https://catchya.gorkem.workers.dev/', null, {
       headers: {
         'g-recaptcha': token
       }
     })
-
-    const data = captchaResult.data
-
-    if (Number(data.success) !== 1 || data.action !== 'validate_captcha' || data.score < 0.5) {
-      error.value = 'Invalid reCaptcha'
-      return
-    }
 
     await axios.put('https://sendgrid-proxy.gorkem.workers.dev/v3/marketing/contacts', {
       list_ids: [ LIST_ID ],
