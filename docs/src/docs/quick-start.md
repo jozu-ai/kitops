@@ -38,7 +38,7 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
-Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit](./modelkit/premade-modelkits.md) to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
+Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/browse) to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
 You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
