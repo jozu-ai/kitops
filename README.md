@@ -66,7 +66,15 @@ You can pull pre-built ModelKits from [Jozu Hub](https://jozu.ml/discover).
 ## 🚀 Try KitOps in under 15 Minutes
 
 1. [Install the CLI](./docs/src/docs/cli/installation.md) for your platform.
-1. Follow the [ Quick Start](https://kitops.ml/docs/quick-start.html) to learn to pack, unpack, and share a ModelKit.
+2. Follow the [ Quick Start](https://kitops.ml/docs/quick-start.html) to learn to pack, unpack, and share a ModelKit.
+3. Test out one of our ModelKit Quick Starts which include everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
+
+- [Meta LLama 3.1](https://jozu.ml/repository/jozu/llama3.1-8b)
+- [Google Gemma](https://jozu.ml/repository/jozu/gemma-7b)
+- [Microsoft Phi3](https://jozu.ml/repository/jozu/phi3)
+- [Fine-tuning](https://jozu.ml/repository/jozu/fine-tuning)
+- [Rag pipeline](https://jozu.ml/repository/jozu/rag-pipeline)
+- [Object detection](https://jozu.ml/repository/jozu/yolo-v10)
 
 For those who prefer to build from the source, follow [these steps](https://kitops.ml/docs/cli/installation.html#🛠️-install-from-source) to get the latest version from our repository.
 
