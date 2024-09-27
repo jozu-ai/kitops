@@ -1,34 +1,19 @@
 <script setup lang="ts">
 import { isClient } from '@vueuse/core'
 import { ref, computed } from 'vue'
+import { useReCaptcha } from 'vue-recaptcha-v3'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
-import NewsletterModal from './NewsletterModal.vue'
+import axios from 'axios'
 
-const ONE_DAY_MS = 1000 * 60 * 60 * 24
-const isSubscribed = localStorage.getItem('subscribed')
-// get the last time we showed the modal, or 1 day ago if it's not set yet
-const newsletterLastOpenedAt = localStorage.getItem('newsletter-last-opened') || (new Date().getTime()) - ONE_DAY_MS
-const newsletterLastOpenDiff = new Date().getTime() - new Date(Number(newsletterLastOpenedAt)).getTime()
+const error = ref('')
+const email = ref('')
+const isBusy = ref(false)
+const isSubscribed = ref(false)
+const isSuccess = ref(false)
 
-const isNewsletterVisible = ref(false)
-
-// show the newsletter modal once a day only
-if (newsletterLastOpenDiff >= ONE_DAY_MS && !isSubscribed) {
-  // Show the modal 5 seconds after the page load
-  setTimeout(() => {
-    isNewsletterVisible.value = true
-  }, 5000)
-}
-
-// Close the modal for 24 hours
-const closeModal = (shouldReopenIn24Hours = true) => {
-  isNewsletterVisible.value = false
-  if (shouldReopenIn24Hours) {
-    localStorage.setItem('newsletter-last-opened', new Date().getTime())
-  }
-}
+isSubscribed.value = localStorage.getItem('subscribed') || false
 
 const activeQuote = ref(0)
 const quotes = [
@@ -73,6 +58,56 @@ const quotesOffsetMobile = computed(() => {
 
 // current quote * card width + margin + half card)
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
+
+// initialize a instance
+const recaptchaInstance = useReCaptcha()
+
+const recaptcha = async () => {
+  // optional you can await for the reCaptcha load
+  await recaptchaInstance?.recaptchaLoaded()
+
+  // get the token, a custom action could be added as argument to the method
+  const token = await recaptchaInstance?.executeRecaptcha('validate_captcha')
+
+  return token
+}
+
+const subscribeToNewsletter = async () => {
+  const LIST_ID = '115e5954-d2cc-4e97-b0dd-e6561d59e660'
+  isBusy.value = true
+
+  const token = await recaptcha()
+
+  // Validate the recaptcha token with the server
+  try {
+    const captchaResult = axios.post('https://catchya.gorkem.workers.dev/', null, {
+      headers: {
+        'g-recaptcha': token
+      }
+    })
+
+    const data = captchaResult.data
+
+    if (Number(data.success) !== 1 || data.action !== 'validate_captcha' || data.score < 0.5) {
+      error.value = 'Invalid reCaptcha'
+      return
+    }
+
+    await axios.put('https://sendgrid-proxy.gorkem.workers.dev/v3/marketing/contacts', {
+      list_ids: [ LIST_ID ],
+      contacts: [ { email: email.value }  ]
+    })
+
+    isSuccess.value = true
+    localStorage.setItem('subscribed', true)
+  }
+  catch(err) {
+    error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
+  }
+  finally {
+    isBusy.value = false
+  }
+}
 </script>
 
 <template>
@@ -85,25 +120,31 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
   </div>
 
-  <div class="text-center max-w-[600px] mx-auto mt-16">
+  <div v-if="!isSubscribed" class="text-center max-w-[600px] mx-auto mt-16">
     <p class="p1 font-heading">Stay Informed About KitOps</p>
 
-    <form @submit.prevent="onSubmit" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
-      <input required
-        :disabled="isBusy"
-        id="email"
-        type="email"
-        name="email"
-        placeholder="you@example.com"
-        class="input"
-        v-model="email"
-        autofocus
-        style="border: 1px solid var(--color-off-white)" />
+    <template v-if="!isSuccess">
+      <form @submit.prevent="subscribeToNewsletter" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
+        <input required
+          :disabled="isBusy"
+          id="email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          class="input"
+          v-model="email"
+          autofocus
+          style="border: 1px solid var(--color-off-white)" />
 
-      <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
-    </form>
+        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
+      </form>
 
-    <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
+      <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
+    </template>
+
+    <template v-else>
+      <p class="mt-12">You are now subscribed to the newsletter.</p>
+    </template>
   </div>
 </div>
 
@@ -579,13 +620,6 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     </a>
   </div>
 </div>
-
-<Teleport to="body">
-  <NewsletterModal
-    v-if="isNewsletterVisible"
-    @close="closeModal()"
-    @subscribe="closeModal(false)" />
-</Teleport>
 </template>
 
 <!-- Our custom home styles -->
