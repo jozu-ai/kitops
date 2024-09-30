@@ -112,6 +112,8 @@ The [push command](./cli/cli-reference.md#kit-push) will copy the newly built Mo
 kit push jozu.ml/brad/quick-start:latest
 ```
 
+Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry.
+
 ### Congratulations
 
 You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
