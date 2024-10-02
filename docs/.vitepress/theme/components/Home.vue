@@ -86,9 +86,15 @@ const subscribeToNewsletter = async () => {
       }
     })
 
-    await axios.put('https://sendgrid-proxy.gorkem.workers.dev/v3/marketing/contacts', {
-      list_ids: [ LIST_ID ],
-      contacts: [ { email: email.value }  ]
+    await axios.post('https://newsprxy.gorkem.workers.dev/', {
+      email: email.value,
+      userGroup: 'KitOps',
+      formName: 'KitOps-Community'
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Expect': ''
+      }
     })
 
     isSuccess.value = true
