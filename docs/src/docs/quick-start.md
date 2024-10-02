@@ -28,7 +28,7 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote. In this guide we'll use the [Jozu Hub](https://jozu.ml/discover) because it's free to sign-up and provides more detail on what's inside each ModelKit and whether it's signed or has provenance. You can substitute your own repository if preferred.
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote. In this guide we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit and whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
 kit login jozu.ml
