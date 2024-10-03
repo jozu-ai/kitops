@@ -191,9 +191,9 @@ jobs:
           awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
           awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
           awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
-          mv homebrew-metadata.txt > ~/kitops/build/homebrew/homebrew-metadata.txt
+          mv homebrew-metadata.txt > ../build/homebrew/homebrew-metadata.txt
           popd
-          pushd ~/kitops/build/homebrew
+          pushd build/homebrew
           dirs
           awk -f create-homebrew-recipe.awk homebrew-metadata.txt
           popd
