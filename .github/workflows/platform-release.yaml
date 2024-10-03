@@ -175,11 +175,11 @@ jobs:
           popd
       - name: Create Homebrew Files
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.ref_name}}
           REPO: ${{ github.repository }}
         run: |
           shopt -s failglob
-          dirs
           pushd dist
           awk '
             BEGIN { tag_name = ENVIRON["TAG_NAME"]; repo = ENVIRON["REPO"];}
@@ -194,10 +194,24 @@ jobs:
           mv homebrew-metadata.txt ../build/homebrew/homebrew-metadata.txt
           popd
           pushd build/homebrew
-          dirs
           awk -f create-homebrew-recipe.awk homebrew-metadata.txt
           popd
-          dirs  
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          PR_BRANCH="${{ github.ref_name }}-homebrew-update"
+          git fetch origin main
+          git branch "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          git pull origin --ff-only "${PR_BRANCH}" || true
+
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          cd build\homebrew
+          git add --all
+          git commit -m "homebrew: update Homebrew Formula for ${{ github.ref_name }}"
+          git push origin "${PR_BRANCH}"
+          gh pr create --fill --base main --head "${PR_BRANCH}"
+          git checkout "${CURRENT_BRANCH}"
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
