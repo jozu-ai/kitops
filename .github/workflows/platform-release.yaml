@@ -210,8 +210,7 @@ jobs:
           git pull origin --ff-only "${PR_BRANCH}" || true
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-          cd build\homebrew
-          git add --all
+          cd build/homebrew
           git commit -m "homebrew: update Homebrew Formula for ${{ github.ref_name }}"
           git push origin "${PR_BRANCH}"
           gh pr create --fill --base main --head "${PR_BRANCH}"
