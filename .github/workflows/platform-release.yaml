@@ -169,12 +169,17 @@ jobs:
           shasum -a 256 kitops-* > checksums.txt
           mv checksums.txt kitops_${TAG_NAME}_checksums.txt
           popd
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+  
       - name: Create Homebrew Files
         env:
           TAG_NAME: ${{ github.ref_name}}
           REPO: ${{ github.repository }}
         run: |
           shopt -s failglob
+          dirs
           pushd dist
           awk '
             BEGIN { tag_name = ENVIRON["TAG_NAME"]; repo = ENVIRON["REPO"];}
@@ -186,7 +191,6 @@ jobs:
           awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
           awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
           awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
-          dirs
           mv homebrew-metadata.txt > ../build/homebrew/homebrew-metadata.txt
           popd
           pushd build/homebrew
@@ -219,9 +223,6 @@ jobs:
             release_args+=( --draft )
           fi
           gh release create "${release_args[@]}"
-
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Generate CLI documentation
         shell: bash
