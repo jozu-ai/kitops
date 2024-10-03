@@ -182,7 +182,7 @@ jobs:
              print "\""$1"\"", 
               "\"https://github.com/" repo "/releases/download/" tag_name "/" $2 "\"", 
               $2, 
-              tag_name }' checksums.txt |
+              tag_name }' kitops_${TAG_NAME}_checksums.txt |
           awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
           awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
           awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
