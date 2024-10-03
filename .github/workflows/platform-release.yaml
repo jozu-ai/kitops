@@ -88,6 +88,7 @@ jobs:
             retention-days: 7
             path: |
               ./dist/*.zip
+              ./dist/*.tar.gz
 
   build-windows:
     runs-on: windows-latest
