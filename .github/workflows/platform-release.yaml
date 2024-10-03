@@ -186,7 +186,14 @@ jobs:
           awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
           awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
           awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
+          dirs
+          mv homebrew-metadata.txt > ../build/homebrew/homebrew-metadata.txt
           popd
+          pushd build/homebrew
+          dirs
+          awk -f create-homebrew-recipe.awk homebrew-metadata.txt
+          popd
+          dirs   
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

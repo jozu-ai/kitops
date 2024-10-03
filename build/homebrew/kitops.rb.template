@@ -1,0 +1,43 @@
+class Kitops < Formula
+  desc "Packaging and versioning system for AI/ML projects"
+  homepage "https://KitOps.ml"
+  license "Apache-2.0"
+
+  on_macos do
+    on_arm do
+      url @@darwin-arm64
+      sha256 @@darwin-arm64
+    end
+    on_intel do
+      url @@darwin-x86_64
+      sha256 @@darwin-x86_64
+    end
+
+  end
+
+  on_linux do
+    on_arm do
+      url @@linux-arm64
+      sha256 @@linux-arm64
+    end
+    on_intel do
+      if Hardware::CPU.is_64_bit?
+        url @@linux-x86_64
+        sha256 @@linux-x86_64
+      else
+        url @@linux-i386
+        sha256 @@linux-i386
+      end
+    end
+  end
+
+  def install
+    bin.install "kit"
+  end
+
+  test do
+    expected_version = "Version: @@version"
+    actual_version = shell_output("#{bin}/kit version").strip
+    assert_match expected_version, actual_version
+  end
+end
