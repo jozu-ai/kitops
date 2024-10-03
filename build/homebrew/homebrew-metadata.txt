@@ -1,0 +1,5 @@
+"8d62c78ddc55ea6efdf9c33f7392f177715289d6d7c2688c4ff6bdbd773cc490" "https://github.com/brett-hodges/kitops/releases/download/main/kitops-darwin-arm64.tar.gz" darwin-arm64 main
+"29816c5dd8a76e7f0af56d9f2d50e097943c4cf47ade694dd919229beacbaf11" "https://github.com/brett-hodges/kitops/releases/download/main/kitops-darwin-x86_64.tar.gz" darwin-x86_64 main
+"6eef018f94513b74e3710c7033941d01172d00b9f82b33abebf34a18a75d6750" "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-arm64.tar.gz" linux-arm64 main
+"58fb2d183ff7dc1038e7a5267fcc2556e7315a1e161b1db457e9e31167d9270c" "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-i386.tar.gz" linux-i386 main
+"af7ae9699a5764b529e2883bb824c340f12399ae6580549d3f085cde2d93a905" "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-x86_64.tar.gz" linux-x86_64 main
