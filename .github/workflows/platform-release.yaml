@@ -169,6 +169,24 @@ jobs:
           shasum -a 256 kitops-* > checksums.txt
           mv checksums.txt kitops_${TAG_NAME}_checksums.txt
           popd
+      - name: Create Homebrew Files
+        env:
+          TAG_NAME: ${{ github.ref_name}}
+          REPO: ${{ github.repository }}
+        run: |
+          shopt -s failglob
+          pushd dist
+          awk '
+            BEGIN { tag_name = ENVIRON["TAG_NAME"]; repo = ENVIRON["REPO"];}
+            /.tar.gz$/ { 
+             print "\""$1"\"", 
+              "\"https://github.com/" repo "/releases/download/" tag_name "/" $2 "\"", 
+              $2, 
+              tag_name }' checksums.txt |
+          awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
+          awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
+          awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
+          popd
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
