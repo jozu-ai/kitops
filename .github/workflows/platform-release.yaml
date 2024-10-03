@@ -173,7 +173,7 @@ jobs:
           shasum -a 256 kitops-* > checksums.txt
           mv checksums.txt kitops_${TAG_NAME}_checksums.txt
           popd
-      - name: Create Homebrew Files
+      - name: Create Homebrew Formula
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ github.ref_name}}
@@ -196,13 +196,18 @@ jobs:
           pushd build/homebrew
           awk -f create-homebrew-recipe.awk homebrew-metadata.txt
           popd
+      - name: Commit Homebrew Formula
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name}}
+          REPO: ${{ github.repository }}
+        run: |
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           PR_BRANCH="${{ github.ref_name }}-homebrew-update"
           git fetch origin main
           git branch "$PR_BRANCH"
           git checkout "$PR_BRANCH"
           git pull origin --ff-only "${PR_BRANCH}" || true
-
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
           cd build\homebrew
