@@ -49,7 +49,7 @@ export default defineConfig({
 
     // Top navigation
     nav: [
-      { text: 'Get Started?', activeMatch: '^/#getstarted', link: '/docs/quick-start.html' },
+      { text: 'Get Started?', activeMatch: '^/#getstarted', link: '/docs/get-started.html' },
       { text: 'How does it work?', activeMatch: `^/#howdoesitwork`, link: '/#howdoesitwork' },
       { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
       { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
@@ -61,7 +61,7 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Overview', link: '/docs/overview' },
-          { text: 'Quick Start', link: '/docs/quick-start' },
+          { text: 'Get Started', link: '/docs/get-started' },
           { text: 'Next Steps', link: '/docs/next-steps' },
           { text: 'Kit Dev', link: '/docs/dev-mode' },
           { text: 'Why KitOps?', link: '/docs/why-kitops' },
@@ -74,7 +74,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/docs/modelkit/intro' },
           { text: 'Specification', link: '/docs/modelkit/spec' },
-          { text: 'Pre-built ModelKits', link: '/docs/modelkit/prebuilt-modelkits' },
+          { text: 'ModelKit Quick Starts', link: 'https://jozu.ml/organization/jozu-quickstarts' },
           { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
         ]
       },

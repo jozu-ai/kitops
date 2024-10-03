@@ -4,7 +4,7 @@
 
 ModelKit revolutionizes the way AI/ML artifacts are shared and managed throughout the lifecycle of AI/ML projects. As an OCI-compliant packaging format, ModelKit encapsulates datasets, code, configurations, and models into a single, standardized unit. This approach not only streamlines the development process but also ensures broad compatibility and integration with a vast array of tools and platforms.
 
-Start with a [pre-built ModelKit](./prebuilt-modelkits.md), see the [ModelKit spec](./spec.md), or look over the [tool compatibility list](./compatibility.md).
+<!-- Start with a [ModelKit Quick Start](TBD), -->See the [ModelKit spec](./spec.md), or look over the [tool compatibility list](./compatibility.md).
 
 ## Key Features of ModelKit:
 
