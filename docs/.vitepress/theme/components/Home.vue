@@ -81,12 +81,6 @@ const subscribeToNewsletter = async () => {
 
   // Validate the recaptcha token with the server
   try {
-    await axios.post('https://catchya.gorkem.workers.dev/', null, {
-      headers: {
-        'g-recaptcha': token
-      }
-    })
-
     await axios.post('https://newsprxy.gorkem.workers.dev/', {
       email: email.value,
       userGroup: 'KitOps',
@@ -94,8 +88,9 @@ const subscribeToNewsletter = async () => {
       favoriteDevOpsTool: favoriteDevOpsTool.value
     }, {
       headers: {
+        'g-recaptcha': token,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Expect': ''
+        'Expect': '',
       }
     })
 
