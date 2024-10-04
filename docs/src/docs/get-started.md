@@ -2,7 +2,7 @@
 import vGaTrack from '@theme/directives/ga'
 </script>
 
-# KitOps Quick Start
+# KitOps Getting Started
 
 In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
@@ -28,7 +28,7 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote. In this guide we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit and whether it's signed or has provenance. You can substitute your own repository if preferred.
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote (you can see our [list of compliant registries](./modelkit/compatibility.md)). In this guide we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit like whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
 kit login jozu.ml
@@ -44,7 +44,7 @@ You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
     category: 'link',
     label: 'grab any of the ModelKits',
-    location: 'docs/quick-start'
+    location: 'docs/get-started'
   }">any of the ModelKits</a> from the Jozu Hub, but we've chosen a fine-tuned model based on Llama3.
 
 The unpack command will unpack the ModelKit contents to the current directory by default. If you want it unpacked to a specific directory use the `-d /path/to/unpacked`.
@@ -80,15 +80,22 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 ### 5/ Pack the ModelKit
 
-Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. So the command will look like: `kit pack . -t [your registry address]/[your repository name]/mymodelkit:latest`
+Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. The command will look like: `kit pack . -t [your registry address]/[your registry user or organization name]/[your repository name]:[your tag name]`
 
-In my case I am pushing to the `brad` repository on [Jozu Hub](https://jozu.ml/). You'll need to substitute the name of your own repository:
+In our case we are pushing a ModelKit tagged `latest` to:
+* The [Jozu Hub](https://jozu.ml/) registry
+* The `brad` user organization
+* The `quick-start` repository
+
+As a result, the command will look like:
 
 ```sh
 kit pack . -t jozu.ml/brad/quick-start:latest
 ```
 
-You'll see a set of `Saved ...` messages as each piece of the ModelKit is saved to the local repository.
+You may need to substitute your own registry, user, repository, or tag names.
+
+Once complete, you'll see a set of `Saved ...` messages as each piece of the ModelKit is saved to the local repository.
 
 Check your local registry again:
 
@@ -102,21 +109,21 @@ You should see an entry named based on whatever you used in your pack command.
 
 If you have a typo when packing a ModelKit you can easily remove it from your repository and try again. The [Next Steps guide includes information on how to remove ModelKits](./next-steps.md#remove-command).
 
-Once you've removed the mistaken ModelKit from the repository, you can repeat the `kit pack` command in the previous step, being sure to provide the correct repository name for your ModelKit.
+Once you've removed the mistaken ModelKit from the repository, you can repeat the `kit pack` command in the previous step, being sure to provide the correct organization and repository name for your ModelKit.
 
 ### 7/ Push the ModelKit to a Remote Repository
 
-The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In my case it looks like:
+The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In our case it looks like:
 
 ```sh
 kit push jozu.ml/brad/quick-start:latest
 ```
 
-Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry.
+Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry and that you have push rights to the repository.
 
 ### Congratulations
 
-You've learned how to unpack a ModelKit, pack one up, push it, and run an LLM locally. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
+You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
 
 If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
 * Signing your ModeKit
@@ -124,5 +131,7 @@ If you'd like to learn more about using Kit, try our [Next Steps with Kit](./nex
 * The power of `unpack`
 * Tagging ModelKits
 * Keeping your registry tidy
+
+Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md)
 
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN).

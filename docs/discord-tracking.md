@@ -10,4 +10,4 @@ Because our allegedly permanent discord links have needed to be refreshed a coup
 * ./docs/.vitepress/theme/components/Footer.vue
 * ./docs/.vitepress/theme/components/Home.vue
 * ./docs/src/docs/next-steps.md
-* ./docs/src/docs/quick-start.md
+* ./docs/src/docs/get-started.md

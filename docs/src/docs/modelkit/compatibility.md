@@ -4,11 +4,24 @@ ModelKit packages can be pushed to any OCI 1.1-compliant registry, whether in th
 
 ModelKits themselves use standards like JSON, YAML, and TAR files so whatever MLOps or DevOps tools you're using...they'll work with ModelKits.
 
-A few examples in alphabetical order:
+## Compliant OCI Registries
+
+* Amazon Elastic Container Registry (ECR)
+* Azure Container Registry
+* Docker Hub
+* GitHub Packages Container Registry
+* GitLab Container Registry
+* Google Artifact Registry
+* Harbor
+* IBM Cloud Container Registry
+* JFrog Artifactory
+* Red Hat Quay.io
+
+## Other Compatible Tools
+
 * Amazon SageMaker
 * Amazon Elastic Kubernetes Service (EKS)
 * Amazon Elastic Compute Cloud (EC2)
-* Amazon Elastic Container Registry (ECR)
 * Amazon Fargate
 * Amazon Lambda
 * Amazon S3
@@ -16,15 +29,12 @@ A few examples in alphabetical order:
 * Azure ML
 * Azure Kubernetes Service (AKS)
 * Azure Cloud
-* Azure Container Registry
 * Circle CI
 * Clear ML
 * Comet ML
 * Databricks
 * DataRobot
 * Domino
-* Docker
-* Docker Hub
 * DvC
 * Git
 * Git LFS
@@ -33,12 +43,9 @@ A few examples in alphabetical order:
 * Google Vertex
 * Google Kubernetes Service (GKS)
 * Google Container Platform (GCP)
-* Google Artifact Registry
 * Hugging Face
 * IBM Cloud
-* IBM Cloud Container Registry
 * Jenkins CI/CD
-* JFrog Artifactory
 * Jupyter notebooks
 * Kubernetes
 * Kserve
@@ -53,7 +60,6 @@ A few examples in alphabetical order:
 * Red Hat InstructLab
 * Red Hat OpenShift
 * Red Hat OpenShift AI
-* Red Hat Quay.io
 * Seldon
 * Sonatype Nexus
 * Tensorflow Hub

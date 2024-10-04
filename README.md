@@ -11,7 +11,7 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjozu-ai%2Fkitops&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 [![Official Website](<https://img.shields.io/badge/-Visit%20the%20Official%20Website%20%E2%86%92-rgb(255,175,82)?style=for-the-badge>)](https://kitops.ml?utm_source=github&utm_medium=kitops-readme)
-[![Use Cases](<https://img.shields.io/badge/-KitOps%20Quick%20Start%20%E2%86%92-rgb(122,140,225)?style=for-the-badge>)](https://kitops.ml/docs/quick-start.html?utm_source=github&utm_medium=kitops-readme)
+<!-- [![Use Cases](<https://img.shields.io/badge/-KitOps%20Quick%20Start%20%E2%86%92-rgb(122,140,225)?style=for-the-badge>)](https://kitops.ml/docs/get-started.html?utm_source=github&utm_medium=kitops-readme)-->
 
 ### What is KitOps?
 
@@ -61,13 +61,11 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 **[Kit CLI](./docs/src/docs/cli/cli-reference.md):** The Kit CLI not only enables users to create, manage, run, and deploy ModelKits -- it lets you pull only the pieces you need. Just need the serialized model for deployment? Use `unpack --model`, or maybe you just want the training datasets? `unpack --datasets`.
 
-You can pull pre-built ModelKits from [Jozu Hub](https://jozu.ml/discover).
-
 ## 🚀 Try KitOps in under 15 Minutes
 
 1. [Install the CLI](./docs/src/docs/cli/installation.md) for your platform.
-2. Follow the [ Quick Start](https://kitops.ml/docs/quick-start.html) to learn to pack, unpack, and share a ModelKit.
-3. Test out one of our ModelKit Quick Starts which include everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
+2. Follow the [Getting Started](./docs/src/docs/get-started.md) docs to learn to pack, unpack, and share a ModelKit.
+3. Test drive one of our [ModelKit Quick Starts](https://jozu.ml/organization/jozu-quickstarts) that include everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
 
 - [Meta LLama 3.1](https://jozu.ml/repository/jozu/llama3.1-8b)
 - [Google Gemma](https://jozu.ml/repository/jozu/gemma-7b)
