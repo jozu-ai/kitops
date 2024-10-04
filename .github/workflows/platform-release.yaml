@@ -192,6 +192,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           shopt -s failglob
+          ls
           pushd dist
           awk '
             BEGIN { tag_name = ENVIRON["TAG_NAME"]; repo = ENVIRON["REPO"];}
@@ -209,7 +210,7 @@ jobs:
           awk -f create-homebrew-recipe.awk homebrew-metadata.txt
           cp kitops.rb ../../homebrew-kitops/.
           popd
-          
+
       # Commit the Homebrew Formula to the current repo: jozu-ai/kitops
       - name: Commit Homebrew Formula
         env:
