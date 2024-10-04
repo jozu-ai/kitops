@@ -163,6 +163,7 @@ jobs:
         with:
           ###### CHANGE THIS TO jozu-ai/homebrew-kitops ######
           repository: brett-hodges/homebrew-kitops
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: homebrew-kitops     
       - name: List Directory
         run: ls
