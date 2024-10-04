@@ -5,28 +5,28 @@ class Kitops < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.1/kitops-darwin-arm64.tar.gz"
-      sha256 "86d1c9371cad5f1f4f0a6023918af8ee0365ba64b5d1e4ac9499febe39531efa"
+      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.4/kitops-darwin-arm64.tar.gz"
+      sha256 "05fb4154c4db321d0498767c30d8d54e1cd4c028e7500bd14446f72e619b2f23"
     end
     on_intel do
-      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.1/kitops-darwin-x86_64.tar.gz"
-      sha256 "ca4e274e60fb1d1918e16e1423881fd17b2b0d85627a539a7b4e5ad1bdb1d6ab"
+      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.4/kitops-darwin-x86_64.tar.gz"
+      sha256 "7f8ad1c5a33979a8ccef0492bc37c19974f15a3dc02d6c3f9f3e53bd1b69153d"
     end
 
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.1/kitops-linux-arm64.tar.gz"
-      sha256 "69c4734021a849a5ef3307b87b9cf6a755cee7b87342b63e75afa7167379508a"
+      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.4/kitops-linux-arm64.tar.gz"
+      sha256 "6a5cebafee8b452615a3cfdb9825bef0cddaa3c0eb7fcbf9cda7e8e94a6f542f"
     end
     on_intel do
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.1/kitops-linux-x86_64.tar.gz"
-        sha256 "16ffde2a6cde3eaba368d4b10036e0ff26fbd50d062a2f95c4b901a1d7b4d989"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.4/kitops-linux-x86_64.tar.gz"
+        sha256 "efc429106df85e580656aabc27d3c442362fd98d0351e623ce7880aa0b5c05aa"
       else
-        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.1/kitops-linux-i386.tar.gz"
-        sha256 "8c6080d80548a6db953ef40a785b0843378cca12eb6a142b7626ca1d1c4cbb18"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.4/kitops-linux-i386.tar.gz"
+        sha256 "3fead337eff880bad9ee898de06ed2f399ea6f38fb1120141d538d8a66bd38a4"
       end
     end
   end
@@ -36,7 +36,7 @@ class Kitops < Formula
   end
 
   test do
-    expected_version = "Version: 0.4.1"
+    expected_version = "Version: 0.4.4"
     actual_version = shell_output("#{bin}/kit version").strip
     assert_match expected_version, actual_version
   end
