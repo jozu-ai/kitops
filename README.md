@@ -44,11 +44,11 @@ Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https:
 * 📝 **[Artifact signing](https://kitops.ml/docs/next-steps.html):** ModelKits and their assets can be signed so you can be confident of their provenance.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any OCI 1.1-compliant container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
-* 🩰 **[Flexible](https://kitops.ml/docs/kitfile/format.html#model):** Reference base models using `model parts`, or store key-value pairs (or any YAML-compatible JSON data) in your * 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets you run an LLM locally, configure it, and prompt/chat with it instantly.
+* 🩰 **[Flexible](https://kitops.ml/docs/kitfile/format.html#model):** Reference base models using `model parts`, or store key-value pairs (or any YAML-compatible JSON data) in your Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments, or validation output.
+* 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets you run an LLM locally, configure it, and prompt/chat with it instantly.
 * 🤗 **Universal:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
 * 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
 * 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
-Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments our validation output...whatever you want!
 
 ### See KitOps in Action
 
