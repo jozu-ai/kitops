@@ -1,5 +1,6 @@
 // https://vitepress.dev/guide/custom-theme
 import { h, ref } from 'vue'
+import { VueReCaptcha } from 'vue-recaptcha-v3'
 import { type Theme, inBrowser } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
@@ -38,5 +39,12 @@ export default {
   enhanceApp({ app, router, siteData }) {
     app.component('PlatformSnippet', PlatformSnippet)
     app.provide('isPlatformModalOpen', isPlatformModalOpen)
+
+    app.use(VueReCaptcha, {
+      siteKey: '6Lc4-VAqAAAAAF6W1JTuP24DYqc_BzHD715Yqob-',
+      loaderOptions: {
+        autoHideBadge: true
+      },
+    })
   }
 } satisfies Theme

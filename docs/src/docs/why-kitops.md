@@ -46,4 +46,4 @@ Then `kit push` it to any OCI-compliant registry, even a private one.
 
 Most people won't need everything, so just `kit unpack` from the remote registry to get just the model, only the datasets, or just the notebook. Or, if you need everything then a `kit pull` will grab everything.
 
-Check out our [quick start](./quick-start.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md).
+Check out our [getting started doc](./get-started.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md).

@@ -7,15 +7,11 @@ In this guide you'll learn how to:
 * Read the Kitfile or manifest from a ModelKit
 * Tag ModelKits and keep your registry tidy
 
-::: info
-If you're interested in running an LLM locally using Kit, you can jump to the [Kit Dev](./dev-mode.md) documentation.
-:::
-
 ## Signing your ModelKit
 
-Because ModelKits are OCI artifacts, they can be signed like any other OCI artifact (you may already sign your containers, for example).
+Because ModelKits are OCI 1.1 artifacts, they can be signed like any other OCI artifact (you may already sign your containers, for example).
 
-If you need a quick way to sign a ModelKit you can follow the same instructions as for a container, using something like [Cosign](https://docs.sigstore.dev/signing/quickstart).
+If you need a quick way to sign a ModelKit you can follow the same instructions as for a container, using a tool like [Cosign](https://docs.sigstore.dev/cosign/signing/signing_with_containers/).
 
 
 ## Making your own Kitfile
@@ -30,7 +26,7 @@ A Kitfile is the configuration document for your ModelKit. It's written in YAML 
 
 A Kitfile only needs the `package` section, plus one or more of the other sections.
 
-The `model` section can only contain a single model (you can chain models by using multiple ModelKits).
+The `model` section can contain a single model, or you can create model dependencies with `model parts` which is covered in the [KitFile format documentation](https://kitops.ml/docs/kitfile/format.html#model).
 
 The `datasets`, `code`, and `docs` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
 

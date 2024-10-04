@@ -17,6 +17,9 @@ dependencies:
   sitemap:
     specifier: ^8.0.0
     version: 8.0.0
+  vue-recaptcha-v3:
+    specifier: ^2.0.1
+    version: 2.0.1(vue@3.5.1)
   vue3-marquee:
     specifier: ^4.2.2
     version: 4.2.2(vue@3.5.1)
@@ -1696,6 +1699,10 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /recaptcha-v3@1.11.3:
+    resolution: {integrity: sha512-sEE6J0RzUkS+sKEBpgCD/AqCU0ffrAVOADGjvAx9vcttN+VLK42SWMkj/J/I6vHu3Kew+xcfbBqDVb65N0QGDw==}
+    dev: false
+
   /resolve@1.22.8:
     resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
     hasBin: true
@@ -2044,6 +2051,15 @@ packages:
         optional: true
     dependencies:
       vue: 3.5.1
+
+  /vue-recaptcha-v3@2.0.1(vue@3.5.1):
+    resolution: {integrity: sha512-isEDtOfHU4wWRrZZuxciAELtQmPOeEEdicPNa0f1AOyLPy3sCcBEcpFt+FOcO3RQv5unJ3Yn5NlsWtXv9rXqjg==}
+    peerDependencies:
+      vue: ^3.0.11
+    dependencies:
+      recaptcha-v3: 1.11.3
+      vue: 3.5.1
+    dev: false
 
   /vue3-marquee@4.2.2(vue@3.5.1):
     resolution: {integrity: sha512-FeFvGUVInKfFilXFcnl8sDRBJBZCZSNLlQDquJErB9db6W2xICRVqbRV/jtdzsEP0rftarLQhx9MeEAU0+TPuQ==}
