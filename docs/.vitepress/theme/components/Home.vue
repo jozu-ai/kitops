@@ -143,7 +143,7 @@ const subscribeToNewsletter = async () => {
           placeholder="What's your favorite devops tool?"
           name="favoriteDevOpsTool"
           v-model="favoriteDevOpsTool"
-          class="opacity-0 absolute top-0 w-0 h-0" />
+          class="hidden" />
 
         <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
       </form>
