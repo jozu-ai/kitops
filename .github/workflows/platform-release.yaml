@@ -157,8 +157,7 @@ jobs:
       # checkout the current repository
       - name: Checkout kitops
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-        with:
-          path: kitops
+ 
       # checkout the homebrew-kitops repository (jozu-ai/homebrew-kitops)
       - name: Checkout homebrew-kitops
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -168,6 +167,7 @@ jobs:
           ref: 'main'
           path: homebrew-kitops
           token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Merge built artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
         with:
