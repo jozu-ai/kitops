@@ -9,6 +9,7 @@ import axios from 'axios'
 
 const error = ref('')
 const email = ref('')
+const favoriteDevOpsTool = ref('')
 const isBusy = ref(false)
 const isSubscribed = ref(false)
 const isSuccess = ref(false)
@@ -89,7 +90,8 @@ const subscribeToNewsletter = async () => {
     await axios.post('https://newsprxy.gorkem.workers.dev/', {
       email: email.value,
       userGroup: 'KitOps',
-      formName: 'KitOps-Community'
+      formName: 'KitOps-Community',
+      favoriteDevOpsTool: favoriteDevOpsTool.value
     }, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -134,6 +136,14 @@ const subscribeToNewsletter = async () => {
           v-model="email"
           autofocus
           style="border: 1px solid var(--color-off-white)" />
+
+        <input
+          type="text"
+          id="favoriteDevOpsTool"
+          placeholder="What's your favorite devops tool?"
+          name="favoriteDevOpsTool"
+          v-model="favoriteDevOpsTool"
+          class="opacity-0 absolute top-0 w-0 h-0" />
 
         <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
       </form>
@@ -221,7 +231,7 @@ const subscribeToNewsletter = async () => {
   </ol>
 
   <div class="mt-36 p2 text-center">
-    <a href="/docs/use-cases.html#development-%F0%9F%A7%AA" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
+    <a href="/docs/use-cases.html" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
   </div>
 </div>
 
