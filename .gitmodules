@@ -1,3 +1,6 @@
 [submodule "pkg/lib/harness/llama.cpp"]
 	path = pkg/lib/harness/llama.cpp
 	url = https://github.com/ggerganov/llama.cpp.git
+[submodule "homebrew-kitops"]
+	path = homebrew-kitops
+	url = https://github.com/brett-hodges/homebrew-kitops.git
