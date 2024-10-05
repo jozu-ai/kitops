@@ -1,0 +1,83 @@
+name: Homebrew Testing
+
+on: workflow_dispatch:
+    inputs:
+      skip_signing:
+        description: 'Skip code signing'
+        required: true
+        default: false
+        type: boolean
+      release_tag:
+        description: 'Release tag'
+        required: true
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  INIT_IMAGE_NAME: ${{ github.repository }}-init
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+  id-token: write
+  attestations: write
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Setup Go
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        with:
+            go-version-file: 'go.mod'
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 #v6.0.0
+        with:
+          version: latest
+          distribution: goreleaser
+          args: release --clean --snapshot --config ./.goreleaser.linux.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        with:
+            name: dist-linux
+            if-no-files-found: error
+            retention-days: 7
+            path: |
+              ./dist/*.tar.gz
+              
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-linux]
+    steps:
+      # checkout the current repository
+      - name: Checkout kitops
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          path: kitops
+
+      - name: List dirs after checkout kitops
+        run: |
+          ls
+          
+      - name: Merge built artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
+        with:
+          path: dist
+          pattern: dist-*
+          merge-multiple: true
+
+      - name: List dirs after merge build artifacts
+        run: |
+          ls
