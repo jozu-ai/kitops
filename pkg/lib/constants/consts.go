@@ -157,3 +157,18 @@ func TagIndexPathForRepo(storageBase, repo string) string {
 	indexFileName := fmt.Sprintf("%s-tags.json", repoEncoded)
 	return filepath.Join(storageBase, indexFileName)
 }
+
+func ProxyEnvVar() string {
+	var ProxyEnvVar string
+	if ProxyEnvVar = os.Getenv("HTTPS_PROXY"); ProxyEnvVar != "" {
+		return "HTTPS_PROXY"
+	} else if ProxyEnvVar = os.Getenv("https_proxy"); ProxyEnvVar != "" {
+		return "https_proxy"
+	} else if ProxyEnvVar = os.Getenv("HTTP_PROXY"); ProxyEnvVar != "" {
+		return "HTTP_PROXY"
+	} else if ProxyEnvVar = os.Getenv("http_proxy"); ProxyEnvVar != "" {
+		return "https_proxy"
+	}
+
+	return ProxyEnvVar
+}
