@@ -145,10 +145,6 @@ jobs:
       # previous step to generate the homebrew formula (kitops.rb) 
       # for the homebrew tap 'jozu-ai/homebrew-kitops'
       - name: Create homebrew formula
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: ${{ inputs.release_tag}}
-          REPO: ${{ github.repository }}
         run: |
           shopt -s failglob
           pushd kitops/build/homebrew
@@ -165,6 +161,37 @@ jobs:
           ls
           popd
 
-      # upload the homebrew formula (kitops.rb) as an artifact
-      # to be used later when committing it to the repository:
-      # 'jozu-ai/homebrew-kitops', from within a separate job.
+      # Commit the Homebrew Formula to the current repo: jozu-ai/kitops
+      - name: Commit Homebrew Formula
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pushd kitops
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          PR_BRANCH="${{ github.ref_name }}-homebrew-update"
+          git fetch origin main
+          git branch "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          git pull origin --ff-only "${PR_BRANCH}" || true
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          cd build/homebrew
+          git add --all
+          git commit -m "homebrew: update Homebrew Formula for ${{ github.ref_name }}"
+          git push origin "${PR_BRANCH}"
+          gh pr create --fill --base main --head "${PR_BRANCH}"
+          git checkout "${CURRENT_BRANCH}"
+          popd
+
+      # upload the homebrew recipe directory (and its contents) 
+      # as an artifact to be used later when committing it to 
+      # the repository: 'jozu-ai/homebrew-kitops', 
+      # from within a separate job.
+      - name: Upload homebrew recipe as a build artifact
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        with:
+          name: homebrew-recipe
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            ./homebrew-recipe
