@@ -267,7 +267,6 @@ jobs:
           path: homebrew-kitops
           token: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: List dirs after checkout homebrew-kitops
         run: |
             ls
@@ -295,4 +294,28 @@ jobs:
             shopt -s failglob
             pushd homebrew-recipe
             ls
+            popd
+
+      - name: Commit Homebrew Formula to Tap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ inputs.release_tag}}
+          ##### CHANGE REPO TO jozu-ai/homebrew-kitops
+          REPO: "brett-hodges/homebrew-kitops"
+        run: |
+            pushd homebrew-kitops
+            cp ../homebrew-recipe/kitops.rb .
+            CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
+            git fetch origin main
+            git branch "$PR_BRANCH"
+            git checkout "$PR_BRANCH"
+            git pull origin --ff-only "${PR_BRANCH}" || true
+            git config --global user.name "${GITHUB_ACTOR}"
+            git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+            git add --all
+            git commit -m "homebrew: update Homebrew Tap Formula for ${{ github.ref_name }}"
+            git push origin "${PR_BRANCH}"
+            gh pr create --fill --base main --head "${PR_BRANCH}"
+            git checkout "${CURRENT_BRANCH}"
             popd
