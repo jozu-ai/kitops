@@ -1,3 +1,3 @@
-"b0a6857e1e58e161f63f1773b403b334b8e56e2d1b93b38147a2eacfca7bca2d" "https://github.com/brett-hodges/kitops/releases/download/v.0.4.16/kitops-linux-arm64.tar.gz" linux-arm64 .0.4.16
-"3590f67562cd54033dbca40b67b9ad0bf93eb59d585ca69b90b14b0fb64c781e" "https://github.com/brett-hodges/kitops/releases/download/v.0.4.16/kitops-linux-i386.tar.gz" linux-i386 .0.4.16
-"6f14b82ed850f55e15fe8b6b27c39d614b3c74b3184b4914a8ad2455577911be" "https://github.com/brett-hodges/kitops/releases/download/v.0.4.16/kitops-linux-x86_64.tar.gz" linux-x86_64 .0.4.16
+"1d1563e2a93fe12ae4b0a02a22aaaf199062bcd50fe5703ae69c5923445f4642" "https://github.com/brett-hodges/kitops/releases/download/v0.4.17/kitops-linux-arm64.tar.gz" linux-arm64 0.4.17
+"3975f0f3eea94874423b23f23d298558a6653dcfb7a30f471e1cddb58d9fa115" "https://github.com/brett-hodges/kitops/releases/download/v0.4.17/kitops-linux-i386.tar.gz" linux-i386 0.4.17
+"d4b1ecf1b4a8c114b86ff37e29c8a0fc0fc7968e3b827d08cc6b7192778be499" "https://github.com/brett-hodges/kitops/releases/download/v0.4.17/kitops-linux-x86_64.tar.gz" linux-x86_64 0.4.17
