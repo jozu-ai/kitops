@@ -134,6 +134,13 @@ jobs:
           mv homebrew-metadata.txt ../kitops/build/homebrew/homebrew-metadata.txt
           popd
 
+      - name: List contents of kitops/build/homebrew dir
+        run: |
+          shopt -s failglob
+          pushd kitops/build/homebrew
+          ls
+          popd
+
       # uses the homebrew-metadata.txt file generated in the
       # previous step to generate the homebrew formula (kitops.rb) 
       # for the homebrew tap 'jozu-ai/homebrew-kitops'
@@ -154,7 +161,7 @@ jobs:
         run: |
           shopt -s failglob
           ls
-          pushd homebrew
+          pushd homebrew-recipe
           ls
           popd
 
