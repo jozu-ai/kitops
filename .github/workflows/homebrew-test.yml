@@ -228,56 +228,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
         run: |
-            CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            PR_BRANCH="${{ github.ref_name }}-docs-update"
-            git fetch origin main
-            git branch "$PR_BRANCH"
-            git checkout "$PR_BRANCH"
-            git pull origin --ff-only "${PR_BRANCH}" || true
-  
-            git config --global user.name "${GITHUB_ACTOR}"
-            git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-  
-            (cd docs; npm pkg set version=$TAG_NAME)
-            ./docs/src/docs/cli/generate.sh > /dev/null
-            git add --all
-            git commit -m "docs: update CLI documentation for ${{ github.ref_name }}"
-            git push origin "${PR_BRANCH}"
-            gh pr create --fill --base main --head "${PR_BRANCH}"
-            git checkout "${CURRENT_BRANCH}"
-
-      - name: Create Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
-          REPO: ${{ github.repository }}
-          DRAFT_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "Creating release for ${TAG_NAME}"
-          release_args=(
-            ${TAG_NAME}
-           ./dist/*.*
-            --title "Release ${TAG_NAME}"
-            --generate-notes
-            --repo ${REPO}
-          )
-          if [[ "${DRAFT_RELEASE}" == "false" ]]; then
-            previous_release="$(gh release list --repo $REPO --limit 1 --json tagName --jq '.[] | .tagName ')"
-            echo "Previous release: ${previous_release}"
-            release_args+=( --latest )
-            release_args+=( --verify-tag )
-            release_args+=( --notes-start-tag "${previous_release}" )
-          else
-            release_args+=( --draft )
-          fi
-          gh release create "${release_args[@]}"
-
-      - name: Generate CLI documentation
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
-        run: |
             pushd kitops
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             PR_BRANCH="${{ github.ref_name }}-docs-update"
@@ -297,3 +247,4 @@ jobs:
             gh pr create --fill --base main --head "${PR_BRANCH}"
             git checkout "${CURRENT_BRANCH}"
             popd
+
