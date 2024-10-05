@@ -167,7 +167,7 @@ jobs:
 
       - name: Create Checksums
         env:
-          TAG_NAME: ${{ github.ref_name}}
+          TAG_NAME: ${{ inputs.release_tag}}
         run: |
           ls
           shopt -s failglob

@@ -58,7 +58,9 @@ jobs:
             path: |
               ./dist/*.tar.gz
   
-  
+  # Creates a release with the artifacts from the previous steps.
+  # workflow_dispatch triggered versions will be draft releases.
+  # CLI docs are not updated for workflow_dispatch triggered versions.
   release:
     runs-on: ubuntu-latest
     needs: [build-linux]
@@ -248,3 +250,49 @@ jobs:
             git checkout "${CURRENT_BRANCH}"
             popd
 
+
+  # Publish the homebrew recipe (kitops.rb) to the repository:
+  # 'jozu-ai/homebrew-kitops'
+  publish-homebrew-tap-formula:
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+    # checkout the homebrew-kitops repository (jozu-ai/homebrew-kitops)
+      - name: Checkout homebrew-kitops
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          ###### CHANGE THIS TO jozu-ai/homebrew-kitops ######
+          repository: brett-hodges/homebrew-kitops
+          ref: 'main'
+          path: homebrew-kitops
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: List dirs after checkout homebrew-kitops
+        run: |
+            ls
+  
+      - name: List contents of homebrew-kitops
+        run: |
+            shopt -s failglob
+            pushd homebrew-kitops
+            ls
+            popd
+            
+      - name: Download the build artifact for the homebrew recipe
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
+        with:
+          name: homebrew-recipe
+          path: homebrew-recipe
+          merge-multiple: true
+  
+      - name: List dirs after downloading homebrew-recipe artifact
+        run: |
+            ls
+  
+      - name: List contents of homebrew-recipe
+        run: |
+            shopt -s failglob
+            pushd homebrew-recipe
+            ls
+            popd
