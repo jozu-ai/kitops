@@ -278,6 +278,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
         run: |
+            pushd kitops
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             PR_BRANCH="${{ github.ref_name }}-docs-update"
             git fetch origin main
@@ -295,3 +296,4 @@ jobs:
             git push origin "${PR_BRANCH}"
             gh pr create --fill --base main --head "${PR_BRANCH}"
             git checkout "${CURRENT_BRANCH}"
+            popd
