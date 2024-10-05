@@ -257,7 +257,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release]
     steps:
-    # checkout the homebrew-kitops repository (jozu-ai/homebrew-kitops)
+      # unset git config from previous checkout
+      - name: Unset git config
+        run: |
+            git config --unset-all http.https://github.com/.extraheader
+
+      # checkout the homebrew-kitops repository (jozu-ai/homebrew-kitops)
       - name: Checkout homebrew-kitops
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
@@ -305,7 +310,6 @@ jobs:
         run: |
             pushd homebrew-kitops
             cp ../homebrew-recipe/kitops.rb .
-            git config --unset-all http.https://github.com/.extraheader
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
             git fetch origin main
