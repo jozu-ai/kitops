@@ -1,6 +1,7 @@
 name: Homebrew Testing
 
-on: workflow_dispatch:
+on: 
+  workflow_dispatch:
     inputs:
       skip_signing:
         description: 'Skip code signing'
