@@ -17,16 +17,16 @@ class Kitops < Formula
 
   on_linux do
     on_arm do
-      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.13/kitops-linux-arm64.tar.gz"
-      sha256 "42b9571631ecbe3e12a83fa38a7c55fcba13c5b302adc058e748d113c99fbed1"
+      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.14/kitops-linux-arm64.tar.gz"
+      sha256 "fb53c16d50750fb101cf4d2f875cb2655f16f34c85b8ad39da249754872f7af6"
     end
     on_intel do
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.13/kitops-linux-x86_64.tar.gz"
-        sha256 "0c221e6751fa47abd23531969f176acd333c29e67b9d37d4697df67cd6915c30"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.14/kitops-linux-x86_64.tar.gz"
+        sha256 "c28f30c9e3b8542b1ce1b66b12402295f41e3942e42689bc3d4298f727a4f64f"
       else
-        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.13/kitops-linux-i386.tar.gz"
-        sha256 "573df0fb014a109c304ceff2d79cb98d00f7d9533a233fae92008b4319195107"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.14/kitops-linux-i386.tar.gz"
+        sha256 "0089de4a65e8745610b695f4c3f133188682fa302021904fe96482689ac01335"
       end
     end
   end
