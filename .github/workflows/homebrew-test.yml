@@ -305,6 +305,7 @@ jobs:
         run: |
             pushd homebrew-kitops
             cp ../homebrew-recipe/kitops.rb .
+            git config --unset-all http.https://github.com/.extraheader
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
             git fetch origin main
