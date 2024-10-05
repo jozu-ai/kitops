@@ -5,28 +5,28 @@ class Kitops < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/brett-hodges/kitops/releases/download/main/kitops-darwin-arm64.tar.gz"
-      sha256 "72218d6541da87cdac27e1dd8c994646470731742217aad52728a37b1f907dc8"
+      url 
+      sha256 
     end
     on_intel do
-      url "https://github.com/brett-hodges/kitops/releases/download/main/kitops-darwin-x86_64.tar.gz"
-      sha256 "3c7b82321bed488886f5b5f699b66078541ab1a8fc311c083710f80013b670e9"
+      url 
+      sha256 
     end
 
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-arm64.tar.gz"
-      sha256 "9d92a6f005681e3a494b16be3073ed2ec752ba339c69eb74e5e9783857ef1f0f"
+      url "https://github.com/brett-hodges/kitops/releases/download/v0.4.11/kitops-linux-arm64.tar.gz"
+      sha256 "ea2ceb6537d3f8fa6ca8415aef51d8824d1aff78170e560a0cd557e8610dc411"
     end
     on_intel do
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-x86_64.tar.gz"
-        sha256 "e9a9c8d7bb78f2478731439469dda503b70ec344e249c7366d1a8c4dfabdac4a"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.11/kitops-linux-x86_64.tar.gz"
+        sha256 "7c871e94bb4a0eb48a58302ecb7af9c42fbd25c7384c9c4ac86811ba7560a0c0"
       else
-        url "https://github.com/brett-hodges/kitops/releases/download/main/kitops-linux-i386.tar.gz"
-        sha256 "aad06aef59209e5abdc3f36047b16ba7756491c841b8984311e9ccaae37434d3"
+        url "https://github.com/brett-hodges/kitops/releases/download/v0.4.11/kitops-linux-i386.tar.gz"
+        sha256 "27d6e81fe5b8155d20a3a3e43d3c44741b68a7e3e462e5554f349320e20b69bf"
       end
     end
   end
@@ -36,7 +36,7 @@ class Kitops < Formula
   end
 
   test do
-    expected_version = "Version: main"
+    expected_version = "Version: "
     actual_version = shell_output("#{bin}/kit version").strip
     assert_match expected_version, actual_version
   end
