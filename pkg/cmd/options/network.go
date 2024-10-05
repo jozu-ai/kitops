@@ -35,6 +35,7 @@ type NetworkOptions struct {
 	ClientCertPath    string
 	ClientCertKeyPath string
 	Concurrency       int
+	Proxy             string
 }
 
 func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
@@ -45,6 +46,7 @@ func (o *NetworkOptions) AddNetworkFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&o.ClientCertKeyPath, "key", "",
 		fmt.Sprintf("Path to client certificate key used for authentication (can also be set via environment variable %s)", constants.ClientCertKeyEnvVar))
 	cmd.Flags().IntVar(&o.Concurrency, "concurrency", 5, "Maximum number of simultaneous uploads/downloads")
+	cmd.Flags().StringVar(&o.Proxy, "proxy", "", "Proxy to use for connections (can also be set via environment variable)")
 }
 
 func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
@@ -72,5 +74,6 @@ func DefaultNetworkOptions(configHome string) *NetworkOptions {
 		PlainHTTP:       false,
 		TLSVerify:       true,
 		CredentialsPath: constants.CredentialsPath(configHome),
+		Proxy:           constants.ProxyEnvVar(),
 	}
 }
