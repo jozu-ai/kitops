@@ -20,6 +20,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
@@ -53,6 +54,13 @@ func ClientWithAuth(store credentials.Store, opts *options.NetworkOptions) (*aut
 func DefaultClient(opts *options.NetworkOptions) (*auth.Client, error) {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.TLSClientConfig.InsecureSkipVerify = !opts.TLSVerify
+	if opts.Proxy != "" {
+        proxyURL, err := url.Parse(opts.Proxy)
+        if err != nil {
+            return nil, fmt.Errorf("invalid proxy URL: %w", err)
+        }
+        transport.Proxy = http.ProxyURL(proxyURL)
+    }
 	if opts.ClientCertKeyPath != "" && opts.ClientCertPath != "" {
 		cert, err := tls.LoadX509KeyPair(opts.ClientCertPath, opts.ClientCertKeyPath)
 		if err != nil {
