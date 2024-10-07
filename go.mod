@@ -11,8 +11,8 @@ require (
 	github.com/vbauerster/mpb/v8 v8.8.3
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
-	golang.org/x/sys v0.25.0
-	golang.org/x/term v0.24.0
+	golang.org/x/sys v0.26.0
+	golang.org/x/term v0.25.0
 	gopkg.in/yaml.v3 v3.0.1
 	oras.land/oras-go/v2 v2.5.0
 )
