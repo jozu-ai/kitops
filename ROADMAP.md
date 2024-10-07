@@ -56,7 +56,5 @@ Users want to be able to get the Kit CLI from locations like Brew, Choco, and Co
 
 This feature will come in two parts: build attestation and self-attestation. Build attestations will be done by KitOps itself, adding a SLSA attestation about how the ModelKit was built. ModelKit creators can add an optional attestation for specific assets in the ModelKit, or the whole ModelKit. Users can include any 3rd party attestation Verification Summary Attestation (VSA). Additional attestations could be added as predicates. Attestation would be included as a separate layer in the ModelKit.
 
-* Add attestation for KitOps ModelKit builds 💡
-* Add mechanism for adding attestations to ModelKits 💡
-* Update CLI to make use of attestations 💡
+* Add provenance for KitOps ModelKit builds 💡
 * Add CLI warnings if attestation was expected and not found 💡
