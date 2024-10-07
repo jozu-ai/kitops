@@ -41,7 +41,7 @@ Users can optionally sign their ModelKit using something like Cosign in order to
 
 ### Deployment 💡
 
-Users want to be able to deploy their models through existing CI/CD/CT pipelines. Since KitOps doesn't know the details of a user's deployment pipeline or process we will `unpack` a ModelKit into an appropriate directory structure for one of several deployment targets. 
+Users want to be able to deploy their models through existing CI/CD/CT pipelines. Since KitOps doesn't know the details of a user's deployment pipeline or process we will `unpack` a ModelKit into an appropriate directory structure for one of several deployment targets.
 
 ### CLI Distribution
 
