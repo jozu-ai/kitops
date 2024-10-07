@@ -82,6 +82,14 @@ type (
 		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
 		Description string `json:"description,omitempty" yaml:"description,omitempty"`
 		License     string `json:"license,omitempty" yaml:"license,omitempty"`
+		// Parameters is an arbitrary section of yaml that can be used to store any additional
+		// metadata relevant to the dataset, with a few caveats:
+		//  * Only a json-compatible subset of yaml is supported
+		//  * Strings will be serialized without flow parameters, etc.
+		//  * Numbers will be converted to decimal representations
+		//  * Maps will be sorted alphabetically by key
+		//  * It's recommended to store metadata like preprocessing steps, formats, etc.
+		Parameters any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 	}
 )
 
