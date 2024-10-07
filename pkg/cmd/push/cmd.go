@@ -118,7 +118,7 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 		output.Infof("Pushing %s", opts.modelRef.String())
 		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts)
 		if err != nil {
-			return output.Fatalf("Failed to push: %s", err)
+			return output.Fatalf("Failed to push: %s. Ensure that the organization and repository you are pushing to exist and that you have the necessary write permissions.", err)
 		}
 		output.Infof("Pushed %s", desc.Digest)
 		return nil
