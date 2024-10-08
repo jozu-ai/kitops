@@ -31,14 +31,6 @@ As a public community project the KitOps roadmap is always open to feedback. If 
 
 * Creating a ModelKit from a Jupyter Notebook 📅
 
-### Signing
-
-Users can optionally sign their ModelKit using something like Cosign in order to add an extra layer of security to their packaging.
-
-* Add docs on signing and verifying to docs 🛳️
-* Decide on a signing utility 💡
-* Add signing to Kit CLI 💡
-
 ### Deployment 💡
 
 Users want to be able to deploy their models through existing CI/CD/CT pipelines. Since KitOps doesn't know the details of a user's deployment pipeline or process we will `unpack` a ModelKit into an appropriate directory structure for one of several deployment targets.
@@ -58,3 +50,9 @@ This feature will come in two parts: build attestation and self-attestation. Bui
 
 * Add provenance for KitOps ModelKit builds 💡
 * Add CLI warnings if attestation was expected and not found 💡
+
+### Signing
+
+Users can optionally sign their ModelKit using something like Cosign in order to add an extra layer of security to their packaging.
+
+* Add docs on signing and verifying to docs 🛳️
