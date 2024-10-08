@@ -161,14 +161,13 @@ jobs:
           path: kitops
       
       # Create the homebrew-file directory to store the 
-      # homebrew artifacts
+      # homebrew artifacts and copy the awk script and 
+      # recipe template to it. These will be used later 
+      # to build the homebrew recipe file.
       - name: Create homebrew-files dir
-        run: mkdir homebrew-files
-
-     # Copy the awk script and template to the homebrew-files dir.
-     # These will be used later to build the homebrew recipe file.
-      - name: Copy homebrew artifacts to homebrew-files dir
-        run: cp ./kitops/build/homebrew/*.* ./homebrew-files
+        run: |
+          mkdir homebrew-files
+          cp ./kitops/build/homebrew/*.* ./homebrew-files
           
       - name: Merge build artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
@@ -211,7 +210,7 @@ jobs:
           echo "Creating release for ${TAG_NAME}"
           release_args=(
             ${TAG_NAME}
-           ./dist/*.*
+            ./dist/*.*
             --title "Release ${TAG_NAME}"
             --generate-notes
             --repo ${REPO}
@@ -233,25 +232,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
         run: |
-            pushd kitops
-            CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            PR_BRANCH="${{ github.ref_name }}-docs-update"
-            git fetch origin main
-            git branch "$PR_BRANCH"
-            git checkout "$PR_BRANCH"
-            git pull origin --ff-only "${PR_BRANCH}" || true
+          pushd kitops
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          PR_BRANCH="${{ github.ref_name }}-docs-update"
+          git fetch origin main
+          git branch "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          git pull origin --ff-only "${PR_BRANCH}" || true
   
-            git config --global user.name "${GITHUB_ACTOR}"
-            git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
   
-            (cd docs; npm pkg set version=$TAG_NAME)
-            ./docs/src/docs/cli/generate.sh > /dev/null
-            git add --all
-            git commit -m "docs: update CLI documentation for ${{ github.ref_name }}"
-            git push origin "${PR_BRANCH}"
-            gh pr create --fill --base main --head "${PR_BRANCH}"
-            git checkout "${CURRENT_BRANCH}"
-            popd
+          (cd docs; npm pkg set version=$TAG_NAME)
+          ./docs/src/docs/cli/generate.sh > /dev/null
+          git add --all
+          git commit -m "docs: update CLI documentation for ${{ github.ref_name }}"
+          git push origin "${PR_BRANCH}"
+          gh pr create --fill --base main --head "${PR_BRANCH}"
+          git checkout "${CURRENT_BRANCH}"
+          popd
 
 
   # Generate and publish the homebrew recipe (kitops.rb) to the repository:
