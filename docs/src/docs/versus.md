@@ -75,7 +75,7 @@ Git is excellent at managing software projects that consist of a large number of
 
 #### ModelKits & Git
 
-Code related to model development is often easier to store in ModelKits where it is always in-sync with the Jupyter Notebook, serialized model, and datasets used during development. Larger codebases and code related to application integrations is best kept in git, but is often helpful to also package into the ModelKit ([a codebase can be stored in a ModelKit](./kitfile/format.html#code) so that anyone can see the state of the code at the point that the project's ModelKit was versioned).
+Code related to model development is often easier to store in ModelKits where it is always in-sync with the Jupyter Notebook, serialized model, and datasets used during development. Larger codebases and code related to application integrations are best kept in git, but is often helpful to also package into the ModelKit ([a codebase can be stored in a ModelKit](./kitfile/format.html#code) so that anyone can see the state of the code at the point that the project's ModelKit was versioned).
 
 ### Dataset Storage
 
