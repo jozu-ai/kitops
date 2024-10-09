@@ -181,12 +181,12 @@ jobs:
           TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
           #TAG_NAME: ${{ inputs.release_tag}}
         run: |
-            shopt -s failglob
-            pushd dist
-            shasum -a 256 kitops-* > checksums.txt
-            mv checksums.txt kitops_${TAG_NAME}_checksums.txt
-            cp kitops_${TAG_NAME}_checksums.txt ../homebrew-files/.
-            popd
+          shopt -s failglob
+          pushd dist
+          shasum -a 256 kitops-* > checksums.txt
+          mv checksums.txt kitops_${TAG_NAME}_checksums.txt
+          cp kitops_${TAG_NAME}_checksums.txt ../homebrew-files/.
+          popd
 
       # upload the homebrew-files directory (and its contents) 
       # as an artifact to be used later when generating the
@@ -311,23 +311,23 @@ jobs:
           TAG_NAME: ${{ inputs.release_tag}}
           REPO: "jozu-ai/homebrew-kitops"
         run: |
-            cp -f ./homebrew-files/homebrew-metadata.txt ./homebrew-kitops/.
-            cp -f ./homebrew-files/kitops.rb ./homebrew-kitops/.
-            pushd homebrew-kitops
-            CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
-            git fetch origin main
-            git branch "$PR_BRANCH"
-            git checkout "$PR_BRANCH"
-            git pull origin --ff-only "${PR_BRANCH}" || true
-            git config --global user.name "${GITHUB_ACTOR}"
-            git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-            git add --all
-            git commit -m "homebrew: update Homebrew Tap Formula for ${{ github.ref_name }}"
-            git push origin "${PR_BRANCH}"
-            gh pr create --fill --base main --head "${PR_BRANCH}"
-            git checkout "${CURRENT_BRANCH}"
-            popd
+          cp -f ./homebrew-files/homebrew-metadata.txt ./homebrew-kitops/.
+          cp -f ./homebrew-files/kitops.rb ./homebrew-kitops/.
+          pushd homebrew-kitops
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
+          git fetch origin main
+          git branch "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          git pull origin --ff-only "${PR_BRANCH}" || true
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git add --all
+          git commit -m "homebrew: update Homebrew Tap Formula for ${{ github.ref_name }}"
+          git push origin "${PR_BRANCH}"
+          gh pr create --fill --base main --head "${PR_BRANCH}"
+          git checkout "${CURRENT_BRANCH}"
+          popd
 
   docker-image-build:
     runs-on: ubuntu-latest
