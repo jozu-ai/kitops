@@ -131,7 +131,7 @@ kit pack . -f /path/to/your/Kitfile -t film-slm:champion
 
 ### Pushing to a Remote Registry
 
-In each case this will pack a ModelKit and store it in your local registry. To push it to a remote registry for sharing with others, there are two steps:
+In each case, this will pack a ModelKit and store it in your local registry. To push it to a remote registry for sharing with others, there are two steps:
 
 1. Tagging the local copy with the remote registry's name
 1. Pushing the remote-named copy from your local to the remote registry

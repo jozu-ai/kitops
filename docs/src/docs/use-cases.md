@@ -35,7 +35,7 @@ This guarantees that models used by internal teams are safe and tamper-proof. By
 
 ### Protecting Production 🚦
 
-After model development has completed, the resulting ModelKit and its artifacts can again by scanned by something like ModelScan and only allowed to move forward if it passes. Using ModelKits here again ensures that a model that passes the scan is packaged and signed so that it cannot be tampered with on its way to production.
+After model development has been completed, the resulting ModelKit and its artifacts can again by scanned by something like ModelScan and only allowed to move forward if it passes. Using ModelKits here again ensures that a model that passes the scan is packaged and signed so that it cannot be tampered with on its way to production.
 
 Even with this level of scrutiny, however, there remain some risks since the varying repositories and versioning of artifacts during development can invite accidental or malicious tampering. This leads us to Level 3 adoption...
 
@@ -118,7 +118,7 @@ kit push registry.gitlab.com/chatbot/legalchat:challenger
 
 Adding the `challenger` tag to a ModelKit was a trigger in our team for the DevOps group to know that it was ready to deploy to production. They would take the serialized model from the ModelKit and ready it for deployment via our pipelines. This may mean putting the model into a container, but it may mean using an init container, a sidecar, entrypoint, or post-start hooks.
 
-Once the model was deployed and validated in production the ModelKit for the model that was previously tagged `champion` would be retagged to `rollback`, and the ModelKit for the `challenger` would be retagged to `champion`. These changes were part of our deployment automation and ensured that we were always ready to quickly redeploy the `rollback` model in case something catastrophic happened in production withe current `champion`.
+Once the model was deployed and validated in production the ModelKit for the model that was previously tagged `champion` would be retagged to `rollback`, and the ModelKit for the `challenger` would be retagged to `champion`. These changes were part of our deployment automation and ensured that we were always ready to quickly redeploy the `rollback` model in case something catastrophic happened in production with the current `champion`.
 
 ```shell
 kit tag registry.gitlab.com/chatbot/legalchat:champion registry.gitlab.com/chatbot/legalchat:rollback
