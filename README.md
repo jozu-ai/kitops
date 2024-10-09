@@ -18,7 +18,7 @@
 
 KitOps is a packaging and versioning system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise registry.
 
-KitOps makes it easy for organizations to track, control, and audit access and changes to their AI project artifacts. It simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, codebases, features, hyperparmeters, and any other documentation. ModelKits are portable, reproducible, and work with the tools you already use.
+KitOps makes it easy for organizations to track, control, and audit access and changes to their AI project artifacts. It simplifies the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. KitOps' ModelKits are an OCI-compliant package for models, their dependencies, configurations, codebases, features, hyperparameters, and any other documentation. ModelKits are portable, reproducible, and work with the tools you already use.
 
 Teams and enterprises use KitOps as a gate between development and production deployment. This ensures that projects are complete, versioned, and compatible with existing pipelines and tools. This makes deployments, rollbacks, and other production operations simpler and safer.
 
@@ -40,7 +40,7 @@ Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https:
 * 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
 * 🪛 **[LLM fine-tuning](https://dev.to/kitops/fine-tune-your-first-large-language-model-llm-with-lora-llamacpp-and-kitops-in-5-easy-steps-1g7f):** Use KitOps to fine-tune a large language model using LoRA.
 * 🎯 **[RAG pipelines](https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing):** Create a RAG pipeline for tailoring an LLM with KitOps.
-* 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes a SHA digest for itself, and every artifact it holds.
+* 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes an SHA digest for itself, and every artifact it holds.
 * 📝 **[Artifact signing](https://kitops.ml/docs/next-steps.html):** ModelKits and their assets can be signed so you can be confident of their provenance.
 * 🌈 **[Standards-based](https://kitops.ml/docs/modelkit/compatibility.html):** Store ModelKits in any OCI 1.1-compliant container or artifact registry.
 * 🥧 **[Simple syntax](https://kitops.ml/docs/kitfile/kf-overview.html):** Kitfiles are easy to write and read, using a familiar YAML syntax.
@@ -66,7 +66,7 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 1. [Install the CLI](https://kitops.ml/docs/cli/installation.html) for your platform.
 2. Follow the [Getting Started](https://kitops.ml/docs/get-started.html) docs to learn to pack, unpack, and share a ModelKit.
-3. Test drive one of our [ModelKit Quick Starts](https://jozu.ml/organization/jozu-quickstarts) that include everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
+3. Test drive one of our [ModelKit Quick Starts](https://jozu.ml/organization/jozu-quickstarts) that includes everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
 
 - [Meta LLama 3.1](https://jozu.ml/repository/jozu/llama3.1-8b)
 - [Google Gemma](https://jozu.ml/repository/jozu/gemma-7b)
