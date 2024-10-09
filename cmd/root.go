@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"kitops/pkg/cmd/config"
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
 	"kitops/pkg/cmd/inspect"
@@ -129,6 +130,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(tag.TagCommand())
 	rootCmd.AddCommand(list.ListCommand())
+	rootCmd.AddCommand(config.ConfigCommand())
 	rootCmd.AddCommand(inspect.InspectCommand())
 	rootCmd.AddCommand(info.InfoCommand())
 	rootCmd.AddCommand(remove.RemoveCommand())
