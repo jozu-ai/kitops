@@ -20,6 +20,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -167,10 +168,16 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 	}
 	wg.Wait()
 	close(errChan)
+
+	var allErrors []error
 	for err := range errChan {
 		if err != nil {
-			return fmt.Errorf("failed to unpack: %w", err)
+			allErrors = append(allErrors, err)
 		}
+	}
+
+	if len(allErrors) > 0 {
+		return fmt.Errorf("failed to unpack layers: %w", errors.Join(allErrors...))
 	}
 
 	output.Debugf("Unpacked %d model part layers", modelPartIdx)
