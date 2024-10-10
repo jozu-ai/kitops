@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sync"
 
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/util"
@@ -90,66 +91,75 @@ func saveConfig(ctx context.Context, localRepo local.LocalRepo, kitfile *artifac
 }
 
 func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
-	var layers []ocispec.Descriptor
-	if kitfile.Model != nil {
-		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
-			mediaType := constants.MediaType{
-				BaseType:    constants.ModelType,
-				Compression: compression,
-			}
-			layer, err := saveContentLayer(ctx, localRepo, kitfile.Model.Path, mediaType, ignore)
-			if err != nil {
-				return nil, err
-			}
-			layers = append(layers, layer)
-		}
-		for _, part := range kitfile.Model.Parts {
-			mediaType := constants.MediaType{
-				BaseType:    constants.ModelPartType,
-				Compression: compression,
-			}
-			layer, err := saveContentLayer(ctx, localRepo, part.Path, mediaType, ignore)
-			if err != nil {
-				return nil, err
-			}
-			layers = append(layers, layer)
-		}
-	}
-	for _, code := range kitfile.Code {
-		mediaType := constants.MediaType{
-			BaseType:    constants.CodeType,
-			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, code.Path, mediaType, ignore)
-		if err != nil {
-			return nil, err
-		}
-		layers = append(layers, layer)
-	}
-	for _, dataset := range kitfile.DataSets {
-		mediaType := constants.MediaType{
-			BaseType:    constants.DatasetType,
-			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, dataset.Path, mediaType, ignore)
-		if err != nil {
-			return nil, err
-		}
-		layers = append(layers, layer)
-	}
-	for _, docs := range kitfile.Docs {
-		mediaType := constants.MediaType{
-			BaseType:    constants.DocsType,
-			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, docs.Path, mediaType, ignore)
-		if err != nil {
-			return nil, err
-		}
-		layers = append(layers, layer)
-	}
+    var layers []ocispec.Descriptor
+    var mu sync.Mutex 
+    var wg sync.WaitGroup
+    errChan := make(chan error, len(kitfile.Model.Parts)+len(kitfile.Code)+len(kitfile.DataSets)+len(kitfile.Docs))
 
-	return layers, nil
+    processLayer := func(path string, mediaType constants.MediaType) {
+        defer wg.Done() 
+        layer, err := saveContentLayer(ctx, localRepo, path, mediaType, ignore)
+        if err != nil {
+            errChan <- err
+            return
+        }
+        mu.Lock() 
+        layers = append(layers, layer)
+        mu.Unlock()
+    }
+
+    // Process model layers concurrently
+    if kitfile.Model != nil {
+        if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
+            wg.Add(1)
+            go processLayer(kitfile.Model.Path, constants.MediaType{
+                BaseType:    constants.ModelType,
+                Compression: compression,
+            })
+        }
+        for _, part := range kitfile.Model.Parts {
+            wg.Add(1)
+            go processLayer(part.Path, constants.MediaType{
+                BaseType:    constants.ModelPartType,
+                Compression: compression,
+            })
+        }
+    }
+
+    // Process code layers concurrently
+    for _, code := range kitfile.Code {
+        wg.Add(1)
+        go processLayer(code.Path, constants.MediaType{
+            BaseType:    constants.CodeType,
+            Compression: compression,
+        })
+    }
+
+    // Process dataset layers concurrently
+    for _, dataset := range kitfile.DataSets {
+        wg.Add(1)
+        go processLayer(dataset.Path, constants.MediaType{
+            BaseType:    constants.DatasetType,
+            Compression: compression,
+        })
+    }
+
+    // Process documentation layers concurrently
+    for _, docs := range kitfile.Docs {
+        wg.Add(1)
+        go processLayer(docs.Path, constants.MediaType{
+            BaseType:    constants.DocsType,
+            Compression: compression,
+        })
+    }
+    wg.Wait()
+    close(errChan)
+    for err := range errChan {
+        if err != nil {
+            return nil, err
+        }
+    }
+    return layers, nil
 }
 
 func saveContentLayer(ctx context.Context, localRepo local.LocalRepo, path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (ocispec.Descriptor, error) {
