@@ -56,7 +56,7 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 ### What is in the box?
 
-**[ModelKit](https://kitops.ml/docs/modelkit/intro.html):** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format for sharing all AI project artifacts: datasets, code, configurations, and models. By standardizing the way these components are packaged, versioned, and shared, ModelKits facilitate a more streamlined and collaborative development process that is compatible with any MLOps or DevOps tool.
+**[ModelKit](https://kitops.ml/docs/modelkit/intro.html):** At the heart of KitOps is the ModelKit, an OCI-compliant packaging format for sharing all AI project artifacts: datasets, code, configurations, and models. ModelKits facilitate a more streamlined and collaborative development process that is compatible with any MLOps or DevOps tool by standardizing how these components are packaged, versioned, and shared.
 
 **[Kitfile](https://kitops.ml/docs/kitfile/kf-overview.html):** A ModelKit is defined by a Kitfile - your AI/ML project's blueprint. It uses YAML to describe where to find each of the artifacts that will be packaged into the ModelKit. The Kitfile outlines what each part of the project is.
 
@@ -114,9 +114,5 @@ At KitOps, inclusivity, empathy, and responsibility are at our core. Please read
 ## Roadmap
 
 We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provide feedback and ideas. Let us know what you'd like to see by pinging us on Discord or creating an issue.
-
----
----
----
 
 <a href="https://trackgit.com">Trackgit</a>
