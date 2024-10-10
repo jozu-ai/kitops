@@ -90,7 +90,7 @@ func saveConfig(ctx context.Context, localRepo local.LocalRepo, kitfile *artifac
 	return desc, nil
 }
 
-// SaveKitfileLayers saves the kitfile layers with optional compression and returns a list of descriptors.
+// saveKitfileLayers saves the kitfile layers with optional compression and returns a list of descriptors.
 func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
 	var layers []ocispec.Descriptor
 	var mu sync.Mutex
