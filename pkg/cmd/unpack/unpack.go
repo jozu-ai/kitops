@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
@@ -78,6 +79,21 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 	// Since there might be multiple datasets, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for unpacking
 	var modelPartIdx, codeIdx, datasetIdx, docsIdx int
+
+	// Error channel and WaitGroup for parallel unpacking
+	var wg sync.WaitGroup
+	errChan := make(chan error, len(manifest.Layers))
+
+	// Helper function to handle layer unpacking concurrently
+	unpackLayerAsync := func(layerDesc ocispec.Descriptor, relPath string, mediaType constants.MediaType) {
+		defer wg.Done()
+
+		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
+			errChan <- err
+			return
+		}
+	}
+
 	for _, layerDesc := range manifest.Layers {
 		var relPath string
 		mediaType := constants.ParseMediaType(layerDesc.MediaType)
@@ -145,10 +161,18 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 			docsIdx += 1
 		}
 
-		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
+		// Run the unpack operation in a goroutine
+		wg.Add(1)
+		go unpackLayerAsync(layerDesc, relPath, mediaType)
+	}
+	wg.Wait()
+	close(errChan)
+	for err := range errChan {
+		if err != nil {
 			return fmt.Errorf("failed to unpack: %w", err)
 		}
 	}
+
 	output.Debugf("Unpacked %d model part layers", modelPartIdx)
 	output.Debugf("Unpacked %d code layers", codeIdx)
 	output.Debugf("Unpacked %d dataset layers", datasetIdx)
