@@ -56,7 +56,7 @@ func RunCommand() *cobra.Command {
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())
-			
+
 			// Load config from the file (or default if it doesn't exist)
 			configHome, err := getConfigHome(opts)
 			if err != nil {
@@ -106,7 +106,6 @@ func RunCommand() *cobra.Command {
 				output.SetProgressBars("none")
 			}
 
-			
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cmd.SetContext(ctx)
 
@@ -200,4 +199,3 @@ func getConfigHome(opts *rootOptions) (string, error) {
 	}
 	return defaultHome, nil
 }
-

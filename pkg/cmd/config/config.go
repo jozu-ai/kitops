@@ -11,23 +11,21 @@ import (
 )
 
 type Config struct {
-	LogLevel                      string `json:"log_level"`
-	Progress                      string `json:"progress"`
-	ConfigDir                     string `json:"config_dir"`
-	Verbose                       int    `json:"verbose"`
+	LogLevel  string `json:"log_level"`
+	Progress  string `json:"progress"`
+	ConfigDir string `json:"config_dir"`
+	Verbose   int    `json:"verbose"`
 }
-
 
 // DefaultConfig returns a Config struct with default values.
 func DefaultConfig() *Config {
 	return &Config{
-		LogLevel:                      "info", 
-		Progress:                      "plain",
-		ConfigDir:                     "", 
-		Verbose:                       0,
+		LogLevel:  "info",
+		Progress:  "plain",
+		ConfigDir: "",
+		Verbose:   0,
 	}
 }
-
 
 // Set a configuration key and value.
 func setConfig(_ context.Context, opts *configOptions) error {
@@ -144,8 +142,8 @@ func getConfigPath(profile string) string {
 
 // ConfigOptions struct to store command options.
 type configOptions struct {
-	key       string
-	value     string
-	profile   string
+	key        string
+	value      string
+	profile    string
 	configHome string
 }
