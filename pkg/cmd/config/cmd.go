@@ -1,12 +1,10 @@
-package config
-
 // Copyright 2024 The KitOps Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +13,7 @@ package config
 // limitations under the License.
 //
 // SPDX-License-Identifier: Apache-2.0
+package config
 
 import (
 	"context"
@@ -71,7 +70,7 @@ func ConfigCommand() *cobra.Command {
 	opts := &configOptions{}
 
 	cmd := &cobra.Command{
-		Use:     "config [set|get|list|reset] <key> [value]",
+		Use:     "config [set|get|list|reset] KEY [VALUE]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,

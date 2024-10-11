@@ -50,6 +50,7 @@ const (
 	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
 	// by e.g. referring to another modelkit in its .model.path
 	MaxModelRefChain = 10
+	ConfigFileName   = "config.json"
 )
 
 var (

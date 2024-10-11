@@ -66,7 +66,7 @@ func RunCommand() *cobra.Command {
 				return errors.New("exit")
 			}
 
-			configPath := filepath.Join(configHome, "config.json")
+			configPath := filepath.Join(configHome, constants.ConfigFileName)
 			cfg, err := config.LoadConfig(configPath)
 			if err != nil {
 				if !os.IsNotExist(err) { // If the config file exists but there's an error, report it
@@ -75,15 +75,12 @@ func RunCommand() *cobra.Command {
 				cfg = config.DefaultConfig() // Load default config if file doesn't exist
 			}
 
-			// Override the flags with config values if present
-			if cfg.LogLevel != "" {
+			// Override the config values with flag values if the flags were provided
+			if opts.loglevel == "" && cfg.LogLevel != "" {
 				opts.loglevel = cfg.LogLevel
 			}
-			if cfg.Progress != "" {
+			if opts.progressBars == "" && cfg.Progress != "" {
 				opts.progressBars = cfg.Progress
-			}
-			if cfg.Verbose != 0 {
-				opts.verbosity = cfg.Verbose
 			}
 
 			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
@@ -175,6 +172,7 @@ func Execute() {
 func getConfigHome(opts *rootOptions) (string, error) {
 	// First check if the config path is provided via flags
 	if opts.configHome != "" {
+		output.Debugf("Using config directory from flag: %s", opts.configHome)
 		absHome, err := filepath.Abs(opts.configHome)
 		if err != nil {
 			return "", fmt.Errorf("failed to get absolute path for %s: %w", opts.configHome, err)
@@ -185,6 +183,7 @@ func getConfigHome(opts *rootOptions) (string, error) {
 	// Then check if it's provided via environment variable
 	envHome := os.Getenv(constants.KitopsHomeEnvVar)
 	if envHome != "" {
+		output.Debugf("Using config directory from environment variable: %s", envHome)
 		absHome, err := filepath.Abs(envHome)
 		if err != nil {
 			return "", fmt.Errorf("failed to get absolute path for %s: %w", constants.KitopsHomeEnvVar, err)
@@ -197,5 +196,6 @@ func getConfigHome(opts *rootOptions) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	output.Debugf("Using default config directory: %s", defaultHome)
 	return defaultHome, nil
 }
