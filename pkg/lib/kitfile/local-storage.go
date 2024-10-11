@@ -92,66 +92,76 @@ func saveConfig(ctx context.Context, localRepo local.LocalRepo, kitfile *artifac
 
 // saveKitfileLayers saves the kitfile layers with optional compression and returns a list of descriptors.
 func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
-	var layers []ocispec.Descriptor
-	var mu sync.Mutex
-	var wg sync.WaitGroup
-	errChan := make(chan error, len(kitfile.Model.Parts)+len(kitfile.Code)+len(kitfile.DataSets)+len(kitfile.Docs))
 
-	processLayer := func(path string, mediaType constants.MediaType) {
+	modelPartsLen := 0
+	if kitfile.Model != nil {
+		modelPartsLen = len(kitfile.Model.Parts)
+	}
+	var layers = make([]ocispec.Descriptor, modelPartsLen+len(kitfile.Code)+len(kitfile.DataSets)+len(kitfile.Docs))
+	var wg sync.WaitGroup
+	errChan := make(chan error, len(layers))
+
+	processLayer := func(index int, path string, mediaType constants.MediaType) {
 		defer wg.Done()
 		layer, err := saveContentLayer(ctx, localRepo, path, mediaType, ignore)
 		if err != nil {
 			errChan <- err
 			return
 		}
-		mu.Lock()
-		layers = append(layers, layer)
-		mu.Unlock()
+		// Place the layer in the correct position in the layers slice
+		layers[index] = layer
 	}
 
-	// Process model layers concurrently
+	// Counter to keep track of the index for each layer
+	layerIndex := 0
+	// Process model layers
 	if kitfile.Model != nil {
 		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
 			wg.Add(1)
-			go processLayer(kitfile.Model.Path, constants.MediaType{
+			go processLayer(layerIndex, kitfile.Model.Path, constants.MediaType{
 				BaseType:    constants.ModelType,
 				Compression: compression,
 			})
+			layerIndex++
 		}
 		for _, part := range kitfile.Model.Parts {
 			wg.Add(1)
-			go processLayer(part.Path, constants.MediaType{
+			go processLayer(layerIndex, part.Path, constants.MediaType{
 				BaseType:    constants.ModelPartType,
 				Compression: compression,
 			})
+			layerIndex++
 		}
 	}
 
-	// Process code layers concurrently
+	// Process code layers
 	for _, code := range kitfile.Code {
 		wg.Add(1)
-		go processLayer(code.Path, constants.MediaType{
+		go processLayer(layerIndex, code.Path, constants.MediaType{
 			BaseType:    constants.CodeType,
 			Compression: compression,
 		})
+		layerIndex++
 	}
 
-	// Process dataset layers concurrently
+	// Process dataset layers
 	for _, dataset := range kitfile.DataSets {
 		wg.Add(1)
-		go processLayer(dataset.Path, constants.MediaType{
+		go processLayer(layerIndex, dataset.Path, constants.MediaType{
 			BaseType:    constants.DatasetType,
 			Compression: compression,
 		})
+		layerIndex++
 	}
 
-	// Process documentation layers concurrently
+	// Process documentation layers
 	for _, docs := range kitfile.Docs {
 		wg.Add(1)
-		go processLayer(docs.Path, constants.MediaType{
+		go processLayer(layerIndex, docs.Path, constants.MediaType{
 			BaseType:    constants.DocsType,
 			Compression: compression,
 		})
+		layerIndex++
 	}
 	wg.Wait()
 	close(errChan)
