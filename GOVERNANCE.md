@@ -2,7 +2,7 @@
 
 The KitOps project is dedicated to creating tools that reduce friction in packaging and deploying ML models. This governance document explains how the project is run.
 
-- [🌟 Values](#values)
+- [Values](#values)
 - [👥 Maintainers](#maintainers)
 - [🌱 Becoming a Maintainer](#becoming-a-maintainer)
 - [📅 Meetings](#meetings)
