@@ -74,6 +74,5 @@ func DefaultNetworkOptions(configHome string) *NetworkOptions {
 		PlainHTTP:       false,
 		TLSVerify:       true,
 		CredentialsPath: constants.CredentialsPath(configHome),
-		Proxy:           constants.ProxyEnvVar(),
 	}
 }
