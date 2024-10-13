@@ -35,7 +35,7 @@ func shouldPrintProgress() bool {
 	if !term.IsTerminal(int(os.Stdout.Fd())) {
 		return false
 	}
-	switch ProgressStyle {
+	switch progressStyle {
 	case "none", "false":
 		return false
 	default:
@@ -44,7 +44,7 @@ func shouldPrintProgress() bool {
 }
 
 func barStyle() mpb.BarStyleComposer {
-	switch ProgressStyle {
+	switch progressStyle {
 	case "plain":
 		return mpb.BarStyle().Lbound("|").Filler("=").Tip(">").Padding("-").Rbound("|")
 	case "fancy":
