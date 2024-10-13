@@ -90,12 +90,14 @@ func saveConfig(ctx context.Context, localRepo local.LocalRepo, kitfile *artifac
 	return desc, nil
 }
 
-// saveKitfileLayers saves the kitfile layers with optional compression and returns a list of descriptors.
 func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
 
 	modelPartsLen := 0
 	if kitfile.Model != nil {
 		modelPartsLen = len(kitfile.Model.Parts)
+		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
+			modelPartsLen++ // Account for the model path
+		}
 	}
 	var layers = make([]ocispec.Descriptor, modelPartsLen+len(kitfile.Code)+len(kitfile.DataSets)+len(kitfile.Docs))
 	var wg sync.WaitGroup
@@ -103,6 +105,12 @@ func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *
 
 	processLayer := func(index int, path string, mediaType constants.MediaType) {
 		defer wg.Done()
+
+		if ctx.Err() != nil {
+			errChan <- ctx.Err()
+			return
+		}
+
 		layer, err := saveContentLayer(ctx, localRepo, path, mediaType, ignore)
 		if err != nil {
 			errChan <- err
@@ -112,8 +120,9 @@ func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *
 		layers[index] = layer
 	}
 
-	// Counter to keep track of the index for each layer
+	// Counter to track index of each layer
 	layerIndex := 0
+
 	// Process model layers
 	if kitfile.Model != nil {
 		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
