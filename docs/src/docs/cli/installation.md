@@ -45,7 +45,7 @@ This command should display the version number of the Kit CLI you have installed
 
 ### Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](https://kitops.ml/docs/quick-start.html) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
 
 That's it!
 
@@ -92,7 +92,7 @@ This command should display the version number of the Kit CLI you have installed
 
 ### Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](https://kitops.ml/docs/quick-start.html) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
 
 That's it!
 
@@ -151,7 +151,7 @@ This command should display the version number of the Kit CLI you have installed
 
 ### Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](https://kitops.ml/docs/quick-start.html) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
 
 ## 🛠️ Build from Source Code
 
@@ -210,4 +210,4 @@ kit version
 
 ### Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](https://kitops.ml/docs/quick-start.html) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
