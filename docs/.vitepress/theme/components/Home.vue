@@ -483,7 +483,7 @@ const subscribeToNewsletter = async () => {
   <Accordion content-class="space-y-[1em]">
     <template #title>How do I get started with Kit?</template>
 
-    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/quick-start.html" class="underline">Quick Start</a>, where you’ll learn how to:</p>
+    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/get-started.html" class="underline">Quick Start</a>, where you’ll learn how to:</p>
 
     <ul class="space-y-2 list-disc list-inside">
       <li>Package up a model, notebook, and datasets into a single ModelKit you can use with your existing tools</li>
