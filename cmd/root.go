@@ -66,15 +66,11 @@ func RunCommand() *cobra.Command {
 				return errors.New("exit")
 			}
 
-			configPath := filepath.Join(configHome, constants.ConfigFileName)
+			configPath := constants.ConfigFilePath(configHome)
 			cfg, err := config.LoadConfig(configPath)
 			if err != nil {
-				if !os.IsNotExist(err) { // If the config file exists but there's an error, report it
-					return output.Fatalf("Failed to load config: %s", err)
-				}
-				cfg = config.DefaultConfig() // Load default config if file doesn't exist
+				return output.Fatalf("Failed to load config: %s", err)
 			}
-
 			// Override the config values with flag values if the flags were provided
 			if opts.loglevel == "" && cfg.LogLevel != "" {
 				opts.loglevel = cfg.LogLevel

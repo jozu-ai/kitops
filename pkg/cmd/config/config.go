@@ -1,24 +1,11 @@
-// Copyright 2024 The KitOps Authors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//	http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// SPDX-License-Identifier: Apache-2.0
 package config
 
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
@@ -27,17 +14,15 @@ import (
 )
 
 type Config struct {
-	LogLevel  string `json:"log_level"`
-	Progress  string `json:"progress"`
-	ConfigDir string `json:"config_dir"`
+	LogLevel string `json:"logLevel"`
+	Progress string `json:"progress"`
 }
 
 // DefaultConfig returns a Config struct with default values.
 func DefaultConfig() *Config {
 	return &Config{
-		LogLevel:  output.LogLevelInfo.String(),
-		Progress:  "plain",
-		ConfigDir: "",
+		LogLevel: output.LogLevelInfo.String(),
+		Progress: "plain",
 	}
 }
 
@@ -46,7 +31,7 @@ func setConfig(_ context.Context, opts *configOptions) error {
 	configPath := getConfigPath(opts.profile)
 	cfg, err := LoadConfig(configPath)
 	if err != nil {
-		cfg = DefaultConfig() // Start with defaults if config doesn't exist.
+		cfg = DefaultConfig()
 	}
 
 	v := reflect.ValueOf(cfg).Elem().FieldByName(strings.Title(opts.key))
@@ -55,7 +40,7 @@ func setConfig(_ context.Context, opts *configOptions) error {
 	}
 
 	v.SetString(opts.value)
-	err = SaveConfig(cfg, configPath)
+	err = SaveConfig(cfg, configPath) // Save only when configuration is modified.
 	if err != nil {
 		return err
 	}
@@ -116,22 +101,39 @@ func LoadConfig(configPath string) (*Config, error) {
 
 	file, err := os.Open(configPath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return DefaultConfig(), nil // Return default config if file doesn't exist.
+		if errors.Is(err, fs.ErrNotExist) {
+			// Return default config, but don't save it to the file.
+			return DefaultConfig(), nil
 		}
-		return nil, err
+		return nil, fmt.Errorf("error opening config file: %w", err)
 	}
 	defer file.Close()
 
 	var config Config
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error decoding config file: %w", err)
 	}
+
+	// If some fields are empty, fallback to defaults.
+	defaultConfig := DefaultConfig()
+	if config.LogLevel == "" {
+		config.LogLevel = defaultConfig.LogLevel
+	}
+	if config.Progress == "" {
+		config.Progress = defaultConfig.Progress
+	}
+
 	return &config, nil
 }
 
 // Save configuration to a file.
 func SaveConfig(config *Config, configPath string) error {
+	// Ensure the directory exists before saving the file.
+	dir := filepath.Dir(configPath)
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
 	file, err := os.Create(configPath)
 	if err != nil {
 		return err

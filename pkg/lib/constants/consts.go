@@ -104,6 +104,9 @@ func DefaultConfigPath() (string, error) {
 func StoragePath(configBase string) string {
 	return filepath.Join(configBase, StorageSubpath)
 }
+func ConfigFilePath(configHome string) string {
+	return filepath.Join(configHome, ConfigFileName)
+}
 
 func IngestPath(storageBase string) string {
 	return filepath.Join(storageBase, "ingest")
