@@ -106,12 +106,14 @@ func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *
 	processLayer := func(index int, path string, mediaType constants.MediaType) {
 		defer wg.Done()
 
-		if ctx.Err() != nil {
-			errChan <- ctx.Err()
+		// Clone IgnorePaths for thread safety
+		clonedIgnore, err := ignore.Clone()
+		if err != nil {
+			errChan <- fmt.Errorf("error cloning IgnorePaths: %w", err)
 			return
 		}
 
-		layer, err := saveContentLayer(ctx, localRepo, path, mediaType, ignore)
+		layer, err := saveContentLayer(ctx, localRepo, path, mediaType, clonedIgnore)
 		if err != nil {
 			errChan <- err
 			return
