@@ -34,6 +34,7 @@ import (
 type IgnorePaths interface {
 	Matches(path, layerPath string) (bool, error)
 	HasExclusions() bool
+	Clone() (IgnorePaths, error)
 }
 
 func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile, extraLayers ...string) (IgnorePaths, error) {
@@ -90,6 +91,25 @@ func (pm *ignorePaths) Matches(path, layerPath string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+// Clone method to create a copy of the IgnorePaths structure
+func (pm *ignorePaths) Clone() (IgnorePaths, error) {
+	// Copy pattern matcher to ensure thread safety
+	patterns := make([]string, len(pm.ignoreFileMatcher.Patterns()))
+	for i, p := range pm.ignoreFileMatcher.Patterns() {
+		patterns[i] = p.String()
+	}
+	newPM, err := patternmatcher.New(patterns)
+	if err != nil {
+		return nil, fmt.Errorf("error cloning PatternMatcher: %w", err)
+	}
+
+	// Return a new ignorePaths struct with the cloned PatternMatcher and same layers
+	return &ignorePaths{
+		ignoreFileMatcher: newPM,
+		layers:            pm.layers,
+	}, nil
 }
 
 func (pm *ignorePaths) HasExclusions() bool {
