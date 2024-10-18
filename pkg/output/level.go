@@ -35,6 +35,23 @@ const (
 	LogLevelError
 )
 
+func (l LogLevel) String() string {
+	switch l {
+	case LogLevelTrace:
+		return "trace"
+	case LogLevelDebug:
+		return "debug"
+	case LogLevelInfo:
+		return "info"
+	case LogLevelWarn:
+		return "warn"
+	case LogLevelError:
+		return "error"
+	default:
+		return "unknown"
+	}
+}
+
 var (
 	colorNone  = "\033[0m"
 	colorTrace = "\033[0m"    // No color
