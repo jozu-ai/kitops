@@ -54,6 +54,7 @@ type infoOptions struct {
 	configHome  string
 	checkRemote bool
 	modelRef    *registry.Reference
+	filter      string
 }
 
 func InfoCommand() *cobra.Command {
@@ -70,6 +71,7 @@ func InfoCommand() *cobra.Command {
 
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry instead of local storage")
+	cmd.Flags().StringVarP(&opts.filter, "filter", "f", "", "filter with node selectors")
 	cmd.Flags().SortFlags = false
 
 	return cmd
