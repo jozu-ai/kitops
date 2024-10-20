@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"kitops/pkg/cmd/options"
@@ -30,6 +31,9 @@ import (
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -88,6 +92,22 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) error {
 				return output.Fatalf("Could not find modelkit %s", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
 			return output.Fatalf("Error resolving modelkit: %s", err)
+		}
+		if len(opts.filter) > 0 {
+			var filterSlice = strings.Split(opts.filter, ".")
+			value := reflect.ValueOf(config)
+			for _, str := range filterSlice {
+				if value.Kind() == reflect.Ptr {
+					value = value.Elem()
+				}
+				field := value.FieldByName(cases.Title(language.Und, cases.NoLower).String(str))
+				value = field
+			}
+			if value.IsValid() {
+				fmt.Println(value.Interface())
+				return nil
+			}
+			return output.Fatalf("Cannot find the required node")
 		}
 		yamlBytes, err := config.MarshalToYAML()
 		if err != nil {
