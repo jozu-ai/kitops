@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,12 +14,16 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package harness
+//go:build ignore
+// +build ignore
 
-import "embed"
+package main
 
-//go:embed llama.cpp/build/darwin/x86_64/*/bin/*
-var serverEmbed embed.FS
+import (
+	"fmt"
+	"kitops/pkg/lib/harness"
+)
 
-//go:embed ui.tar.gz
-var uiEmbed embed.FS
+func main() {
+	fmt.Println(harness.LlamaFileVersion)
+}

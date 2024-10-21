@@ -22,12 +22,16 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 )
+
+const LlamaFileVersion = "0.8.14"
 
 type LLMHarness struct {
 	Host       string
@@ -36,11 +40,19 @@ type LLMHarness struct {
 }
 
 func (harness *LLMHarness) Init() error {
-	err := extractServer(constants.HarnessPath(harness.ConfigHome), "llama.cpp/build/*/*/*/bin/**")
+	harnessPath := constants.HarnessPath(harness.ConfigHome)
+	ok, err := checkHarness(harnessPath)
+	if err != nil {
+		return fmt.Errorf("failed to verify dev server: %s", err)
+	}
+	if ok {
+		return nil
+	}
+	err = extractServer(harnessPath)
 	if err != nil {
 		return fmt.Errorf("failed to extract dev server files: %s", err)
 	}
-	err = extractUI(constants.HarnessPath(harness.ConfigHome))
+	err = extractUI(harnessPath)
 	if err != nil {
 		return fmt.Errorf("failed to extract dev UI files: %s", err)
 	}
@@ -67,11 +79,10 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	}
 
 	uiHome := filepath.Join(harnessPath, "ui")
-	cmd := exec.Command("./server",
-		"--host", harness.Host,
-		"--port", strconv.Itoa(harness.Port),
-		"--model", modelPath,
-		"--path", uiHome)
+	cmd := exec.Command("sh", "-c",
+		fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --nobrowser --unsecure",
+			modelPath, harness.Host, harness.Port, uiHome),
+	)
 	cmd.Dir = harnessPath
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
@@ -147,11 +158,11 @@ func PrintLogs(configHome string, w io.Writer) error {
 			output.Errorf("No log file found")
 			return nil
 		}
-		return fmt.Errorf("Error reading log file: %w", err)
+		return fmt.Errorf("error reading log file: %w", err)
 	}
 	defer logFile.Close()
 	if _, err = io.Copy(w, logFile); err != nil {
-		return fmt.Errorf("Failed to print log file: %w", err)
+		return fmt.Errorf("failed to print log file: %w", err)
 	}
 	return nil
 }
@@ -194,4 +205,51 @@ func readPIDFromFile(filePath string) (int, error) {
 		return 0, err
 	}
 	return pid, nil
+}
+
+func checkHarness(harnessHome string) (bool, error) {
+	executableName := "llamafile"
+	if runtime.GOOS == "windows" {
+		executableName = "llamafile.exe"
+	}
+	llamaFilePath := filepath.Join(harnessHome, executableName)
+	llamaVersionPath := filepath.Join(harnessHome, "llamafile.version")
+	uiPath := filepath.Join(harnessHome, "ui")
+
+	// 'llamafile'
+	if _, err := os.Stat(llamaFilePath); os.IsNotExist(err) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'llamafile': %w", err)
+	}
+
+	// llamafile.version
+	if _, err := os.Stat(llamaVersionPath); os.IsNotExist(err) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'llamafile.version': %w", err)
+	}
+
+	versionData, err := os.ReadFile(llamaVersionPath)
+	if err != nil {
+		return false, fmt.Errorf("error reading 'llamafile.version': %w", err)
+	}
+	version := strings.TrimSpace(string(versionData))
+	if version != LlamaFileVersion {
+		return false, nil
+	}
+
+	// 'ui/'
+	uiInfo, err := os.Stat(uiPath)
+	if os.IsNotExist(err) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'ui' directory: %w", err)
+	}
+	if !uiInfo.IsDir() {
+		return false, fmt.Errorf("'ui' exists but is not a directory")
+	}
+
+	// harness is ready
+	return true, nil
 }

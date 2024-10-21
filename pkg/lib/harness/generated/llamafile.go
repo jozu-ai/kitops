@@ -15,4 +15,4 @@
 // SPDX-License-Identifier: Apache-2.0
 package generated
 
-//go:generate sh ./gen_darwin.sh
+//go:generate sh ./gen_common.sh
