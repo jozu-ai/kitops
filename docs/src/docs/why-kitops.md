@@ -3,7 +3,7 @@
 ## The Problem
 
 There is no standard and versioned packaging system for AI/ML projects. Today each part of the project is kept somewhere different:
-* Code in Jupyter notebooks or (if you're lucky) git repositories 
+* Code in Jupyter notebooks or (if you're lucky) git repositories
 * Datasets in DvC or storage buckets like S3
 * Configuration in Jupyter notebooks, feature stores, MLOps tools, or ...
 * Pipeline definitions in proprietary tools
@@ -40,7 +40,7 @@ Kit's ModelKits are the better solution:
 * Remove tampering risks by using an immutable package
 * Reduce risks by including the provenance of the model and datasets
 
-Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](./kitfile/structure.md)).
+Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](./kitfile/kf-overview.md)).
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
 
