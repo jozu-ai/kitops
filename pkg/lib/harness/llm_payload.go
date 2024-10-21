@@ -14,15 +14,54 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-//go:build !darwin
-// +build !darwin
+//go:build embed_harness
+// +build embed_harness
 
 package harness
 
 import (
 	"embed"
+	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
 )
 
+//go:embed llamafile*.tar.gz
 var serverEmbed embed.FS
 
+//go:embed ui.tar.gz
 var uiEmbed embed.FS
+
+func extractServer(harnessHome string) error {
+	// Create the harnessHome directory once before extracting files
+	if err := os.MkdirAll(harnessHome, 0o755); err != nil {
+		return fmt.Errorf("error creating directory %s: %w", harnessHome, err)
+	}
+	if err := extractFile(serverEmbed, "llamafile.tar.gz", harnessHome); err != nil {
+		return fmt.Errorf("error extracting file: %w", err)
+	}
+
+	// Set executable permissions and rename on Windows
+	llamaFilePath := filepath.Join(harnessHome, "llamafile")
+	if runtime.GOOS == "windows" {
+		llamaExePath := filepath.Join(harnessHome, "llamafile.exe")
+		if err := os.Rename(llamaFilePath, llamaExePath); err != nil {
+			return fmt.Errorf("error renaming file to executable: %w", err)
+		}
+	} else {
+		if err := os.Chmod(llamaFilePath, 0o755); err != nil {
+			return fmt.Errorf("error setting executable permission: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func extractUI(harnessHome string) error {
+	uiHome := filepath.Join(harnessHome, "ui")
+	if err := os.MkdirAll(uiHome, 0o755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %w", uiHome, err)
+	}
+	return extractFile(uiEmbed, "ui.tar.gz", uiHome)
+}

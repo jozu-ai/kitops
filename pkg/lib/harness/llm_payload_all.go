@@ -19,7 +19,6 @@ package harness
 import (
 	"archive/tar"
 	"compress/gzip"
-	"embed"
 	"fmt"
 	"io"
 	"io/fs"
@@ -28,43 +27,9 @@ import (
 	"strings"
 
 	"kitops/pkg/lib/filesystem"
-
-	"golang.org/x/sync/errgroup"
 )
 
-func extractServer(harnessHome string, glob string) error {
-	files, err := fs.Glob(serverEmbed, glob)
-	if err != nil {
-		return fmt.Errorf("error globbing files: %w", err)
-	} else if len(files) == 0 {
-		return fmt.Errorf("no files matched the glob pattern")
-	}
-	// Create the harnessHome directory once before extracting files
-	if err := os.MkdirAll(harnessHome, 0o755); err != nil {
-		return fmt.Errorf("error creating directory %s: %w", harnessHome, err)
-	}
-
-	g := new(errgroup.Group)
-	for _, file := range files {
-
-		file := file
-		g.Go(func() error {
-			return extractFile(serverEmbed, file, harnessHome)
-		})
-
-	}
-	return g.Wait()
-}
-
-func extractUI(harnessHome string) error {
-	uiHome := filepath.Join(harnessHome, "ui")
-	if err := os.MkdirAll(uiHome, 0o755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", uiHome, err)
-	}
-	return extractFile(uiEmbed, "ui.tar.gz", uiHome)
-}
-
-func extractFile(fs embed.FS, file, harnessHome string) error {
+func extractFile(fs fs.FS, file, harnessHome string) error {
 	srcFile, err := fs.Open(file)
 	if err != nil {
 		return fmt.Errorf("read payload %s: %v", file, err)
@@ -147,7 +112,7 @@ func extractTar(tr *tar.Reader, dir string) error {
 			}
 
 		default:
-			return fmt.Errorf("Unrecognized type in archive: %s", header.Name)
+			return fmt.Errorf("unrecognized type in archive: %s", header.Name)
 		}
 	}
 	return nil
