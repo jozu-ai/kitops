@@ -173,7 +173,7 @@ const subscribeToNewsletter = async () => {
     <div class="h4 !text-gold">Model handoffs are hard.</div>
     <div class="p2 space-y-4">
       <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
-      <p>KitOps is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
+      <p>KitOps is an open source DevOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code</p>
       <p>KitOps solves multiple problems:</p>
     </div>
 
@@ -215,7 +215,7 @@ const subscribeToNewsletter = async () => {
     <div class="kit-card flex flex-col">
       <div class="h4 font-bold !text-gold">3</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model.</p>
+        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model locally.</p>
         <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
       </div>
     </div>
@@ -229,7 +229,7 @@ const subscribeToNewsletter = async () => {
   <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-22 gap-y-16 mt-16 max-w-[960px] mx-auto p1">
     <li>
       <div class="text-off-white">🎁 Standards-based package</div>
-      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code in an OCI package. Add as much or as little as your project needs.</p>
+      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code in an OCI artifact. Add as much or as little as your project needs.</p>
       <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/compatibility.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -249,7 +249,7 @@ const subscribeToNewsletter = async () => {
     </li>
     <li>
       <div class="text-off-white">🏭 Tags and versions</div>
-      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged, versioned, and timestamped so everyone knows which dataset and model work together.</p>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged and versioned so everyone knows which dataset and model work together.</p>
       <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
