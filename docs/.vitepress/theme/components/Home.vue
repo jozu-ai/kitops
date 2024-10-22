@@ -250,7 +250,7 @@ const subscribeToNewsletter = async () => {
     <li>
       <div class="text-off-white">🏭 Tags and versions</div>
       <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged and versioned so everyone knows which dataset and model work together.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
