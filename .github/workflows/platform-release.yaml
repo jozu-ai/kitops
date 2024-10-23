@@ -1,6 +1,6 @@
 name: Release with Platform builds
 
-on:
+on: 
   workflow_dispatch:
     inputs:
       skip_signing:
@@ -33,7 +33,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       ## install build dependencies for frontend generation
       - name: Install Node.js
@@ -81,19 +81,20 @@ jobs:
           ./build/scripts/sign ./dist/kitops-darwin-arm64.zip
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882  # v4.4.3
         with:
             name: dist-macos
             if-no-files-found: error
             retention-days: 7
             path: |
               ./dist/*.zip
+              ./dist/*.tar.gz
 
   build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       - name: Setup Go
         uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
@@ -109,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882  # v4.4.3
         with:
             name: dist-windows
             if-no-files-found: error
@@ -121,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       - name: Setup Go
         uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
@@ -138,36 +139,67 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882  # v4.4.3
         with:
             name: dist-linux
             if-no-files-found: error
             retention-days: 7
             path: |
               ./dist/*.tar.gz
-
-  # Creates a release with the artifacts from the previous steps.
+  
+  # Creates a release using artifacts created in the previous steps.
   # workflow_dispatch triggered versions will be draft releases.
   # CLI docs are not updated for workflow_dispatch triggered versions.
   release:
     runs-on: ubuntu-latest
     needs: [build-linux, build-macos, build-windows]
     steps:
-      - name: Merge built artifacts
+      # checkout the current repository
+      - name: Checkout kitops
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          path: kitops
+      
+      # Create the homebrew-file directory to store the 
+      # homebrew artifacts and copy the awk script and 
+      # recipe template to it. These will be used later 
+      # to build the homebrew recipe file.
+      - name: Create homebrew-files dir
+        run: |
+          mkdir homebrew-files
+          cp ./kitops/build/homebrew/*.* ./homebrew-files
+          
+      - name: Merge build artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
         with:
           path: dist
           pattern: dist-*
           merge-multiple: true
-      - name: Create Checksums
+
+      - name: Create checksums
         env:
-          TAG_NAME: ${{ github.ref_name}}
+          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
+          #TAG_NAME: ${{ inputs.release_tag}}
         run: |
           shopt -s failglob
           pushd dist
           shasum -a 256 kitops-* > checksums.txt
           mv checksums.txt kitops_${TAG_NAME}_checksums.txt
+          cp kitops_${TAG_NAME}_checksums.txt ../homebrew-files/.
           popd
+
+      # upload the homebrew-files directory (and its contents) 
+      # as an artifact to be used later when generating the
+      # homebrew recipe and pushing it to the repository: 
+      # 'jozu-ai/homebrew-kitops'
+      - name: Upload homebrew-files as a build artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882  # v4.4.3
+        with:
+          name: homebrew-files
+          if-no-files-found: error
+          retention-days: 7
+          path: ./homebrew-files
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -182,7 +214,7 @@ jobs:
             --title "Release ${TAG_NAME}"
             --generate-notes
             --repo ${REPO}
-           )
+          )
           if [[ "${DRAFT_RELEASE}" == "false" ]]; then
             previous_release="$(gh release list --repo $REPO --limit 1 --json tagName --jq '.[] | .tagName ')"
             echo "Previous release: ${previous_release}"
@@ -194,25 +226,23 @@ jobs:
           fi
           gh release create "${release_args[@]}"
 
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
       - name: Generate CLI documentation
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
         run: |
+          pushd kitops
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           PR_BRANCH="${{ github.ref_name }}-docs-update"
           git fetch origin main
           git branch "$PR_BRANCH"
           git checkout "$PR_BRANCH"
           git pull origin --ff-only "${PR_BRANCH}" || true
-
+  
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-
+  
           (cd docs; npm pkg set version=$TAG_NAME)
           ./docs/src/docs/cli/generate.sh > /dev/null
           git add --all
@@ -220,7 +250,84 @@ jobs:
           git push origin "${PR_BRANCH}"
           gh pr create --fill --base main --head "${PR_BRANCH}"
           git checkout "${CURRENT_BRANCH}"
+          popd
 
+
+  # Generate and publish the homebrew recipe (kitops.rb) to the repository:
+  # 'jozu-ai/homebrew-kitops'
+  publish-homebrew-tap-formula:
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      # checkout the homebrew-kitops repository (jozu-ai/homebrew-kitops)
+      - name: Checkout homebrew-kitops
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          repository: jozu-ai/homebrew-kitops
+          ref: 'main'
+          path: homebrew-kitops
+          token: ${{ secrets.GITOPS_PAT }}
+            
+      - name: Download the homebrew artifacts to build the homebrew recipe
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
+        with:
+          name: homebrew-files
+          path: homebrew-files
+          merge-multiple: true
+
+      - name: Create and save homebrew-metadata.txt
+        env:
+          TAG_NAME: ${{ inputs.release_tag}}
+          REPO: ${{ github.repository }}
+        run: |
+          shopt -s failglob
+          pushd homebrew-files
+          awk '
+            BEGIN { tag_name = ENVIRON["TAG_NAME"]; repo = ENVIRON["REPO"];}
+            /.tar.gz$/ { 
+             print "\""$1"\"", 
+              "\"https://github.com/" repo "/releases/download/" tag_name "/" $2 "\"", 
+              $2, 
+              tag_name }' kitops_${TAG_NAME}_checksums.txt |
+          awk '{ sub(/.tar.gz/, "", $3); print $1, $2, $3, $4 }' |
+          awk '{ sub(/kitops-/, "", $3); print $1, $2, $3, $4 }' |
+          awk '{sub(/v/, "", $4); print $1, $2, $3, $4 }' > homebrew-metadata.txt
+          popd
+
+      # uses the homebrew-metadata.txt file generated in the
+      # previous step to generate the homebrew formula (kitops.rb) 
+      # for the homebrew tap (located at 'jozu-ai/homebrew-kitops')
+      - name: Create homebrew formula
+        run: |
+          pushd homebrew-files
+          awk -f create-homebrew-recipe.awk homebrew-metadata.txt
+          popd
+
+      # publish the homebrew recipe file to the homebrew tap
+      # located in the repository: 'jozu-ai/homebrew-kitops'
+      - name: Commit homebrew recipe to the homebrew tap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITOPS_PAT }}
+          TAG_NAME: ${{ inputs.release_tag}}
+          REPO: "jozu-ai/homebrew-kitops"
+        run: |
+          cp -f ./homebrew-files/homebrew-metadata.txt ./homebrew-kitops/.
+          cp -f ./homebrew-files/kitops.rb ./homebrew-kitops/.
+          pushd homebrew-kitops
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          PR_BRANCH="${{ github.ref_name }}-homebrew-tap-update"
+          git fetch origin main
+          git branch "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          git pull origin --ff-only "${PR_BRANCH}" || true
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git add --all
+          git commit -m "homebrew: update Homebrew Tap Formula for ${{ github.ref_name }}"
+          git push origin "${PR_BRANCH}"
+          gh pr create --fill --base main --head "${PR_BRANCH}"
+          git checkout "${CURRENT_BRANCH}"
+          popd
 
   docker-image-build:
     runs-on: ubuntu-latest
@@ -229,7 +336,7 @@ jobs:
         uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf    # v3.2.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db  # v3.6.1
+        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349  # v3.7.1
 
       - name: Login to ghcr.io
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567         # v3.3.0
@@ -239,11 +346,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       - name: Build and push base Kit container
         id: build-kit-container
-        uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85    # v6.7.0
+        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75    # v6.9.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true
@@ -261,7 +368,7 @@ jobs:
 
       - name: Build and push Kit init container
         id: build-kit-init-container
-        uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85    # v6.7.0
+        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75    # v6.9.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true

@@ -25,7 +25,10 @@ builds:
           output: true
 
 archives:
-  - id: kit-macos-archive
+  # zip archives for Mac OS:
+  #   - will be notorized 
+  #   - will be made available for users to install manually
+  - id: kit-macos-zip-archive
     format: zip
     builds:
       - kit-macos
@@ -33,7 +36,22 @@ archives:
       {{ .ProjectName }}-
       {{- tolower .Os }}-
       {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      - LICENSE
+      - README.md
+  # tar.gz archives for Mac OS:
+  #   - will not be notarized
+  #   - will be installable via homebrew (i.e. "brew install kitops")
+  - id: kit-macos-targz-archive
+    format: tar.gz
+    builds:
+      - kit-macos
+    name_template: >-
+      {{ .ProjectName }}-
+      {{- tolower .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     files:

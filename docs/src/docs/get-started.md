@@ -28,7 +28,7 @@ You'll see information about the version of Kit you're running. If you get an er
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote (you can see our [list of compliant registries](./modelkit/compatibility.md)). In this guide we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit like whether it's signed or has provenance. You can substitute your own repository if preferred.
+You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote (you can see our [list of compliant registries](./modelkit/compatibility.md)). In this guide, we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit like whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
 kit login jozu.ml
@@ -38,7 +38,7 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
-Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/browse) to our machine that we can play with. In this case we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
+Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/browse) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
 You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
@@ -80,9 +80,9 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 ### 5/ Pack the ModelKit
 
-Since our repository is empty we'll need use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. The command will look like: `kit pack . -t [your registry address]/[your registry user or organization name]/[your repository name]:[your tag name]`
+Since our repository is empty we'll need to use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. The command will look like: `kit pack . -t [your registry address]/[your registry user or organization name]/[your repository name]:[your tag name]`
 
-In our case we are pushing a ModelKit tagged `latest` to:
+In our case, we are pushing a ModelKit tagged `latest` to:
 * The [Jozu Hub](https://jozu.ml/) registry
 * The `brad` user organization
 * The `quick-start` repository
