@@ -152,5 +152,61 @@
     "tags": ["KitOps", "Open Source", "MLOps"],
     "author": "Jesse Williams",
     "published_time": "2024-09-24"
+  },
+  {
+  "url": "https://jozu.com/blog/top-5-production-ready-open-source-ai-libraries-for-engineering-teams",
+    "description": "Top 5 Production-Ready Open Source AI Libraries for Engineering Teams",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-10-04"
+  },
+  {
+  "url": "https://jozu.com/blog/free-online-tutorials-to-help-you-develop-machine-learning-applications",
+    "description": "Free Online Tutorials to Help You Develop Machine Learning Applications",
+    "tags": ["KitOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-10-08"
+  },
+  {
+  "url": "https://jozu.com/blog/building-an-mlops-pipeline-with-dagger-io-and-kitops/",
+    "description": "Building an MLOps pipeline with Dagger.io and KitOps",
+    "tags": ["KitOps", "Open Source", "DevOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-10-11"
+  },
+  {
+  "url": "https://jozu.com/blog/10-mlops-tools-that-comply-with-the-eu-ai-act/",
+    "description": "10 MLOps Tools That Comply With the EU AI Act",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "Jesse Williams",
+    "published_time": "2024-10-15"
+  },
+  {
+  "url": "https://testguildperf.libsyn.com/simplifying-the-aiml-to-production-pipeline-with-grkem-ercan",
+    "description": "Simplifying the AI/ML to Production Pipeline with Görkem Ercan",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "TestGuild DevOps Toolchain Podcast",
+    "published_time": "2024-10-16"
+  },
+  {
+  "url": "https://podcasts.apple.com/us/podcast/revolutionizing-mlops-gorka-erkand-on-jozus-game-changing/id1521202681?i=1000673555349",
+    "description": "Revolutionizing MLOps: Gorkem Ercan on Jozu's Game-Changing Solutions for AI Integration",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "Beers and Bytes Podcast",
+    "published_time": "2024-10-18"
+  },
+  {
+  "url": "https://podcasts.apple.com/us/podcast/gorkem-ercan-eclipse-ai-ml-ci-cd/id1467065787?i=1000673695983",
+    "description": "Gorkem Ercan - Eclipse, AI/ML, CI/CD",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "Swift Developer Podcast - App development and discussion",
+    "published_time": "2024-10-20"
+  },
+  {
+  "url": "https://dev.to/rohan_sharma/top-5-open-source-mlops-tool-to-boost-your-production-4j0a",
+    "description": "Top 5 open-source MLOps tool to boost your production",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "Rohan Sharma",
+    "published_time": "2024-10-23"
   }
 ]
