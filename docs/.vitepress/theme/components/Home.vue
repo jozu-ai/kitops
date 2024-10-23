@@ -6,15 +6,15 @@ import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
 import axios from 'axios'
+import { useLocalStorage } from '@vueuse/core'
 
 const error = ref('')
 const email = ref('')
 const favoriteDevOpsTool = ref('')
 const isBusy = ref(false)
-const isSubscribed = ref(false)
 const isSuccess = ref(false)
 
-isSubscribed.value = localStorage.getItem('subscribed') || false
+const isSubscribed = useLocalStorage('subscribed', false)
 
 const activeQuote = ref(0)
 const quotes = [
@@ -96,7 +96,7 @@ const subscribeToNewsletter = async () => {
     })
 
     isSuccess.value = true
-    localStorage.setItem('subscribed', true)
+    isSubscribed.value = true
   }
   catch(err) {
     error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
@@ -117,7 +117,7 @@ const subscribeToNewsletter = async () => {
     <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
   </div>
 
-  <div v-if="!isSubscribed" class="text-center max-w-[600px] mx-auto mt-16">
+  <div v-if="!isSubscribed || isSuccess" class="text-center max-w-[600px] mx-auto mt-16">
     <p class="p1 font-heading">Stay Informed About KitOps</p>
 
     <template v-if="!isSuccess">
