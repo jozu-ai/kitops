@@ -17,6 +17,7 @@
 package info
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -29,6 +30,7 @@ import (
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
 
@@ -104,7 +106,13 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) error {
 				value = field
 			}
 			if value.IsValid() {
-				fmt.Println(value.Interface())
+				buf := new(bytes.Buffer)
+				enc := yaml.NewEncoder(buf)
+				enc.SetIndent(2)
+				if err := enc.Encode(value.Interface()); err != nil {
+					return output.Fatalf("Error formatting manifest: %w", err)
+				}
+				fmt.Println(string(buf.String()))
 				return nil
 			}
 			return output.Fatalf("Cannot find the required node")
