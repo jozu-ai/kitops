@@ -1,50 +1,14 @@
-# common logic across linux and darwin
+#!/bin/sh
 
 UI_DIR=../../../../frontend/dev-mode
-
-init_vars() {
-    case "${GOARCH}" in
-    "amd64")
-        ARCH="x86_64"
-        ;;
-    "arm64")
-        ARCH="arm64"
-        ;;
-    *)
-        ARCH=$(uname -m | sed -e "s/aarch64/arm64/g")
-    esac
-
-    LLAMACPP_DIR=../llama.cpp
-    CMAKE_DEFS=""
-    CMAKE_TARGETS="--target server"
-    if echo "${CGO_CFLAGS}" | grep -- '-g' >/dev/null; then
-        CMAKE_DEFS="-DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_VERBOSE_MAKEFILE=on -DLLAMA_GPROF=on -DLLAMA_SERVER_VERBOSE=on ${CMAKE_DEFS}"
-    else
-        CMAKE_DEFS="-DCMAKE_BUILD_TYPE=Release -DLLAMA_SERVER_VERBOSE=off ${CMAKE_DEFS}"
-    fi
-    if [ -z "${CMAKE_CUDA_ARCHITECTURES}" ] ; then
-        CMAKE_CUDA_ARCHITECTURES="50;52;61;70;75;80"
-    fi
-}
-
-build() {
-    cmake -S ${LLAMACPP_DIR} -B ${BUILD_DIR} ${CMAKE_DEFS}
-    cmake --build ${BUILD_DIR} ${CMAKE_TARGETS} -j8
-    # ls ${BUILD_DIR}
-}
-
-git_module_setup() {
-    # Make sure the tree is clean
-    if [ -d "${LLAMACPP_DIR}/build/darwin/${GOARCH}/build" ]; then
-        echo "Cleaning up old submodule"
-        rm -rf ${LLAMACPP_DIR}
-    fi
-    git submodule init
-    git submodule update --force ${LLAMACPP_DIR}
-}
+LLAMAFILE_VER=$(go run ./llamafile_ver_helper.go)
 
 build_ui() {
-    pushd ${UI_DIR}
+    UI_HOME=$1
+
+    echo "Building harness UI from ${UI_HOME}"
+    
+    pushd ${UI_HOME}
     pnpm install
     pnpm run build
     popd
@@ -54,3 +18,50 @@ compress() {
     echo "Compressing $1 to $2"
     tar -czf $2 -C $1 .
 }
+
+generate_sha() {
+    FILE=$1
+    CHECKSUM_FILE=$2
+
+    echo "Generating SHA256 checksum for ${FILE}"
+    sha256sum ${FILE} | awk '{print $1 "  " FILENAME}' FILENAME="${FILE}" >> ${CHECKSUM_FILE}
+    echo "Checksum for ${FILE} saved to ${CHECKSUM_FILE}"
+}
+
+
+# Function to download a binary asset from a GitHub release
+download_github_release_binary() {
+    OWNER=$1
+    REPO=$2
+    RELEASE_TAG=$3
+    ASSET_NAME=$4
+    OUTPUT_DIR=$5
+
+    echo "Downloading asset '${ASSET_NAME}' from release '${RELEASE_TAG}' of repository '${OWNER}/${REPO}'"
+
+    DOWNLOAD_URL="https://github.com/${OWNER}/${REPO}/releases/download/${RELEASE_TAG}/llamafile-${RELEASE_TAG}"
+    
+    mkdir -p ${OUTPUT_DIR}
+
+    curl -L -o ${OUTPUT_DIR}/llamafile ${DOWNLOAD_URL}
+
+    echo "Asset '${ASSET_NAME}' downloaded successfully to: ${OUTPUT_DIR}/${ASSET_NAME}"
+
+    echo "${RELEASE_TAG}" > ${OUTPUT_DIR}/llamafile.version
+
+    COMPRESSED_FILE="llamafile.tar.gz"
+    compress ${OUTPUT_DIR} ../${COMPRESSED_FILE}
+
+    echo "Compressed asset saved to: ${COMPRESSED_FILE}"
+}
+
+build_ui ${UI_DIR}
+compress ${UI_DIR}/dist ../ui.tar.gz
+download_github_release_binary "Mozilla-Ocho" "llamafile" "${LLAMAFILE_VER}" "llamafile-${LLAMAFILE_VER}" "./downloads"
+
+CHECKSUM_FILE="../checksums.txt"
+> ${CHECKSUM_FILE}  # Clear the checksum file if it exists
+generate_sha "../ui.tar.gz" ${CHECKSUM_FILE}
+generate_sha "../llamafile.tar.gz" ${CHECKSUM_FILE}
+
+echo "All checksums have been saved to ${CHECKSUM_FILE}"
