@@ -35,11 +35,11 @@ var uiEmbed embed.FS
 
 func extractServer(harnessHome string) error {
 	// Create the harnessHome directory once before extracting files
-	if err := os.MkdirAll(harnessHome, 0o755); err != nil {
+	if err := os.MkdirAll(harnessHome, os.FileMode(0755)); err != nil {
 		return fmt.Errorf("error creating directory %s: %w", harnessHome, err)
 	}
 	if err := extractFile(serverEmbed, "llamafile.tar.gz", harnessHome); err != nil {
-		return fmt.Errorf("error extracting file: %w", err)
+		return fmt.Errorf("error extracting file %s to %s: %w", "llamafile.tar.gz", harnessHome, err)
 	}
 
 	// Set executable permissions and rename on Windows
@@ -50,7 +50,7 @@ func extractServer(harnessHome string) error {
 			return fmt.Errorf("error renaming file to executable: %w", err)
 		}
 	} else {
-		if err := os.Chmod(llamaFilePath, 0o755); err != nil {
+		if err := os.Chmod(llamaFilePath, os.FileMode(0755)); err != nil {
 			return fmt.Errorf("error setting executable permission: %w", err)
 		}
 	}
@@ -60,7 +60,7 @@ func extractServer(harnessHome string) error {
 
 func extractUI(harnessHome string) error {
 	uiHome := filepath.Join(harnessHome, "ui")
-	if err := os.MkdirAll(uiHome, 0o755); err != nil {
+	if err := os.MkdirAll(uiHome, os.FileMode(0755)); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", uiHome, err)
 	}
 	return extractFile(uiEmbed, "ui.tar.gz", uiHome)
