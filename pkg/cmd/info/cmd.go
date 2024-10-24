@@ -17,9 +17,11 @@
 package info
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"kitops/pkg/cmd/options"
@@ -28,8 +30,12 @@ import (
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -54,6 +60,7 @@ type infoOptions struct {
 	configHome  string
 	checkRemote bool
 	modelRef    *registry.Reference
+	filter      string
 }
 
 func InfoCommand() *cobra.Command {
@@ -70,6 +77,7 @@ func InfoCommand() *cobra.Command {
 
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry instead of local storage")
+	cmd.Flags().StringVarP(&opts.filter, "filter", "f", "", "filter with node selectors")
 	cmd.Flags().SortFlags = false
 
 	return cmd
@@ -86,6 +94,28 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) error {
 				return output.Fatalf("Could not find modelkit %s", util.FormatRepositoryForDisplay(opts.modelRef.String()))
 			}
 			return output.Fatalf("Error resolving modelkit: %s", err)
+		}
+		if len(opts.filter) > 0 {
+			var filterSlice = strings.Split(opts.filter, ".")
+			value := reflect.ValueOf(config)
+			for _, str := range filterSlice {
+				if value.Kind() == reflect.Ptr {
+					value = value.Elem()
+				}
+				field := value.FieldByName(cases.Title(language.Und, cases.NoLower).String(str))
+				value = field
+			}
+			if value.IsValid() {
+				buf := new(bytes.Buffer)
+				enc := yaml.NewEncoder(buf)
+				enc.SetIndent(2)
+				if err := enc.Encode(value.Interface()); err != nil {
+					return output.Fatalf("Error formatting manifest: %w", err)
+				}
+				fmt.Println(string(buf.String()))
+				return nil
+			}
+			return output.Fatalf("Cannot find the required node")
 		}
 		yamlBytes, err := config.MarshalToYAML()
 		if err != nil {
