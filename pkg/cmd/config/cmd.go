@@ -49,9 +49,10 @@ kit config reset`
 // Root config command.
 func ConfigCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "config",
-		Short: shortDesc,
-		Long:  longDesc,
+		Use:     "config",
+		Short:   shortDesc,
+		Long:    longDesc,
+		Example: example,
 	}
 
 	// Add subcommands to the root config command.
