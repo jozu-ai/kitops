@@ -145,7 +145,7 @@ func LoadConfig(configPath string) (*Config, error) {
 func SaveConfig(config *Config, configPath string) error {
 	// Ensure the directory exists before saving the file.
 	dir := filepath.Dir(configPath)
-	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
 
