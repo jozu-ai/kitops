@@ -266,4 +266,4 @@ Now that everything is set up you can follow our [Quick Start](../get-started.md
 
 ## Become a Design Partner
 
-Interested in helping to shape the future of our project? Email <a href="mailto:feedback@jozu.com", target="blank">feedback@jozu.com</a> to learn more about our Design Partner program.
+Interested in helping to shape the future of our project? Email <a href="mailto:feedback@jozu.com" target="blank">feedback@jozu.com</a> to learn more about our Design Partner program.
