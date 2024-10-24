@@ -31,13 +31,9 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
-
-### Follow the Quick Start
-
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
-
-That's it!
 
 ### Mac Install from ZIP
 
@@ -61,7 +57,6 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Intel / x86_64
 </a>
 
-### Installation Steps
 The Kit download will happen _so quickly_ on a fast connection that you might miss it...
 
 * Open the Mac Finder and check your downloads location for a file that starts with `kitops-darwin`
@@ -76,13 +71,9 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
-
-### Follow the Quick Start
-
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
-
-That's it!
 
 ## 🪟 Windows Install
 
@@ -115,7 +106,6 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 32-bit
 </a>
 
-### Installation Steps
 The Kit download will happen _so quickly_ on a fast connection that you might miss it...
 
 * Open the File Explorer and check your downloads location for a file that starts with `kitops-windows`
@@ -130,13 +120,9 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
-
-### Follow the Quick Start
-
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
-
-That's it!
 
 ## 🐧 Linux Install
 
@@ -156,13 +142,9 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
-
-### Follow the Quick Start
-
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
-
-That's it!
 
 ### Linux TAR Install
 
@@ -195,7 +177,6 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 32-bit
 </a>
 
-### Installation Steps
 The Kit download will happen _so quickly_ on a fast connection that you might miss it...
 
 Open a terminal window in your downloads location and look for a file that starts with `kitops-linux`.
@@ -220,11 +201,9 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
-
-### Follow the Quick Start
-
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
 
 ## 🛠️ Build from Source Code
 
@@ -281,6 +260,10 @@ To verify that `kit` was installed successfully, open a new terminal window and 
 kit version
 ```
 
-### Follow the Quick Start
+## Follow the Quick Start
 
 Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
+## Become a Design Partner
+
+Interested in helping to shape the future of our project? Email <a href="mailto:feedback@jozu.com", target="blank">feedback@jozu.com</a> to learn more about our Design Partner program.
