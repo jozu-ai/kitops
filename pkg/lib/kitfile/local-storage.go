@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sync"
 
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/util"
@@ -90,63 +91,101 @@ func saveConfig(ctx context.Context, localRepo local.LocalRepo, kitfile *artifac
 }
 
 func saveKitfileLayers(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact.KitFile, ignore filesystem.IgnorePaths, compression string) ([]ocispec.Descriptor, error) {
-	var layers []ocispec.Descriptor
+
+	modelPartsLen := 0
+	if kitfile.Model != nil {
+		modelPartsLen = len(kitfile.Model.Parts)
+		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
+			modelPartsLen++ // Account for the model path
+		}
+	}
+	var layers = make([]ocispec.Descriptor, modelPartsLen+len(kitfile.Code)+len(kitfile.DataSets)+len(kitfile.Docs))
+	var wg sync.WaitGroup
+	errChan := make(chan error, len(layers))
+
+	processLayer := func(index int, path string, mediaType constants.MediaType) {
+		defer wg.Done()
+
+		// Clone IgnorePaths for thread safety
+		clonedIgnore, err := ignore.Clone()
+		if err != nil {
+			errChan <- fmt.Errorf("error cloning IgnorePaths: %w", err)
+			return
+		}
+
+		layer, err := saveContentLayer(ctx, localRepo, path, mediaType, clonedIgnore)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		// Place the layer in the correct position in the layers slice
+		layers[index] = layer
+	}
+
+	// Counter to track index of each layer
+	layerIndex := 0
+
+	// Process model layers
 	if kitfile.Model != nil {
 		if kitfile.Model.Path != "" && !util.IsModelKitReference(kitfile.Model.Path) {
-			mediaType := constants.MediaType{
+			wg.Add(1)
+			go processLayer(layerIndex, kitfile.Model.Path, constants.MediaType{
 				BaseType:    constants.ModelType,
 				Compression: compression,
-			}
-			layer, err := saveContentLayer(ctx, localRepo, kitfile.Model.Path, mediaType, ignore)
-			if err != nil {
-				return nil, err
-			}
-			layers = append(layers, layer)
+			})
+			layerIndex++
 		}
 		for _, part := range kitfile.Model.Parts {
-			mediaType := constants.MediaType{
+			wg.Add(1)
+			go processLayer(layerIndex, part.Path, constants.MediaType{
 				BaseType:    constants.ModelPartType,
 				Compression: compression,
-			}
-			layer, err := saveContentLayer(ctx, localRepo, part.Path, mediaType, ignore)
-			if err != nil {
-				return nil, err
-			}
-			layers = append(layers, layer)
+			})
+			layerIndex++
 		}
 	}
+
+	// Process code layers
 	for _, code := range kitfile.Code {
-		mediaType := constants.MediaType{
+		wg.Add(1)
+		go processLayer(layerIndex, code.Path, constants.MediaType{
 			BaseType:    constants.CodeType,
 			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, code.Path, mediaType, ignore)
-		if err != nil {
-			return nil, err
-		}
-		layers = append(layers, layer)
+		})
+		layerIndex++
 	}
+
+	// Process dataset layers
 	for _, dataset := range kitfile.DataSets {
-		mediaType := constants.MediaType{
+		wg.Add(1)
+		go processLayer(layerIndex, dataset.Path, constants.MediaType{
 			BaseType:    constants.DatasetType,
 			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, dataset.Path, mediaType, ignore)
-		if err != nil {
-			return nil, err
-		}
-		layers = append(layers, layer)
+		})
+		layerIndex++
 	}
+
+	// Process documentation layers
 	for _, docs := range kitfile.Docs {
-		mediaType := constants.MediaType{
+		wg.Add(1)
+		go processLayer(layerIndex, docs.Path, constants.MediaType{
 			BaseType:    constants.DocsType,
 			Compression: compression,
-		}
-		layer, err := saveContentLayer(ctx, localRepo, docs.Path, mediaType, ignore)
+		})
+		layerIndex++
+	}
+	wg.Wait()
+	close(errChan)
+
+	var allErrors []error
+	for err := range errChan {
 		if err != nil {
-			return nil, err
+			allErrors = append(allErrors, err)
 		}
-		layers = append(layers, layer)
+	}
+
+	if len(allErrors) > 0 {
+		return nil, errors.Join(allErrors...)
 	}
 
 	return layers, nil
