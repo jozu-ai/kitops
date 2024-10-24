@@ -4,6 +4,8 @@ import vGaTrack from '@theme/directives/ga'
 
 # Installing Kit
 
+Kit is a command line tool for building and managing secure and shareable ModelKits. It works on Mac, Windows, and Linux computers.
+
 This page includes instructions for:
 
 * Installing on [MacOS](#🍎-macos-install)
@@ -12,6 +14,32 @@ This page includes instructions for:
 * Building from the [source code](#🛠️-build-from-source-code)
 
 ## 🍎 MacOS Install
+
+The simplest way to install Kit on a Mac is with `brew` if you have it installed on your machine. If not you can install from [ZIP](#mac-install-from-zip).
+
+### Mac Brew Install
+
+1. Open a Terminal window
+1. At the prompt type: `brew tap jozu-ai/kitops` (if that doesn't work use the [ZIP instructions](#mac-install-from-zip)
+1. When the previous command completes, type `brew install kitops`
+
+You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
+
+```shell
+kit version
+```
+
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
+
+### Follow the Quick Start
+
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
+That's it!
+
+### Mac Install from ZIP
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
@@ -111,6 +139,32 @@ Now that everything is set up you can follow our [Quick Start](../get-started.md
 That's it!
 
 ## 🐧 Linux Install
+
+The simplest way to install Kit on Linux is with `brew` if you have it installed on your machine. If not you can install Kit from our [TAR](#linux-tar-install).
+
+### Linux Brew Install
+
+1. Open a Terminal window
+1. At the prompt type: `brew tap jozu-ai/kitops` (if that doesn't work use the [TAR instructions](#linux-tar-install)
+1. When the previous command completes, type `brew install kitops`
+
+You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
+
+```shell
+kit version
+```
+
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
+
+### Follow the Quick Start
+
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
+That's it!
+
+### Linux TAR Install
 
 Make sure you get the correct download for your hardware.
 
