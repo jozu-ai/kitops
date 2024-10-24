@@ -4,14 +4,42 @@ import vGaTrack from '@theme/directives/ga'
 
 # Installing Kit
 
+Kit is a command line tool for building and managing secure and shareable ModelKits. It works on Mac, Windows, and Linux computers.
+
 This page includes instructions for:
 
-* Installing on [MacOS](#🍎-macos-install)
-* Installing on [Windows](#🪟-windows-install)
-* Installing on [Linux](#🐧-linux-install)
+* Installing on [MacOS](#🍎-macos-install) with Brew or ZIP
+* Installing on [Windows](#🪟-windows-install) with ZIP
+* Installing on [Linux](#🐧-linux-install) with Brew or TAR
 * Building from the [source code](#🛠️-build-from-source-code)
 
 ## 🍎 MacOS Install
+
+The simplest way to install Kit on a Mac is with [Homebrew](https://brew.sh/). You can also install from [ZIP](#mac-install-from-zip).
+
+### Mac Brew Install
+
+1. Open a Terminal window
+1. At the prompt type: `brew tap jozu-ai/kitops` (if that doesn't work use the [ZIP instructions](#mac-install-from-zip)
+1. When the previous command completes, type `brew install kitops`
+
+You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
+
+```shell
+kit version
+```
+
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
+
+### Follow the Quick Start
+
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
+That's it!
+
+### Mac Install from ZIP
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
@@ -33,7 +61,12 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Intel / x86_64
 </a>
 
-Once the file is downloaded, open your Finder and double-click the `.zip` file to unpack it. Then select the executable file named `kit` from unpacked folder and move it to `/usr/local/bin`.
+### Installation Steps
+The Kit download will happen _so quickly_ on a fast connection that you might miss it...
+
+* Open the Mac Finder and check your downloads location for a file that starts with `kitops-darwin`
+* Double-click the `.zip` file to unpack it
+* Select the executable file named `kit` from unpacked folder and move it to `/usr/local/bin`
 
 You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
 
@@ -42,6 +75,8 @@ kit version
 ```
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
 ### Follow the Quick Start
 
@@ -80,7 +115,12 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 32-bit
 </a>
 
-Once downloaded, right-click on the `.zip` file and select "Extract All..." to unzip the archive. Now, Move the extracted `kit.exe` to a directory that is included in your system's PATH variable. This will allow you to run the Kit CLI from any command prompt or terminal window.
+### Installation Steps
+The Kit download will happen _so quickly_ on a fast connection that you might miss it...
+
+* Open the File Explorer and check your downloads location for a file that starts with `kitops-windows`
+* Right-click the `.zip` file and select "Extract All..." to unzip the archive
+* Move the extracted `kit.exe` to a directory that is <a href="https://www.computerhope.com/issues/ch000549.htm" target="_blank">included in your system's PATH variable</a> (this will allow you to run the Kit CLI from anywhere).
 
 You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
 
@@ -90,6 +130,8 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
+
 ### Follow the Quick Start
 
 Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
@@ -97,6 +139,32 @@ Now that everything is set up you can follow our [Quick Start](../get-started.md
 That's it!
 
 ## 🐧 Linux Install
+
+The simplest way to install Kit on Linux is with [Homebrew](https://brew.sh/). You can also install from [TAR](#linux-tar-install).
+
+### Linux Brew Install
+
+1. Open a Terminal window
+1. At the prompt type: `brew tap jozu-ai/kitops` (if that doesn't work use the [TAR instructions](#linux-tar-install)
+1. When the previous command completes, type `brew install kitops`
+
+You can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
+
+```shell
+kit version
+```
+
+This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
+
+### Follow the Quick Start
+
+Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+
+That's it!
+
+### Linux TAR Install
 
 Make sure you get the correct download for your hardware.
 
@@ -127,19 +195,22 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 32-bit
 </a>
 
-Once downloaded, open a terminal window and use the `tar` command to extract the downloaded file. For example, if you downloaded the `kitops-linux-x86_64.tar.gz` file, you would use the following command:
+### Installation Steps
+The Kit download will happen _so quickly_ on a fast connection that you might miss it...
+
+Open a terminal window in your downloads location and look for a file that starts with `kitops-linux`.
+
+Use the `tar` command to extract the downloaded file. For example, if you downloaded the `kitops-linux-x86_64.tar.gz` file, you would use the following command:
 
 ```shell
 tar -xzvf kitops-linux-x86_64.tar.gz
 ```
 
-Move the extracted `kit` executable to a location in your system's PATH. A common choice is `/usr/local/bin`. You can do this with the `mv` command:
+Move the extracted `kit` executable to a location in your system's PATH. A common choice is `/usr/local/bin`. You can do this with the `mv` command (this may require administrator privileges):
 
 ```
 sudo mv kit /usr/local/bin/
 ```
-
-This step may require administrator privileges.
 
 After installation, you can verify that `kit` is correctly installed by opening a new terminal or command prompt and typing:
 
@@ -148,6 +219,8 @@ kit version
 ```
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
+
+**Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
 ### Follow the Quick Start
 
