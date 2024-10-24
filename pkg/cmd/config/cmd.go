@@ -46,99 +46,121 @@ kit config list
 kit config reset`
 )
 
-func (opts *configOptions) complete(ctx context.Context, args []string) error {
-	if len(args) == 0 {
-		return fmt.Errorf("no configuration key provided")
-	}
-	opts.key = args[0]
-
-	if len(args) > 1 {
-		opts.value = args[1]
+// Root config command.
+func ConfigCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "config",
+		Short: shortDesc,
+		Long:  longDesc,
 	}
 
+	// Add subcommands to the root config command.
+	cmd.AddCommand(setCmd())
+	cmd.AddCommand(getCmd())
+	cmd.AddCommand(listCmd())
+	cmd.AddCommand(resetCmd())
+
+	return cmd
+}
+
+// Subcommand for 'set'
+func setCmd() *cobra.Command {
+	opts := &configOptions{}
+	cmd := &cobra.Command{
+		Use:   "set [key] [value]",
+		Short: "Set a configuration value",
+		Args:  cobra.ExactArgs(2), // Ensure exactly 2 arguments: key and value.
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			opts.key, opts.value = args[0], args[1]
+			if err := opts.complete(ctx); err != nil {
+				return fmt.Errorf("failed to complete options: %w", err)
+			}
+			if err := setConfig(ctx, opts); err != nil {
+				return fmt.Errorf("failed to set config: %w", err)
+			}
+			output.Infof("Configuration key '%s' set to '%s'", opts.key, opts.value)
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+// Subcommand for 'get'
+func getCmd() *cobra.Command {
+	opts := &configOptions{}
+	cmd := &cobra.Command{
+		Use:   "get [key]",
+		Short: "Get a configuration value",
+		Args:  cobra.ExactArgs(1), // Ensure exactly 1 argument: key.
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			opts.key = args[0]
+			if err := opts.complete(ctx); err != nil {
+				return fmt.Errorf("failed to complete options: %w", err)
+			}
+			value, err := getConfig(ctx, opts)
+			if err != nil {
+				return fmt.Errorf("failed to get config: %w", err)
+			}
+			output.Infof("Configuration key '%s': '%s'", opts.key, value)
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+// Subcommand for 'list'
+func listCmd() *cobra.Command {
+	opts := &configOptions{}
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "List all configuration values",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			if err := opts.complete(ctx); err != nil {
+				return fmt.Errorf("failed to complete options: %w", err)
+			}
+			if err := listConfig(ctx, opts); err != nil {
+				return fmt.Errorf("failed to list configs: %w", err)
+			}
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+// Subcommand for 'reset'
+func resetCmd() *cobra.Command {
+	opts := &configOptions{}
+	cmd := &cobra.Command{
+		Use:   "reset",
+		Short: "Reset configuration to default values",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			if err := opts.complete(ctx); err != nil {
+				return fmt.Errorf("failed to complete options: %w", err)
+			}
+			if err := resetConfig(ctx, opts); err != nil {
+				return fmt.Errorf("failed to reset config: %w", err)
+			}
+			output.Infof("Configuration reset to default values")
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+// complete populates configOptions fields.
+func (opts *configOptions) complete(ctx context.Context) error {
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-
 	return nil
-}
-
-// ConfigCommand represents the config command
-func ConfigCommand() *cobra.Command {
-	opts := &configOptions{}
-
-	cmd := &cobra.Command{
-		Use:     "config [set|get|list|reset] KEY [VALUE]",
-		Short:   shortDesc,
-		Long:    longDesc,
-		Example: example,
-		RunE:    runCommand(opts),
-	}
-
-	cmd.Args = cobra.MinimumNArgs(1)
-	cmd.Flags().SortFlags = false
-
-	return cmd
-}
-
-func runCommand(opts *configOptions) func(cmd *cobra.Command, args []string) error {
-	return func(cmd *cobra.Command, args []string) error {
-		ctx := cmd.Context()
-
-		// Handle each command and its required/optional arguments
-		switch args[0] {
-		case "set":
-			if len(args) < 3 {
-				return output.Fatalf("Missing key or value for 'set'. Usage: kit config set <key> <value>")
-			}
-			opts.key, opts.value = args[1], args[2]
-			if err := opts.complete(ctx, args); err != nil {
-				return output.Fatalf("Invalid arguments: %s", err)
-			}
-			if err := setConfig(ctx, opts); err != nil {
-				return output.Fatalf("Failed to set config: %s", err)
-			}
-			output.Infof("Configuration key '%s' set to '%s'", opts.key, opts.value)
-
-		case "get":
-			if len(args) < 2 {
-				return output.Fatalf("Missing key for 'get'. Usage: kit config get <key>")
-			}
-			opts.key = args[1]
-			if err := opts.complete(ctx, args); err != nil {
-				return output.Fatalf("Invalid arguments: %s", err)
-			}
-			value, err := getConfig(ctx, opts)
-			if err != nil {
-				return output.Fatalf("Failed to get config: %s", err)
-			}
-			output.Infof("Configuration key '%s': '%s'", opts.key, value)
-
-		case "list":
-			// No key required for 'list'
-			if err := opts.complete(ctx, args); err != nil {
-				return output.Fatalf("Invalid arguments: %s", err)
-			}
-			if err := listConfig(ctx, opts); err != nil {
-				return output.Fatalf("Failed to list configs: %s", err)
-			}
-
-		case "reset":
-			// No key required for 'reset'
-			if err := opts.complete(ctx, args); err != nil {
-				return output.Fatalf("Invalid arguments: %s", err)
-			}
-			if err := resetConfig(ctx, opts); err != nil {
-				return output.Fatalf("Failed to reset config: %s", err)
-			}
-			output.Infof("Configuration reset to default values")
-
-		default:
-			return output.Fatalf("Unknown command: %s. Available commands are: set, get, list, reset", args[0])
-		}
-
-		return nil
-	}
 }
