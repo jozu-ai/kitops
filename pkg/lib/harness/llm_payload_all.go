@@ -32,15 +32,17 @@ import (
 func extractFile(fs fs.FS, file, harnessHome string) error {
 	srcFile, err := fs.Open(file)
 	if err != nil {
-		return fmt.Errorf("read payload %s: %v", file, err)
+		return fmt.Errorf("failed to open file %s: %w", file, err)
 	}
 	defer srcFile.Close()
 
 	srcReader := io.Reader(srcFile)
+	destFileName := file
+
 	if strings.HasSuffix(file, ".tar.gz") {
 		gzr, err := gzip.NewReader(srcReader)
 		if err != nil {
-			return fmt.Errorf("error extracting gzipped file: %w", err)
+			return fmt.Errorf("failed to create gzip reader for %s: %w", file, err)
 		}
 		defer gzr.Close()
 		tarReader := tar.NewReader(gzr)
@@ -50,20 +52,20 @@ func extractFile(fs fs.FS, file, harnessHome string) error {
 	if strings.HasSuffix(file, ".gz") {
 		srcReader, err = gzip.NewReader(srcReader)
 		if err != nil {
-			return fmt.Errorf("failed to decompress payload %s: %v", file, err)
+			return fmt.Errorf("failed to decompress payload %s: %w", file, err)
 		}
-		file = strings.TrimSuffix(file, ".gz")
+		destFileName = strings.TrimSuffix(file, ".gz")
 	}
 
-	destFile := filepath.Join(harnessHome, filepath.Base(file))
-	dest, err := os.OpenFile(destFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o755) // Keep executable permissions
+	destFile := filepath.Join(harnessHome, filepath.Base(destFileName))
+	dest, err := os.OpenFile(destFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.FileMode(0755)) // Keep executable permissions
 	if err != nil {
-		return fmt.Errorf("write payload %s: %v", file, err)
+		return fmt.Errorf("failed to create destination file %s: %w", destFile, err)
 	}
 	defer dest.Close()
 
 	if _, err := io.Copy(dest, srcReader); err != nil {
-		return fmt.Errorf("copy payload %s: %v", file, err)
+		return fmt.Errorf("failed to copy payload to %s: %w", destFile, err)
 	}
 	return nil
 }
@@ -75,20 +77,19 @@ func extractTar(tr *tar.Reader, dir string) error {
 			break
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to read tar header: %w", err)
 		}
-		outPath := filepath.Join(dir, header.Name)
+		// Sanitize the file name to prevent path traversal
+		sanitizedName := filepath.Clean(header.Name)
+		if strings.Contains(sanitizedName, "..") || filepath.IsAbs(sanitizedName) {
+			return fmt.Errorf("invalid file path in archive: %s", sanitizedName)
+		}
+		outPath := filepath.Join(dir, sanitizedName)
 
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if fi, exists := filesystem.PathExists(outPath); exists {
-				if !fi.IsDir() {
-					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
-				}
-			} else {
-				if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
-					return fmt.Errorf("failed to create directory %s: %w", outPath, err)
-				}
+			if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
+				return fmt.Errorf("failed to create directory %s: %w", outPath, err)
 			}
 
 		case tar.TypeReg:
