@@ -43,18 +43,18 @@ func (harness *LLMHarness) Init() error {
 	harnessPath := constants.HarnessPath(harness.ConfigHome)
 	ok, err := checkHarness(harnessPath)
 	if err != nil {
-		return fmt.Errorf("failed to verify dev server: %s", err)
+		return fmt.Errorf("failed to verify dev server: %w", err)
 	}
 	if ok {
 		return nil
 	}
 	err = extractServer(harnessPath)
 	if err != nil {
-		return fmt.Errorf("failed to extract dev server files: %s", err)
+		return fmt.Errorf("failed to extract dev server files: %w", err)
 	}
 	err = extractUI(harnessPath)
 	if err != nil {
-		return fmt.Errorf("failed to extract dev UI files: %s", err)
+		return fmt.Errorf("failed to extract dev UI files: %w", err)
 	}
 	return nil
 }
@@ -94,7 +94,7 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	cmd.Stderr = logs
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("error starting llm harness: %s", err)
+		return fmt.Errorf("error starting llm harness: %w", err)
 	}
 
 	pid := cmd.Process.Pid
@@ -126,16 +126,16 @@ func (harness *LLMHarness) Stop() error {
 	// Kill the process using the PID.
 	process, err := os.FindProcess(pid)
 	if err != nil {
-		return fmt.Errorf("error finding process: %s", err)
+		return fmt.Errorf("error finding process: %w", err)
 	}
 
-	err = process.Signal(syscall.SIGTERM) // Try to kill it gently
+	err = process.Signal(os.Interrupt) // Try to kill it gently
 	if err != nil {
-		output.Infof("Error killing process %s", err)
+		output.Infof("Error killing process %w", err)
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
-			return fmt.Errorf("error killing process: %s", err)
+			return fmt.Errorf("error killing process: %w", err)
 		}
 	}
 
@@ -143,7 +143,7 @@ func (harness *LLMHarness) Stop() error {
 	// Delete the PID file to clean up.
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("error removing PID file: %s", err)
+		return fmt.Errorf("error removing PID file: %w", err)
 	}
 
 	return nil

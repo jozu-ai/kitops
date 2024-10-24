@@ -20,29 +20,50 @@
 package harness
 
 import (
+	"bufio"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
+	"kitops/pkg/output"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 const (
-	llamafileDownloadURL = "http://downloads.jozu.ml?file=llamafile.tar.gz&version=" + LlamaFileVersion
-	uiDownloadURL        = "http://downloads.jozu.ml?file=ui.tar.gz&version=" + LlamaFileVersion
+	llamafileDownloadURL = "https://jozu.ml/downloads/?file=llamafile.tar.gz&version=" + LlamaFileVersion
+	uiDownloadURL        = "https://jozu.ml/downloads/?file=ui.tar.gz&version=" + LlamaFileVersion
+	checksumURL          = "https://jozu.ml/downloads/?file=checksums.txt&version=" + LlamaFileVersion
 )
 
 func extractServer(harnessHome string) error {
-	if err := os.MkdirAll(harnessHome, 0o755); err != nil {
+	if err := os.MkdirAll(harnessHome, os.FileMode(0755)); err != nil {
 		return fmt.Errorf("error creating directory %s: %w", harnessHome, err)
 	}
-	tmpFolder := filepath.Join(harnessHome, "tmp")
+	tmpFolder, err := os.MkdirTemp("", "kitops_tmp")
+	if err != nil {
+		return fmt.Errorf("failed to create temporary directory: %w", err)
+	}
+	defer os.RemoveAll(tmpFolder)
 
-	err := downloadFile(llamafileDownloadURL, tmpFolder, "llamafile.tar.gz")
+	output.Infoln("downloading harness binaries")
+	err = downloadFile(llamafileDownloadURL, tmpFolder, "llamafile.tar.gz")
 	if err != nil {
 		return fmt.Errorf("failed to extract llamafile: %w", err)
 	}
+	// Download and verify checksum
+	checksums, err := downloadAndParseChecksums(tmpFolder)
+	if err != nil {
+		return fmt.Errorf("failed to download and parse checksums: %w", err)
+	}
+	err = verifyChecksum(tmpFolder, "llamafile.tar.gz", checksums)
+	if err != nil {
+		return fmt.Errorf("checksum verification failed for llamafile.tar.gz: %w", err)
+	}
+
 	localFS := os.DirFS(tmpFolder)
 
 	err = extractFile(localFS, "llamafile.tar.gz", harnessHome)
@@ -57,7 +78,7 @@ func extractServer(harnessHome string) error {
 			return fmt.Errorf("error renaming file to executable: %w", err)
 		}
 	} else {
-		if err := os.Chmod(llamaFilePath, 0o755); err != nil {
+		if err := os.Chmod(llamaFilePath, os.FileMode(0755)); err != nil {
 			return fmt.Errorf("error setting executable permission: %w", err)
 		}
 	}
@@ -66,15 +87,31 @@ func extractServer(harnessHome string) error {
 }
 
 func extractUI(harnessHome string) error {
-	tmpFolder := filepath.Join(harnessHome, "tmp")
+	tmpFolder, err := os.MkdirTemp("", "kitops_tmp")
+	if err != nil {
+		return fmt.Errorf("failed to create temporary directory: %w", err)
+	}
+	defer os.RemoveAll(tmpFolder)
 
-	err := downloadFile(uiDownloadURL, tmpFolder, "ui.tar.gz")
+	output.Infoln("Updating harness UI components")
+	err = downloadFile(uiDownloadURL, tmpFolder, "ui.tar.gz")
 	if err != nil {
 		return fmt.Errorf("failed to extract UI: %w", err)
 	}
 
+	// Download checksum.txt
+	checksums, err := downloadAndParseChecksums(tmpFolder)
+	if err != nil {
+		return fmt.Errorf("failed to download and parse checksums: %w", err)
+	}
+	// Verify checksum
+	err = verifyChecksum(tmpFolder, "ui.tar.gz", checksums)
+	if err != nil {
+		return fmt.Errorf("checksum verification failed for ui.tar.gz: %w", err)
+	}
+
 	uiHome := filepath.Join(harnessHome, "ui")
-	if err := os.MkdirAll(uiHome, 0o755); err != nil {
+	if err := os.MkdirAll(uiHome, os.FileMode(0755)); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", uiHome, err)
 	}
 	localFS := os.DirFS(tmpFolder)
@@ -84,7 +121,7 @@ func extractUI(harnessHome string) error {
 
 func downloadFile(url string, folder string, filename string) error {
 
-	err := os.MkdirAll(folder, 0o755)
+	err := os.MkdirAll(folder, os.FileMode(0755))
 	if err != nil {
 		return fmt.Errorf("failed to create folder %s: %w", folder, err)
 	}
@@ -104,7 +141,8 @@ func downloadFile(url string, folder string, filename string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status downloading file %s", resp.Status)
+		return fmt.Errorf("bad status downloading file from %s: %s", url, resp.Status)
+
 	}
 
 	_, err = io.Copy(out, resp.Body)
@@ -114,4 +152,73 @@ func downloadFile(url string, folder string, filename string) error {
 
 	return nil
 
+}
+func downloadAndParseChecksums(tmpFolder string) (map[string]string, error) {
+	err := downloadFile(checksumURL, tmpFolder, "checksums.txt")
+	if err != nil {
+		return nil, fmt.Errorf("failed to download checksums.txt: %w", err)
+	}
+
+	checksumFilePath := filepath.Join(tmpFolder, "checksums.txt")
+	checksums, err := parseChecksumFile(checksumFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse checksums.txt: %w", err)
+	}
+
+	return checksums, nil
+}
+
+func verifyChecksum(folder, filename string, checksums map[string]string) error {
+	expectedChecksum, ok := checksums[filename]
+	if !ok {
+		return fmt.Errorf("checksum not found for file: %s", filename)
+	}
+
+	filePath := filepath.Join(folder, filename)
+	fileData, err := os.ReadFile(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to read file %s: %w", filePath, err)
+	}
+
+	hash := sha256.Sum256(fileData)
+	computedChecksum := hex.EncodeToString(hash[:])
+
+	if computedChecksum != expectedChecksum {
+		return fmt.Errorf("checksum mismatch for %s: expected %s, got %s", filename, expectedChecksum, computedChecksum)
+	}
+
+	output.Infoln(fmt.Sprintf("Checksum verified for %s", filename))
+	return nil
+}
+
+func parseChecksumFile(filePath string) (map[string]string, error) {
+	checksums := make(map[string]string)
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open checksum file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		// Skip empty lines
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid checksum line: %s", line)
+		}
+		checksum := parts[0]
+		filename := filepath.Base(parts[1]) // Get the base name of the file (e.g., 'ui.tar.gz')
+		checksums[filename] = checksum
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading checksum file: %w", err)
+	}
+
+	return checksums, nil
 }
