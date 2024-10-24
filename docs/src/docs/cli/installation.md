@@ -8,14 +8,14 @@ Kit is a command line tool for building and managing secure and shareable ModelK
 
 This page includes instructions for:
 
-* Installing on [MacOS](#🍎-macos-install)
-* Installing on [Windows](#🪟-windows-install)
-* Installing on [Linux](#🐧-linux-install)
+* Installing on [MacOS](#🍎-macos-install) with Brew or ZIP
+* Installing on [Windows](#🪟-windows-install) with ZIP
+* Installing on [Linux](#🐧-linux-install) with Brew or TAR
 * Building from the [source code](#🛠️-build-from-source-code)
 
 ## 🍎 MacOS Install
 
-The simplest way to install Kit on a Mac is with `brew` if you have it installed on your machine. If not you can install from [ZIP](#mac-install-from-zip).
+The simplest way to install Kit on a Mac is with [Homebrew](https://brew.sh/). You can also install from [ZIP](#mac-install-from-zip).
 
 ### Mac Brew Install
 
@@ -140,7 +140,7 @@ That's it!
 
 ## 🐧 Linux Install
 
-The simplest way to install Kit on Linux is with `brew` if you have it installed on your machine. If not you can install Kit from our [TAR](#linux-tar-install).
+The simplest way to install Kit on Linux is with [Homebrew](https://brew.sh/). You can also install from [TAR](#linux-tar-install).
 
 ### Linux Brew Install
 
