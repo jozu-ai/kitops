@@ -18,7 +18,6 @@ package dev
 import (
 	"net"
 	"os"
-	"runtime"
 	"strconv"
 
 	"kitops/pkg/lib/harness"
@@ -82,12 +81,6 @@ func DevLogsCommand() *cobra.Command {
 
 func runStartCommand(opts *DevStartOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
-			output.Infoln("Development server is not yet supported in this platform")
-			output.Infof("We are working to bring it to %s soon", runtime.GOOS)
-			return
-		}
-
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %s", err)
 			return
