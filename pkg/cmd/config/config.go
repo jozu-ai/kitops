@@ -25,7 +25,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -52,7 +51,8 @@ func setConfig(_ context.Context, opts *configOptions) error {
 		cfg = DefaultConfig()
 	}
 
-	v := reflect.ValueOf(cfg).Elem().FieldByName(cases.Title(language.Und).String(opts.key))
+	caser := cases.Title(language.Und)
+	v := reflect.ValueOf(cfg).Elem().FieldByName(caser.String(opts.key))
 	if !v.IsValid() {
 		return fmt.Errorf("unknown configuration key: %s", opts.key)
 	}
@@ -74,7 +74,7 @@ func getConfig(_ context.Context, opts *configOptions) (string, error) {
 		return "", err
 	}
 
-	v := reflect.ValueOf(cfg).Elem().FieldByName(strings.Title(opts.key))
+	v := reflect.ValueOf(cfg).Elem().FieldByName(cases.Title(language.Und).String(opts.key))
 	if !v.IsValid() {
 		return "", fmt.Errorf("unknown configuration key: %s", opts.key)
 	}
