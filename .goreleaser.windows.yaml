@@ -45,7 +45,7 @@ archives:
   - id: kit-archive-offline
     format: zip
     builds:
-      - kit-wins
+      - kit-wins-embedded
     name_template: >-
       {{ .ProjectName }}-offline-
       {{- tolower .Os }}-
