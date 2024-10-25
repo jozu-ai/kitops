@@ -44,7 +44,7 @@ func runDev(ctx context.Context, options *DevStartOptions) error {
 	if util.IsModelKitReference(kitfile.Model.Path) {
 		resolvedKitfile, err := kfutils.ResolveKitfile(ctx, options.configHome, kitfile.Model.Path, kitfile.Model.Path)
 		if err != nil {
-			return fmt.Errorf("Failed to resolve referenced modelkit %s: %w", kitfile.Model.Path, err)
+			return fmt.Errorf("failed to resolve referenced modelkit %s: %w", kitfile.Model.Path, err)
 		}
 		kitfile.Model.Path = resolvedKitfile.Model.Path
 		kitfile.Model.Parts = append(kitfile.Model.Parts, resolvedKitfile.Model.Parts...)

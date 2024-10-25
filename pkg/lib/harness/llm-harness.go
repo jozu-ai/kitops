@@ -60,6 +60,7 @@ func (harness *LLMHarness) Init() error {
 }
 
 func (harness *LLMHarness) Start(modelPath string) error {
+
 	harnessPath := constants.HarnessPath(harness.ConfigHome)
 	pidFile := filepath.Join(harnessPath, constants.HarnessProcessFile)
 	logFile := filepath.Join(harnessPath, constants.HarnessLogFile)
@@ -79,10 +80,26 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	}
 
 	uiHome := filepath.Join(harnessPath, "ui")
-	cmd := exec.Command("sh", "-c",
-		fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --nobrowser --unsecure",
-			modelPath, harness.Host, harness.Port, uiHome),
-	)
+	output.Debugf("model path is %s", modelPath)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command(
+			"./llamafile.exe",
+			"--server",
+			"--model", modelPath,
+			"--host", harness.Host,
+			"--port", fmt.Sprintf("%d", harness.Port),
+			"--path", uiHome,
+			"--nobrowser",
+			"--unsecure",
+		)
+	} else {
+		cmd = exec.Command("sh", "-c",
+			fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --nobrowser --unsecure",
+				modelPath, harness.Host, harness.Port, uiHome),
+		)
+	}
+
 	cmd.Dir = harnessPath
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
@@ -131,7 +148,7 @@ func (harness *LLMHarness) Stop() error {
 
 	err = process.Signal(os.Interrupt) // Try to kill it gently
 	if err != nil {
-		output.Infof("Error killing process %w", err)
+		output.Debugf("Error killing process %w", err)
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
@@ -171,6 +188,10 @@ func isProcessRunning(pid int) bool {
 	process, err := os.FindProcess(pid)
 	if err != nil {
 		return false
+	}
+	if runtime.GOOS == "windows" {
+		// On Windows, just finding the process implies it exists
+		return true
 	}
 	// Sending signal 0 to a process does not affect it but can be used for error checking.
 	// If an error is returned, the process does not exist.
