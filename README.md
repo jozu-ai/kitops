@@ -105,13 +105,10 @@ We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provi
 
 ---
 
-<div align="center" style="display: flex; align-items: center; justify-content: center;">
-    <a href="https://trackgit.com" style="text-decoration: none; margin-right: 20px;">Trackgit</a>
-    <div style="margin-left: auto;">
+<div align="center" align-items: center;">
         <a href="#top">
             <img src="https://img.shields.io/badge/Back%20to%20Top-000000?style=for-the-badge&logo=github&logoColor=white" alt="Back to Top">
         </a>
-    </div>
 </div>
 
 
