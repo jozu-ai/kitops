@@ -105,7 +105,7 @@ We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provi
 
 ---
 
-<div align="center" align-items: center;">
+<div align="center" style="align-items: center;">
         <a href="#top">
             <img src="https://img.shields.io/badge/Back%20to%20Top-000000?style=for-the-badge&logo=github&logoColor=white" alt="Back to Top">
         </a>
