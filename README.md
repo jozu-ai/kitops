@@ -67,7 +67,7 @@ There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 1. [Install the CLI](https://kitops.ml/docs/cli/installation.html) for your platform.
 2. Follow the [Getting Started](https://kitops.ml/docs/get-started.html) docs to learn to pack, unpack, and share a ModelKit.
-3. Test drive one of our [ModelKit Quick Starts](https://jozu.ml/organization/jozu-quickstarts) that includes everything thing you need to run your model including a codebase, dataset, documentation, and of course the model.
+3. Test drive one of our [ModelKit Quick Starts](https://jozu.ml/organization/jozu-quickstarts) that includes everything you need to run your model including a codebase, dataset, documentation, and of course the model.
 
 For those who prefer to build from the source, follow [these steps](https://kitops.ml/docs/cli/installation.html#🛠️-install-from-source) to get the latest version from our repository.
 
