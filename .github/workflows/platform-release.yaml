@@ -277,7 +277,7 @@ jobs:
 
       - name: Create and save homebrew-metadata.txt
         env:
-          TAG_NAME: ${{ inputs.release_tag}}
+          TAG_NAME: ${{ inputs.release_tag || github.ref_name}}
           REPO: ${{ github.repository }}
         run: |
           shopt -s failglob
