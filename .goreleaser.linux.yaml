@@ -42,7 +42,7 @@ archives:
     files:
       - LICENSE
       - README.md
-  - id: kit-archive-offile
+  - id: kit-archive-offline
     format: tar.gz
     builds:
       - kit-linux-embedded

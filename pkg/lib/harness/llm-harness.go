@@ -17,8 +17,10 @@
 package harness
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -238,14 +240,14 @@ func checkHarness(harnessHome string) (bool, error) {
 	uiPath := filepath.Join(harnessHome, "ui")
 
 	// 'llamafile'
-	if _, err := os.Stat(llamaFilePath); os.IsNotExist(err) {
+	if _, err := os.Stat(llamaFilePath); errors.Is(err, fs.ErrNotExist) {
 		return false, nil
 	} else if err != nil {
 		return false, fmt.Errorf("error checking 'llamafile': %w", err)
 	}
 
 	// llamafile.version
-	if _, err := os.Stat(llamaVersionPath); os.IsNotExist(err) {
+	if _, err := os.Stat(llamaVersionPath); errors.Is(err, fs.ErrNotExist) {
 		return false, nil
 	} else if err != nil {
 		return false, fmt.Errorf("error checking 'llamafile.version': %w", err)
@@ -262,7 +264,7 @@ func checkHarness(harnessHome string) (bool, error) {
 
 	// 'ui/'
 	uiInfo, err := os.Stat(uiPath)
-	if os.IsNotExist(err) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return false, nil
 	} else if err != nil {
 		return false, fmt.Errorf("error checking 'ui' directory: %w", err)
