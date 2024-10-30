@@ -1,5 +1,17 @@
 # Why Use KitOps?
 
+KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](./modelkit/compatibility.md)).
+
+KitOps has been downloaded over 20,000 times in just the last three months. Users often use it as a:
+
+* [Secure and immutable packaging and versioning standard](./modelkit/intro.md) that is [compatible with their existing container registry](https://kitops.ml/docs/modelkit/compatibility.html#compliant-oci-registries)
+* Point-of-control between development and production to [enforce consistency in packaging and documentation](./kitfile/kf-overview.md)
+* Catalogue of meaningful AI/ML project versions for regulatory compliance or change tracking
+* Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](./deploy.md)
+
+> [!NOTE]
+> The goal of KitOps is to be a library of versioned packages for your AI project, stored in an enterprise registry you already use.
+
 ## The Problem
 
 There is no standard and versioned packaging system for AI/ML projects. Today each part of the project is kept somewhere different:
@@ -8,25 +20,18 @@ There is no standard and versioned packaging system for AI/ML projects. Today ea
 * Configuration in Jupyter notebooks, feature stores, MLOps tools, or ...
 * Pipeline definitions in proprietary tools
 
-Jupyter notebooks are great, but extracting the model, datasets, and metadata from one is tricky. Similarly, ML-specific experimentation tools like MLFlow or Weights & Biases are excellent at training, but they save everything in proprietary formats that are confusing for software engineers and SREs.
+This makes it difficult to track which versions of code, model, and datasets go together. It makes building containers harder and managing in-production AI/ML projects riskier.
 
-When the only people using AI were data scientists this was annoying but workable. Now there are application teams trying to integrate model versions with their application, testing teams trying to validate models, and DevOps teams trying to deploy and maintain models in production.
+Teams that use ModelKits report saving between 12 and 100 hours per AI/ML project iteration. While security and compliance teams appreciate that all AI/ML project assets are packaged together for each version and stored in an already secured and auditable enterprise container registry.
 
-Without unified packaging teams take on risk and give up speed:
-* Which dataset version was used to train and validate this model version?
-* When did the dataset change? Did that effect my test run?
-* Where are the best configuration parameters for the model we're running in production?
+Suddenly tough questions like these are easy to answer:
+
 * Where did the model come from? Can we trust the source?
-* What changes did we make to the model?
-
-...and if you have to rollback a model deployment in production...good luck. With leaders demanding teams "add AI/ML" to their portfolios, many have fallen into a "throw it over the wall and hope it works" process that adds risk, delay, and frustration to self-hosting models.
-
-This problem is only getting worse and the stakes are rising each day as more and more teams start deploying models to production without proper operational safeguards.
+* When did the dataset change? Which models were trained on it?
+* Who build and signed off on the model?
+* Which model is in production, which is coming, and which has been retired?
 
 ## The Solution
-
-> [!NOTE]
-> The goal of KitOps is to be a library of versioned packages for your AI project, stored in an enterprise registry you already use.
 
 Kit's ModelKits are the better solution:
 * Combine models, datasets, code and all the context teams need to integrate, test, or deploy:
@@ -44,6 +49,8 @@ Use `kit pack` to package up your Jupyter notebook, serialized model, and datase
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
 
-Most people won't need everything, so just `kit unpack` from the remote registry to get just the model, only the datasets, or just the notebook. Or, if you need everything then a `kit pull` will grab everything.
+Most people won't need everything, so just `kit unpack` only the layers you need (model and dataset? code and docs?) from the remote registry. Or, if you need everything then a `kit pull` will grab everything.
 
-Check out our [getting started doc](./get-started.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md).
+Finally [package it all up as a container or Kubernetes deployment](./deploy.md).
+
+Check out our [getting started doc](./get-started.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md) and even making them [deployable](./deploy.md).
