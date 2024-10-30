@@ -49,7 +49,7 @@ Use `kit pack` to package up your Jupyter notebook, serialized model, and datase
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
 
-Most people won't need everything, so just `kit unpack` only the layers you need (model and dataset? code and docs?) from the remote registry. Or, if you need everything then a `kit pull` will grab everything.
+Most people won't need everything, so just `kit unpack` only the layers you need (e.g., only model and datasets, or only code and docs) from the remote registry. Or, if you need everything then a `kit pull` will grab everything.
 
 Finally [package it all up as a container or Kubernetes deployment](./deploy.md).
 
