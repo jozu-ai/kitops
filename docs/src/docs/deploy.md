@@ -17,7 +17,7 @@ The container is configurable via environment variables:
 
 `$MODELKIT_REF`: The ModelKit to pull (required).
 `$UNPACK_PATH`: Where to unpack the ModelKit (normally you’d want a `volumeMount` here). This is required and will default to `/home/user/modelkit`.
-`$UNPACK_FILTER`: Optional filter to limit what is unpacked (e.g., just the model, or model + code). The filter format is the same as the [–filter command line argument](./cli/cli-reference.md) for the Kit CLI.
+`$UNPACK_FILTER`: Optional filter to limit what is unpacked (e.g., just the model, or model + code). The filter format is the same as the [--filter command line argument](./cli/cli-reference.md) for the Kit CLI.
 `$COSIGN_KEY`: Path to the key that should be used for verification, mounted inside the init container (e.g., from a Kubernetes secret).
 `$COSIGN_CERT_IDENTITY`: Signing identity for keyless signing.
 `$COSIGN_CERT_OIDC_ISSUER`: OIDC issuer for keyless signer identity.
@@ -62,7 +62,7 @@ The container is configurable via environment variables:
 
 The containerized Kit CLI can be used to tailor the running of a ModelKit because you can run any Kit CLI command. This gives you flexibility, but more manual work (the world is your oyster, but it may be hard to shuck).
 
-This container runs `kit` as its entrypoint, accepting Kit CLI arguments. You can also replace any time you use a kit CLI command with `docker run ghcr.io/jozu-ai/kit:latest` and it will run Kit inside the container. This means if you want to download it to your local machine, you’ll need to mount a docker volume, but you can use this to inspect ModelKits without installing the CLI.
+This container runs `kit` as its entrypoint, accepting Kit CLI arguments. So you could run the container instead of downloading and installing the Kit CLI, although you’ll need to mount a docker volume.
 
 Docker run example:
 
@@ -109,4 +109,4 @@ Example `dockerfile` for a custom container that has <my-modelkit> built into it
  COPY --from=modelkit-download /tmp/my-modelkit /home/user/modelkit-data
 ```
 
-**Questions or suggestions?** Drop an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN) to get support or share your feedback.
+**Questions or suggestions?** Drop an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy) to get support or share your feedback.
