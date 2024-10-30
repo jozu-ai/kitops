@@ -8,6 +8,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
 * Push that versioned ModelKit package to a registry
 * Grab only the assets you need from the ModelKit for testing, integration, local running, or deployment
+* Package the ModelKit as a container or Kubernetes deployment
 
 ## Before we start...
 
@@ -120,6 +121,10 @@ kit push jozu.ml/brad/quick-start:latest
 ```
 
 Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry and that you have push rights to the repository.
+
+### ModelKit to Container or Kubernetes
+
+You can build a container or Kubernetes deployment that pulls artifacts directly from the ModelKit. This makes automating container creation and Kubernetes deployment simple. Read more in our [deployment documentation](./deploy.md).
 
 ### Congratulations
 
