@@ -2,17 +2,15 @@
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](./modelkit/compatibility.md)).
 
-Today AI/ML development in enterprises relies on artifacts that are tightly coupled, but versioned and stored separately:
-* Models in Jupyter notebooks or MLOps tools
-* Datasets in data lakes, databases, or files systems
-* Code in git repositories
-* Metadata (hyperparameters, features, weights, etc...) in various locations based on their type
+Organizations around the world are using KitOps as a "gate" in the [handoff between development and production](#level-1-handoff-from-development-to-production-).
 
-For this reason, organizations around the world are using KitOps as a "gate" between development and production. Those who are concerned about end-to-end auditing of their model development (like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) extend KitOps usage to security and development use cases (see [Level 2](#level-2-adding-security-️) and [Level 3](#level-3-storage-for-all-ai-project-versions-) use cases below.)
+Those who are concerned about end-to-end auditing of their model development - like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) extend KitOps usage to security and development use cases (see [Level 2](#level-2-adding-security-️) and [Level 3](#level-3-storage-for-all-ai-project-versions-) use cases below.
 
 ## Level 1: Handoff From Development to Production 🤝
 
-Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production. KitOps is ideally suited to CI/CD pipelines (e.g., using [KitOps in a GitHub Action](https://dev.to/kitops/introducing-the-new-github-action-for-using-kit-cli-on-mlops-pipelines-21ia)) either triggered manually by the model development team when they're ready to send the model to production, or automatically when a model or its artifacts are updated in their respective repositories.
+Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
+
+KitOps is ideally suited to CI/CD pipelines (e.g., using [KitOps in a GitHub Action](https://dev.to/kitops/introducing-the-new-github-action-for-using-kit-cli-on-mlops-pipelines-21ia)) either triggered manually by the model development team when they're ready to send the model to production, or automatically when a model or its artifacts are updated in their respective repositories.
 
 This ensures that:
 * __Operations teams have all the assets and information they need__ in order to determine how to test, deploy, audit, and manage these new workloads
