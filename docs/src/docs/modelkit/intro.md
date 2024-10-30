@@ -21,3 +21,5 @@ ModelKit revolutionizes the way AI/ML artifacts are shared and managed throughou
 **Optimized for AI/ML Workflows:** ModelKits are tailor-made for AI/ML projects, addressing specific needs such as versioning and environment configuration.
 
 ModelKit is not just a packaging format; it's a building block for innovation, simplifying the complexities of AI/ML development and deployment. By adopting ModelKit, teams can focus more on creating value and less on managing the intricacies of artifact storage and sharing.
+
+**Questions or suggestions?** Drop an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN) to get support or share your feedback.

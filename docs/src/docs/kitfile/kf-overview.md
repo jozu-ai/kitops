@@ -89,3 +89,5 @@ datasets:
   name: validation data
   path: ./data/test.csv
 ```
+
+**Questions or suggestions?** Drop an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN) to get support or share your feedback.
