@@ -6,7 +6,7 @@ KitOps is an innovative open-source project designed to enhance collaboration am
 
 ### 🎁 ModelKit
 
-At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool.
+At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool. You can even [deploy ModelKits to containers or Kubernetes](./deploy.md).
 
 ### 📄 Kitfile 
 
@@ -37,15 +37,19 @@ KitOps enables you to innovate in AI/ML without the usual infrastructure distrac
 KitOps is not just another tool; it's a comprehensive CLI and packaging system specifically designed for the AI/ML workflow. It acknowledges the nuanced needs of AI/ML projects, such as:
 
 ### 📊 Management of Unstructured Datasets
+
 AI/ML projects often deal with large, unstructured datasets, such as images, videos, and audio files. KitOps simplifies the versioning and sharing of these datasets, making them as manageable as traditional code.
 
 ### 🤝 Synchronized Data and Code Versioning
+
 One of the core strengths of KitOps is its ability to keep data and code versions in sync. This crucial feature solves the reproducibility issues that frequently arise in AI/ML development, ensuring consistency and reliability across project stages.
 
 ### 🚀 Deployment Ready
-Designed with a focus on deployment, ModelKits package assets in standard formats so they're compatible with nearly any tool - helping you get your model to production faster and more efficiently.
+
+Designed with a focus on deployment, ModelKits package assets in standard formats so you can depoloy them as [containers or to Kubernetes](./deploy.md). They're also [compatible with nearly any tool](./modelkit/compatibility.md) - helping you get your model to production faster and more efficiently.
 
 ### 🏭 Standards-Based Approach
+
 KitOps champions openness and interoperability through its core components, ensuring seamless integration into your existing workflows:
 
 ModelKits are designed as OCI (Open Container Initiative) artifacts, making them fully compatible with the Docker image registries and other OCI-compliant storage solutions you already use. This compatibility allows for an easy and familiar integration process. By adhering to widely accepted standards, KitOps ensures you're not tied to a single vendor or platform. This flexibility gives you the freedom to choose the best tools and services for your needs without being restricted by proprietary formats.

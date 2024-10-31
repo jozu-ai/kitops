@@ -8,6 +8,7 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 * Package up a model, notebook, and datasets into a single ModelKit you can share through your existing tools
 * Push that versioned ModelKit package to a registry
 * Grab only the assets you need from the ModelKit for testing, integration, local running, or deployment
+* Package the ModelKit as a container or Kubernetes deployment
 
 ## Before we start...
 
@@ -121,6 +122,10 @@ kit push jozu.ml/brad/quick-start:latest
 
 Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry and that you have push rights to the repository.
 
+### ModelKit to Container or Kubernetes
+
+You can build a container or Kubernetes deployment that pulls artifacts directly from the ModelKit. This makes automating container creation and Kubernetes deployment simple. Read more in our [deployment documentation](./deploy.md).
+
 ### Congratulations
 
 You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
@@ -134,4 +139,4 @@ If you'd like to learn more about using Kit, try our [Next Steps with Kit](./nex
 
 Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md)
 
-Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/3eDb4yAN).
+Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).
