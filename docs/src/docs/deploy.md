@@ -7,7 +7,7 @@ This page outlines how to use `init` or Kit CLI containers to deploy a ModelKit-
 There are currently two pre-built containers:
 
 1. Init container: https://github.com/jozu-ai/kitops/blob/main/build/dockerfiles/init/README.md
-1. Kit CLI container: https://github.com/jozu-ai/kitops/blob/main/build/dockerfiles/README.md 
+1. Kit CLI container: https://github.com/jozu-ai/kitops/blob/main/build/dockerfiles/README.md
 
 ## Init Container
 
@@ -55,7 +55,7 @@ The container is configurable via environment variables:
    # Define a volume to store the ModelKit
    volumes:
      - name: modelkit-storage
-       emptyDir: {}       
+       emptyDir: {}
 ```
 
 ## Using the Kit CLI Container
@@ -97,7 +97,7 @@ Example `dockerfile` for a custom container that has <my-modelkit> built into it
  # Download your ModelKit into the container
  RUN kit unpack <my-modelkit> /tmp/my-modelkit
 
- # Actual build stage; this just uses Alpine but you would build whatever 
+ # Actual build stage; this just uses Alpine but you would build whatever
  # container you need here
  FROM alpine:latest
 
