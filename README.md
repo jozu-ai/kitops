@@ -1,5 +1,5 @@
 
-<img width="1270" alt="KitOps" src="https://github.com/jozu-ai/kitops/assets/10517533/41295471-fe49-4011-adf6-a215f29890c2">
+<img width="1270" alt="KitOps" src="https://github.com/jozu-ai/kitops/assets/10517533/41295471-fe49-4011-adf6-a215f29890c2" id="top">
 
 
 ## Standards-based packaging and versioning system for AI/ML projects.
@@ -105,4 +105,11 @@ We [share our roadmap openly](./ROADMAP.md) so anyone in the community can provi
 
 ---
 
-<a href="https://trackgit.com">Trackgit</a>
+<div align="center" style="align-items: center;">
+        <a href="#top">
+            <img src="https://img.shields.io/badge/Back_to_Top-black?style=for-the-badge&logo=github&logoColor=white" alt="Back to Top">
+        </a>
+</div>
+
+
+
