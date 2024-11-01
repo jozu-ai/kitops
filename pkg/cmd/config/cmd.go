@@ -17,7 +17,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 
@@ -75,10 +74,10 @@ func setCmd() *cobra.Command {
 			ctx := cmd.Context()
 			opts.key, opts.value = args[0], args[1]
 			if err := opts.complete(ctx); err != nil {
-				return fmt.Errorf("failed to complete options: %w", err)
+				return output.Fatalf("failed to complete options: %w", err)
 			}
 			if err := setConfig(ctx, opts); err != nil {
-				return fmt.Errorf("failed to set config: %w", err)
+				output.Fatalf("Failed to set config: %s", err)
 			}
 			output.Infof("Configuration key '%s' set to '%s'", opts.key, opts.value)
 			return nil
@@ -99,11 +98,11 @@ func getCmd() *cobra.Command {
 			ctx := cmd.Context()
 			opts.key = args[0]
 			if err := opts.complete(ctx); err != nil {
-				return fmt.Errorf("failed to complete options: %w", err)
+				return output.Fatalf("failed to complete options: %w", err)
 			}
 			value, err := getConfig(ctx, opts)
 			if err != nil {
-				return fmt.Errorf("failed to get config: %w", err)
+				return output.Fatalf("failed to get config: %w", err)
 			}
 			output.Infof("Configuration key '%s': '%s'", opts.key, value)
 			return nil
@@ -122,10 +121,10 @@ func listCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			if err := opts.complete(ctx); err != nil {
-				return fmt.Errorf("failed to complete options: %w", err)
+				return output.Fatalf("failed to complete options: %w", err)
 			}
 			if err := listConfig(ctx, opts); err != nil {
-				return fmt.Errorf("failed to list configs: %w", err)
+				return output.Fatalf("failed to list configs: %w", err)
 			}
 			return nil
 		},
@@ -143,10 +142,10 @@ func resetCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			if err := opts.complete(ctx); err != nil {
-				return fmt.Errorf("failed to complete options: %w", err)
+				return output.Fatalf("failed to complete options: %w", err)
 			}
 			if err := resetConfig(ctx, opts); err != nil {
-				return fmt.Errorf("failed to reset config: %w", err)
+				return output.Fatalf("failed to reset config: %w", err)
 			}
 			output.Infof("Configuration reset to default values")
 			return nil
@@ -160,7 +159,7 @@ func resetCmd() *cobra.Command {
 func (opts *configOptions) complete(ctx context.Context) error {
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
-		return fmt.Errorf("default config path not set on command context")
+		return output.Fatalf("default config path not set on command context")
 	}
 	opts.configHome = configHome
 	return nil
