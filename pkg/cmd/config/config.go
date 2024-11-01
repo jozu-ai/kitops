@@ -51,18 +51,41 @@ func setConfig(_ context.Context, opts *configOptions) error {
 		cfg = DefaultConfig()
 	}
 
-	caser := cases.Title(language.Und)
-	v := reflect.ValueOf(cfg).Elem().FieldByName(caser.String(opts.key))
-	if !v.IsValid() {
-		return fmt.Errorf("unknown configuration key: %s", opts.key)
+	// Use reflection to set the field in the config struct.
+	configValue := reflect.ValueOf(cfg)
+	if configValue.Kind() == reflect.Ptr {
+		configValue = configValue.Elem()
 	}
 
-	v.SetString(opts.value)
-	err = SaveConfig(cfg, configPath) // Save only when configuration is modified.
+	// Convert opts.key to lowercase for lookup.
+	fieldNameLower := cases.Lower(language.Und).String(opts.key)
+
+	// Loop through struct fields to match case-insensitively.
+	var field reflect.Value
+	t := configValue.Type()
+	for i := 0; i < configValue.NumField(); i++ {
+		structField := t.Field(i)
+		if cases.Lower(language.Und).String(structField.Name) == fieldNameLower {
+			field = configValue.Field(i)
+			break
+		}
+	}
+
+	if !field.IsValid() {
+		return output.Fatalf("unknown configuration key: %s", opts.key)
+	}
+
+	// Check if the field is settable and of the correct type.
+	if field.CanSet() && field.Kind() == reflect.String {
+		field.SetString(opts.value)
+	} else {
+		return output.Fatalf("configuration key %s is not of type string or not settable", opts.key)
+	}
+
+	err = SaveConfig(cfg, configPath)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Config '%s' set to '%s'\n", opts.key, opts.value)
 	return nil
 }
 
@@ -76,7 +99,7 @@ func getConfig(_ context.Context, opts *configOptions) (string, error) {
 
 	v := reflect.ValueOf(cfg).Elem().FieldByName(cases.Title(language.Und).String(opts.key))
 	if !v.IsValid() {
-		return "", fmt.Errorf("unknown configuration key: %s", opts.key)
+		return "", output.Fatalf("unknown configuration key: %s", opts.key)
 	}
 
 	return fmt.Sprintf("%v", v.Interface()), nil
@@ -114,7 +137,7 @@ func resetConfig(_ context.Context, opts *configOptions) error {
 // Load configuration from a file.
 func LoadConfig(configPath string) (*Config, error) {
 	if configPath == "" {
-		return nil, fmt.Errorf("config path is empty")
+		return nil, output.Fatalf("config path is empty")
 	}
 
 	file, err := os.Open(configPath)
@@ -123,13 +146,13 @@ func LoadConfig(configPath string) (*Config, error) {
 			// Return default config, but don't save it to the file.
 			return DefaultConfig(), nil
 		}
-		return nil, fmt.Errorf("error opening config file: %w", err)
+		return nil, output.Fatalf("error opening config file: %w", err)
 	}
 	defer file.Close()
 
 	var config Config
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
-		return nil, fmt.Errorf("error decoding config file: %w", err)
+		return nil, output.Fatalf("error decoding config file: %w", err)
 	}
 
 	// If some fields are empty, fallback to defaults.
