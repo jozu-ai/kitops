@@ -70,7 +70,7 @@ export default defineConfig({
 
     // Top navigation
     nav: [
-      { text: 'Get Started?', activeMatch: '^/#getstarted', link: '/docs/get-started.html' },
+      { text: 'Get Started', activeMatch: '^/#getstarted', link: '/docs/get-started.html' },
       { text: 'How does it work?', activeMatch: `^/#howdoesitwork`, link: '/#howdoesitwork' },
       { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
       { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
