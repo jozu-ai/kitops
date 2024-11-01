@@ -88,14 +88,14 @@ Kubernetes example:
 
 Going a step further you can use the Kit CLI container to create your own bespoke ModelKit containers.
 
-Example `dockerfile` for a custom container that has <my-modelkit> built into it:
+Example `dockerfile` for a custom container that has `my-modelkit` built into it:
 
 ```
  # Staged build to grab the ModelKit so we can use it later
  FROM ghcr.io/jozu-ai/kit:latest AS modelkit-download
 
  # Download your ModelKit into the container
- RUN kit unpack <my-modelkit> /tmp/my-modelkit
+ RUN kit unpack my-modelkit /tmp/my-modelkit
 
  # Actual build stage; this just uses Alpine but you would build whatever
  # container you need here
