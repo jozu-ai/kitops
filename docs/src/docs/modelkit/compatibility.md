@@ -4,7 +4,13 @@ ModelKit packages can be pushed to any OCI 1.1-compliant registry, whether in th
 
 ModelKits themselves use standards like JSON, YAML, and TAR files so whatever MLOps or DevOps tools you're using...they'll work with ModelKits.
 
+If you've tried using Kit with your favorite tool and are having trouble, please [open an issue](https://github.com/jozu-ai/kitops/issues/new/choose) in our GitHub repository.
+
+If you've used KitOps with a product or project we've missed, please open a pull request updating this file.
+
 ## Compliant OCI Registries
+
+The most fully-featured repository for ModelKits is the [Jozu Hub](https://jozu.ml/), however, many users find it easiest to store their ModelKits in an existing enterprise container registry:
 
 * Amazon Elastic Container Registry (ECR)
 * Azure Container Registry
@@ -15,7 +21,16 @@ ModelKits themselves use standards like JSON, YAML, and TAR files so whatever ML
 * Harbor
 * IBM Cloud Container Registry
 * JFrog Artifactory
+* Jozu Hub
 * Red Hat Quay.io
+* Sonatype Nexus
+
+## CI/CD & Pipline Tools
+
+### Pre-Built Workflows
+
+* Dagger: see [Kit modules for Dagger](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit) in the Daggerverse
+* GitHub Actions: Kit CLI for [GitHub Actions](https://github.com/marketplace/actions/setup-kit-cli)
 
 ## Other Compatible Tools
 
@@ -61,12 +76,7 @@ ModelKits themselves use standards like JSON, YAML, and TAR files so whatever ML
 * Red Hat OpenShift
 * Red Hat OpenShift AI
 * Seldon
-* Sonatype Nexus
 * Tensorflow Hub
 * VMware
 * Weights & Biases
 * ZenML
-
-If you've tried using Kit with your favorite tool and are having trouble, please [open an issue](https://github.com/jozu-ai/kitops/issues/new/choose) in our GitHub repository.
-
-If you've used KitOps with a product or project we've missed, please open a pull request updating this file.

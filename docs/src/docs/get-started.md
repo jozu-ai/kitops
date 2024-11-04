@@ -39,9 +39,11 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
-Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/browse) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
+Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/organization/jozu-quickstarts) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
-You can grab <a href="https://jozu.ml/discover"
+If you have a model already on your machine you can use that instead.
+
+You can grab <a href="https://jozu.ml/browse"
   v-ga-track="{
     category: 'link',
     label: 'grab any of the ModelKits',
@@ -51,21 +53,21 @@ You can grab <a href="https://jozu.ml/discover"
 The unpack command will unpack the ModelKit contents to the current directory by default. If you want it unpacked to a specific directory use the `-d /path/to/unpacked`.
 
 ```sh
-kit unpack jozu.ml/jozu/fine-tuning:latest
+kit unpack jozu.ml/jozu-quickstarts/fine-tuning:latest
 ```
 
 You'll see a set of messages as Kit unpacks the configuration, code, datasets, and serialized model. Now list the directory contents:
 
 ```sh
-ls
-```
+tree
 
-You'll see:
-* A Kitfile
-* A README file
-* A Llama3 model in GGUF format
-* A LoRA adapter in GGUF format
-* A training dataset
+.
+├── Kitfile
+├── README.md
+├── llama3-8b-8B-instruct-q4_0.gguf
+├── lora-adapter.gguf
+└── training-data.txt* A Kitfile
+```
 
 The [Kitfile](./kitfile/kf-overview.md) is the manifest for our ModelKit, the serialized model, and a set of files or directories including the adapter, dataset, and docs. Every ModelKit has a Kitfile and you can use the info and inspect commands to view them from the CLI (there's more on this in our [Next Steps](next-steps.md) doc).
 
@@ -122,21 +124,20 @@ kit push jozu.ml/brad/quick-start:latest
 
 Note that some registries, like Jozu Hub, don't automatically create a repository. If you receive an error from your `push` command, make sure you have created the repository in your target registry and that you have push rights to the repository.
 
-### ModelKit to Container or Kubernetes
-
-You can build a container or Kubernetes deployment that pulls artifacts directly from the ModelKit. This makes automating container creation and Kubernetes deployment simple. Read more in our [deployment documentation](./deploy.md).
-
 ### Congratulations
 
 You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
 
 If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+* Creating a container or Kubernetes deployment from a ModelKit
 * Signing your ModeKit
 * Making your own Kitfile
 * The power of `unpack`
 * Tagging ModelKits
 * Keeping your registry tidy
 
-Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md)
+Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md).
+
+Finally, if you're building workflows using Dagger you can use KitOps through our [Daggerverse modules](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit). Or get the [GitHub Action for Kit](https://github.com/marketplace/actions/setup-kit-cli).
 
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).
