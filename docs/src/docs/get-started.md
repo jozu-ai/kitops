@@ -43,7 +43,7 @@ Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sam
 
 If you have a model already on your machine you can use that instead.
 
-You can grab <a href="https://jozu.ml/discover"
+You can grab <a href="https://jozu.ml/browse"
   v-ga-track="{
     category: 'link',
     label: 'grab any of the ModelKits',
