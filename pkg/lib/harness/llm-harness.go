@@ -33,7 +33,7 @@ import (
 	"kitops/pkg/output"
 )
 
-const LlamaFileVersion = "0.8.14"
+const LlamaFileVersion = "0.8.16"
 
 type LLMHarness struct {
 	Host       string
@@ -92,12 +92,13 @@ func (harness *LLMHarness) Start(modelPath string) error {
 			"--host", harness.Host,
 			"--port", fmt.Sprintf("%d", harness.Port),
 			"--path", uiHome,
+			"--gpu", "AUTO",
 			"--nobrowser",
 			"--unsecure",
 		)
 	} else {
 		cmd = exec.Command("sh", "-c",
-			fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --nobrowser --unsecure",
+			fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --gpu AUTO --nobrowser --unsecure",
 				modelPath, harness.Host, harness.Port, uiHome),
 		)
 	}
