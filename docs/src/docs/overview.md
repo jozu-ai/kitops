@@ -8,17 +8,17 @@ KitOps is an innovative open-source project designed to enhance collaboration am
 
 At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool. You can even [deploy ModelKits to containers or Kubernetes](./deploy.md).
 
-### 📄 Kitfile 
+### 📄 Kitfile
 
 Complementing the ModelKit is the Kitfile, a YAML-based configuration file that simplifies the sharing of model, dataset, and code configurations. The Kitfile is designed with both ease of use and security in mind, ensuring that configurations can be efficiently packaged and shared without compromising on safety or governance.
 
-### 🖥️ Kit CLI 
+### 🖥️ Kit CLI
 
 Bringing everything together is the Kit Command Line Interface (CLI). The Kit CLI is a powerful tool that enables users to create, manage, run, and deploy ModelKits using Kitfiles. Whether you are packaging a new model for development or deploying an existing model into production, the Kit CLI provides the necessary commands and functionalities to streamline your workflow.
 
 ## How KitOps is Used
 
-KitOps is a key element in a platform engineering solution for AI/ML projects. 
+KitOps is a key element in a platform engineering solution for AI/ML projects.
 
 [See how security-conscious organization are using ModelKits](../use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
 
