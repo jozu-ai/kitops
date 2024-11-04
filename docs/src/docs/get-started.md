@@ -41,6 +41,8 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/browse) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
+If you have a model already on your machine you can use that instead.
+
 You can grab <a href="https://jozu.ml/discover"
   v-ga-track="{
     category: 'link',
@@ -137,6 +139,8 @@ If you'd like to learn more about using Kit, try our [Next Steps with Kit](./nex
 * Tagging ModelKits
 * Keeping your registry tidy
 
-Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md)
+Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md).
+
+Finally, if you're building workflows using Dagger you can use KitOps through our [Daggerverse modules](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit).
 
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).
