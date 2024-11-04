@@ -1,11 +1,16 @@
 # Next Steps with Kit
 
 In this guide you'll learn how to:
+* Deploy a ModelKit
 * Sign your ModelKit
 * Make your own Kitfile
 * The power of `unpack`
 * Read the Kitfile or manifest from a ModelKit
 * Tag ModelKits and keep your registry tidy
+
+## Deploying a ModelKit
+
+You can create a container or Kubernetes deployment using a ModelKit. See our [deployment instructions](./deploy.md).
 
 ## Signing your ModelKit
 
