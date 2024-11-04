@@ -16,11 +16,11 @@
 
 ### What is KitOps?
 
-KitOps is a packaging, versioning, and sharing system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise container registry. It's AI/ML platform engineering teams' preferred solution for securely packaging and versioning assets.
+KitOps is a packaging, versioning, and sharing system for AI/ML projects that uses open standards so it works with the AI/ML, development, and DevOps tools you are already using, and can be stored in your enterprise container registry.
 
 KitOps creates a ModelKit for your AI/ML project which includes everything you need to reproduce it locally or deploy it into production. You can even **selectively unpack a ModelKit** so different team members can save time and storage space by only grabbing what they need for a task. Because ModelKits are immutable, signable, and live in your existing container registry they're easy for organizations to track, control, and audit.
 
-ModelKits [simplify the handoffs between data scientists, application developers, and SREs](https://www.youtube.com/watch?v=j2qjHf2HzSQ) working with LLMs and other AI/ML models. Teams and enterprises use KitOps as a secure storage throughout the AI/ML project lifecycle.
+ModelKits simplify the handoffs between data scientists, application developers, and SREs working with LLMs and other AI/ML models. Teams and enterprises use KitOps as a secure storage throughout the AI/ML project lifecycle.
 
 Use KitOps to speed up and de-risk all types of AI/ML projects:
 * Predictive models
@@ -36,10 +36,9 @@ For our friends in the EU - ModelKits are the perfect way to create a library of
 
 ### 😍 What's New? ✨
 
-* 🚢 Create a **[runnable container from a ModelKit](https://tinyurl.com/5b76p5u3)** with one command! Read [KitOps deploy docs](https://kitops.ml/docs/deploy.html) for details.
+* 🚢 First Look: Create a **[runnable container from a ModelKit](https://tinyurl.com/5b76p5u3)** with one command!
 * 🥂 Get the most out of KitOps' ModelKits by using them with the **[Jozu Hub](https://jozu.ml/)** repository. Or, continue using ModelKits with your existing OCI registry (even on-premises and air-gapped).
-* 🛠️ Use KitOps with Dagger pipelines using our modules from the [Daggerverse](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit).
-* ⛑️ [KitOps works great with Red Hat](https://developers.redhat.com/articles/2024/09/16/enhance-llms-instructlab-kitops) InstructLab and Quay.io products.
+* ⛑️ [KitOps works great with Red Hat](https://developers.redhat.com/articles/2024/09/16/enhance-llms-instructlab-kitops) InstructLab and Quay.io products
 
 
 ### Features
@@ -48,7 +47,7 @@ For our friends in the EU - ModelKits are the perfect way to create a library of
 * 🏭 **[Versioning](https://kitops.ml/docs/cli/cli-reference.html#kit-tag):** Each ModelKit is tagged so everyone knows which dataset and model work together.
 * 🔒 **[Tamper-proofing](https://kitops.ml/docs/modelkit/spec.html):** Each ModelKit package includes an SHA digest for itself, and every artifact it holds.
 * 🤩 **[Selective-unpacking](https://kitops.ml/docs/cli/cli-reference.html#kit-unpack):** Unpack only what you need from a ModelKit with the `kit unpack --filter` command - just the model, just the dataset and code, or any other combination.
-* 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment (e.g. [GitHub Actions](https://github.com/marketplace/actions/setup-kit-cli) or [Dagger](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit).
+* 🤖 **[Automation](https://github.com/marketplace/actions/setup-kit-cli):** Pack or unpack a ModelKit locally or as part of your CI/CD workflow for testing, integration, or deployment.
 * 🪛 **[LLM fine-tuning](https://dev.to/kitops/fine-tune-your-first-large-language-model-llm-with-lora-llamacpp-and-kitops-in-5-easy-steps-1g7f):** Use KitOps to fine-tune a large language model using LoRA.
 * 🎯 **[RAG pipelines](https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing):** Create a RAG pipeline for tailoring an LLM with KitOps.
 * 📝 **[Artifact signing](https://kitops.ml/docs/next-steps.html):** ModelKits and their assets can be signed so you can be confident of their provenance.
@@ -57,8 +56,12 @@ For our friends in the EU - ModelKits are the perfect way to create a library of
 * 🩰 **[Flexible](https://kitops.ml/docs/kitfile/format.html#model):** Reference base models using `model parts`, or store key-value pairs (or any YAML-compatible JSON data) in your Kitfile - use it to keep features, hyperparameters, links to MLOps tool experiments, or validation output.
 * 🏃‍♂️‍➡️ **[Run locally](./docs/src/docs/dev-mode.md):** Kit's Dev Mode lets you run an LLM locally, configure it, and prompt/chat with it instantly.
 * 🤗 **Universal:** ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.
-* 🐳 **[Deploy containers](https://kitops.ml/docs/deploy.html):** Generate a basic or custom docker container from any ModelKit.
-* 🚢 **[Kubernetes-ready](https://kitops.ml/docs/deploy.html):** Generate a Kubernetes / KServe deployment config from any ModelKit.
+* 🐳 **Deploy containers:** Generate a Docker container as part of your `kit unpack` (coming soon).
+* 🚢 **Kubernetes-ready:** Generate a Kubernetes / KServe deployment config as part of your `kit unpack` (coming soon).
+
+### See KitOps in Action
+
+There's a video of KitOps in action on the [KitOps site](https://kitops.ml/).
 
 ## 🚀 Try KitOps in under 15 Minutes
 
