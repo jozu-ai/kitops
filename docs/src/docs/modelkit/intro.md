@@ -6,7 +6,7 @@ ModelKit revolutionizes the way AI/ML artifacts are shared and managed throughou
 
 [Get started with ModelKits](../get-started.md) in less than 15 minutes.
 
-See the [ModelKit spec](./spec.md), or look over the [tool compatibility list](./compatibility.md).
+[See how security-conscious organization are using ModelKits](../use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
 
 ## Key Features of ModelKit:
 
