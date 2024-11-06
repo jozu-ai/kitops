@@ -179,6 +179,7 @@ kit info --remote registry.example.com/my-model:1.0.0
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
       --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -r, --remote            Check remote registry instead of local storage
+  -f, --filter string     filter with node selectors
   -h, --help              help for info
 ```
 
