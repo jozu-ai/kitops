@@ -152,23 +152,8 @@ export default defineConfig({
     ])
   },
 
-  // Generate the sitemap.xml
-  transformHtml: (_, id, { pageData }) => {
-    if (!/[\\/]404\.html$/.test(id)) {
-      links.push({
-        url: pageData.relativePath.replace(/\/index\.md$/, '/').replace(/\.md$/, '.html'),
-        lastmod: pageData.lastUpdated,
-      })
-    }
-  },
-
-  buildEnd: async ({ outDir }) => {
-    const sitemap = new SitemapStream({ hostname: 'https://kitops.ml/' })
-    const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
-    sitemap.pipe(writeStream)
-    links.forEach((link) => sitemap.write(link))
-    sitemap.end()
-    await new Promise((r) => writeStream.on('finish', r))
+  sitemap: {
+    hostname: 'https://kitops.ml'
   },
 
   vite: {
