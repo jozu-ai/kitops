@@ -31,7 +31,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](/docs/get-started.md) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
