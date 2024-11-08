@@ -199,8 +199,8 @@ func PrintLogs(configHome string, w io.Writer, tail bool) error {
 				}
 			}
 			stringReader := strings.NewReader(line)
-			if _, err = io.Copy(w, stringReader); err != nil {
-				return fmt.Errorf("failed to print log file: %w", err)
+	        if _, err := w.Write([]byte(line)); err != nil {
+                return fmt.Errorf("failed to write to output: %w", err) 
 			}
 		}
 	}
