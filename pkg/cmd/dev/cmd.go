@@ -69,13 +69,14 @@ func DevStopCommand() *cobra.Command {
 }
 
 func DevLogsCommand() *cobra.Command {
-	opts := &DevBaseOptions{}
+	opts := &DevLogsOptions{}
 	cmd := &cobra.Command{
 		Use:   "logs",
 		Short: devLogsShortDesc,
 		Long:  devLogsLongDesc,
 		Run:   runLogsCommand(opts),
 	}
+	cmd.Flags().BoolVarP(&opts.tail, "tail", "t", false, "Tail the log file")
 	return cmd
 }
 
@@ -113,14 +114,14 @@ func runStopCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string
 	}
 }
 
-func runLogsCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string) {
+func runLogsCommand(opts *DevLogsOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %s", err)
 			return
 		}
 
-		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout())
+		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout(), opts.tail)
 		if err != nil {
 			output.Errorln(err)
 			os.Exit(1)

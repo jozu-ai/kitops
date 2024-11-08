@@ -17,6 +17,7 @@
 package harness
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -28,6 +29,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -169,7 +171,7 @@ func (harness *LLMHarness) Stop() error {
 	return nil
 }
 
-func PrintLogs(configHome string, w io.Writer) error {
+func PrintLogs(configHome string, w io.Writer, tail bool) error {
 	harnessPath := constants.HarnessPath(configHome)
 	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
 	logFile, err := os.Open(logPath)
@@ -181,8 +183,26 @@ func PrintLogs(configHome string, w io.Writer) error {
 		return fmt.Errorf("error reading log file: %w", err)
 	}
 	defer logFile.Close()
-	if _, err = io.Copy(w, logFile); err != nil {
-		return fmt.Errorf("failed to print log file: %w", err)
+	if !tail {
+		if _, err = io.Copy(w, logFile); err != nil {
+			return fmt.Errorf("failed to print log file: %w", err)
+		}
+	} else {
+		reader := bufio.NewReader(logFile)
+		for {
+			line, err := reader.ReadString('\n')
+			if err != nil {
+				if err == io.EOF {
+					time.Sleep(1 * time.Second)
+				} else {
+					return fmt.Errorf("failed to print log file: %w", err)
+				}
+			}
+			stringReader := strings.NewReader(line)
+			if _, err = io.Copy(w, stringReader); err != nil {
+				return fmt.Errorf("failed to print log file: %w", err)
+			}
+		}
 	}
 	return nil
 }
