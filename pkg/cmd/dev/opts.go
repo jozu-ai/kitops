@@ -31,7 +31,7 @@ type DevBaseOptions struct {
 
 type DevLogsOptions struct {
 	DevBaseOptions
-	tail bool
+	follow bool
 }
 
 func (opts *DevBaseOptions) complete(ctx context.Context, args []string) error {

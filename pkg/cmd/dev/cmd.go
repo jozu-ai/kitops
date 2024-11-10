@@ -76,7 +76,7 @@ func DevLogsCommand() *cobra.Command {
 		Long:  devLogsLongDesc,
 		Run:   runLogsCommand(opts),
 	}
-	cmd.Flags().BoolVarP(&opts.tail, "tail", "t", false, "Tail the log file")
+	cmd.Flags().BoolVarP(&opts.follow, "follow", "f", false, "Tail the log file")
 	return cmd
 }
 
@@ -121,7 +121,7 @@ func runLogsCommand(opts *DevLogsOptions) func(cmd *cobra.Command, args []string
 			return
 		}
 
-		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout(), opts.tail)
+		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout(), opts.follow)
 		if err != nil {
 			output.Errorln(err)
 			os.Exit(1)

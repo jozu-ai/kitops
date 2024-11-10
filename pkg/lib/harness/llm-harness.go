@@ -171,7 +171,7 @@ func (harness *LLMHarness) Stop() error {
 	return nil
 }
 
-func PrintLogs(configHome string, w io.Writer, tail bool) error {
+func PrintLogs(configHome string, w io.Writer, follow bool) error {
 	harnessPath := constants.HarnessPath(configHome)
 	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
 	logFile, err := os.Open(logPath)
@@ -183,28 +183,35 @@ func PrintLogs(configHome string, w io.Writer, tail bool) error {
 		return fmt.Errorf("error reading log file: %w", err)
 	}
 	defer logFile.Close()
-	if !tail {
-		if _, err = io.Copy(w, logFile); err != nil {
-			return fmt.Errorf("failed to print log file: %w", err)
-		}
-	} else {
-		reader := bufio.NewReader(logFile)
-		for {
-			line, err := reader.ReadString('\n')
-			if err != nil {
-				if err == io.EOF {
-					time.Sleep(1 * time.Second)
-				} else {
-					return fmt.Errorf("failed to print log file: %w", err)
+	reader := bufio.NewReader(logFile)
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				if !follow {
+					return nil
 				}
+				time.Sleep(1 * time.Second)
+				serverStatus := checkExistance(configHome)
+				if serverStatus {
+					return fmt.Errorf("server stopped")
+				}
+				continue
+			} else {
+				return fmt.Errorf("failed to print log file: %w", err)
 			}
-			stringReader := strings.NewReader(line)
-	        if _, err := w.Write([]byte(line)); err != nil {
-                return fmt.Errorf("failed to write to output: %w", err) 
-			}
+		}
+		if _, err := w.Write([]byte(line)); err != nil {
+			return fmt.Errorf("failed to write to output: %w", err)
 		}
 	}
-	return nil
+}
+
+func checkExistance(configHome string) bool {
+	pidFile := filepath.Join(constants.HarnessPath(configHome), constants.HarnessProcessFile)
+
+	_, err := readPIDFromFile(pidFile)
+	return os.IsNotExist(err)
 }
 
 func isProcessRunning(pid int) bool {
