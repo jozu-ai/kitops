@@ -20,7 +20,7 @@ Bringing everything together is the Kit Command Line Interface (CLI). The Kit CL
 
 KitOps is a key element in a platform engineering solution for AI/ML projects.
 
-[See how security-conscious organization are using ModelKits](../use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
+[See how security-conscious organization are using ModelKits](./use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
 
 ## The Goal of KitOps
 
