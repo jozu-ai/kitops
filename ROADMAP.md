@@ -25,16 +25,6 @@ See the full changelog from [0.4](https://github.com/jozu-ai/kitops/releases/tag
 * [Added parameters field](https://github.com/jozu-ai/kitops/pull/514) to datasets and code
 * [Enhanced proxy](https://github.com/jozu-ai/kitops/pull/512) support
 
-**New Contributors**
-* @shivaylamba made their first contribution in [#502](https://github.com/jozu-ai/kitops/pull/502)
-* @RS-labhub made their first contribution in [#514](https://github.com/jozu-ai/kitops/pull/514)
-* @TusharMohapatra07 made their first contribution in [#515](https://github.com/jozu-ai/kitops/pull/515)
-* @FarukhS52 made their first contribution in [#521](https://github.com/jozu-ai/kitops/pull/521)
-* @srikary12 made their first contribution in [#512](https://github.com/jozu-ai/kitops/pull/512)
-* @Mayank8881 made their first contribution in [#535](https://github.com/jozu-ai/kitops/pull/535)
-* @NishantRana07 made their first contribution in [#528](https://github.com/jozu-ai/kitops/pull/528)
-* @novanish made their first contribution in [#562](https://github.com/jozu-ai/kitops/pull/562)
-
 ## Roadmap Themes
 
 ### UX Improvements
