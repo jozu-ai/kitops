@@ -29,11 +29,7 @@ See the full changelog from [0.4](https://github.com/jozu-ai/kitops/releases/tag
 
 ### UX Improvements
 
-* [Kit CLI should be able to reuse Docker credentials](https://github.com/jozu-ai/kitops/issues/213)
-* Export [Llamafile](https://github.com/Mozilla-Ocho/llamafile?tab=readme-ov-file) from ModelKit
-* Kit Dev: Generate example code as the parameters and prompts are entered
-* Kit Dev: A way to see JSON communicated between the server and responses
-* Kit Dev: Hide parameters that are not frequently changed
+* [Pack and convert](https://github.com/jozu-ai/kitops/issues/564) models directly from Hugging Face
 
 ### Deployment
 
@@ -62,3 +58,9 @@ This feature will come in two parts: build attestation and self-attestation. Bui
 Users can optionally sign their ModelKit using something like Cosign in order to add an extra layer of security to their packaging.
 
 * Add docs on signing and verifying to docs
+
+### Kit Dev
+
+* Kit Dev: Generate example code as the parameters and prompts are entered
+* Kit Dev: A way to see JSON communicated between the server and responses
+* Kit Dev: Hide parameters that are not frequently changed
