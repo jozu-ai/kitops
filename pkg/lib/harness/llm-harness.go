@@ -192,7 +192,7 @@ func PrintLogs(configHome string, w io.Writer, follow bool) error {
 					return nil
 				}
 				time.Sleep(1 * time.Second)
-				serverStatus := checkExistance(configHome)
+				serverStatus := checkExistence(configHome)
 				if serverStatus {
 					return fmt.Errorf("server stopped")
 				}
@@ -207,7 +207,7 @@ func PrintLogs(configHome string, w io.Writer, follow bool) error {
 	}
 }
 
-func checkExistance(configHome string) bool {
+func checkExistence(configHome string) bool {
 	pidFile := filepath.Join(constants.HarnessPath(configHome), constants.HarnessProcessFile)
 
 	_, err := readPIDFromFile(pidFile)
