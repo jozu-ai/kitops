@@ -38,7 +38,7 @@ This section provides general information about the AI/ML project.
 - **Type**: Array of Strings
 
 
-#### `code`
+### `code`
 
 - **Description**: Information about the source code.
 - **Type**: Object Array
@@ -46,7 +46,7 @@ This section provides general information about the AI/ML project.
   - `description`: Description of what the code does.
   - `license`: SPDX license identifier for the code.
 
-#### `datasets`
+### `datasets`
 
 - **Description**: Information about the datasets used.
 - **Type**: Object Array
@@ -55,14 +55,14 @@ This section provides general information about the AI/ML project.
   - `description`: Overview of the dataset.
   - `license`: SPDX license identifier for the dataset.
 
-#### `docs`
+### `docs`
 
 - **Description**: Information about included documentation for the model
 - **Type**: Object Array
   - `description`: Description of the documentation
   - `path`: Location of the documentation relative to the context
 
-#### `model`
+### `model`
 
 - **Description**: Details of the trained models included in the package.
 - **Type**: Object
