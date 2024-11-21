@@ -76,7 +76,7 @@ func DevLogsCommand() *cobra.Command {
 		Long:  devLogsLongDesc,
 		Run:   runLogsCommand(opts),
 	}
-	cmd.Flags().BoolVarP(&opts.follow, "follow", "f", false, "Tail the log file")
+	cmd.Flags().BoolVarP(&opts.follow, "follow", "f", false, "Stream the log file")
 	return cmd
 }
 
