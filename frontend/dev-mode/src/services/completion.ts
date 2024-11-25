@@ -1,32 +1,32 @@
 // Taken from https://github.com/ggerganov/llama.cpp/blob/master/examples/server/public/completion.js
 type ParamDefaults = {
-  stream: boolean;
-  n_predict: number;
-  temperature: number;
-  stop: string[];
+  stream: boolean,
+  n_predict: number,
+  temperature: number,
+  stop: string[]
 }
 
 type Params = {
-  stream?: boolean;
-  n_predict?: number;
-  temperature?: number;
-  stop?: string[];
-  api_key?: string;
+  stream?: boolean,
+  n_predict?: number,
+  temperature?: number,
+  stop?: string[],
+  api_key?: string
 }
 
 type Config = {
-  controller?: AbortController;
-  api_url?: string;
+  controller?: AbortController,
+  api_url?: string,
 }
 
 type SSEEvent = {
   data?: {
-    content: string;
-    stop?: boolean;
-    generation_settings?: any; // You might want to replace 'any' with an appropriate type
-  };
-  error?: string;
-  timings?: any; // You might want to replace 'any' with an appropriate type
+    content: string,
+    stop?: boolean,
+    generation_settings?: any,
+  },
+  error?: string,
+  timings?: any
 }
 
 type ErrorResponse = {
@@ -42,9 +42,10 @@ const paramDefaults: ParamDefaults = {
   stop: ['</s>']
 }
 
-const apiUrl = location.pathname.replace(/\/+$/, '')
+//export const apiUrl = location.pathname.replace(/\/+$/, '')
+export const apiUrl = 'http://127.0.0.1:64246'
 
-let generation_settings: any = null // You might want to replace 'any' with an appropriate type
+let generation_settings: any = null
 
 // Get the name of the available models
 export async function getModels() {

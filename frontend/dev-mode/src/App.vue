@@ -1,21 +1,11 @@
 <script setup lang="ts">
-import { vIntersectionObserver } from '@vueuse/components'
-import { ref, provide, computed } from 'vue'
+import { ref, provide } from 'vue'
+
+import PromptView from './components/PromptView.vue';
 
 import { getModels } from '@/services/completion'
 
 const currentModel = ref('')
-
-const shouldAutoScroll = ref(true)
-const isFooterVisible = ref(true)
-
-const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
-  shouldAutoScroll.value = isIntersecting
-}
-
-const updateFooterIntersect = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
-  isFooterVisible.value = isIntersecting
-}
 
 getModels().then((response) => {
   // get the filename from the path
@@ -23,7 +13,7 @@ getModels().then((response) => {
   currentModel.value = modelName
 })
 
-provide('shouldAutoScroll', computed(() => shouldAutoScroll.value && !isFooterVisible.value))
+provide('currentModel', currentModel)
 </script>
 
 <template>
@@ -41,18 +31,11 @@ provide('shouldAutoScroll', computed(() => shouldAutoScroll.value && !isFooterVi
   <span>{{ currentModel }}</span>
 </header>
 
-<main class="w-full max-w-3xl mx-auto flex-1 xs:p-4 flex flex-col">
-  <RouterView />
+<main class="w-full flex-1 xs:p-4 flex flex-col">
+  <PromptView />
 </main>
 
-<div
-  id="scrollPosition"
-  class="h-16 -mt-16"
-  v-intersection-observer="updateAutoScrollFlag"></div>
-
-<footer
-  class="bg-black py-16 text-center"
-  v-intersection-observer="updateFooterIntersect">
+<footer class="text-gray-05 py-4 text-center">
   Powered by <a href="https://github.com/ggerganov/llama.cpp" class="underline" target="_blank">llama.cpp</a> and <a href="http://ggml.ai" class="underline" target="_blank">ggml.ai</a>
 </footer>
 </template>

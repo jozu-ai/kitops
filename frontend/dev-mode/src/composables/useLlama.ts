@@ -3,13 +3,13 @@ import { type Ref, computed, reactive, ref } from 'vue'
 import { llama } from '@/services/completion'
 
 type Chunk = {
-  data: any;
+  data: any
 }
 
 type LlamaResponseParams = {
-  id_slot?: string;
-  slot_id?: number;
-  stop: string[];
+  id_slot?: string,
+  slot_id?: number,
+  stop: string[]
 }
 
 export type TranscriptMessage = {
@@ -22,15 +22,25 @@ export type CompletionTranscript = [string, string | TranscriptMessage]
 
 export type Transcript = ChatTranscript[] | CompletionTranscript[]
 
+type StreamResponse  = {
+  data: {
+    content: string,
+    multimodal: boolean,
+    slot_id: number,
+    stop: boolean
+  }
+}
+
 export type Session = {
-  prompt: string;
-  template: string;
-  historyTemplate: string;
-  transcript: Transcript;
-  type: string;  // "chat" | "completion"
-  char: string;
-  user: string;
-  image_selected: string;
+  prompt: string,
+  template: string,
+  historyTemplate: string,
+  transcript: Transcript,
+  type: 'chat' | 'completion',
+  char: string,
+  user: string,
+  image_selected: string,
+  response: StreamResponse[]
 }
 
 export type UserParameters = {
@@ -78,11 +88,38 @@ export const DEFAULT_SESSION: Session = {
   template: '{{prompt}}\n\n{{history}}\n{{char}}:',
   historyTemplate: '{{name}}: {{message}}',
   transcript: [],
-  type: 'chat',  // "chat" | "completion"
+  type: 'chat',
   char: 'Llama',
   user: 'User',
   image_selected: '',
+  response: []
 }
+
+export const DEFAULT_PARAMS_VALUES = {
+  n_predict: 400,
+  temperature: 0.7,
+  repeat_last_n: 256, // 0 = disable penalty, -1 = context size
+  repeat_penalty: 1.18, // 1.0 = disabled
+  top_k: 40, // <= 0 to use vocab size
+  top_p: 0.95, // 1.0 = disabled
+  min_p: 0.05, // 0 = disabled
+  tfs_z: 1.0, // 1.0 = disabled
+  typical_p: 1.0, // 1.0 = disabled
+  presence_penalty: 0.0, // 0.0 = disabled
+  frequency_penalty: 0.0, // 0.0 = disabled
+  mirostat: 0, // 0/1/2
+  mirostat_tau: 5, // target entropy
+  mirostat_eta: 0.1, // learning rate
+  grammar: '',
+  n_probs: 0, // no completion_probabilities,
+  min_keep: 0, // min probs from each sampler,
+  image_data: [],
+  cache_prompt: true,
+  api_key: '',
+  prop_order: undefined,
+  slot_id: -1
+} as UserParameters
+
 
 export default function useLlama(params?: UserParameters, localSession?: Session): LlamaComposableResponse {
   const stats = ref(null)
@@ -139,6 +176,8 @@ export default function useLlama(params?: UserParameters, localSession?: Session
           stats.value = data
         }
       }
+
+      session.response.push(currentMessages)
     } catch (e) {
       if (!(e instanceof DOMException) || e.name !== 'AbortError') {
         console.error(e)
@@ -189,7 +228,7 @@ export default function useLlama(params?: UserParameters, localSession?: Session
 
     await runLlama(prompt, {
       ...params,
-      stop: ['</s>', template('{{char}}:'), template('{{user}}:')],
+      stop: ['</s>', template('{{char}}:'), template('{{user}}:'), '<|im_end|>'],
     }, '{{char}}')
   }
 
