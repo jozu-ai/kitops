@@ -61,7 +61,7 @@ func (harness *LLMHarness) Init() error {
 	return nil
 }
 
-func (harness *LLMHarness) Start(modelPath string) error {
+func (harness *LLMHarness) Start(modelPath string) (err error) {
 
 	harnessPath := constants.HarnessPath(harness.ConfigHome)
 	pidFile := filepath.Join(harnessPath, constants.HarnessProcessFile)
@@ -108,7 +108,17 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open log file for harness: %w", err)
 	}
-	defer logs.Close()
+
+	defer func() {
+		if errClose := logs.Close(); errClose != nil {
+			if err == nil {
+				err = fmt.Errorf("failed to close log file: %w", errClose)
+			} else {
+				err = fmt.Errorf("%v; failed to close log file: %w", err, errClose)
+			}
+		}
+	}()
+
 	output.Debugf("Saving server logs to %s", logFile)
 	cmd.Stdout = logs
 	cmd.Stderr = logs
