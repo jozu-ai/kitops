@@ -34,13 +34,17 @@ const send = (customMessage: string = '') => {
     return
   }
 
+  // Handle chat mode
   if (session.value.type === 'chat') {
     runChat(message.value || customMessage)
     message.value = ''
     return
   }
 
+  // Handle completion mode
+  session.value.prompt += message.value
   runCompletion()
+  message.value = ''
 }
 
 const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
@@ -48,8 +52,13 @@ const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[])
 }
 
 const joinResponse = (response: TranscriptMessage[]) => {
-  if (!response) {
+  if (!Array.isArray(response)) {
     return response
+  }
+
+  // Completion mode
+  if (!session.value.type === 'completion') {
+    return response.flatMap(({ content }) => content).join('')
   }
 
   return response.flatMap(({ content }) => content).join('').replace(/^\s+/, '')
@@ -70,6 +79,10 @@ const removeImage = () => {
 const onSettingsUpdate = (data: { session: Session, parameters: Parameters }) => {
   parameters.value = data.parameters
   session.value = data.session
+
+  if (session.value.type === 'completion') {
+    message.value = session.value.prompt
+  }
 }
 
 onMounted(() => {
@@ -113,7 +126,7 @@ useResizeObserver(resultsContainer, () => {
       <div class="flex flex-col justify-end" ref="resultsContainer">
         <div v-for="([actor, response], index) in session.transcript" :key="index"
           class="mb-6 group">
-          <!-- <MarkdownContent
+          <MarkdownContent
             :source="joinResponse(response as TranscriptMessage[])"
             class="px-4 py-2 space-y-[1em] text-off-white"
             :class="{
@@ -126,7 +139,7 @@ useResizeObserver(resultsContainer, () => {
               'hidden': actor === '{{user}}',
             }"
             class="mt-2 text-gray-05 hocus:text-gold px-4 invisible group-hover:!visible">
-          </CopyTextButton> -->
+          </CopyTextButton>
         </div>
 
         <LoadingState v-show="isPending" />
@@ -162,7 +175,6 @@ useResizeObserver(resultsContainer, () => {
     }">
     <div class="relative flex-1">
       <Textarea
-        v-if="session.type === 'chat'"
         autogrow
         autofocus
         :persist="isChatStarted"
@@ -183,20 +195,6 @@ useResizeObserver(resultsContainer, () => {
             <img :src="session.image_selected" class="max-w-12 max-h-12" alt="image uploaded by the user">
           </div>
         </template>
-      </Textarea>
-
-      <Textarea
-        v-else
-        autogrow
-        autofocus
-        :persist="isChatStarted"
-        ref="messageInput"
-        rows="1"
-        class="h-28 !pr-16"
-        wrapper-class="flex-1 mt-6 relative"
-        v-model="session.prompt"
-        :placeholder="`Message ${session.char}`"
-        @keydown="onKeyDown">
       </Textarea>
 
       <button type="submit" class="font-bold hocus:text-gold absolute bottom-3.5 right-10 text-xs cursor-pointer z-1">

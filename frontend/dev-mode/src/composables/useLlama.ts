@@ -243,7 +243,7 @@ export default function useLlama(params?: MaybeRef<Parameters>, localSession?: S
 
     runLlama(prompt, {
         ...(params?.value || params),
-        stop: [],
+        stop: ['<|im_end|>'],
       }, '')
       .finally(() => {
         session.value.prompt = session.value.transcript.map(([_, data]) =>
