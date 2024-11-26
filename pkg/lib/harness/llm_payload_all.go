@@ -29,7 +29,7 @@ import (
 	"kitops/pkg/lib/filesystem"
 )
 
-func extractFile(fs fs.FS, file, harnessHome string) error {
+func extractFile(fs fs.FS, file, harnessHome string) (err error) {
 	srcFile, err := fs.Open(file)
 	if err != nil {
 		return fmt.Errorf("failed to open file %s: %w", file, err)
@@ -62,7 +62,7 @@ func extractFile(fs fs.FS, file, harnessHome string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create destination file %s: %w", destFile, err)
 	}
-	defer dest.Close()
+	defer closeFileErrCheck(dest, &err, "failed to close destination file")
 
 	if _, err := io.Copy(dest, srcReader); err != nil {
 		return fmt.Errorf("failed to copy payload to %s: %w", destFile, err)
@@ -70,7 +70,7 @@ func extractFile(fs fs.FS, file, harnessHome string) error {
 	return nil
 }
 
-func extractTar(tr *tar.Reader, dir string) error {
+func extractTar(tr *tar.Reader, dir string) (err error) {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -102,7 +102,7 @@ func extractTar(tr *tar.Reader, dir string) error {
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
-			defer file.Close()
+			defer closeFileErrCheck(file, &err, "failed to close gzip reader")
 
 			written, err := io.Copy(file, tr)
 			if err != nil {
@@ -117,4 +117,14 @@ func extractTar(tr *tar.Reader, dir string) error {
 		}
 	}
 	return nil
+}
+
+func closeFileErrCheck(f *os.File, err *error, msg string) {
+	if cerr := f.Close(); cerr != nil {
+		if *err == nil {
+			*err = fmt.Errorf("%s: %w", msg, cerr)
+		} else {
+			*err = fmt.Errorf("%v; %s: %w", *err, msg, cerr)
+		}
+	}
 }
