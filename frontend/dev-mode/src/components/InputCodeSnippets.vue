@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { inject, ref, computed } from 'vue'
+import { inject, ref, computed, type Ref } from 'vue'
 
 import CodeHighlighter from './ui/CodeHighlighter.vue'
 
+import { type Session, type Parameters } from '@/composables/useLlama'
 import { apiUrl } from '@/services/completion'
 
 const lang = ref<'python'|'node'|'sh'>('python')
 
 const currentModel = inject('currentModel', '')
-const session = inject('session', {})
-const parameters = inject('parameters', {})
+const session = inject<Ref<Session>>('session', {})
+const parameters = inject<Ref<Parameters>>('parameters', {})
 
 const pythonSnippet = computed(() => `import openai
 
@@ -21,7 +22,7 @@ client = openai.OpenAI(
 completion = client.chat.completions.create(
   model="${currentModel.value}",
   messages=[${
-      (session.transcript as Array<any>).map(([role, [entry]]) => {
+      (session.value.transcript as Array<any>).map(([role, [entry]]) => {
         if (role.toLowerCase() === '{{user}}') {
           return `\n    { role: "user", content: "${entry.content}" }`
         }
@@ -54,7 +55,7 @@ async function main() {
   const completion = await openai.chat.completions.create({
     model: "${currentModel.value}",
     messages=[${
-      (session.transcript as Array<any>).map(([role, [entry]]) => {
+      (session.value.transcript as Array<any>).map(([role, [entry]]) => {
         if (role.toLowerCase() === '{{user}}') {
           return `\n      { role: 'user', content: '${entry.content}' }`
         }
@@ -88,7 +89,7 @@ content_type_header='Content-Type: application/json'
 
 data=$'{
   "messages": [${
-    (session.transcript as Array<any>).map(([role, [entry]]) => {
+    (session.value.transcript as Array<any>).map(([role, [entry]]) => {
       if (role.toLowerCase() === '{{user}}') {
         return `\n    { "role": "user", "content": "${entry.content}" }`
       }

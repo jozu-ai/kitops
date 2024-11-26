@@ -20,10 +20,10 @@ const {
   isPending,
   stats,
   chat: runChat,
-  // runCompletion,
+  runCompletion,
   stop,
   uploadImage
-} = useLlama({ ...parameters.value, slot_id: -1 })
+} = useLlama(parameters)
 
 provide('parameters', parameters)
 provide('session', session)
@@ -33,6 +33,7 @@ provide('isGenerating', isGenerating)
 provide('isPending', isPending)
 provide('stats', stats)
 provide('runChat', runChat)
+provide('runCompletion', runCompletion)
 provide('stop', stop)
 provide('uploadImage', uploadImage)
 </script>

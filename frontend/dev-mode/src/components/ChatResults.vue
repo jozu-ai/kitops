@@ -17,7 +17,7 @@ const msg = ref('')
 const resultsContainer = ref(null)
 const messageInput: Ref<{ inputRef: HTMLInputElement} | null> = ref(null)
 
-const session = inject<Session>('session', {} as Session)
+const session = inject<Ref<Session>>('session', {})
 const isPending = inject('isPending', false)
 const isGenerating = inject('isGenerating', false)
 const stats = inject('stats', {} as Stats)
@@ -45,7 +45,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 const removeImage = () => {
   (document.getElementById('fileInput') as HTMLInputElement).value = ''
-  session.image_selected = ''
+  session.value.image_selected = ''
 }
 
 onMounted(() => {
@@ -73,7 +73,7 @@ useResizeObserver(resultsContainer, () => {
 <template>
 <div role="presentation" class="w-full max-w-3xl mx-auto flex-1 flex flex-col">
   <div class="flex-1 h-full flex flex-col justify-end" ref="resultsContainer">
-    <template v-for="([actor, response], index) in session.transcript" :key="index">
+    <template v-for="([actor, response], index) in value.transcript" :key="index">
       <div class="font-bold mt-6">{{ template(actor) }}</div>
 
       <MarkdownContent

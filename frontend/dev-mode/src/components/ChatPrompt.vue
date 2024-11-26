@@ -1,25 +1,32 @@
 <script setup lang="ts">
 import { vIntersectionObserver } from '@vueuse/components'
-import { useResizeObserver } from '@vueuse/core'
+import { useResizeObserver, type RemovableRef } from '@vueuse/core'
 import { ref, onMounted, inject } from 'vue'
+
+import SettingsModal from './SettingsModal.vue'
 
 import LoadingState from '@/components/LoadingState.vue'
 import StatsValues from '@/components/StatsValues.vue'
 import CopyTextButton from '@/components/ui/CopyTextButton.vue'
 import MarkdownContent from '@/components/ui/MarkdownContent.vue'
 import Textarea from '@/components/ui/Textarea.vue'
+import { type Session, type Parameters } from '@/composables/useLlama'
 
 const message = ref('')
 const shouldAutoScroll = ref(true)
 const resultsContainer = ref(null)
 const messageInput = ref(null)
+const isSettingsModalOpen = ref(false)
 
-const session = inject('session', {})
+const parameters = inject<RemovableRef<Parameters>>('parameters', {})
+
+const session = inject<Ref<Session>>('session', {})
 const stats = inject('stats', {})
 const isGenerating = inject('isGenerating', false)
 const isPending = inject('isPending', false)
 const isChatStarted = inject('isChatStarted', false)
-const runChat = inject('runChat', false)
+const runChat = inject('runChat', null)
+const runCompletion = inject('runCompletion', null)
 const stop = inject('stop', false)
 
 const send = (customMessage: string = '') => {
@@ -27,16 +34,26 @@ const send = (customMessage: string = '') => {
     return
   }
 
-  runChat(message.value || customMessage)
-  message.value = ''
+  if (session.value.type === 'chat') {
+    runChat(message.value || customMessage)
+    message.value = ''
+    return
+  }
+
+  runCompletion()
 }
 
 const updateAutoScrollFlag = ([{ isIntersecting }]: IntersectionObserverEntry[]) => {
   shouldAutoScroll.value = isIntersecting
 }
 
-const joinResponse = (response: TranscriptMessage[]) =>
-  response.flatMap(({ content }) => content).join('').replace(/^\s+/, '')
+const joinResponse = (response: TranscriptMessage[]) => {
+  if (!response) {
+    return response
+  }
+
+  return response.flatMap(({ content }) => content).join('').replace(/^\s+/, '')
+}
 
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.key.toLowerCase() === 'enter' && !e.shiftKey) {
@@ -47,7 +64,12 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 const removeImage = () => {
   (document.getElementById('fileInput') as HTMLInputElement).value = ''
-  session.image_selected = ''
+  session.value.image_selected = ''
+}
+
+const onSettingsUpdate = (data: { session: Session, parameters: Parameters }) => {
+  parameters.value = data.parameters
+  session.value = data.session
 }
 
 onMounted(() => {
@@ -73,7 +95,8 @@ useResizeObserver(resultsContainer, () => {
 <div>
   <div class="overflow-y-auto flex-1 max-h-[calc(100vh-232px)]" style="word-break: break-word">
     <div class="sticky top-0 bg-night">
-      <button class="text-xs font-bold flex gap-2 items-center hocus:text-gold">
+      <button class="text-xs font-bold flex gap-2 items-center hocus:text-gold"
+        @click="isSettingsModalOpen = true">
         SETTINGS
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M10.0007 0.833008L17.9173 5.41634V14.583L10.0007 19.1663L2.08398 14.583V5.41634L10.0007
@@ -90,7 +113,7 @@ useResizeObserver(resultsContainer, () => {
       <div class="flex flex-col justify-end" ref="resultsContainer">
         <div v-for="([actor, response], index) in session.transcript" :key="index"
           class="mb-6 group">
-          <MarkdownContent
+          <!-- <MarkdownContent
             :source="joinResponse(response as TranscriptMessage[])"
             class="px-4 py-2 space-y-[1em] text-off-white"
             :class="{
@@ -103,7 +126,7 @@ useResizeObserver(resultsContainer, () => {
               'hidden': actor === '{{user}}',
             }"
             class="mt-2 text-gray-05 hocus:text-gold px-4 invisible group-hover:!visible">
-          </CopyTextButton>
+          </CopyTextButton> -->
         </div>
 
         <LoadingState v-show="isPending" />
@@ -139,6 +162,7 @@ useResizeObserver(resultsContainer, () => {
     }">
     <div class="relative flex-1">
       <Textarea
+        v-if="session.type === 'chat'"
         autogrow
         autofocus
         :persist="isChatStarted"
@@ -161,6 +185,20 @@ useResizeObserver(resultsContainer, () => {
         </template>
       </Textarea>
 
+      <Textarea
+        v-else
+        autogrow
+        autofocus
+        :persist="isChatStarted"
+        ref="messageInput"
+        rows="1"
+        class="h-28 !pr-16"
+        wrapper-class="flex-1 mt-6 relative"
+        v-model="session.prompt"
+        :placeholder="`Message ${session.char}`"
+        @keydown="onKeyDown">
+      </Textarea>
+
       <button type="submit" class="font-bold hocus:text-gold absolute bottom-3.5 right-10 text-xs cursor-pointer z-1">
         {{ !isGenerating ? 'SEND' : 'STOP' }}
       </button>
@@ -179,5 +217,15 @@ useResizeObserver(resultsContainer, () => {
   </form>
 
   <StatsValues v-if="stats" v-bind="stats" class="text-gray-05 mx-auto mt-2" />
+
+  <Teleport to="#modals">
+    <SettingsModal
+      v-if="isSettingsModalOpen"
+      :session="session"
+      :parameters="parameters"
+      @close="isSettingsModalOpen = false"
+      @save="onSettingsUpdate">
+    </SettingsModal>
+  </Teleport>
 </div>
 </template>
