@@ -78,6 +78,7 @@ func (pm *ignorePaths) Matches(path, layerPath string) (bool, error) {
 	// ignore file doesn't exclude the current path, check if it should be excluded
 	// since it's included in another layer
 	for _, layer := range pm.layers {
+		layer = cleanPath(layer)
 		if strings.HasPrefix(layerPath, layer) {
 			// ignore other layer paths if they are parents of the current layer's path,
 			// e.g. ignore ./main-dir when current layer is ./main-dir/sub-dir
