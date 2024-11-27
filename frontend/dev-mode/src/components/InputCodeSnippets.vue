@@ -15,16 +15,18 @@ const parameters = inject<Ref<Parameters>>('parameters', {})
 const pythonSnippet = computed(() => `import openai
 
 client = openai.OpenAI(
-  base_url="${apiUrl}/v1", # "http://<Your api-server IP>:port"
-  api_key = "sk-no-key-required"
+  base_url="${apiUrl}/v1",${
+    parameters.value.api_key ? '\n  api_key="'+parameters.value.api_key+'"' : ''
+  }
 )
 
 completion = client.chat.completions.create(
   model="${currentModel.value}",
-  messages=[${
+  messages=[
+    {"role": "system", "content": "${session.value.prompt}"},${
       (session.value.transcript as Array<any>).map(([role, [entry]]) => {
         if (role.toLowerCase() === '{{user}}') {
-          return `\n    { role: "user", content: "${entry.content}" }`
+          return `\n    { "role": "user", "content": "${entry.content}" }`
         }
       })
       .filter(Boolean)
@@ -47,14 +49,16 @@ for chunk in completion:
 const nodeSnippet = computed(() => `import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: 'sk-no-key-required',
-  baseURL: '${apiUrl}/v1',
+  baseURL: '${apiUrl}/v1',${
+    parameters.value.api_key ? '\n  apiKey: \''+parameters.value.api_key+'\'' : ''
+  }
 })
 
 async function main() {
   const completion = await openai.chat.completions.create({
     model: "${currentModel.value}",
-    messages=[${
+    messages=[
+      { role: 'system', content: '${session.value.prompt}'},${
       (session.value.transcript as Array<any>).map(([role, [entry]]) => {
         if (role.toLowerCase() === '{{user}}') {
           return `\n      { role: 'user', content: '${entry.content}' }`
@@ -83,12 +87,17 @@ main();
 
 const shSnippet = computed(() => `invoke_url='${apiUrl}/v1/chat/completions'
 
-authorization_header='Authorization: Bearer sk-no-key-required'
+${
+parameters.value.api_key
+  ? 'authorization_header=\'Authorization: Bearer '+parameters.value.api_key+'\''
+  : ''
+}
 accept_header='Accept: application/json'
 content_type_header='Content-Type: application/json'
 
 data=$'{
-  "messages": [${
+  "messages": [
+    { "role": "system", "content": "${session.value.prompt}" },${
     (session.value.transcript as Array<any>).map(([role, [entry]]) => {
       if (role.toLowerCase() === '{{user}}') {
         return `\n    { "role": "user", "content": "${entry.content}" }`
@@ -109,8 +118,11 @@ data=$'{
 }'
 
 response=$(curl --silent -i -w "\\n%{http_code}" --request POST \\
-  --url "$invoke_url" \\
-  --header "$authorization_header" \\
+  --url "$invoke_url" \\${
+  parameters.value.api_key
+  ? '\n  --header "$authorization_header" \\'
+  : ''
+}
   --header "$accept_header" \\
   --header "$content_type_header" \\
   --data "$data"
