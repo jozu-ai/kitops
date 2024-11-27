@@ -237,7 +237,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	return nil
 }
 
-func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.ProgressLogger) error {
+func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.ProgressLogger) (err error) {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -247,6 +247,11 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 			return err
 		}
 		outPath := filepath.Join(dir, header.Name)
+		// Check if the outPath is within the target directory
+		_, _, err = filesystem.VerifySubpath(dir, outPath)
+		if err != nil {
+			return fmt.Errorf("illegal file path: %s: %w", outPath, err)
+		}
 
 		switch header.Typeflag {
 		case tar.TypeDir:
@@ -276,8 +281,15 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
-			defer file.Close()
-
+			defer func() {
+				if errClose := file.Close(); errClose != nil {
+					if err == nil {
+						err = fmt.Errorf("failed to close log file: %w", errClose)
+					} else {
+						err = fmt.Errorf("%v; failed to close log file: %w", err, errClose)
+					}
+				}
+			}()
 			written, err := io.Copy(file, tr)
 			if err != nil {
 				return fmt.Errorf("failed to write file %s: %w", outPath, err)
