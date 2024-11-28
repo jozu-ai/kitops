@@ -10,6 +10,7 @@ import Slider from '@/components/ui/Slider.vue'
 import Textarea from '@/components/ui/Textarea.vue'
 import Toggle from '@/components/ui/Toggle.vue'
 import { DEFAULT_PARAMS_VALUES, DEFAULT_SESSION, type Session, type Parameters } from '@/composables/useLlama'
+import { SchemaConverter } from '@/services/json-schema-to-grammar'
 
 const props = defineProps<{
   session: Session,

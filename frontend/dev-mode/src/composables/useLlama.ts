@@ -1,4 +1,4 @@
-import { type Ref, computed, ref, type MaybeRef } from 'vue'
+import { type Ref, computed, ref, type MaybeRef, unref } from 'vue'
 
 import { llama } from '@/services/completion'
 
@@ -22,15 +22,6 @@ export type CompletionTranscript = [string, string | TranscriptMessage]
 
 export type Transcript = ChatTranscript[] | CompletionTranscript[]
 
-type StreamResponse  = {
-  data: {
-    content: string,
-    multimodal: boolean,
-    slot_id: number,
-    stop: boolean
-  }
-}
-
 export type Session = {
   prompt: string,
   template: string,
@@ -40,7 +31,7 @@ export type Session = {
   char: string,
   user: string,
   image_selected: string,
-  response: StreamResponse[]
+  response: TranscriptMessage[]
 }
 
 export type Parameters = {
@@ -92,7 +83,7 @@ export const DEFAULT_SESSION: Session = {
   char: 'Llama',
   user: 'User',
   image_selected: '',
-  response: []
+  response: [] as TranscriptMessage[]
 }
 
 export const DEFAULT_PARAMS_VALUES = {
@@ -121,11 +112,12 @@ export const DEFAULT_PARAMS_VALUES = {
 } as Parameters
 
 // eslint-disable-next-line vue/max-len
-export default function useLlama(params?: MaybeRef<Parameters>, localSession?: Session):LlamaComposableResponse {
+export default function useLlama(parameters?: MaybeRef<Parameters>, localSession?: Session):LlamaComposableResponse {
   const stats = ref(null)
   const controller = ref<AbortController | null>(null)
+  const params = unref(parameters)
 
-  const session: Session = ref({
+  const session = ref<Session>({
     ...DEFAULT_SESSION,
     ...localSession
   })
@@ -177,7 +169,7 @@ export default function useLlama(params?: MaybeRef<Parameters>, localSession?: S
         }
       }
 
-      session.value.response.push(currentMessages)
+      session.value.response.push(...currentMessages)
     } catch (e) {
       if (!(e instanceof DOMException) || e.name !== 'AbortError') {
         console.error(e)
@@ -194,7 +186,9 @@ export default function useLlama(params?: MaybeRef<Parameters>, localSession?: S
       settings = { ...settings, ...extraSettings }
     }
     return String(str)
-      .replaceAll(/\{\{(.*?)\}\}/g, (_, key: Exclude<keyof Session, 'transcript'>) => template(settings[key]))
+      .replaceAll(
+        /\{\{(.*?)\}\}/g, (_, key: Exclude<keyof Session, 'transcript' | 'response'>) => template(settings[key])
+      )
   }
 
   const chat = async (message: string): Promise<void> => {
@@ -227,7 +221,7 @@ export default function useLlama(params?: MaybeRef<Parameters>, localSession?: S
     }
 
     await runLlama(prompt, {
-      ...(params?.value || params),
+      ...params,
       stop: ['</s>', template('{{char}}:'), template('{{user}}:'), '<|im_end|>'],
     }, '{{char}}')
   }
@@ -242,7 +236,7 @@ export default function useLlama(params?: MaybeRef<Parameters>, localSession?: S
     session.value.transcript = [...session.value.transcript, ['', prompt]] as Transcript
 
     runLlama(prompt, {
-        ...(params?.value || params),
+        ...params,
         stop: ['<|im_end|>'],
       }, '')
       .finally(() => {

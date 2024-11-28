@@ -10,7 +10,7 @@ const props = defineProps<{
   class?: ClassProp
 }>()
 
-const codeRef = ref(null)
+const codeRef = ref<HTMLDivElement | null>(null)
 
 const { copy, copied } = useClipboard()
 

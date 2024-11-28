@@ -3,14 +3,14 @@ import { inject, ref, computed, type Ref } from 'vue'
 
 import CodeHighlighter from './ui/CodeHighlighter.vue'
 
-import { type Session, type Parameters } from '@/composables/useLlama'
+import { type Session, type Parameters, DEFAULT_SESSION, DEFAULT_PARAMS_VALUES } from '@/composables/useLlama'
 import { apiUrl } from '@/services/completion'
 
 const lang = ref<'python'|'node'|'sh'>('python')
 
-const currentModel = inject('currentModel', '')
-const session = inject<Ref<Session>>('session', {})
-const parameters = inject<Ref<Parameters>>('parameters', {})
+const currentModel = inject<Ref<string>>('currentModel', ref(''))
+const session = inject<Ref<Session>>('session', ref(DEFAULT_SESSION))
+const parameters = inject<Ref<Parameters>>('parameters', ref(DEFAULT_PARAMS_VALUES))
 
 const pythonSnippet = computed(() => `import openai
 
@@ -23,7 +23,7 @@ client = openai.OpenAI(
 completion = client.chat.completions.create(
   model="${currentModel.value}",
   messages=[
-    {"role": "system", "content": "${session.value.prompt}"},${
+    { "role": "system", "content": "${session.value.prompt}" },${
       (session.value.transcript as Array<any>).map(([role, [entry]]) => {
         if (role.toLowerCase() === '{{user}}') {
           return `\n    { "role": "user", "content": "${entry.content}" }`

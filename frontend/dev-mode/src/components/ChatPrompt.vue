@@ -1,33 +1,40 @@
 <script setup lang="ts">
 import { vIntersectionObserver } from '@vueuse/components'
 import { useResizeObserver, type RemovableRef } from '@vueuse/core'
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted, inject, type Ref } from 'vue'
 
 import SettingsModal from './SettingsModal.vue'
 
 import LoadingState from '@/components/LoadingState.vue'
-import StatsValues from '@/components/StatsValues.vue'
+import StatsValues, { type Stats } from '@/components/StatsValues.vue'
 import CopyTextButton from '@/components/ui/CopyTextButton.vue'
 import MarkdownContent from '@/components/ui/MarkdownContent.vue'
 import Textarea from '@/components/ui/Textarea.vue'
-import { type Session, type Parameters } from '@/composables/useLlama'
+import {
+  type Session,
+  type Parameters,
+  DEFAULT_SESSION,
+  DEFAULT_PARAMS_VALUES,
+  type TranscriptMessage
+} from '@/composables/useLlama'
 
 const message = ref('')
 const shouldAutoScroll = ref(true)
 const resultsContainer = ref(null)
-const messageInput = ref(null)
+const messageInput = ref<{ inputRef: HTMLInputElement } | null>(null)
 const isSettingsModalOpen = ref(false)
 
-const parameters = inject<RemovableRef<Parameters>>('parameters', {})
+const parameters = inject<RemovableRef<Parameters>>('parameters', ref(DEFAULT_PARAMS_VALUES))
 
-const session = inject<Ref<Session>>('session', {})
-const stats = inject('stats', {})
+const session = inject<Ref<Session>>('session', ref(DEFAULT_SESSION))
+const stats = inject('stats', {} as Stats)
 const isGenerating = inject('isGenerating', false)
 const isPending = inject('isPending', false)
 const isChatStarted = inject('isChatStarted', false)
-const runChat = inject('runChat', null)
-const runCompletion = inject('runCompletion', null)
-const stop = inject('stop', false)
+const runChat = inject('runChat', (message: string) => message)
+const runCompletion = inject('runCompletion', () => {})
+const stop = inject('stop', () => {})
+const uploadImage = inject('uploadImage', () => {})
 
 const send = (customMessage: string = '') => {
   if (!message.value && !customMessage) {
@@ -57,7 +64,7 @@ const joinResponse = (response: TranscriptMessage[]) => {
   }
 
   // Completion mode
-  if (!session.value.type === 'completion') {
+  if (session.value.type === 'completion') {
     return response.flatMap(({ content }) => content).join('')
   }
 
@@ -149,7 +156,7 @@ useResizeObserver(resultsContainer, () => {
         v-intersection-observer="updateAutoScrollFlag"></div>
     </template>
 
-    <div v-else class="flex flex-col justify-center min-h-full">
+    <div v-else class="flex flex-col justify-center min-h-[calc(100%-20px)]">
       <h2 class="text-2xl">Start a chat</h2>
       <div class="grid grid-cols-3 items-start justify-between gap-8 mt-4">
         <button @click="send('What are you primarily designed to assist with, and what types of tasks do you perform best?')"
@@ -168,7 +175,7 @@ useResizeObserver(resultsContainer, () => {
     </div>
   </div>
 
-  <form @submit.prevent="(e) => isGenerating ? stop(e) : send(e)"
+  <form @submit.prevent="isGenerating ? stop : send"
     class="flex gap-6 w-full"
     :class="{
       'mb-[28px]': !stats

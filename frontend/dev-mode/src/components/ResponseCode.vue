@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { inject } from 'vue'
-const session = inject('session', {})
+
+import { DEFAULT_SESSION } from '@/composables/useLlama'
+const session = inject('session', DEFAULT_SESSION)
 </script>
 
 <template>
