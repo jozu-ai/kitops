@@ -33,7 +33,7 @@ const isPending = inject('isPending', false)
 const isChatStarted = inject('isChatStarted', false)
 const runChat = inject('runChat', (message: string) => message)
 const runCompletion = inject('runCompletion', () => {})
-const stop = inject('stop', () => {})
+const stop = inject('stop', (e: Event) => e)
 const uploadImage = inject('uploadImage', () => {})
 
 const send = (customMessage: string = '') => {
@@ -175,7 +175,7 @@ useResizeObserver(resultsContainer, () => {
     </div>
   </div>
 
-  <form @submit.prevent="isGenerating ? stop : send"
+  <form @submit.prevent="(e: Event) => isGenerating ? stop(e) : send()"
     class="flex gap-6 w-full"
     :class="{
       'mb-[28px]': !stats

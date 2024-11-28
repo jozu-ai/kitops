@@ -169,7 +169,7 @@ export default function useLlama(parameters?: MaybeRef<Parameters>, localSession
         }
       }
 
-      session.value.response.push(...currentMessages)
+      session.value.response.push(currentMessages as any)
     } catch (e) {
       if (!(e instanceof DOMException) || e.name !== 'AbortError') {
         console.error(e)

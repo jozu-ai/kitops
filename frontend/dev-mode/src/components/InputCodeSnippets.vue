@@ -86,7 +86,6 @@ main();
 `)
 
 const shSnippet = computed(() => `invoke_url='${apiUrl}/v1/chat/completions'
-
 ${
 parameters.value.api_key
   ? 'authorization_header=\'Authorization: Bearer '+parameters.value.api_key+'\''

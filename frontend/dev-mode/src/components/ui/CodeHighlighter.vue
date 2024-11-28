@@ -60,6 +60,7 @@ watch([() => props.code, () => props.language], highlightCode)
 
 .highlighted-code > [class*="shj-lang-"] {
   @apply rounded-none mt-0 p-3 pt-10;
+  @apply text-base leading-normal;
 }
 </style>
 
