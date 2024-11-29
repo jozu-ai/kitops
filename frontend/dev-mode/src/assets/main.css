@@ -13,10 +13,12 @@
 }
 
 @layer components {
-  /* Firefox (uncomment to work in Firefox, although other properties will not work!)  */
-  * {
-    scrollbar-width: auto;
-    scrollbar-color: #000000 transparent;
+  /* For Firefox */
+  @-moz-document url-prefix() {
+    * {
+      scrollbar-width: auto;
+      scrollbar-color: #000000 transparent;
+    }
   }
 
   /* Chrome, Edge and Safari */
