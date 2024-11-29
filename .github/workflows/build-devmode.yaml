@@ -1,7 +1,7 @@
 name: Build the dev mode UI
 
 on:
-  # Runs on pushes targeting the `main` branch, and only for the `docs/**` path.
+  # Runs on pushes targeting the `main` branch, and only for the `frontend/dev-mode/**` path.
   pull_request:
     paths:
       - 'frontend/dev-mode/**'
@@ -28,6 +28,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
+          package_json_file: frontend/dev-mode/package.json
           version: 8
           run_install: false
 
@@ -45,10 +46,11 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          cd ./frontend/dev-mode
+          pnpm install
 
       - name: Run the build
-        run: pnpm build
-
-      - name: Build the docs
-        run: pnpm build
+        run: |
+          cd ./frontend/dev-mode
+          pnpm install
