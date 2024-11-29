@@ -156,7 +156,7 @@ useResizeObserver(resultsContainer, () => {
         v-intersection-observer="updateAutoScrollFlag"></div>
     </template>
 
-    <div v-else class="flex flex-col justify-center min-h-[calc(100%-20px)]">
+    <div v-else class="flex flex-col justify-center min-h-[calc(100%-40px)]">
       <h2 class="text-2xl">Start a chat</h2>
       <div class="grid grid-cols-3 items-start justify-between gap-8 mt-4">
         <button @click="send('What are you primarily designed to assist with, and what types of tasks do you perform best?')"
