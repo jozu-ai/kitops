@@ -70,33 +70,39 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	output.Debugf("Compressing layer to temporary file %s", tempFileName)
 
 	digester := digest.Canonical.Digester()
-	mw := io.MultiWriter(tempFile, digester.Hash())
+	var diffIdDigester digest.Digester
+	fileWriter := io.MultiWriter(tempFile, digester.Hash())
 
-	var cw io.WriteCloser
-	var tw *tar.Writer
+	var compressedWriter io.WriteCloser
+	var tarWriter *tar.Writer
 	switch mediaType.Compression {
 	case constants.GzipCompression:
-		cw = gzip.NewWriter(mw)
-		tw = tar.NewWriter(cw)
+		compressedWriter = gzip.NewWriter(fileWriter)
+		diffIdDigester = digest.Canonical.Digester()
+		mw := io.MultiWriter(compressedWriter, diffIdDigester.Hash())
+		tarWriter = tar.NewWriter(mw)
 	case constants.GzipFastestCompression:
-		cw, err = gzip.NewWriterLevel(mw, gzip.BestSpeed)
+		compressedWriter, err = gzip.NewWriterLevel(fileWriter, gzip.BestSpeed)
 		if err != nil {
 			return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to set up gzip compression: %w", err)
 		}
-		tw = tar.NewWriter(cw)
+		diffIdDigester = digest.Canonical.Digester()
+		mw := io.MultiWriter(compressedWriter, diffIdDigester.Hash())
+		tarWriter = tar.NewWriter(mw)
 	case constants.NoneCompression:
-		tw = tar.NewWriter(mw)
+		tarWriter = tar.NewWriter(fileWriter)
+		diffIdDigester = digester
 	}
-	ptw, plog := output.TarProgress(totalSize, tw)
+	progressTarWriter, plog := output.TarProgress(totalSize, tarWriter)
 
 	// Wrapper function for closing writers before returning an error
 	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
 	handleErr := func(err error) (string, ocispec.Descriptor, *artifact.LayerInfo, error) {
 		// Don't care about these errors since we'll be deleting the file anyways
-		_ = ptw.Close()
-		_ = tw.Close()
-		if cw != nil {
-			_ = cw.Close()
+		_ = progressTarWriter.Close()
+		_ = tarWriter.Close()
+		if compressedWriter != nil {
+			_ = compressedWriter.Close()
 		}
 		_ = tempFile.Close()
 		removeTempFile(tempFileName)
@@ -104,14 +110,14 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	}
 
 	if pathInfo.Mode().IsRegular() {
-		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, ptw, plog); err != nil {
+		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, progressTarWriter, plog); err != nil {
 			return handleErr(err)
 		}
-		if err := writeFileToTar(path, pathInfo, ptw, plog); err != nil {
+		if err := writeFileToTar(path, pathInfo, progressTarWriter, plog); err != nil {
 			return handleErr(err)
 		}
 	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(path, ignore, ptw, plog); err != nil {
+		if err := writeDirToTar(path, ignore, progressTarWriter, plog); err != nil {
 			return handleErr(err)
 		}
 	} else {
@@ -119,10 +125,10 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	}
 	plog.Wait()
 
-	callAndPrintError(ptw.Close, "Failed to close writer: %s")
-	callAndPrintError(tw.Close, "Failed to close tar writer: %s")
-	if cw != nil {
-		callAndPrintError(cw.Close, "Failed to close compression writer: %s")
+	callAndPrintError(progressTarWriter.Close, "Failed to close writer: %s")
+	callAndPrintError(tarWriter.Close, "Failed to close tar writer: %s")
+	if compressedWriter != nil {
+		callAndPrintError(compressedWriter.Close, "Failed to close compression writer: %s")
 	}
 
 	tempFileInfo, err := tempFile.Stat()
@@ -137,7 +143,11 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
 	}
-	return tempFileName, desc, nil, nil
+	layerInfo = &artifact.LayerInfo{
+		Digest: digester.Digest().String(),
+		DiffId: diffIdDigester.Digest().String(),
+	}
+	return tempFileName, desc, layerInfo, nil
 }
 
 // writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
