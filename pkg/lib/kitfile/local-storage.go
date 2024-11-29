@@ -206,7 +206,7 @@ func saveContentLayer(ctx context.Context, localRepo local.LocalRepo, path strin
 	}
 
 	output.Infof("Saved %s layer: %s", mediaType.BaseType, desc.Digest)
-	return desc, nil, nil
+	return desc, info, nil
 }
 
 func saveModelManifest(ctx context.Context, store oras.Target, manifest ocispec.Manifest) (*ocispec.Descriptor, error) {
