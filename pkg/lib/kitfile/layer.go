@@ -27,6 +27,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
@@ -39,12 +40,12 @@ import (
 // a descriptor (including hash) for the compressed file, the layer is saved to a temporary file
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
-func compressLayer(path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+func compressLayer(path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, layerInfo *artifact.LayerInfo, err error) {
 	// Clean path to ensure consistent format (./path vs path/ vs path)
 	path = filepath.Clean(path)
 
 	if layerIgnored, err := ignore.Matches(path, path); err != nil {
-		return "", ocispec.DescriptorEmptyJSON, err
+		return "", ocispec.DescriptorEmptyJSON, nil, err
 	} else if layerIgnored {
 		output.Errorf("Warning: layer path %s ignored by kitignore", path)
 	}
@@ -52,18 +53,18 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	pathInfo, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("%s path %s does not exist", mediaType.BaseType, path)
+			return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("%s path %s does not exist", mediaType.BaseType, path)
 		}
-		return "", ocispec.DescriptorEmptyJSON, err
+		return "", ocispec.DescriptorEmptyJSON, nil, err
 	}
 	totalSize, err := getTotalSize(path, pathInfo, ignore)
 	if err != nil {
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get size of layer: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to get size of layer: %w", err)
 	}
 
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")
 	if err != nil {
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to create temporary file: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to create temporary file: %w", err)
 	}
 	tempFileName := tempFile.Name()
 	output.Debugf("Compressing layer to temporary file %s", tempFileName)
@@ -80,7 +81,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	case constants.GzipFastestCompression:
 		cw, err = gzip.NewWriterLevel(mw, gzip.BestSpeed)
 		if err != nil {
-			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to set up gzip compression: %w", err)
+			return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to set up gzip compression: %w", err)
 		}
 		tw = tar.NewWriter(cw)
 	case constants.NoneCompression:
@@ -90,7 +91,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 
 	// Wrapper function for closing writers before returning an error
 	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
-	handleErr := func(err error) (string, ocispec.Descriptor, error) {
+	handleErr := func(err error) (string, ocispec.Descriptor, *artifact.LayerInfo, error) {
 		// Don't care about these errors since we'll be deleting the file anyways
 		_ = ptw.Close()
 		_ = tw.Close()
@@ -99,7 +100,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		}
 		_ = tempFile.Close()
 		removeTempFile(tempFileName)
-		return "", ocispec.DescriptorEmptyJSON, err
+		return "", ocispec.DescriptorEmptyJSON, nil, err
 	}
 
 	if pathInfo.Mode().IsRegular() {
@@ -127,7 +128,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	tempFileInfo, err := tempFile.Stat()
 	if err != nil {
 		removeTempFile(tempFileName)
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to stat temporary file: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to stat temporary file: %w", err)
 	}
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
 
@@ -136,7 +137,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
 	}
-	return tempFileName, desc, nil
+	return tempFileName, desc, nil, nil
 }
 
 // writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
