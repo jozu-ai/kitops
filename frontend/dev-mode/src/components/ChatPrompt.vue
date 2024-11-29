@@ -113,8 +113,8 @@ useResizeObserver(resultsContainer, () => {
 
 <template>
 <div>
-  <div class="overflow-y-auto flex-1 max-h-[calc(100vh-232px)]" style="word-break: break-word">
-    <div class="sticky top-0 bg-night">
+  <div class="overflow-y-auto pt-2 flex-1 max-h-[calc(100vh-232px)]" style="word-break: break-word">
+    <div class="sticky -top-2 bg-night py-2">
       <button class="text-xs font-bold flex gap-2 items-center hocus:text-gold"
         @click="isSettingsModalOpen = true">
         SETTINGS
