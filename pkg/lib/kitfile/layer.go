@@ -25,6 +25,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"kitops/pkg/artifact"
@@ -47,19 +48,12 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	if layerIgnored, err := ignore.Matches(path, path); err != nil {
 		return "", ocispec.DescriptorEmptyJSON, nil, err
 	} else if layerIgnored {
-		output.Errorf("Warning: layer path %s ignored by kitignore", path)
+		output.Errorf("Warning: %s layer path %s ignored by kitignore", mediaType.BaseType, path)
 	}
 
-	pathInfo, err := os.Stat(path)
+	totalSize, err := getTotalSize(path, ignore)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("%s path %s does not exist", mediaType.BaseType, path)
-		}
-		return "", ocispec.DescriptorEmptyJSON, nil, err
-	}
-	totalSize, err := getTotalSize(path, pathInfo, ignore)
-	if err != nil {
-		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to get size of layer: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("error processing %s: %w", mediaType.BaseType, err)
 	}
 
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")
@@ -95,9 +89,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	}
 	progressTarWriter, plog := output.TarProgress(totalSize, tarWriter)
 
-	// Wrapper function for closing writers before returning an error
-	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
-	handleErr := func(err error) (string, ocispec.Descriptor, *artifact.LayerInfo, error) {
+	if err := writeLayerToTar(path, ignore, progressTarWriter, plog); err != nil {
 		// Don't care about these errors since we'll be deleting the file anyways
 		_ = progressTarWriter.Close()
 		_ = tarWriter.Close()
@@ -106,22 +98,6 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		}
 		_ = tempFile.Close()
 		removeTempFile(tempFileName)
-		return "", ocispec.DescriptorEmptyJSON, nil, err
-	}
-
-	if pathInfo.Mode().IsRegular() {
-		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, progressTarWriter, plog); err != nil {
-			return handleErr(err)
-		}
-		if err := writeFileToTar(path, pathInfo, progressTarWriter, plog); err != nil {
-			return handleErr(err)
-		}
-	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(path, ignore, progressTarWriter, plog); err != nil {
-			return handleErr(err)
-		}
-	} else {
-		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", path))
 	}
 	plog.Wait()
 
@@ -150,21 +126,25 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	return tempFileName, desc, layerInfo, nil
 }
 
-// writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
-// Any non-regular files and directories (e.g. symlinks) are skipped.
-func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
-	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
-	// to compress the directory pointed at by basePath
-	trimPath := filepath.Dir(basePath)
-	if trimPath == "." {
-		// Avoid accidentally trimming leading `.` from filenames
-		trimPath = ""
+func writeLayerToTar(basePath string, ignore filesystem.IgnorePaths, tarWriter *output.ProgressTar, plog *output.ProgressLogger) error {
+	// Utility function to decide if two paths are in the same directory tree (i.e. one is a parent of the other)
+	sameDirTree := func(a, b string) bool {
+		aToB, errA := filepath.Rel(a, b)
+		bToA, errB := filepath.Rel(b, a)
+		if errA != nil || errB != nil {
+			plog.Logf(output.LogLevelWarn, "Cannot compare directories %s and %s, skipping path", a, b)
+			return false
+		}
+		if strings.Contains(aToB, "..") && strings.Contains(bToA, "..") {
+			return false
+		}
+		return true
 	}
-	return filepath.Walk(basePath, func(file string, fi os.FileInfo, err error) error {
+
+	filepath.Walk(".", func(file string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		// Skip adding an entry for the context directory to the tarball
 		if file == "." {
 			return nil
 		}
@@ -172,7 +152,15 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.P
 		if !fi.Mode().IsRegular() && !fi.Mode().IsDir() {
 			return nil
 		}
+		// Since we're walking from the context directory, we want to skip irrelevant files (e.g. sibling directories)
+		if !sameDirTree(basePath, file) {
+			if fi.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
+		}
 
+		// Check if file should be ignored by the ignorefile/other Kitfile layers
 		if shouldIgnore, err := ignore.Matches(file, basePath); err != nil {
 			return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
 		} else if shouldIgnore {
@@ -184,19 +172,16 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.P
 			return nil
 		}
 
-		relPath, err := filepath.Rel(trimPath, file)
-		if err != nil {
-			return fmt.Errorf("failed to find relative path for %s", file)
-		}
-
-		if err := writeHeaderToTar(relPath, fi, ptw, plog); err != nil {
+		if err := writeHeaderToTar(file, fi, tarWriter, plog); err != nil {
 			return err
 		}
 		if fi.IsDir() {
 			return nil
 		}
-		return writeFileToTar(file, fi, ptw, plog)
+		return writeFileToTar(file, fi, tarWriter, plog)
 	})
+
+	return nil
 }
 
 func writeHeaderToTar(name string, fi os.FileInfo, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
@@ -229,11 +214,20 @@ func writeFileToTar(file string, fi os.FileInfo, ptw *output.ProgressTar, plog *
 	return nil
 }
 
-func getTotalSize(basePath string, pathInfo fs.FileInfo, ignore filesystem.IgnorePaths) (int64, error) {
+func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error) {
 	if !output.ProgressEnabled() {
 		// Won't use this information anyways, save the work.
 		return 0, nil
 	}
+
+	pathInfo, err := os.Stat(basePath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return 0, fmt.Errorf("path %s does not exist", basePath)
+		}
+		return 0, err
+	}
+
 	if pathInfo.Mode().IsRegular() {
 		return pathInfo.Size(), nil
 	} else if pathInfo.IsDir() {
@@ -290,7 +284,7 @@ func sanitizeTarHeader(header *tar.Header) {
 	header.AccessTime = time.Time{}
 	header.ModTime = time.Time{}
 	header.ChangeTime = time.Time{}
-	header.Uid = 0
+	header.Uid = 1000
 	header.Gid = 0
 	header.Uname = ""
 	header.Gname = ""
