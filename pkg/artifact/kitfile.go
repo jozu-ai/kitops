@@ -34,17 +34,18 @@ type (
 		Docs            []Docs    `json:"docs,omitempty" yaml:"docs,omitempty"`
 	}
 
-	Docs struct {
-		Path        string `json:"path" yaml:"path"`
-		Description string `json:"description" yaml:"description"`
-	}
-
 	Package struct {
 		Name        string   `json:"name,omitempty" yaml:"name,omitempty"`
 		Version     string   `json:"version,omitempty" yaml:"version,omitempty"`
 		Description string   `json:"description,omitempty" yaml:"description,omitempty"`
 		License     string   `json:"license,omitempty" yaml:"license,omitempty"`
 		Authors     []string `json:"authors,omitempty" yaml:"authors,omitempty,flow"`
+	}
+
+	Docs struct {
+		Path        string `json:"path" yaml:"path"`
+		Description string `json:"description" yaml:"description"`
+		*LayerInfo  `json:",inline" yaml:",inline"`
 	}
 
 	Model struct {
@@ -62,19 +63,22 @@ type (
 		//  * Numbers will be converted to decimal representations (0xFF -> 255, 1.2e+3 -> 1200)
 		//  * Maps will be sorted alphabetically by key
 		Parameters any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+		*LayerInfo `json:",inline" yaml:",inline"`
 	}
 
 	ModelPart struct {
-		Name    string `json:"name,omitempty" yaml:"name,omitempty"`
-		Path    string `json:"path,omitempty" yaml:"path,omitempty"`
-		License string `json:"license,omitempty" yaml:"license,omitempty"`
-		Type    string `json:"type,omitempty" yaml:"type,omitempty"`
+		Name       string `json:"name,omitempty" yaml:"name,omitempty"`
+		Path       string `json:"path,omitempty" yaml:"path,omitempty"`
+		License    string `json:"license,omitempty" yaml:"license,omitempty"`
+		Type       string `json:"type,omitempty" yaml:"type,omitempty"`
+		*LayerInfo `json:",inline" yaml:",inline"`
 	}
 
 	Code struct {
 		Path        string `json:"path,omitempty" yaml:"path,omitempty"`
 		Description string `json:"description,omitempty" yaml:"description,omitempty"`
 		License     string `json:"license,omitempty" yaml:"license,omitempty"`
+		*LayerInfo  `json:",inline" yaml:",inline"`
 	}
 
 	DataSet struct {
@@ -90,6 +94,14 @@ type (
 		//  * Maps will be sorted alphabetically by key
 		//  * It's recommended to store metadata like preprocessing steps, formats, etc.
 		Parameters any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+		*LayerInfo `json:",inline" yaml:",inline"`
+	}
+
+	LayerInfo struct {
+		// Digest for the layer corresponding to this element
+		Digest string `json:"digest,omitempty" yaml:"-"`
+		// Diff ID (uncompressed digest) for the layer corresponding to this element
+		DiffId string `json:"diffId,omitempty" yaml:"-"`
 	}
 )
 
