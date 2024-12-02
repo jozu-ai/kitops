@@ -246,7 +246,7 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 		if err != nil {
 			return err
 		}
-		outPath := filepath.Join(dir, header.Name)
+		outPath := header.Name
 		// Check if the outPath is within the target directory
 		_, _, err = filesystem.VerifySubpath(dir, outPath)
 		if err != nil {
@@ -259,7 +259,6 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 				if !fi.IsDir() {
 					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
 				}
-				logger.Debugf("Path %s already exists", outPath)
 			} else {
 				logger.Debugf("Creating directory %s", outPath)
 				if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
