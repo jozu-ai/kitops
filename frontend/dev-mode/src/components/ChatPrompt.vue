@@ -15,7 +15,8 @@ import {
   type Parameters,
   DEFAULT_SESSION,
   DEFAULT_PARAMS_VALUES,
-  type TranscriptMessage
+  type TranscriptMessage,
+  type LlamaComposableResponse
 } from '@/composables/useLlama'
 
 const message = ref('')
@@ -31,10 +32,10 @@ const stats = inject('stats', {} as Stats)
 const isGenerating = inject('isGenerating', false)
 const isPending = inject('isPending', false)
 const isChatStarted = inject('isChatStarted', false)
-const runChat = inject<Function>('runChat')
-const runCompletion = inject<Function>('runCompletion')
-const stop = inject<Function>('stop')
-const uploadImage = inject<Function>('uploadImage')
+const runChat = inject<LlamaComposableResponse['chat']>('runChat')
+const runCompletion = inject<LlamaComposableResponse['runCompletion']>('runCompletion')
+const stop = inject<LlamaComposableResponse['stop']>('stop')
+const uploadImage = inject<LlamaComposableResponse['uploadImage']>('uploadImage')
 
 if (!runChat || !runCompletion || !stop || !uploadImage) {
   throw new Error('required function not provided')

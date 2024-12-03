@@ -59,7 +59,7 @@ export type Parameters = {
   prop_order?: string,
 }
 
-type LlamaComposableResponse = {
+export type LlamaComposableResponse = {
   stats: Ref<Record<string, string> | null>,
   session: Ref<Session>,
   template: (str: string, extraSettings?: Record<string, any>) => string,
