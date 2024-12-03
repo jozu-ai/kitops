@@ -1,5 +1,4 @@
 import { URL, fileURLToPath } from 'node:url'
-import { createWriteStream } from 'node:fs'
 import { resolve } from 'path'
 
 import { defineConfig } from 'vitepress'
@@ -25,6 +24,8 @@ const head = [
   ['script', {}, "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-QTDTMG01Z5');"],
   ['script', {}, "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';\nj.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','dataLayer','GTM-TFFZXCQW');"],
   ['script', { async: '', defer: '', src: 'https://buttons.github.io/buttons.js' }],
+  ['script', { src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit' }]
+  // 0x4AAAAAAA1WT4LYaVrBtAD7
 ]
 
 // Prod only scripts
@@ -116,6 +117,13 @@ export default defineConfig({
             },
             textFormat: (text) => text.replaceAll('cli-', '')
           })
+      },
+      {
+        text: 'Python Library',
+        items: [
+          { text: 'Overview', link: '/docs/pykitops/kf-overview' },
+          { text: 'Format', link: '/docs/pykitops/format' }
+        ]
       },
       {
         text: 'Contribute',
