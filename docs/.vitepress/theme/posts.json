@@ -208,5 +208,61 @@
     "tags": ["KitOps", "Open Source", "DevOps", "Security"],
     "author": "Rohan Sharma",
     "published_time": "2024-10-23"
+  },
+  {
+  "url": "https://jozu.com/blog/ai-security-how-to-protect-your-projects-with-hardened-modelkits/",
+    "description": "AI Security: How to Protect Your Projects with Hardened ModelKits",
+    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-05"
+  },
+  {
+  "url": "https://jozu.com/blog/start-your-ai-project-in-minutes-with-jozu-quickstart-modelkits/",
+    "description": "The Fastest Way to Start Your AI Project–Quickstart ModelKits",
+    "tags": ["KitOps", "Open Source", "DevOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-07"
+  },
+  {
+  "url": "https://jozu.com/blog/20-open-source-tools-i-recommend-to-build-share-and-run-ai-projects/",
+    "description": "20 Open Source Tools I Recommend to Build, Share, and Run AI Projects",
+    "tags": ["KitOps", "Open Source", "DevOps", "AI"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-13"
+  },
+  {
+  "url": "https://jozu.com/blog/were-submitting-kitops-to-the-cncf/",
+    "description": "We’re submitting KitOps to the CNCF",
+    "tags": ["KitOps", "Open Source", "KitOps", "CNCF"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-18"
+  },
+  {
+  "url": "https://jozu.com/blog/deploying-ai-projects-through-a-jenkins-pipeline/",
+    "description": "Deploying AI Projects Through a Jenkins Pipeline",
+    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-20"
+  },
+  {
+  "url": "https://jozu.com/blog/jozu-hub-vs-docker-hub-which-one-works-best-for-ai-ml/",
+    "description": "Jozu Hub vs. Docker Hub? Which One Works Best for AI/ML?",
+    "tags": ["KitOps", "Open Source", "DevOps", "Containers"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-22"
+  },
+  {
+  "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
+    "description": "How to Use KitOps with MLflow",
+    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-29"
+  },
+  {
+  "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
+    "description": "How to Use KitOps with MLflow",
+    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-11-29"
   }
 ]
