@@ -259,6 +259,13 @@
     "published_time": "2024-11-29"
   },
   {
+  "url": "https://www.youtube.com/watch?v=0JjVHSPmxp4",
+    "description": "Lightening Talk–Building an MLOps pipeline with Dagger.io and KitOps",
+    "tags": ["KitOps", "Open Source", "KitOps", "Talk"],
+    "author": "Cloud Native Rejekts",
+    "published_time": "2024-11-29"
+  },
+  {
   "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
     "description": "How to Use KitOps with MLflow",
     "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
