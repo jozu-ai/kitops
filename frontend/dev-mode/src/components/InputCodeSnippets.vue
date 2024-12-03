@@ -111,7 +111,7 @@ data=$'{
   "stream": true,
   ${
     Object.entries(parameters.value).map(([key, value]) => {
-      return `"${key}"": ${value}`
+      return `"${key}": ${value}`
     }).join(',\n  ')
   }
 }'

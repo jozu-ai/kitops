@@ -31,10 +31,14 @@ const stats = inject('stats', {} as Stats)
 const isGenerating = inject('isGenerating', false)
 const isPending = inject('isPending', false)
 const isChatStarted = inject('isChatStarted', false)
-const runChat = inject('runChat', (message: string) => message)
-const runCompletion = inject('runCompletion', () => {})
-const stop = inject('stop', (e: Event) => e)
-const uploadImage = inject('uploadImage', () => {})
+const runChat = inject<Function>('runChat')
+const runCompletion = inject<Function>('runCompletion')
+const stop = inject<Function>('stop')
+const uploadImage = inject<Function>('uploadImage')
+
+if (!runChat || !runCompletion || !stop || !uploadImage) {
+  throw new Error('required function not provided')
+}
 
 const send = (customMessage: string = '') => {
   if (!message.value && !customMessage) {
