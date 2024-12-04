@@ -141,7 +141,6 @@ const subscribeToNewsletter = async () => {
           placeholder="you@example.com"
           class="input"
           v-model="email"
-          autofocus
           style="border: 1px solid var(--color-off-white)" />
 
         <input
