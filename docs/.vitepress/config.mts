@@ -1,12 +1,8 @@
 import { URL, fileURLToPath } from 'node:url'
-import { createWriteStream } from 'node:fs'
 import { resolve } from 'path'
 
 import { defineConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
-import { SitemapStream } from 'sitemap'
-
-const links = []
 
 const inProd = process.env.NODE_ENV === 'production'
 
@@ -131,11 +127,9 @@ export default defineConfig({
         link: 'https://discord.gg/Tapeh8agYy'
       },
     ],
+
     footer: {
-      license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      },
+      message: 'Made with <3 by Jozu',
       copyright: `Copyright © ${new Date().getFullYear()} Jozu`
     }
   },
