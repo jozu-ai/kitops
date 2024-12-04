@@ -104,7 +104,7 @@ export default defineConfig({
         text: 'Kitfile',
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '/docs/kitfile/format' },
+          { text: 'Format', link: '/docs/kitfile/format' }
         ]
       },
       {
