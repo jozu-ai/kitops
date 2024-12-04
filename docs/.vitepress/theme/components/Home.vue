@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
-import axios from 'axios'
+import axios, { type AxiosError } from 'axios'
 import VueTurnstile from 'vue-turnstile'
 
 const error = ref('')
@@ -64,10 +64,9 @@ const quotesOffsetMobile = computed(() => {
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
 
 const subscribeToNewsletter = async () => {
-  const LIST_ID = '115e5954-d2cc-4e97-b0dd-e6561d59e660'
   isBusy.value = true
 
-  // Validate the recaptcha token with the server
+  // Validate the captcha token with the server
   try {
     await axios.post('https://newsprxy.gorkem.workers.dev/', {
       email: email.value,
@@ -76,7 +75,7 @@ const subscribeToNewsletter = async () => {
       favoriteDevOpsTool: favoriteDevOpsTool.value
     }, {
       headers: {
-        'g-recaptcha': token.value,
+        'cf-turnstile-response': token.value,
         'Content-Type': 'application/x-www-form-urlencoded',
         'Expect': '',
       }
@@ -85,8 +84,8 @@ const subscribeToNewsletter = async () => {
     isSuccess.value = true
     localStorage.setItem('subscribed', 'true')
   }
-  catch(err) {
-    error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
+  catch(err: any) {
+    error.value = err.response?.data?.errors?.flatMap((e: Error) => e.message)[0] || 'An unknown error occurred'
   }
   finally {
     isBusy.value = false
@@ -113,51 +112,6 @@ const subscribeToNewsletter = async () => {
       Download
     </a>
   </div>
-
-  <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14">
-    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
-  </div>
-</div>
-
-<div v-if="!isSubscribed" class="text-center max-w-[600px] mx-auto mt-16">
-  <p class="p1 font-heading">Stay Informed About KitOps</p>
-
-  <template v-if="!isSuccess">
-    <form @submit.prevent="subscribeToNewsletter" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
-      <input required
-        :disabled="isBusy"
-        id="email"
-        type="email"
-        pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
-        name="email"
-        placeholder="you@example.com"
-        class="input"
-        v-model="email"
-        autofocus
-        style="border: 1px solid var(--color-off-white)" />
-
-      <input
-        type="text"
-        id="favoriteDevOpsTool"
-        placeholder="What's your favorite devops tool?"
-        name="favoriteDevOpsTool"
-        v-model="favoriteDevOpsTool"
-        class="hidden" />
-
-      <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
-    </form>
-
-    <div v-if="isProd">
-      <vue-turnstile site-key="0x4AAAAAAA1WT4LYaVrBtAD7" v-model="token" />
-      <div>Token: {{ token }}</div>
-    </div>
-
-    <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
-  </template>
-
-  <template v-else>
-    <p class="mt-12">You are now subscribed to the newsletter.</p>
-  </template>
 </div>
 
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
@@ -170,6 +124,53 @@ const subscribeToNewsletter = async () => {
     <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+</div>
+
+<div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
+  <h2 class="text-center">stay informed About Kitops</h2>
+
+  <div class="text-center max-w-[600px] mx-auto mt-12">
+    <template v-if="!isSuccess">
+      <form @submit.prevent="subscribeToNewsletter" class="flex flex-col md:flex-row gap-10 lg:gap-4">
+        <!-- <label class="text-left">
+          <strong class="mb-2 block">Your email</strong> -->
+          <input required
+            :disabled="isBusy"
+            id="email"
+            type="email"
+            pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
+            name="email"
+            placeholder="you@example.com"
+            class="input"
+            v-model="email"
+            autofocus
+            style="border: 1px solid var(--color-off-white)" />
+        <!-- </label> -->
+
+        <input
+          type="text"
+          id="favoriteDevOpsTool"
+          placeholder="What's your favorite devops tool?"
+          name="favoriteDevOpsTool"
+          v-model="favoriteDevOpsTool"
+          class="hidden" />
+
+        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center mx-auto">
+          JOIN THE LIST
+        </button>
+      </form>
+
+      <div v-if="isProd" class="mt-10">
+        <vue-turnstile site-key="0x4AAAAAAA1WT4LYaVrBtAD7" v-model="token" />
+      </div>
+
+      <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
+    </template>
+
+    <template v-else>
+      <p class="mt-12">You are now subscribed to the newsletter.</p>
+    </template>
+  </div>
 </div>
 
 <div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
