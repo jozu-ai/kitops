@@ -126,7 +126,7 @@ const subscribeToNewsletter = async () => {
   </video>
 </div>
 
-<div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
+<div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container" id="join">
   <h2 class="text-center">stay informed About Kitops</h2>
 
   <div class="text-center max-w-[600px] mx-auto mt-12">
