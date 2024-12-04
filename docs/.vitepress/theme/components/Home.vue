@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { isClient } from '@vueuse/core'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
-import axios, { type AxiosError } from 'axios'
+import axios from 'axios'
 import VueTurnstile from 'vue-turnstile'
 
 const error = ref('')
@@ -91,6 +91,21 @@ const subscribeToNewsletter = async () => {
     isBusy.value = false
   }
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    // check if there's an anchor link in the url and if so, scroll to that element id
+    if (location.hash) {
+      const el = document.querySelector(location.hash)
+      if (el && el instanceof HTMLElement) {
+        el.scrollIntoView({
+          behavior:'smooth',
+          block: 'center',
+        })
+      }
+    }
+  }, 100)
+})
 </script>
 
 <template>
