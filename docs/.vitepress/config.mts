@@ -3,9 +3,6 @@ import { resolve } from 'path'
 
 import { defineConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
-import { SitemapStream } from 'sitemap'
-
-const links = []
 
 const inProd = process.env.NODE_ENV === 'production'
 
@@ -117,13 +114,6 @@ export default defineConfig({
           })
       },
       {
-        text: 'Python Library',
-        items: [
-          { text: 'Overview', link: '/docs/pykitops/kf-overview' },
-          { text: 'Format', link: '/docs/pykitops/format' }
-        ]
-      },
-      {
         text: 'Contribute',
         items: [
           { text: 'Contribute to KitOps docs', link: '/contributing' }
@@ -137,11 +127,9 @@ export default defineConfig({
         link: 'https://discord.gg/Tapeh8agYy'
       },
     ],
+
     footer: {
-      license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      },
+      message: '<a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>',
       copyright: `Copyright © ${new Date().getFullYear()} Jozu`
     }
   },
