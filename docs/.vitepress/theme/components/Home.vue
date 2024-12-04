@@ -132,20 +132,17 @@ const subscribeToNewsletter = async () => {
   <div class="text-center max-w-[600px] mx-auto mt-12">
     <template v-if="!isSuccess">
       <form @submit.prevent="subscribeToNewsletter" class="flex flex-col md:flex-row gap-10 lg:gap-4">
-        <!-- <label class="text-left">
-          <strong class="mb-2 block">Your email</strong> -->
-          <input required
-            :disabled="isBusy"
-            id="email"
-            type="email"
-            pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
-            name="email"
-            placeholder="you@example.com"
-            class="input"
-            v-model="email"
-            autofocus
-            style="border: 1px solid var(--color-off-white)" />
-        <!-- </label> -->
+        <input required
+          :disabled="isBusy"
+          id="email"
+          type="email"
+          pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
+          name="email"
+          placeholder="you@example.com"
+          class="input"
+          v-model="email"
+          autofocus
+          style="border: 1px solid var(--color-off-white)" />
 
         <input
           type="text"
