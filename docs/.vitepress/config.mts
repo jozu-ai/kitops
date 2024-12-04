@@ -129,7 +129,7 @@ export default defineConfig({
     ],
 
     footer: {
-      message: '<a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>',
+      message: 'Made with <3 by Jozu',
       copyright: `Copyright © ${new Date().getFullYear()} Jozu`
     }
   },
