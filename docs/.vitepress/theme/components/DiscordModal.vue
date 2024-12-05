@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
       </h3>
 
       <div class="flex justify-center items-center">
-        <a href="https://discord.gg/Tapeh8agYy" class="kit-button kit-button-gold text-center mt-10 mx-auto inline-block w-max">
+        <a href="https://discord.gg/Tapeh8agYy" target="_blank" class="kit-button kit-button-gold text-center mt-10 mx-auto inline-block w-max">
           Say hello
         </a>
       </div>
