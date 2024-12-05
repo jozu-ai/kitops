@@ -55,6 +55,9 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("error processing %s: %w", mediaType.BaseType, err)
 	}
+	if totalSize == 0 {
+		output.Logf(output.LogLevelWarn, "No files detected in %s layer with path %s", mediaType.BaseType, path)
+	}
 
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")
 	if err != nil {
@@ -127,6 +130,15 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 }
 
 func writeLayerToTar(basePath string, ignore filesystem.IgnorePaths, tarWriter *output.ProgressTar, plog *output.ProgressLogger) error {
+	// Make sure target path exists; otherwise we'll miss it while walking below
+	_, err := os.Stat(basePath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("path %s does not exist", basePath)
+		}
+		return err
+	}
+
 	// Utility function to decide if two paths are in the same directory tree (i.e. one is a parent of the other)
 	sameDirTree := func(a, b string) bool {
 		aToB, errA := filepath.Rel(a, b)
