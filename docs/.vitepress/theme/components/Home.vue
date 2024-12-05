@@ -16,8 +16,6 @@ const isSubscribed = ref(false)
 const isSuccess = ref(false)
 const isProd = import.meta.env.PROD
 
-isSubscribed.value = localStorage.getItem('subscribed') === 'true'
-
 const activeQuote = ref(0)
 const quotes = [
   {
@@ -93,6 +91,8 @@ const subscribeToNewsletter = async () => {
 }
 
 onMounted(() => {
+  isSubscribed.value = localStorage?.getItem('subscribed') === 'true'
+
   setTimeout(() => {
     // check if there's an anchor link in the url and if so, scroll to that element id
     if (location.hash) {

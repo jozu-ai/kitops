@@ -1,15 +1,14 @@
 // https://vitepress.dev/guide/custom-theme
 import { h, ref } from 'vue'
-import { VueReCaptcha } from 'vue-recaptcha-v3'
 import { type Theme, inBrowser } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
 import PlatformSnippet from './components/PlatformSnippet.vue'
 import GithubStartButton from './components/GithubStartButton.vue'
-import Layout from './Layout.vue'
 import './assets/css/fonts.css'
 import './assets/css/tailwind.css'
 import './style.css'
+import DiscordModal from './components/DiscordModal.vue'
 
 const isPlatformModalOpen = ref(false)
 
@@ -33,18 +32,12 @@ export default {
       'sidebar-nav-after': () => h(PlatformSelect),
       'nav-bar-content-after': () => h(GithubStartButton, {
         class: 'ml-4 pt-2'
-      })
+      }),
+      'doc-bottom': () => h(DiscordModal)
     })
   },
   enhanceApp({ app, router, siteData }) {
     app.component('PlatformSnippet', PlatformSnippet)
     app.provide('isPlatformModalOpen', isPlatformModalOpen)
-
-    app.use(VueReCaptcha, {
-      siteKey: '6Lc4-VAqAAAAAF6W1JTuP24DYqc_BzHD715Yqob-',
-      loaderOptions: {
-        autoHideBadge: true
-      },
-    })
   }
 } satisfies Theme
