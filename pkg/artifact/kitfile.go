@@ -52,6 +52,7 @@ type (
 		Path        string      `json:"path,omitempty" yaml:"path,omitempty"`
 		License     string      `json:"license,omitempty" yaml:"license,omitempty"`
 		Framework   string      `json:"framework,omitempty" yaml:"framework,omitempty"`
+		Format      string      `json:"format,omitempty" yaml:"format,omitempty"`
 		Version     string      `json:"version,omitempty" yaml:"version,omitempty"`
 		Description string      `json:"description,omitempty" yaml:"description,omitempty"`
 		Parts       []ModelPart `json:"parts,omitempty" yaml:"parts,omitempty"`
