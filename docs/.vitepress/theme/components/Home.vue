@@ -91,7 +91,7 @@ const subscribeToNewsletter = async () => {
 }
 
 onMounted(() => {
-  isSubscribed.value = localStorage?.getItem('subscribed') === 'true'
+  isSubscribed.value = localStorage.getItem('subscribed') === 'true'
 
   setTimeout(() => {
     // check if there's an anchor link in the url and if so, scroll to that element id
