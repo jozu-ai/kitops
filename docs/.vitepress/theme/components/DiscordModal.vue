@@ -38,7 +38,7 @@ onBeforeUnmount(() => {
 
 <template>
 <Teleport to="body">
-  <div v-if="isVisible" class="z-10 fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+  <div v-if="isVisible" class="z-30 fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
     <div class="bg-elevation-02 p-6 lg:p-12 max-w-[800px]">
       <header class="flex items-start mb-6 relative">
         <button class="absolute right-0 top-0" @click="close()">
@@ -49,15 +49,18 @@ onBeforeUnmount(() => {
         </button>
       </header>
 
-      <h4 class="text-center mb-10 mt-10">Need help getting your ML projects to production?</h4>
+      <h5 class="text-center mb-10 mt-10">Need help getting your ML projects to production?</h5>
 
-      <h3 class="text-center max-w-[400px] mx-auto">
+      <h4 class="text-center max-w-[400px] mx-auto">
         Talk with our team about how KitOps can help
-      </h3>
+      </h4>
 
       <div class="flex justify-center items-center">
-        <a href="https://discord.gg/Tapeh8agYy" target="_blank" class="kit-button kit-button-gold text-center mt-10 mx-auto inline-block w-max">
-          Say hello
+        <a href="https://discord.gg/Tapeh8agYy" target="_blank"
+          class="px-12 py-3 font-bold
+            text-center mt-10 mx-auto inline-block w-max
+            bg-cornflower hocus:bg-opacity-80 text-white">
+          Join Our Discord
         </a>
       </div>
     </div>

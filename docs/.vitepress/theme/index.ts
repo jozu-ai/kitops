@@ -5,10 +5,10 @@ import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
 import PlatformSnippet from './components/PlatformSnippet.vue'
 import GithubStartButton from './components/GithubStartButton.vue'
+import DiscordBanner from './components/DiscordBanner.vue'
 import './assets/css/fonts.css'
 import './assets/css/tailwind.css'
 import './style.css'
-import DiscordModal from './components/DiscordModal.vue'
 
 const isPlatformModalOpen = ref(false)
 
@@ -33,11 +33,11 @@ export default {
       'nav-bar-content-after': () => h(GithubStartButton, {
         class: 'ml-4 pt-2'
       }),
-      'doc-bottom': () => h(DiscordModal)
     })
   },
   enhanceApp({ app, router, siteData }) {
     app.component('PlatformSnippet', PlatformSnippet)
     app.provide('isPlatformModalOpen', isPlatformModalOpen)
+    app.component('DiscordBanner', DiscordBanner);
   }
 } satisfies Theme
