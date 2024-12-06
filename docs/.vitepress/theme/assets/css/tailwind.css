@@ -204,6 +204,10 @@
     }
   }
 
+  .kit-button.kit-button-small {
+    font-size: 12px;
+  }
+
   .kit-button.kit-button-cornflower {
     @apply text-cornflower;
     @apply hocus:text-white hocus:bg-cornflower;

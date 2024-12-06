@@ -1,3 +1,6 @@
+import type MarkdownIt from 'markdown-it'
+import type StateBlock from 'markdown-it/lib/rules_block/state_block'
+
 import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'path'
 
@@ -172,5 +175,42 @@ export default defineConfig({
     }
   },
 
-  ignoreDeadLinks: true
+  ignoreDeadLinks: true,
+
+  markdown: {
+    config: (md) => {
+      md.use(discordBannerPlugin);
+    },
+  }
 })
+
+// Custom Markdown-it plugin
+function discordBannerPlugin(md: MarkdownIt) {
+  const marker = '[ discord banner ]'
+
+  md.block.ruler.before(
+    'fence',
+    'discord-banner',
+    (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean => {
+    const start = state.bMarks[startLine] + state.tShift[startLine];
+    const max = state.eMarks[startLine];
+
+    // Match the custom marker
+    if (state.src.slice(start, max).trim() !== marker) {
+      return false;
+    }
+
+    if (silent) return true;
+
+    // Create a token for the banner component
+    const token = state.push('discord-banner', 'div', 0);
+    token.map = [startLine, startLine + 1];
+    state.line = startLine + 1;
+
+    return true;
+  });
+
+  // Render the component
+  md.renderer.rules['discord-banner'] = () => '<DiscordBanner />'
+}
+
