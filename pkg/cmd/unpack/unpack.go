@@ -85,24 +85,17 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 		// layer path). For current ModelKits, this will be empty
 		var relPath string
 
+		// Grab path + layer info from the config object corresponding to this layer
+		var layerPath string
+		var layerInfo *artifact.LayerInfo
 		mediaType := constants.ParseMediaType(layerDesc.MediaType)
 		switch mediaType.BaseType {
 		case constants.ModelType:
 			if !shouldUnpackLayer(config.Model, opts.filterConfs) {
 				continue
 			}
-			if config.Model.LayerInfo != nil {
-				if config.Model.LayerInfo.Digest != layerDesc.Digest.String() {
-					return fmt.Errorf("digest in config and manifest do not match in model")
-				}
-				relPath = ""
-			} else {
-				_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, config.Model.Path)
-				if err != nil {
-					return fmt.Errorf("error resolving model path: %w", err)
-				}
-			}
-
+			layerInfo = config.Model.LayerInfo
+			layerPath = config.Model.Path
 			output.Infof("Unpacking model %s to %s", config.Model.Name, config.Model.Path)
 
 		case constants.ModelPartType:
@@ -111,17 +104,8 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				modelPartIdx += 1
 				continue
 			}
-			if part.LayerInfo != nil {
-				if part.LayerInfo.Digest != layerDesc.Digest.String() {
-					return fmt.Errorf("digest in config and manifest do not match in modelpart")
-				}
-				relPath = ""
-			} else {
-				_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, part.Path)
-				if err != nil {
-					return fmt.Errorf("error resolving code path: %w", err)
-				}
-			}
+			layerInfo = part.LayerInfo
+			layerPath = part.Path
 			output.Infof("Unpacking model part %s to %s", part.Name, part.Path)
 			modelPartIdx += 1
 
@@ -131,17 +115,8 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				codeIdx += 1
 				continue
 			}
-			if codeEntry.LayerInfo != nil {
-				if codeEntry.LayerInfo.Digest != layerDesc.Digest.String() {
-					return fmt.Errorf("digest in config and manifest do not match in code layer")
-				}
-				relPath = ""
-			} else {
-				_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, codeEntry.Path)
-				if err != nil {
-					return fmt.Errorf("error resolving code path: %w", err)
-				}
-			}
+			layerInfo = codeEntry.LayerInfo
+			layerPath = codeEntry.Path
 			output.Infof("Unpacking code to %s", codeEntry.Path)
 			codeIdx += 1
 
@@ -151,17 +126,8 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				datasetIdx += 1
 				continue
 			}
-			if datasetEntry.LayerInfo != nil {
-				if datasetEntry.LayerInfo.Digest != layerDesc.Digest.String() {
-					return fmt.Errorf("digest in config and manifest do not match in dataset layer")
-				}
-				relPath = ""
-			} else {
-				_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, datasetEntry.Path)
-				if err != nil {
-					return fmt.Errorf("error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
-				}
-			}
+			layerInfo = datasetEntry.LayerInfo
+			layerPath = datasetEntry.Path
 			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, datasetEntry.Path)
 			datasetIdx += 1
 
@@ -171,19 +137,22 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				docsIdx += 1
 				continue
 			}
-			if docsEntry.LayerInfo != nil {
-				if docsEntry.LayerInfo.Digest != layerDesc.Digest.String() {
-					return fmt.Errorf("digest in config and manifest do not match in docs layer")
-				}
-				relPath = ""
-			} else {
-				_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, docsEntry.Path)
-				if err != nil {
-					return fmt.Errorf("error resolving path %s for docs: %w", docsEntry.Path, err)
-				}
-			}
+			layerInfo = docsEntry.LayerInfo
+			layerPath = docsEntry.Path
 			output.Infof("Unpacking docs to %s", docsEntry.Path)
 			docsIdx += 1
+		}
+
+		if layerInfo != nil {
+			if layerInfo.Digest != layerDesc.Digest.String() {
+				return fmt.Errorf("digest in config and manifest do not match in %s", mediaType.BaseType)
+			}
+			relPath = ""
+		} else {
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, layerPath)
+			if err != nil {
+				return fmt.Errorf("error resolving %s path: %w", mediaType.BaseType, err)
+			}
 		}
 
 		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
