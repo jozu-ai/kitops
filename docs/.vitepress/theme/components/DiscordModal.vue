@@ -29,7 +29,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  close()
+  // Only call `close` if the `isVisible` is true, to prevent updating `localStorage` timestamp
+  if (isVisible.value) {
+    close()
+  }
 })
 </script>
 
