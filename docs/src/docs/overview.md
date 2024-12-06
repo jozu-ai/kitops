@@ -61,6 +61,8 @@ AI/ML projects often deal with large, unstructured datasets, such as images, vid
 
 One of the core strengths of KitOps is its ability to keep data and code versions in sync. This crucial feature solves the reproducibility issues that frequently arise in AI/ML development, ensuring consistency and reliability across project stages.
 
+[ discord banner ]
+
 ### 🚀 Deployment Ready
 
 Designed with a focus on deployment, ModelKits package assets in standard formats so you can depoly them as [containers or to Kubernetes](./deploy.md). They're also [compatible with nearly any tool](./modelkit/compatibility.md) - helping you get your model to production faster and more efficiently.
