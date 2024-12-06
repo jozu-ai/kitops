@@ -12,11 +12,14 @@ const close = () => {
 }
 
 onMounted(() => {
-  // get the last time we showed the modal, or 1 day ago if it's not set yet
-  const lastOpenedAt = localStorage.getItem(STORAGE_KEY) || (new Date().getTime()) - ONE_DAY_MS
-  const lastOpenDiff = new Date().getTime() - new Date(Number(lastOpenedAt)).getTime()
+  const now = new Date().getTime()
 
-  // show the newsletter modal once a day only
+  // get the last time we showed the modal, or 1 day ago if it's not set yet
+  const lastOpenedAt = localStorage.getItem(STORAGE_KEY) || now - ONE_DAY_MS
+  const lastOpenedTime = new Date(Number(lastOpenedAt)).getTime()
+  const lastOpenDiff = now - lastOpenedTime
+
+  // show the modal once a day only
   if (lastOpenDiff >= ONE_DAY_MS) {
     // Show the modal 5 seconds after the page load
     setTimeout(() => {
