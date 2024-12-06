@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
 <div class="discord-banner p-6 my-12 flex gap-6">
   <div class="grow-0 shrink-0 basis-6">
