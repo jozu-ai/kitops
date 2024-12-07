@@ -29,6 +29,11 @@ type DevBaseOptions struct {
 	configHome string
 }
 
+type DevLogsOptions struct {
+	DevBaseOptions
+	follow bool
+}
+
 func (opts *DevBaseOptions) complete(ctx context.Context, args []string) error {
 	configHome, ok := ctx.Value(constants.ConfigKey{}).(string)
 	if !ok {
