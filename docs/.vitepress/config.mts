@@ -107,6 +107,14 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Python Library',
+        items: [
+          { text: 'Overview', link: '/docs/pykitops.html' },
+          { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides.html' },
+          { text: 'Reference', link: '/docs/pykitops/reference.html' },
+        ]
+      },
+      {
         text: 'CLI',
         items: getSidebarItemsFromMdFiles('docs/cli', {
             replacements: {
