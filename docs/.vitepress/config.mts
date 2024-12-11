@@ -1,12 +1,11 @@
+import type MarkdownIt from 'markdown-it'
+import type StateBlock from 'markdown-it/lib/rules_block/state_block'
+
 import { URL, fileURLToPath } from 'node:url'
-import { createWriteStream } from 'node:fs'
 import { resolve } from 'path'
 
 import { defineConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
-import { SitemapStream } from 'sitemap'
-
-const links = []
 
 const inProd = process.env.NODE_ENV === 'production'
 
@@ -104,7 +103,7 @@ export default defineConfig({
         text: 'Kitfile',
         items: [
           { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '/docs/kitfile/format' },
+          { text: 'Format', link: '/docs/kitfile/format' }
         ]
       },
       {
@@ -131,11 +130,9 @@ export default defineConfig({
         link: 'https://discord.gg/Tapeh8agYy'
       },
     ],
+
     footer: {
-      license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      },
+      message: 'Made with <3 by Jozu',
       copyright: `Copyright © ${new Date().getFullYear()} Jozu`
     }
   },
@@ -178,5 +175,42 @@ export default defineConfig({
     }
   },
 
-  ignoreDeadLinks: true
+  ignoreDeadLinks: true,
+
+  markdown: {
+    config: (md) => {
+      md.use(discordBannerPlugin);
+    },
+  }
 })
+
+// Custom Markdown-it plugin
+function discordBannerPlugin(md: MarkdownIt) {
+  const marker = '[ discord banner ]'
+
+  md.block.ruler.before(
+    'fence',
+    'discord-banner',
+    (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean => {
+    const start = state.bMarks[startLine] + state.tShift[startLine];
+    const max = state.eMarks[startLine];
+
+    // Match the custom marker
+    if (state.src.slice(start, max).trim() !== marker) {
+      return false;
+    }
+
+    if (silent) return true;
+
+    // Create a token for the banner component
+    const token = state.push('discord-banner', 'div', 0);
+    token.map = [startLine, startLine + 1];
+    state.line = startLine + 1;
+
+    return true;
+  });
+
+  // Render the component
+  md.renderer.rules['discord-banner'] = () => '<DiscordBanner />'
+}
+

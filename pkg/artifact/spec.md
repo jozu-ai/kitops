@@ -4,15 +4,16 @@ A **ModelKit** represents a comprehensive bundle of AI/ML artifacts, including m
 
 ## Terminology and Structure
 
-**Artifacts:** The building blocks of a ModelKit. Artifacts can be models, datasets, or code, each stored and addressed individually. This modular approach facilitates direct access via tools. Artifact metadata is encapsulated within the kitfile, ensuring comprehensive documentation of each component.
+**Artifacts:** The building blocks of a ModelKit. Artifacts can be models, datasets, or code, each stored and addressed individually. This modular approach facilitates direct access via tools. Artifact metadata is encapsulated within the Kitfile, ensuring comprehensive documentation of each component.
 
 The artifacts and their media types are
 * Serialized Model: `application/vnd.kitops.modelkit.model.v1.tar`
+* Additional Model files (e.g. adaptors): `application/vnd.kitops.modelkit.modelpart.v1.tar`
 * Datasets:  `application/vnd.kitops.modelkit.dataset.v1.tar`
 * Code: `application/vnd.kitops.modelkit.code.v1.tar`
 * Docs: `application/vnd.kitops.modelkit.docs.v1.tar`
 
-**ModelKit File (Kitfile)** Acts as a record detailing the properties, relationships, and intended uses of the included artifacts. The Kitfile is central to understanding the structure and purpose of a ModelKit. It adopts the `application/vnd.kitops.modelkit.config.v1+json` media type for easy access and interpretation by tools.See the seperate kitfile specification on details
+**ModelKit File (Kitfile)** Acts as a record detailing the properties, relationships, and intended uses of the included artifacts. The Kitfile is central to understanding the structure and purpose of a ModelKit. It adopts the `application/vnd.kitops.modelkit.config.v1+json` media type for easy access and interpretation by tools. See the seperate kitfile specification on details
 
 **ModelKit Manifest:** This JSON document provides essential information about the model, including creation date, authorship, and a cryptographic hash of each artifact and the Kitfile. The manifest is immutable to preserve the integrity of the ModelKitID, ensuring any modification results in the creation of a new derived ModelKit, rather than altering the existing one. ModelKit manifests adhere to the [OCI Image Manifest Specification](https://github.com/opencontainers/image-spec/blob/6a983fd8be10f63063ce6452be099cd6e20fb36b/manifest.md) ensuring compatibility with OCI artifact registries.
 

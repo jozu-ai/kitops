@@ -1,15 +1,15 @@
-import { type Ref, computed, reactive, ref } from 'vue'
+import { type Ref, computed, ref, type MaybeRef, unref } from 'vue'
 
 import { llama } from '@/services/completion'
 
 type Chunk = {
-  data: any;
+  data: any
 }
 
 type LlamaResponseParams = {
-  id_slot?: string;
-  slot_id?: number;
-  stop: string[];
+  id_slot?: string,
+  slot_id?: number,
+  stop: string[]
 }
 
 export type TranscriptMessage = {
@@ -23,17 +23,18 @@ export type CompletionTranscript = [string, string | TranscriptMessage]
 export type Transcript = ChatTranscript[] | CompletionTranscript[]
 
 export type Session = {
-  prompt: string;
-  template: string;
-  historyTemplate: string;
-  transcript: Transcript;
-  type: string;  // "chat" | "completion"
-  char: string;
-  user: string;
-  image_selected: string;
+  prompt: string,
+  template: string,
+  historyTemplate: string,
+  transcript: Transcript,
+  type: 'chat' | 'completion',
+  char: string,
+  user: string,
+  image_selected: string,
+  response: TranscriptMessage[]
 }
 
-export type UserParameters = {
+export type Parameters = {
   n_predict: number,
   temperature: number,
   repeat_last_n: number,
@@ -58,18 +59,18 @@ export type UserParameters = {
   prop_order?: string,
 }
 
-type LlamaComposableResponse = {
+export type LlamaComposableResponse = {
   stats: Ref<Record<string, string> | null>,
-  session: Session;
+  session: Ref<Session>,
   template: (str: string, extraSettings?: Record<string, any>) => string,
-  isGenerating: Ref<boolean>;
-  isChatStarted: Ref<boolean>;
-  isPending: Ref<boolean>;
-  chat: (msg: string) => Promise<void>;
-  runCompletion: () => void;
-  stop: (e: Event) => void;
-  reset: (e: Event) => void;
-  uploadImage: (e: Event) => void;
+  isGenerating: Ref<boolean>,
+  isChatStarted: Ref<boolean>,
+  isPending: Ref<boolean>,
+  chat: (msg: string) => Promise<void>,
+  runCompletion: () => void,
+  stop: (e: Event) => void,
+  reset: (e: Event) => void,
+  uploadImage: (e: Event) => void
 }
 
 export const DEFAULT_SESSION: Session = {
@@ -78,17 +79,45 @@ export const DEFAULT_SESSION: Session = {
   template: '{{prompt}}\n\n{{history}}\n{{char}}:',
   historyTemplate: '{{name}}: {{message}}',
   transcript: [],
-  type: 'chat',  // "chat" | "completion"
+  type: 'chat',
   char: 'Llama',
   user: 'User',
   image_selected: '',
+  response: [] as TranscriptMessage[]
 }
 
-export default function useLlama(params?: UserParameters, localSession?: Session): LlamaComposableResponse {
+export const DEFAULT_PARAMS_VALUES = {
+  n_predict: 400,
+  temperature: 0.7,
+  repeat_last_n: 256, // 0 = disable penalty, -1 = context size
+  repeat_penalty: 1.18, // 1.0 = disabled
+  top_k: 40, // <= 0 to use vocab size
+  top_p: 0.95, // 1.0 = disabled
+  min_p: 0.05, // 0 = disabled
+  tfs_z: 1.0, // 1.0 = disabled
+  typical_p: 1.0, // 1.0 = disabled
+  presence_penalty: 0.0, // 0.0 = disabled
+  frequency_penalty: 0.0, // 0.0 = disabled
+  mirostat: 0, // 0/1/2
+  mirostat_tau: 5, // target entropy
+  mirostat_eta: 0.1, // learning rate
+  grammar: '',
+  n_probs: 0, // no completion_probabilities,
+  min_keep: 0, // min probs from each sampler,
+  image_data: [],
+  cache_prompt: true,
+  api_key: '',
+  prop_order: undefined,
+  slot_id: -1
+} as Parameters
+
+// eslint-disable-next-line vue/max-len
+export default function useLlama(parameters?: MaybeRef<Parameters>, localSession?: Session):LlamaComposableResponse {
   const stats = ref(null)
   const controller = ref<AbortController | null>(null)
+  const params = unref(parameters)
 
-  const session: Session = reactive({
+  const session = ref<Session>({
     ...DEFAULT_SESSION,
     ...localSession
   })
@@ -97,14 +126,14 @@ export default function useLlama(params?: UserParameters, localSession?: Session
   const isGenerating = computed(() => Boolean(controller.value))
 
   // has the user started a chat?
-  const isChatStarted = computed(() => session.transcript.length > 0)
+  const isChatStarted = computed(() => session.value.transcript.length > 0)
 
   // was the request sent and pending for response?
   const isPending = ref(false)
 
   const runLlama = async (prompt: string, llamaResponseParams: LlamaResponseParams, char: string): Promise<void> => {
     const currentMessages: TranscriptMessage[] = []
-    const history = session.transcript
+    const history = session.value.transcript
     if (controller.value) {
       throw new Error('already running')
     }
@@ -122,23 +151,25 @@ export default function useLlama(params?: UserParameters, localSession?: Session
           ) {
             currentMessages.pop()
           }
-          session.transcript = [...history, [char, currentMessages]] as Transcript
+          session.value.transcript = [...history, [char, currentMessages]] as Transcript
         } else {
           currentMessages.push(data)
           if (params) {
             params.slot_id = data.slot_id
           }
-          if (session.image_selected && !data.multimodal) {
+          if (session.value.image_selected && !data.multimodal) {
             alert("The server was not compiled for multimodal or the model projector can't be loaded.")
             return
           }
-          session.transcript = [...history, [char, currentMessages]] as Transcript
+          session.value.transcript = [...history, [char, currentMessages]] as Transcript
         }
 
         if (data.timings) {
           stats.value = data
         }
       }
+
+      session.value.response.push(currentMessages as any)
     } catch (e) {
       if (!(e instanceof DOMException) || e.name !== 'AbortError') {
         console.error(e)
@@ -150,12 +181,14 @@ export default function useLlama(params?: UserParameters, localSession?: Session
 
   // simple template replace
   const template = (str: string, extraSettings?: Record<string, any>): string => {
-    let settings = session
+    let settings = session.value
     if (extraSettings) {
       settings = { ...settings, ...extraSettings }
     }
     return String(str)
-      .replaceAll(/\{\{(.*?)\}\}/g, (_, key: Exclude<keyof Session, 'transcript'>) => template(settings[key]))
+      .replaceAll(
+        /\{\{(.*?)\}\}/g, (_, key: Exclude<keyof Session, 'transcript' | 'response'>) => template(settings[key])
+      )
   }
 
   const chat = async (message: string): Promise<void> => {
@@ -164,14 +197,14 @@ export default function useLlama(params?: UserParameters, localSession?: Session
       return
     }
 
-    session.transcript = [...session.transcript, ['{{user}}', [{ content: message }]]] as Transcript
+    session.value.transcript = [...session.value.transcript, ['{{user}}', [{ content: message }]]] as Transcript
 
-    let prompt = template(session.template, {
+    let prompt = template(session.value.template, {
       message,
-      history: session.transcript.flatMap(
+      history: session.value.transcript.flatMap(
         ([name, data]) =>
           template(
-            session.historyTemplate,
+            session.value.historyTemplate,
             {
               name,
               message: Array.isArray(data) ?
@@ -182,14 +215,14 @@ export default function useLlama(params?: UserParameters, localSession?: Session
       ).join('\n'),
     })
 
-    if (session.image_selected) {
+    if (session.value.image_selected) {
       // eslint-disable-next-line
       prompt = `A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.\nUSER:[img-10]${message}\nASSISTANT:`
     }
 
     await runLlama(prompt, {
       ...params,
-      stop: ['</s>', template('{{char}}:'), template('{{user}}:')],
+      stop: ['</s>', template('{{char}}:'), template('{{user}}:'), '<|im_end|>'],
     }, '{{char}}')
   }
 
@@ -199,20 +232,20 @@ export default function useLlama(params?: UserParameters, localSession?: Session
     }
 
     isPending.value = true
-    const { prompt } = session
-    session.transcript = [...session.transcript, ['', prompt]] as Transcript
+    const prompt = session.value.prompt
+    session.value.transcript = [...session.value.transcript, ['', prompt]] as Transcript
 
     runLlama(prompt, {
         ...params,
-        stop: [],
+        stop: ['<|im_end|>'],
       }, '')
       .finally(() => {
-        session.prompt = session.transcript.map(([_, data]) =>
+        session.value.prompt = session.value.transcript.map(([_, data]) =>
           Array.isArray(data)
             ? data.map(msg => msg.content).join('')
             : data
         ).join('')
-        session.transcript = [['', session.prompt]] as Transcript
+        session.value.transcript = [['', session.value.prompt]] as Transcript
         isPending.value = false
       })
   }
@@ -229,7 +262,7 @@ export default function useLlama(params?: UserParameters, localSession?: Session
 
   const reset = (e: Event): void => {
     stop(e)
-    session.transcript = []
+    session.value.transcript = []
   }
 
   const uploadImage = (): void => {
@@ -239,7 +272,7 @@ export default function useLlama(params?: UserParameters, localSession?: Session
       const reader = new FileReader()
       reader.onload = function () {
         const image_data = reader.result as string
-        session.image_selected = image_data
+        session.value.image_selected = image_data
       }
       reader.readAsDataURL(selectedFile)
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { nextTick, ref, watchEffect, type Ref, useSlots, useAttrs } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import { nextTick, ref, watchEffect, type Ref, useSlots, useAttrs } from 'vue'
 
 const props = withDefaults(defineProps<{
   position?: 'top' | 'right' | 'bottom' | 'left' | 'static',

@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { isClient } from '@vueuse/core'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
+import axios from 'axios'
+import VueTurnstile from 'vue-turnstile'
 
 const error = ref('')
 const email = ref('')
+const token = ref('')
 const favoriteDevOpsTool = ref('')
 const isBusy = ref(false)
+const isSubscribed = ref(false)
+const isSuccess = ref(false)
+const isProd = import.meta.env.PROD
 
 const activeQuote = ref(0)
 const quotes = [
@@ -54,6 +60,52 @@ const quotesOffsetMobile = computed(() => {
 
 // current quote * card width + margin + half card)
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
+
+const subscribeToNewsletter = async () => {
+  isBusy.value = true
+
+  // Validate the captcha token with the server
+  try {
+    await axios.post('https://newsprxy.gorkem.workers.dev/', {
+      email: email.value,
+      userGroup: 'KitOps',
+      formName: 'KitOps-Community',
+      favoriteDevOpsTool: favoriteDevOpsTool.value
+    }, {
+      headers: {
+        'cf-turnstile-response': token.value,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Expect': '',
+      }
+    })
+
+    isSuccess.value = true
+    localStorage.setItem('subscribed', 'true')
+  }
+  catch(err: any) {
+    error.value = err.response?.data?.errors?.flatMap((e: Error) => e.message)[0] || 'An unknown error occurred'
+  }
+  finally {
+    isBusy.value = false
+  }
+}
+
+onMounted(() => {
+  isSubscribed.value = localStorage.getItem('subscribed') === 'true'
+
+  setTimeout(() => {
+    // check if there's an anchor link in the url and if so, scroll to that element id
+    if (location.hash) {
+      const el = document.querySelector(location.hash)
+      if (el && el instanceof HTMLElement) {
+        el.scrollIntoView({
+          behavior:'smooth',
+          block: 'center',
+        })
+      }
+    }
+  }, 100)
+})
 </script>
 
 <template>
@@ -75,10 +127,6 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
       Download
     </a>
   </div>
-
-  <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14">
-    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
-  </div>
 </div>
 
 <div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
@@ -91,6 +139,49 @@ const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 6
     <source src="/how-it-works.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+</div>
+
+<div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container" id="join">
+  <h2 class="text-center">stay informed About Kitops</h2>
+
+  <div class="text-center max-w-[600px] mx-auto mt-12">
+    <template v-if="!isSuccess">
+      <form @submit.prevent="subscribeToNewsletter" class="flex flex-col md:flex-row gap-10 lg:gap-4">
+        <input required
+          :disabled="isBusy"
+          id="email"
+          type="email"
+          pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
+          name="email"
+          placeholder="you@example.com"
+          class="input"
+          v-model="email"
+          style="border: 1px solid var(--color-off-white)" />
+
+        <input
+          type="text"
+          id="favoriteDevOpsTool"
+          placeholder="What's your favorite devops tool?"
+          name="favoriteDevOpsTool"
+          v-model="favoriteDevOpsTool"
+          class="hidden" />
+
+        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center mx-auto">
+          JOIN THE LIST
+        </button>
+      </form>
+
+      <div v-if="isProd" class="mt-10">
+        <vue-turnstile site-key="0x4AAAAAAA1WT4LYaVrBtAD7" v-model="token" />
+      </div>
+
+      <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
+    </template>
+
+    <template v-else>
+      <p class="mt-12">You are now subscribed to the newsletter.</p>
+    </template>
+  </div>
 </div>
 
 <div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
