@@ -42,7 +42,7 @@ const year = (new Date()).getFullYear()
   </nav>
 
   <div class="text-center space-y-6 text-sm font-bold">
-    <ul class="flex items-center gap-14 justify-center">
+    <ul class="flex items-center gap-10 md:gap-14 justify-center">
       <li>
         <a href="https://discord.gg/3eDb4yAN" target="_blank">
           <span class="sr-only">discord</span>
