@@ -202,8 +202,8 @@ func PrintLogs(configHome string, w io.Writer, follow bool) error {
 					return nil
 				}
 				time.Sleep(1 * time.Second)
-				serverStatus := checkExistence(configHome)
-				if serverStatus {
+				err := checkExistence(configHome)
+				if err != nil {
 					return fmt.Errorf("server stopped")
 				}
 				continue
@@ -217,11 +217,22 @@ func PrintLogs(configHome string, w io.Writer, follow bool) error {
 	}
 }
 
-func checkExistence(configHome string) bool {
+func checkExistence(configHome string) error {
 	pidFile := filepath.Join(constants.HarnessPath(configHome), constants.HarnessProcessFile)
 
-	_, err := readPIDFromFile(pidFile)
-	return os.IsNotExist(err)
+	pid, err := readPIDFromFile(pidFile)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("no Running server found")
+	}
+	if err != nil {
+		return err
+	}
+
+	// Check if the process is still running.
+	if !isProcessRunning(pid) {
+		return fmt.Errorf("no running process found with PID %d", pid)
+	}
+	return nil
 }
 
 func isProcessRunning(pid int) bool {
