@@ -80,28 +80,27 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	var modelFiles []fs.DirEntry
 	for _, d := range ds {
 		name := d.Name()
-		path := filepath.Join(baseDir, name)
 		if d.IsDir() {
-			err := addDirToKitfile(kitfile, path, d)
+			err := addDirToKitfile(kitfile, name, d)
 			if err != nil {
-				unprocessedDirPaths = append(unprocessedDirPaths, path)
+				unprocessedDirPaths = append(unprocessedDirPaths, name)
 			}
 			continue
 		}
 
 		// Check for "special" files (e.g. readme, license)
-		if strings.HasPrefix(strings.ToLower(path), "readme") {
+		if strings.HasPrefix(strings.ToLower(name), "readme") {
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
-				Path:        path,
+				Path:        name,
 				Description: "Readme file",
 			})
 			continue
-		} else if strings.ToLower(path) == "license" {
+		} else if strings.ToLower(name) == "license" {
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
-				Path:        path,
+				Path:        name,
 				Description: "License file",
 			})
-			licenseType, err := detectLicense(path)
+			licenseType, err := detectLicense(filepath.Join(baseDir, name))
 			if err != nil {
 				output.Debugf("Error determining license type: %s", err)
 				output.Logf(output.LogLevelWarn, "Unable to determine license type")
@@ -120,15 +119,15 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		// Metadata should be included in either Model or Datasets, depending on
 		// other contents
 		if anySuffix(name, metadataSuffixes) {
-			metadataPaths = append(metadataPaths, path)
+			metadataPaths = append(metadataPaths, name)
 			continue
 		}
 		if anySuffix(name, docsSuffixes) {
-			kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: path})
+			kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: name})
 			continue
 		}
 		if anySuffix(name, datasetSuffixes) {
-			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: path})
+			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: name})
 			continue
 		}
 
@@ -151,7 +150,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	// or as separate layers for each directory.
 	if includeCatchallSection || len(unprocessedDirPaths) > 5 {
 		// Overwrite any code layers we added before; this is cleaner than e.g. having a layer for '.' and a layer for 'src'
-		kitfile.Code = []artifact.Code{{Path: baseDir}}
+		kitfile.Code = []artifact.Code{{Path: "."}}
 	} else {
 		for _, path := range unprocessedDirPaths {
 			kitfile.Code = append(kitfile.Code, artifact.Code{Path: path})
@@ -216,7 +215,7 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []f
 	// all parts in lexical order
 	if largestSize > averageSize+(averageSize/2) {
 		kitfile.Model = &artifact.Model{
-			Path: filepath.Join(baseDir, largestFile),
+			Path: largestFile,
 		}
 		kitfile.Model.Name = strings.TrimSuffix(largestFile, filepath.Ext(largestFile))
 		for _, modelFile := range modelFiles {
@@ -224,16 +223,16 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []f
 				continue
 			}
 			kitfile.Model.Parts = append(kitfile.Model.Parts, artifact.ModelPart{
-				Path: filepath.Join(baseDir, modelFile.Name()),
+				Path: modelFile.Name(),
 			})
 		}
 	} else {
 		kitfile.Model = &artifact.Model{
-			Path: filepath.Join(baseDir, modelFiles[0].Name()),
+			Path: modelFiles[0].Name(),
 		}
 		for _, modelFile := range modelFiles[1:] {
 			kitfile.Model.Parts = append(kitfile.Model.Parts, artifact.ModelPart{
-				Path: filepath.Join(baseDir, modelFile.Name()),
+				Path: modelFile.Name(),
 			})
 		}
 	}
