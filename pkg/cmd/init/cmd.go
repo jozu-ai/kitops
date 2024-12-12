@@ -19,8 +19,10 @@ package kitinit
 import (
 	"context"
 	"fmt"
+	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/kitfile"
+	"kitops/pkg/lib/util"
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
@@ -43,8 +45,10 @@ kit init ./my-model --name "mymodel" --desc "This is my model's description"`
 )
 
 type initOptions struct {
-	path       string
-	configHome string
+	path                string
+	configHome          string
+	modelkitName        string
+	modelkitDescription string
 }
 
 func InitCommand() *cobra.Command {
@@ -59,6 +63,9 @@ func InitCommand() *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 	}
 
+	cmd.Flags().StringVar(&opts.modelkitName, "name", "", "Name for the ModelKit")
+	cmd.Flags().StringVar(&opts.modelkitDescription, "desc", "", "Description for the ModelKit")
+	cmd.Flags().SortFlags = false
 	return cmd
 }
 
@@ -68,7 +75,15 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		kitfile, err := kitfile.GenerateKitfile(opts.path, nil)
+		var modelPackage *artifact.Package
+		if opts.modelkitName != "" || opts.modelkitDescription != "" {
+			modelPackage = &artifact.Package{
+				Name:        opts.modelkitName,
+				Description: opts.modelkitDescription,
+			}
+		}
+
+		kitfile, err := kitfile.GenerateKitfile(opts.path, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
 		}
@@ -93,6 +108,21 @@ func (opts *initOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 	opts.path = args[0]
+
+	if opts.modelkitName == "" {
+		name, err := util.PromptForInput("Enter a name for the ModelKit: ", false)
+		if err != nil {
+			return err
+		}
+		opts.modelkitName = name
+	}
+	if opts.modelkitDescription == "" {
+		desc, err := util.PromptForInput("Enter a short description for the ModelKit: ", false)
+		if err != nil {
+			return err
+		}
+		opts.modelkitDescription = desc
+	}
 
 	return nil
 }
