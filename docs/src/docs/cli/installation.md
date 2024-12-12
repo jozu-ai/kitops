@@ -13,6 +13,8 @@ This page includes instructions for:
 * Installing on [Linux](#🐧-linux-install) with Brew or TAR
 * Building from the [source code](#🛠️-build-from-source-code)
 
+[ discord banner ]
+
 ## 🍎 MacOS Install
 
 The simplest way to install Kit on a Mac is with [Homebrew](https://brew.sh/). You can also install from [ZIP](#mac-install-from-zip).
