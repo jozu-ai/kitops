@@ -78,6 +78,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	// or datasets
 	var metadataPaths []string
 	var modelFiles []fs.DirEntry
+	var detectedLicenseType string
 	for _, d := range ds {
 		name := d.Name()
 		if d.IsDir() {
@@ -105,7 +106,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 				output.Debugf("Error determining license type: %s", err)
 				output.Logf(output.LogLevelWarn, "Unable to determine license type")
 			}
-			kitfile.Package.License = licenseType
+			detectedLicenseType = licenseType
 			continue
 		}
 
@@ -155,6 +156,17 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		for _, path := range unprocessedDirPaths {
 			kitfile.Code = append(kitfile.Code, artifact.Code{Path: path})
 		}
+	}
+
+	// If we detected a license, try to attach it to the Kitfile section that makes sense
+	if kitfile.Model != nil && detectedLicenseType != "" {
+		kitfile.Model.License = detectedLicenseType
+	} else if len(kitfile.DataSets) == 1 {
+		kitfile.DataSets[0].License = detectedLicenseType
+	} else if len(kitfile.Code) == 1 {
+		kitfile.Code[0].License = detectedLicenseType
+	} else {
+		kitfile.Package.License = detectedLicenseType
 	}
 
 	return kitfile, nil
