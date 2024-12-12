@@ -20,9 +20,12 @@ import (
 	"fmt"
 	"io/fs"
 	"kitops/pkg/artifact"
+	"kitops/pkg/output"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/licensecheck"
 )
 
 var modelWeightsSuffixes = []string{
@@ -98,7 +101,12 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 				Path:        path,
 				Description: "License file",
 			})
-			// TODO: Determine license type automatically
+			licenseType, err := detectLicense(path)
+			if err != nil {
+				output.Debugf("Error determining license type: %s", err)
+				output.Logf(output.LogLevelWarn, "Unable to determine license type")
+			}
+			kitfile.Package.License = licenseType
 			continue
 		}
 
@@ -230,6 +238,19 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []f
 		}
 	}
 	return nil
+}
+
+func detectLicense(licensePath string) (string, error) {
+	license, err := os.ReadFile(licensePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read license file: %w", err)
+	}
+	cov := licensecheck.Scan(license)
+	if len(cov.Match) == 1 {
+		return cov.Match[0].ID, nil
+	} else {
+		return "", fmt.Errorf("multiple licenses matched license file")
+	}
 }
 
 func anySuffix(query string, suffixes []string) bool {
