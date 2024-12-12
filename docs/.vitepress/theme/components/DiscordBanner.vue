@@ -12,7 +12,7 @@
     <div>Talk with our team about how KitOps can help</div>
 
     <div>
-      <button class="kit-button kit-button-small kit-button-cornflower">Join our Discord</button>
+      <a href="https://discord.gg/Tapeh8agYy" target="_blank" class="!inline-block !no-underline !font-bold hocus:!text-white hocus:!opacity-100 kit-button kit-button-small kit-button-cornflower">Join our Discord</a>
     </div>
   </div>
 </div>
