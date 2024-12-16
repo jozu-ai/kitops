@@ -17,6 +17,7 @@
 package harness
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -28,6 +29,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
@@ -179,7 +181,7 @@ func (harness *LLMHarness) Stop() error {
 	return nil
 }
 
-func PrintLogs(configHome string, w io.Writer) error {
+func PrintLogs(configHome string, w io.Writer, follow bool) error {
 	harnessPath := constants.HarnessPath(configHome)
 	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
 	logFile, err := os.Open(logPath)
@@ -191,8 +193,44 @@ func PrintLogs(configHome string, w io.Writer) error {
 		return fmt.Errorf("error reading log file: %w", err)
 	}
 	defer logFile.Close()
-	if _, err = io.Copy(w, logFile); err != nil {
-		return fmt.Errorf("failed to print log file: %w", err)
+	reader := bufio.NewReader(logFile)
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				if !follow {
+					return nil
+				}
+				time.Sleep(1 * time.Second)
+				err := checkExistence(configHome)
+				if err != nil {
+					return fmt.Errorf("server stopped")
+				}
+				continue
+			} else {
+				return fmt.Errorf("failed to print log file: %w", err)
+			}
+		}
+		if _, err := w.Write([]byte(line)); err != nil {
+			return fmt.Errorf("failed to write to output: %w", err)
+		}
+	}
+}
+
+func checkExistence(configHome string) error {
+	pidFile := filepath.Join(constants.HarnessPath(configHome), constants.HarnessProcessFile)
+
+	pid, err := readPIDFromFile(pidFile)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("no Running server found")
+	}
+	if err != nil {
+		return err
+	}
+
+	// Check if the process is still running.
+	if !isProcessRunning(pid) {
+		return fmt.Errorf("no running process found with PID %d", pid)
 	}
 	return nil
 }
