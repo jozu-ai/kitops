@@ -25,8 +25,8 @@ import (
 
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
-	kitinit "kitops/pkg/cmd/init"
 	"kitops/pkg/cmd/inspect"
+	"kitops/pkg/cmd/kitinit"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
 	"kitops/pkg/cmd/logout"
