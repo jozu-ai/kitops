@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   speed?: number
 }>(), {
   tag: 'div',
+  open: true,
   speed: 300
 })
 

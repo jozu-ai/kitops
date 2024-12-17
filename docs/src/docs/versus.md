@@ -6,8 +6,8 @@ When people first come across KitOps they sometimes wonder, "how is this better 
 
 Most teams working on AI projects store, track, and version their assets in one of two ways.
 
-1. Using an MLOps tool
-1. Using a combination of git, containers, cloud storage, and Jupyter notebooks
+1. Using an [MLOps tool](#kitops-vs-mlops-tools)
+1. Using a combination of git, containers, cloud storage, and [Jupyter notebooks](#kitops-vs-jupyter-containers-dataset-storage-and-git)
 
 Neither solution is well suited to tracking and sharing AI project updates across data science, application development, infrastructure, and management teams... and neither is able to work seamlessly with the security, compliance, and efficiency processes organizations have spent decades perfecting.
 
@@ -15,19 +15,18 @@ Let's look at each option in a little more depth.
 
 ## KitOps vs. MLOps Tools
 
-First off, it's important to understand that KitOps and its ModelKits don't completely replace the need for MLOps training and experimentation tools like Weights & Biases, MLFlow, or others.
+First off, it's important to understand that KitOps and its ModelKits don't replace the need for MLOps training and experimentation tools like Weights & Biases, MLFlow, or others.
 
-However, [ModelKits](./modelkit/intro.md) are a better way to package, version, and share AI project assets outside of the data science team who use MLOps tools everyday.
+However, [ModelKits](./modelkit/intro.md) are more secure and flexible way to package, version, and share AI project assets outside of the data science team who use MLOps tools everyday.
 
 Unlike MLOps tools, KitOps:
 
+* Can be stored in the [container registry](https://kitops.ml/docs/modelkit/compatibility.html#compliant-oci-registries) every team already uses
 * Fits naturally (and without any changes) into organizations' existing deployment, security, and compliance processes
-* Can already be used with *every* software, DevOps, and data science tool
-* Uses existing, proven, and compliant registries organizations already depend on for their critical software assets
-* Is simple enough for anyone to use, not just data science teams
-* Leverages the same structure and syntax engineering teams are familiar with from containers and Kubernetes
+* Can already be [used with *every* software, DevOps, and data science tool](./modelkit/compatibility.md)
+* Is available as free open source, and openly governed so it protects users and organizations from vendor lock-in
+* Is [simple enough](./get-started.md) for anyone to use, not just data science teams
 * Is based on standards like OCI, that are vendor agnostic
-* Is open source, and openly governed so it protects users and organizations from vendor lock-in
 * Built by a community with decades of production operations and compliance experience
 
 ## KitOps vs. Jupyter, Containers, Dataset Storage, and Git

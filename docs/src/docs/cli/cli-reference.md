@@ -177,7 +177,9 @@ kit info --remote registry.example.com/my-model:1.0.0
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -r, --remote            Check remote registry instead of local storage
+  -f, --filter string     filter with node selectors
   -h, --help              help for info
 ```
 
@@ -226,6 +228,7 @@ kit inspect --remote registry.example.com/my-model:1.0.0
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -r, --remote            Check remote registry instead of local storage
   -h, --help              help for inspect
 ```
@@ -284,6 +287,7 @@ kit list registry.example.com/my-namespace/my-model
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -h, --help              help for list
 ```
 
@@ -330,6 +334,7 @@ kit login docker.io --password-stdin -u docker_user
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -h, --help              help for login
 ```
 
@@ -455,6 +460,7 @@ kit pull registry.example.com/my-model:latest
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -h, --help              help for pull
 ```
 
@@ -500,6 +506,7 @@ kit push registry.example.com/my-model:1.0.0
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -h, --help              help for push
 ```
 
@@ -560,6 +567,7 @@ kit remove --all --force
       --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
   -h, --help              help for remove
 ```
 
@@ -714,6 +722,7 @@ kit unpack registry.example.com/myrepo/my-model:latest -o -d /path/to/unpacked
       --cert string          Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
       --key string           Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
       --concurrency int      Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string         Proxy to use for connections (overrides proxy set by environment)
   -h, --help                 help for unpack
 ```
 

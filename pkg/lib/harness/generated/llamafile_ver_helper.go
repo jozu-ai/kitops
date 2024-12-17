@@ -14,12 +14,16 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package harness
+//go:build ignore
+// +build ignore
 
-import "embed"
+package main
 
-//go:embed llama.cpp/build/darwin/x86_64/*/bin/*
-var serverEmbed embed.FS
+import (
+	"fmt"
+	"kitops/pkg/lib/harness"
+)
 
-//go:embed ui.tar.gz
-var uiEmbed embed.FS
+func main() {
+	fmt.Println(harness.LlamaFileVersion)
+}

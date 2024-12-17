@@ -17,17 +17,25 @@
 package harness
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
+	"strings"
 	"syscall"
+	"time"
 
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 )
+
+const LlamaFileVersion = "0.8.16"
 
 type LLMHarness struct {
 	Host       string
@@ -36,18 +44,27 @@ type LLMHarness struct {
 }
 
 func (harness *LLMHarness) Init() error {
-	err := extractServer(constants.HarnessPath(harness.ConfigHome), "llama.cpp/build/*/*/*/bin/**")
+	harnessPath := constants.HarnessPath(harness.ConfigHome)
+	ok, err := checkHarness(harnessPath)
 	if err != nil {
-		return fmt.Errorf("failed to extract dev server files: %s", err)
+		return fmt.Errorf("failed to verify dev server: %w", err)
 	}
-	err = extractUI(constants.HarnessPath(harness.ConfigHome))
+	if ok {
+		return nil
+	}
+	err = extractServer(harnessPath)
 	if err != nil {
-		return fmt.Errorf("failed to extract dev UI files: %s", err)
+		return fmt.Errorf("failed to extract dev server files: %w", err)
+	}
+	err = extractUI(harnessPath)
+	if err != nil {
+		return fmt.Errorf("failed to extract dev UI files: %w", err)
 	}
 	return nil
 }
 
-func (harness *LLMHarness) Start(modelPath string) error {
+func (harness *LLMHarness) Start(modelPath string) (err error) {
+
 	harnessPath := constants.HarnessPath(harness.ConfigHome)
 	pidFile := filepath.Join(harnessPath, constants.HarnessProcessFile)
 	logFile := filepath.Join(harnessPath, constants.HarnessLogFile)
@@ -67,23 +84,49 @@ func (harness *LLMHarness) Start(modelPath string) error {
 	}
 
 	uiHome := filepath.Join(harnessPath, "ui")
-	cmd := exec.Command("./server",
-		"--host", harness.Host,
-		"--port", strconv.Itoa(harness.Port),
-		"--model", modelPath,
-		"--path", uiHome)
+	output.Debugf("model path is %s", modelPath)
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command(
+			"./llamafile.exe",
+			"--server",
+			"--model", modelPath,
+			"--host", harness.Host,
+			"--port", fmt.Sprintf("%d", harness.Port),
+			"--path", uiHome,
+			"--gpu", "AUTO",
+			"--nobrowser",
+			"--unsecure",
+		)
+	} else {
+		cmd = exec.Command("sh", "-c",
+			fmt.Sprintf("./llamafile --server --model %s --host %s --port %d --path %s --gpu AUTO --nobrowser --unsecure",
+				modelPath, harness.Host, harness.Port, uiHome),
+		)
+	}
+
 	cmd.Dir = harnessPath
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return fmt.Errorf("failed to open log file for harness: %w", err)
 	}
-	defer logs.Close()
+
+	defer func() {
+		if errClose := logs.Close(); errClose != nil {
+			if err == nil {
+				err = fmt.Errorf("failed to close log file: %w", errClose)
+			} else {
+				err = fmt.Errorf("%v; failed to close log file: %w", err, errClose)
+			}
+		}
+	}()
+
 	output.Debugf("Saving server logs to %s", logFile)
 	cmd.Stdout = logs
 	cmd.Stderr = logs
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("error starting llm harness: %s", err)
+		return fmt.Errorf("error starting llm harness: %w", err)
 	}
 
 	pid := cmd.Process.Pid
@@ -115,16 +158,16 @@ func (harness *LLMHarness) Stop() error {
 	// Kill the process using the PID.
 	process, err := os.FindProcess(pid)
 	if err != nil {
-		return fmt.Errorf("error finding process: %s", err)
+		return fmt.Errorf("error finding process: %w", err)
 	}
 
-	err = process.Signal(syscall.SIGTERM) // Try to kill it gently
+	err = process.Signal(os.Interrupt) // Try to kill it gently
 	if err != nil {
-		output.Infof("Error killing process %s", err)
+		output.Debugf("Error killing process %w", err)
 		// If SIGTERM failed, kill it with SIGKILL
 		err = process.Kill()
 		if err != nil {
-			return fmt.Errorf("error killing process: %s", err)
+			return fmt.Errorf("error killing process: %w", err)
 		}
 	}
 
@@ -132,13 +175,13 @@ func (harness *LLMHarness) Stop() error {
 	// Delete the PID file to clean up.
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("error removing PID file: %s", err)
+		return fmt.Errorf("error removing PID file: %w", err)
 	}
 
 	return nil
 }
 
-func PrintLogs(configHome string, w io.Writer) error {
+func PrintLogs(configHome string, w io.Writer, follow bool) error {
 	harnessPath := constants.HarnessPath(configHome)
 	logPath := filepath.Join(harnessPath, constants.HarnessLogFile)
 	logFile, err := os.Open(logPath)
@@ -147,11 +190,47 @@ func PrintLogs(configHome string, w io.Writer) error {
 			output.Errorf("No log file found")
 			return nil
 		}
-		return fmt.Errorf("Error reading log file: %w", err)
+		return fmt.Errorf("error reading log file: %w", err)
 	}
 	defer logFile.Close()
-	if _, err = io.Copy(w, logFile); err != nil {
-		return fmt.Errorf("Failed to print log file: %w", err)
+	reader := bufio.NewReader(logFile)
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				if !follow {
+					return nil
+				}
+				time.Sleep(1 * time.Second)
+				err := checkExistence(configHome)
+				if err != nil {
+					return fmt.Errorf("server stopped")
+				}
+				continue
+			} else {
+				return fmt.Errorf("failed to print log file: %w", err)
+			}
+		}
+		if _, err := w.Write([]byte(line)); err != nil {
+			return fmt.Errorf("failed to write to output: %w", err)
+		}
+	}
+}
+
+func checkExistence(configHome string) error {
+	pidFile := filepath.Join(constants.HarnessPath(configHome), constants.HarnessProcessFile)
+
+	pid, err := readPIDFromFile(pidFile)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("no Running server found")
+	}
+	if err != nil {
+		return err
+	}
+
+	// Check if the process is still running.
+	if !isProcessRunning(pid) {
+		return fmt.Errorf("no running process found with PID %d", pid)
 	}
 	return nil
 }
@@ -160,6 +239,10 @@ func isProcessRunning(pid int) bool {
 	process, err := os.FindProcess(pid)
 	if err != nil {
 		return false
+	}
+	if runtime.GOOS == "windows" {
+		// On Windows, just finding the process implies it exists
+		return true
 	}
 	// Sending signal 0 to a process does not affect it but can be used for error checking.
 	// If an error is returned, the process does not exist.
@@ -194,4 +277,51 @@ func readPIDFromFile(filePath string) (int, error) {
 		return 0, err
 	}
 	return pid, nil
+}
+
+func checkHarness(harnessHome string) (bool, error) {
+	executableName := "llamafile"
+	if runtime.GOOS == "windows" {
+		executableName = "llamafile.exe"
+	}
+	llamaFilePath := filepath.Join(harnessHome, executableName)
+	llamaVersionPath := filepath.Join(harnessHome, "llamafile.version")
+	uiPath := filepath.Join(harnessHome, "ui")
+
+	// 'llamafile'
+	if _, err := os.Stat(llamaFilePath); errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'llamafile': %w", err)
+	}
+
+	// llamafile.version
+	if _, err := os.Stat(llamaVersionPath); errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'llamafile.version': %w", err)
+	}
+
+	versionData, err := os.ReadFile(llamaVersionPath)
+	if err != nil {
+		return false, fmt.Errorf("error reading 'llamafile.version': %w", err)
+	}
+	version := strings.TrimSpace(string(versionData))
+	if version != LlamaFileVersion {
+		return false, nil
+	}
+
+	// 'ui/'
+	uiInfo, err := os.Stat(uiPath)
+	if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else if err != nil {
+		return false, fmt.Errorf("error checking 'ui' directory: %w", err)
+	}
+	if !uiInfo.IsDir() {
+		return false, fmt.Errorf("'ui' exists but is not a directory")
+	}
+
+	// harness is ready
+	return true, nil
 }

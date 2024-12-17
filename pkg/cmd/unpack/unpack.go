@@ -77,20 +77,26 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 
 	// Since there might be multiple datasets, etc. we need to synchronously iterate
 	// through the config's relevant field to get the correct path for unpacking
+	// We need to support older ModelKits (that were packed without diffIDs and digest
+	// in the config) for now, so we need to continue using the old structure.
 	var modelPartIdx, codeIdx, datasetIdx, docsIdx int
 	for _, layerDesc := range manifest.Layers {
+		// This variable supports older-format tar layers (that don't include the
+		// layer path). For current ModelKits, this will be empty
 		var relPath string
+
+		// Grab path + layer info from the config object corresponding to this layer
+		var layerPath string
+		var layerInfo *artifact.LayerInfo
 		mediaType := constants.ParseMediaType(layerDesc.MediaType)
 		switch mediaType.BaseType {
 		case constants.ModelType:
 			if !shouldUnpackLayer(config.Model, opts.filterConfs) {
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, config.Model.Path)
-			if err != nil {
-				return fmt.Errorf("error resolving model path: %w", err)
-			}
-			output.Infof("Unpacking model %s to %s", config.Model.Name, relPath)
+			layerInfo = config.Model.LayerInfo
+			layerPath = config.Model.Path
+			output.Infof("Unpacking model %s to %s", config.Model.Name, config.Model.Path)
 
 		case constants.ModelPartType:
 			part := config.Model.Parts[modelPartIdx]
@@ -98,11 +104,9 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				modelPartIdx += 1
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, part.Path)
-			if err != nil {
-				return fmt.Errorf("error resolving code path: %w", err)
-			}
-			output.Infof("Unpacking model part %s to %s", part.Name, relPath)
+			layerInfo = part.LayerInfo
+			layerPath = part.Path
+			output.Infof("Unpacking model part %s to %s", part.Name, part.Path)
 			modelPartIdx += 1
 
 		case constants.CodeType:
@@ -111,11 +115,9 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				codeIdx += 1
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, codeEntry.Path)
-			if err != nil {
-				return fmt.Errorf("error resolving code path: %w", err)
-			}
-			output.Infof("Unpacking code to %s", relPath)
+			layerInfo = codeEntry.LayerInfo
+			layerPath = codeEntry.Path
+			output.Infof("Unpacking code to %s", codeEntry.Path)
 			codeIdx += 1
 
 		case constants.DatasetType:
@@ -124,11 +126,9 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				datasetIdx += 1
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, datasetEntry.Path)
-			if err != nil {
-				return fmt.Errorf("error resolving dataset path for dataset %s: %w", datasetEntry.Name, err)
-			}
-			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, relPath)
+			layerInfo = datasetEntry.LayerInfo
+			layerPath = datasetEntry.Path
+			output.Infof("Unpacking dataset %s to %s", datasetEntry.Name, datasetEntry.Path)
 			datasetIdx += 1
 
 		case constants.DocsType:
@@ -137,12 +137,22 @@ func runUnpackRecursive(ctx context.Context, opts *unpackOptions, visitedRefs []
 				docsIdx += 1
 				continue
 			}
-			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, docsEntry.Path)
-			if err != nil {
-				return fmt.Errorf("error resolving path %s for docs: %w", docsEntry.Path, err)
-			}
+			layerInfo = docsEntry.LayerInfo
+			layerPath = docsEntry.Path
 			output.Infof("Unpacking docs to %s", docsEntry.Path)
 			docsIdx += 1
+		}
+
+		if layerInfo != nil {
+			if layerInfo.Digest != layerDesc.Digest.String() {
+				return fmt.Errorf("digest in config and manifest do not match in %s", mediaType.BaseType)
+			}
+			relPath = ""
+		} else {
+			_, relPath, err = filesystem.VerifySubpath(opts.unpackDir, layerPath)
+			if err != nil {
+				return fmt.Errorf("error resolving %s path: %w", mediaType.BaseType, err)
+			}
 		}
 
 		if err := unpackLayer(ctx, store, layerDesc, relPath, opts.overwrite, mediaType.Compression); err != nil {
@@ -225,19 +235,21 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 	defer cr.Close()
 	tr := tar.NewReader(cr)
 
-	unpackDir := filepath.Dir(unpackPath)
-	if err := os.MkdirAll(unpackDir, 0755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", unpackDir, err)
+	if unpackPath != "" {
+		unpackPath = filepath.Dir(unpackPath)
+		if err := os.MkdirAll(unpackPath, 0755); err != nil {
+			return fmt.Errorf("failed to create directory %s: %w", unpackPath, err)
+		}
 	}
 
-	if err := extractTar(tr, unpackDir, overwrite, logger); err != nil {
+	if err := extractTar(tr, unpackPath, overwrite, logger); err != nil {
 		return err
 	}
 	logger.Wait()
 	return nil
 }
 
-func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.ProgressLogger) error {
+func extractTar(tr *tar.Reader, extractDir string, overwrite bool, logger *output.ProgressLogger) (err error) {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -246,7 +258,15 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 		if err != nil {
 			return err
 		}
-		outPath := filepath.Join(dir, header.Name)
+		outPath := header.Name
+		if extractDir != "" {
+			outPath = filepath.Join(extractDir, header.Name)
+		}
+		// Check if the outPath is within the target directory
+		_, _, err = filesystem.VerifySubpath(extractDir, outPath)
+		if err != nil {
+			return fmt.Errorf("illegal file path: %s: %w", outPath, err)
+		}
 
 		switch header.Typeflag {
 		case tar.TypeDir:
@@ -254,7 +274,6 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 				if !fi.IsDir() {
 					return fmt.Errorf("path '%s' already exists and is not a directory", outPath)
 				}
-				logger.Debugf("Path %s already exists", outPath)
 			} else {
 				logger.Debugf("Creating directory %s", outPath)
 				if err := os.MkdirAll(outPath, header.FileInfo().Mode()); err != nil {
@@ -276,8 +295,15 @@ func extractTar(tr *tar.Reader, dir string, overwrite bool, logger *output.Progr
 			if err != nil {
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
-			defer file.Close()
-
+			defer func() {
+				if errClose := file.Close(); errClose != nil {
+					if err == nil {
+						err = fmt.Errorf("failed to close log file: %w", errClose)
+					} else {
+						err = fmt.Errorf("%v; failed to close log file: %w", err, errClose)
+					}
+				}
+			}()
 			written, err := io.Copy(file, tr)
 			if err != nil {
 				return fmt.Errorf("failed to write file %s: %w", outPath, err)

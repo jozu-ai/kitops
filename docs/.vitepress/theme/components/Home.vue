@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { isClient } from '@vueuse/core'
-import { ref, computed } from 'vue'
-import { useReCaptcha } from 'vue-recaptcha-v3'
+import { ref, computed, onMounted } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import Accordion from './Accordion.vue'
 import vGaTrack from '../directives/ga'
 import axios from 'axios'
+import VueTurnstile from 'vue-turnstile'
 
 const error = ref('')
 const email = ref('')
+const token = ref('')
 const favoriteDevOpsTool = ref('')
 const isBusy = ref(false)
 const isSubscribed = ref(false)
 const isSuccess = ref(false)
-
-isSubscribed.value = localStorage.getItem('subscribed') || false
+const isProd = import.meta.env.PROD
 
 const activeQuote = ref(0)
 const quotes = [
@@ -34,14 +34,15 @@ const quotes = [
     authorCompany: 'Zwift',
   },
   {
-    text: `Currently we have a system that resembles half-MLOps but lacks data versioning tied to model versioning and configurations, and makes it difficult to deploy and keep track [of AI projects]`,
+    text: `Currently we have a system that resembles half-MLOps but lacks data versioning tied to model versioning and
+      configurations, and makes it difficult to deploy and keep track [of AI projects]`,
     authorName: 'Majid',
     authorTitle: 'Data Scientist',
     authorCompany: 'Siemens',
   },
   {
     text: `As we have an open source first policy we are forced to go with tools like MLflow.
-      But I really don’t like their 'opinionated' approach how practitioners should log artifacts.
+      But I really don’t like their 'opinionated' approach to how practitioners should log artifacts.
       I like the idea of using existing best practices in the MLOps space.`,
     authorName: 'Niklas',
     authorTitle: 'MLOps Engineer',
@@ -60,26 +61,10 @@ const quotesOffsetMobile = computed(() => {
 // current quote * card width + margin + half card)
 const quotesOffsetDesktop = computed(() => `translateX(${((activeQuote.value * 664 + 16) + 332) * -1}px)`)
 
-// initialize a instance
-const recaptchaInstance = useReCaptcha()
-
-const recaptcha = async () => {
-  // optional you can await for the reCaptcha load
-  await recaptchaInstance?.recaptchaLoaded()
-
-  // get the token, a custom action could be added as argument to the method
-  const token = await recaptchaInstance?.executeRecaptcha('validate_captcha')
-
-  return token
-}
-
 const subscribeToNewsletter = async () => {
-  const LIST_ID = '115e5954-d2cc-4e97-b0dd-e6561d59e660'
   isBusy.value = true
 
-  const token = await recaptcha()
-
-  // Validate the recaptcha token with the server
+  // Validate the captcha token with the server
   try {
     await axios.post('https://newsprxy.gorkem.workers.dev/', {
       email: email.value,
@@ -88,48 +73,89 @@ const subscribeToNewsletter = async () => {
       favoriteDevOpsTool: favoriteDevOpsTool.value
     }, {
       headers: {
-        'g-recaptcha': token,
+        'cf-turnstile-response': token.value,
         'Content-Type': 'application/x-www-form-urlencoded',
         'Expect': '',
       }
     })
 
     isSuccess.value = true
-    localStorage.setItem('subscribed', true)
+    localStorage.setItem('subscribed', 'true')
   }
-  catch(err) {
-    error.value = err.response?.data?.errors?.flatMap((e) => e.message)[0] || 'An unknown error occurred'
+  catch(err: any) {
+    error.value = err.response?.data?.errors?.flatMap((e: Error) => e.message)[0] || 'An unknown error occurred'
   }
   finally {
     isBusy.value = false
   }
 }
+
+onMounted(() => {
+  isSubscribed.value = localStorage.getItem('subscribed') === 'true'
+
+  setTimeout(() => {
+    // check if there's an anchor link in the url and if so, scroll to that element id
+    if (location.hash) {
+      const el = document.querySelector(location.hash)
+      if (el && el instanceof HTMLElement) {
+        el.scrollIntoView({
+          behavior:'smooth',
+          block: 'center',
+        })
+      }
+    }
+  }, 100)
+})
 </script>
 
 <template>
 <div class="mt-32 md:mt-40  px-6 md:px-12 text-center content-container">
-  <p class="h4 !font-normal !text-off-white">Share and run your AI projects anywhere</p>
-  <h1 class="mt-4">Ease handoffs between AI/ML and Application teams</h1>
+  <p class="h4 !font-normal !text-off-white">Simple, secure, and reproducible packaging for AI/ML projects</p>
+  <h1 class="mt-4">The missing link in your AI pipeline</h1>
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-4 mt-10 md:mt-14 xl:mt-22">
-    <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'hero' }" class="kit-button">Install</a>
-    <a href="https://github.com/jozu-ai/kitops" v-ga-track="{ category: 'button', label: 'source code', location: 'hero' }" class="kit-button bg-none border-transparent hover:text-gold hover:bg-transparent hover:opacity-[80%]">Source Code</a>
+    <a href="/docs/cli/installation.html#%F0%9F%AA%9F-windows-install" class="kit-button flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-white" viewBox="0 0 4875 4875"><path d="M0 0h2311v2310H0zm2564 0h2311v2310H2564zM0 2564h2311v2311H0zm2564 0h2311v2311H2564"/></svg>
+      Download
+    </a>
+    <a href="/docs/cli/installation.html#%F0%9F%8D%8E-macos-install" class="kit-button flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 814 1000"><path d="M788 341c-6 4-108 62-108 190 0 149 130 201 134 203-1 3-21 71-69 141-42 62-87 124-155 124s-86-40-164-40c-77 0-104 41-166 41s-106-57-156-127A612 612 0 0 1 0 542c0-195 126-298 251-298 66 0 121 44 163 44 39 0 101-46 176-46 28 0 131 2 198 99zM554 159c31-37 53-88 53-139 0-7 0-14-2-20-50 2-110 34-147 76-28 32-55 83-55 135l2 18 14 2c45 0 102-31 135-72z"/></svg>
+      Download
+    </a>
+    <a href="/docs/cli/installation.html#%F0%9F%90%A7-linux-install" class="kit-button flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.0" class="w-5 h-5 fill-white" viewBox="0 0 266 312"><path d="m129 79-1 1h-1l-2-2-1-2 1-1 2 1 2 3m-18-10c0-5-2-8-5-8l-1 1v2h3l1 5h2m35-5c2 0 3 2 4 5h2l-1-3-1-3-3-2-2 1 1 2m-30 16-1-1 1-3 3-1 1 1-3 4h-1m-11-1c-4-2-5-5-5-10 0-3 0-5 2-7 1-2 3-3 5-3s3 1 5 3l2 9v2h1v-1l1-6c0-3 0-6-2-9s-4-5-8-5c-3 0-6 2-7 5-2 4-3 7-3 12 0 4 2 8 6 12l3-2m125 141 1-1c0-2-1-5-4-8s-8-5-14-5l-2-1h-6c3-10 4-18 4-25 0-10-2-17-6-23s-8-9-13-10l-1 2c5 2 10 6 13 12 3 7 4 13 4 20 0 6-1 14-5 25-4 1-8 5-11 11l1 1 2-3 5-5 8-2c5 0 10 0 13 2 4 1 6 3 7 4l3 4 1 2M138 75l-1-5c0-4 0-6 2-9l6-3c3 0 5 2 7 4l2 8c0 5-2 8-6 9l2 1 5 2 2-15c0-6-1-10-3-13-3-3-6-4-10-4l-9 3c-2 3-3 5-3 8 0 5 1 9 3 13l3 1m12 16c-13 9-23 13-31 13-7 0-14-3-20-8l3 5 6 6c4 4 9 6 14 6 7 0 15-4 25-11l9-6c2-2 4-4 4-7l-1-2c-1-2-6-5-16-8-9-4-16-6-20-6-3 0-8 2-15 6-6 4-10 8-10 12l2 3c6 5 12 8 18 8 8 0 18-4 31-14v2l1 1m23 202a21 21 0 0 0 25 10l5-1 3-2 3-2 17-15 13-8 10-5 7-4 2-6c0-2-2-5-4-6l-6-4-7-5c-2-2-4-6-5-11l-1-5-2-6-1-1-4 3-6 6-6 5-8 3c-8 0-12-2-15-7l-4-11c-2-2-3-2-5-2-5 0-7 5-7 15v31l-1 6-1 11-2 11m-145-5c9 1 20 4 32 9l22 6c7 0 13-3 18-9l1-7c0-9-6-21-18-35l-6-10-6-8-5-9a27 27 0 0 0-15-12c-4 1-7 2-9 4s-2 4-2 7l-2 4-5 1h-5c-6 0-9 1-11 2-3 3-4 6-4 10l1 8 1 9-3 12c-3 4-4 7-4 10 1 4 8 6 20 8m33-91c0-7 2-14 5-23 4-9 8-15 11-19l-1-1-1-1c-3 3-7 10-11 20-4 9-6 17-6 23l3 12c2 3 7 8 16 14l10 7c12 10 18 16 18 20 0 3-1 5-4 7l-7 4h-1l3 6c5 6 14 9 26 9 22 0 39-9 52-27l-1-10v-3c0-7 1-12 3-15s4-5 7-5l6 3 1-21c0-9 0-16-2-23l-5-15-6-9-5-9-2-12-8-15-6-14-9 7c-10 7-18 10-25 10-6 0-11-1-14-5l-6-5-3 11-7 12-4 14-1 4-8 15c-8 15-12 28-12 40l1 7c-5-3-7-7-7-13m72 95c-13 0-23 1-30 5-5 6-11 9-19 9-5 0-12-2-23-6a272 272 0 0 0-48-13c-3 0-5-1-6-3l-2-4 1-5 2-3 2-3 1-3 1-3v-3l-1-9-1-10c0-5 1-8 3-11s5-4 7-4h11l5-1 1-4 1-3 1-2 1-2-1-4v-2c0-4 2-9 6-16l3-6 7-14 5-18c2-7 6-14 12-21l7-9c6-6 9-11 11-15s3-9 3-13l-2-18a297 297 0 0 1 1-46c1-5 3-10 7-14 3-4 7-8 13-10a66 66 0 0 1 42 1 41 41 0 0 1 21 20l5 20 2 17 1 13 2 12 4 11 7 12 11 16c9 10 16 21 20 32a84 84 0 0 1 5 57c2 0 3 1 4 3l3 9 1 7c1 2 2 4 5 6l7 5 7 4 3 6c0 4-1 6-3 8l-7 4-12 6-15 11-10 8-11 9c-3 2-7 3-11 3l-7-1c-8-2-13-6-16-12l-37-3"/></svg>
+      Download
+    </a>
+  </div>
+</div>
+
+<div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
+  <h2>What is Kitops<span class="font-heading font-extralight">?</span></h2>
+  <div class="p1 mt-8 mx-8">
+    KitOps is an open source DevOps tool that packages and versions your AI/ML model, datasets, code, and configuration into a reproducible artifact called a ModelKit. ModelKits are built on existing standards, ensuring compatibility with the tools your data scientists and developers already use.
   </div>
 
-  <div v-if="!isSubscribed" class="text-center max-w-[600px] mx-auto mt-16">
-    <p class="p1 font-heading">Stay Informed About KitOps</p>
+  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
+    <source src="/how-it-works.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
+<div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container" id="join">
+  <h2 class="text-center">stay informed About Kitops</h2>
+
+  <div class="text-center max-w-[600px] mx-auto mt-12">
     <template v-if="!isSuccess">
-      <form @submit.prevent="subscribeToNewsletter" class="mt-6 flex flex-col md:flex-row gap-10 lg:gap-4">
+      <form @submit.prevent="subscribeToNewsletter" class="flex flex-col md:flex-row gap-10 lg:gap-4">
         <input required
           :disabled="isBusy"
           id="email"
           type="email"
+          pattern="^[a-zA-Z0-9]+([._+\-][a-zA-Z0-9]+)*@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}$"
           name="email"
           placeholder="you@example.com"
           class="input"
           v-model="email"
-          autofocus
           style="border: 1px solid var(--color-off-white)" />
 
         <input
@@ -140,8 +166,14 @@ const subscribeToNewsletter = async () => {
           v-model="favoriteDevOpsTool"
           class="hidden" />
 
-        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center">JOIN THE LIST</button>
+        <button type="submit" :disabled="isBusy" class="kit-button kit-button-gold text-center mx-auto">
+          JOIN THE LIST
+        </button>
       </form>
+
+      <div v-if="isProd" class="mt-10">
+        <vue-turnstile site-key="0x4AAAAAAA1WT4LYaVrBtAD7" v-model="token" />
+      </div>
 
       <p v-if="error" class="text-red-500 mt-6">{{ error }}</p>
     </template>
@@ -152,16 +184,60 @@ const subscribeToNewsletter = async () => {
   </div>
 </div>
 
-<div id="howdoesitwork" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center max-w-[1152px] content-container">
-  <h2>HoW does it WoRK<span class="font-heading font-extralight">?</span></h2>
-  <div class="p1 mt-8 mx-8">
-    KitOps is a free open source MLOps tool that packages and versions your AI model, datasets, code, and configuration into a ModelKit that data scientists and developers can use with their preferred tools.
-  </div>
+<div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
+  <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
 
-  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
-    <source src="/how-it-works.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
+    <div class="h4 !text-gold">Model handoffs are hard.</div>
+    <div class="p2 space-y-4">
+      <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
+      <p>KitOps is an open source DevOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code</p>
+      <p>KitOps solves multiple problems:</p>
+    </div>
+
+    <div class="h4 !text-gold xs:mt-12">Model traceability and reproducibility–</div>
+    <div class="p2 space-y-4">
+      <p>Unlike Dockerfiles, Kitfiles are a modular package - pull just a part of the ModelKit, like the model or dataset, or pull the whole package with one simple command.</p>
+      <p>Storing ModelKits in your organization’s container registry provides a history of meaningful state changes for auditing. ModelKits are immutable so are perfect for a secure bill-of-materials (SBOM) initiative.</p>
+    </div>
+
+    <div class="h4 !text-gold xs:mt-12">Collaboration–</div>
+    <div class="p2 space-y-4">
+      <p>By building ModelKits on industry standards, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating models with their application, experimenting with them locally, or deploying them to production.</p>
+      <p>ModelKits can be stored in your existing container registry and work with the tools your team is already using, so you can use the same deployment pipelines and endpoints you’ve hardened with your application development process.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
+  <h2 class="text-center">Get stArted</h2>
+
+  <div class="kit-cards mt-22 min-h-[32.5rem]">
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-salmon">1</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Download and install Kit CLI.</p>
+        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+      </div>
+    </div>
+
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-cornflower">2</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
+        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
+      </div>
+    </div>
+
+    <div class="kit-card flex flex-col">
+      <div class="h4 font-bold !text-gold">3</div>
+      <div class="mt-8 flex flex-col flex-1 justify-between">
+        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model locally.</p>
+        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
@@ -171,7 +247,7 @@ const subscribeToNewsletter = async () => {
   <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-22 gap-y-16 mt-16 max-w-[960px] mx-auto p1">
     <li>
       <div class="text-off-white">🎁 Standards-based package</div>
-      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code. Add as much or as little as your project needs.</p>
+      <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code in an OCI artifact. Add as much or as little as your project needs.</p>
       <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/compatibility.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -181,7 +257,7 @@ const subscribeToNewsletter = async () => {
     </li>
     <li>
       <div class="text-off-white">🔒 Tamper-proof</div>
-      <p class="p2 mb-4 text-gray-06">Each ModelKit package includes a SHA digest for itself, and every artifact it holds.</p>
+      <p class="p2 mb-4 text-gray-06">Each ModelKit package is immutable and includes a SHA digest for itself, and every artifact it holds.</p>
       <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/spec.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -191,8 +267,8 @@ const subscribeToNewsletter = async () => {
     </li>
     <li>
       <div class="text-off-white">🏭 Tags and versions</div>
-      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged so everyone knows which dataset and model work together.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
+      <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged and versioned so everyone knows which dataset and model work together.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -202,6 +278,12 @@ const subscribeToNewsletter = async () => {
     <li>
       <div class="text-off-white">🤗 Use with LLM, ML, or AI projects</div>
       <p class="p2 mb-4 text-gray-06">ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.</p>
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
+        LEARN MORE
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
+        </svg>
+      </a>
     </li>
     <li>
       <div class="text-off-white">🤖 Automation for CI/CD</div>
@@ -216,7 +298,7 @@ const subscribeToNewsletter = async () => {
     <li>
       <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
       <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/dev-mode.html">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops.html">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -231,8 +313,8 @@ const subscribeToNewsletter = async () => {
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-10 lg:px-0 w-full max-w-[960px] mx-auto">
-  <h2 class="text-center">eVeRythinG you need to Run <br class="xs:hidden">youR fiRst Model</h2>
-  <p class="p1 text-center mt-16">AI projects are more than just a model, you need a codebase, dataset, documentation, and of course the model.</p>
+  <h2 class="text-center">tRy running youR fiRst Model with Kitops</h2>
+  <p class="p1 text-center mt-16">AI projects are more than just a model, you need a codebase, dataset, documentation too.</p>
   <p class="p1 text-center mt-4">Our quickstart ModelKits have everything you need in one easy to find place.</p>
 
   <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 my-22">
@@ -287,38 +369,13 @@ const subscribeToNewsletter = async () => {
   </ul>
 </div>
 
-<div id="whykitops" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
-  <h2 class="text-center">Why Kit<span class="font-heading font-extralight">?</span></h2>
-
-  <div class="mt-10 md:mt-14 xl:mt-22 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 md:gap-y-[4.5rem] xl:gap-22 max-w-[47.5rem] mx-auto">
-    <div class="h4 !text-gold">Model handoffs are hard.</div>
-    <div class="p2 space-y-4">
-      <p>Moving a model from a Jupyter notebook to an ML tool or development server, then to a production server like Kubernetes is difficult because each tool uses its own packaging mechanism, and requires engineers to repackage the model multiple times. This slows down development and introduces risk.</p>
-      <p>KitOps is an open source MLOps project built to standardize packaging, reproduction, deployment, and tracking of AI / ML models, so it can be run anywhere, just like application code.</p>
-      <p>KitOps solves two big problems:</p>
-    </div>
-
-    <div class="h4 !text-gold xs:mt-12">Collaboration–</div>
-    <div class="p2 space-y-4">
-      <p>By building ModelKits on industry standards, anyone (not just data scientists) can participate in the model development lifecycle whether they’re integrating models with their application, experimenting with them locally, or deploying them to production.</p>
-      <p>ModelKits and Kitfiles work with the tools your team is already using, so you can use the same deployment pipelines and endpoints you’ve hardened with your application development process.</p>
-    </div>
-
-    <div class="h4 !text-gold xs:mt-12">Model traceability and reproducibility–</div>
-    <div class="p2 space-y-4">
-      <p>Unlike Dockerfiles, Kitfiles are a modular package - pull just a part of the ModelKit, like the model or dataset, or pull the whole package with one simple command.</p>
-      <p>Storing ModelKits in your organization’s registry provides a history of meaningful state changes for auditing. ModelKits are immutable so are perfect for a secure bill-of-materials (SBOM) initiative.</p>
-    </div>
-  </div>
-</div>
-
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
   <div class="kit-cards md:!grid-cols-2 w-fit mx-auto">
     <div class="kit-card max-w-[370px] flex flex-col">
       <h3 class="!text-cornflower">ModelKit</h3>
 
       <div class="flex-1 mt-8 space-y-4">
-        <p class="p2">The ModelKit is an OCI compliant package that contains everything needed to integrate with a model, or deploy it to production. </p>
+        <p class="p2">The ModelKit is an OCI compliant package (like a container, but more fully featured) that contains everything needed to integrate with a model, or deploy it to production.</p>
         <p class="p2">The ModelKit holds the serialized model, dataset, hyperparameters, input / output structure, and validation criteria. Kitfiles define a ModelKit in a modular and easy-to-understand way.</p>
       </div>
 
@@ -352,7 +409,7 @@ const subscribeToNewsletter = async () => {
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 text-center content-container">
   <h2>WhAt’s suppoRted<span class="font-heading font-extralight">?</span></h2>
-  <p class="p1 mt-8 mb-22">KitOps was designed to work with the tools your team already uses.</p>
+  <p class="p1 mt-8 mb-22">Kit was designed to work with the tools your team already uses.</p>
 
   <div class="space-y-12 relative marquee-gradients">
 
@@ -483,7 +540,7 @@ const subscribeToNewsletter = async () => {
   <Accordion content-class="space-y-[1em]">
     <template #title>How do I get started with Kit?</template>
 
-    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/quick-start.html" class="underline">Quick Start</a>, where you’ll learn how to:</p>
+    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/get-started.html" class="underline">Quick Start</a>, where you’ll learn how to:</p>
 
     <ul class="space-y-2 list-disc list-inside">
       <li>Package up a model, notebook, and datasets into a single ModelKit you can use with your existing tools</li>
@@ -547,36 +604,6 @@ const subscribeToNewsletter = async () => {
 
     <p class="mt-6">Enterprise support for ModelKits and the Kit CLI is available from <a href="https://www.jozu.com/" class="underline" target="_blank">Jozu</a>.</p>
   </Accordion>
-</div>
-
-<div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">
-  <h2 class="text-center">Get stArted</h2>
-
-  <div class="kit-cards mt-22 min-h-[32.5rem]">
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-salmon">1</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
-      </div>
-    </div>
-
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-cornflower">2</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
-        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
-      </div>
-    </div>
-
-    <div class="kit-card flex flex-col">
-      <div class="h4 font-bold !text-gold">3</div>
-      <div class="mt-8 flex flex-col flex-1 justify-between">
-        <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model.</p>
-        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container">

@@ -4,7 +4,9 @@
 
 ModelKit revolutionizes the way AI/ML artifacts are shared and managed throughout the lifecycle of AI/ML projects. As an OCI-compliant packaging format, ModelKit encapsulates datasets, code, configurations, and models into a single, standardized unit. This approach not only streamlines the development process but also ensures broad compatibility and integration with a vast array of tools and platforms.
 
-<!-- Start with a [ModelKit Quick Start](TBD), -->See the [ModelKit spec](./spec.md), or look over the [tool compatibility list](./compatibility.md).
+[Get started with ModelKits](/docs/get-started.md) in less than 15 minutes.
+
+[See how security-conscious organization are using ModelKits](/docs/use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
 
 ## Key Features of ModelKit:
 
@@ -21,3 +23,5 @@ ModelKit revolutionizes the way AI/ML artifacts are shared and managed throughou
 **Optimized for AI/ML Workflows:** ModelKits are tailor-made for AI/ML projects, addressing specific needs such as versioning and environment configuration.
 
 ModelKit is not just a packaging format; it's a building block for innovation, simplifying the complexities of AI/ML development and deployment. By adopting ModelKit, teams can focus more on creating value and less on managing the intricacies of artifact storage and sharing.
+
+**Questions or suggestions?** Drop an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy) to get support or share your feedback.

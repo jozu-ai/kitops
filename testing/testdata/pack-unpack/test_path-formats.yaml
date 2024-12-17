@@ -1,0 +1,24 @@
+description: Ensure various path formats are supported
+kitfile: |
+  manifestVersion: 1.0.0
+  package:
+    name: test-path-format
+  docs:
+    - path: my-file.txt
+    - path: ./my-file2.txt
+    - path: dir-one
+    - path: dir-two/
+    - path: ./dir-three
+    - path: ./dir-four/
+    - path: dir-five/my-file.txt
+    - path: ./dir-six/my-file.txt
+
+files:
+  - ./my-file.txt
+  - ./my-file2.txt
+  - ./dir-one/test-file
+  - ./dir-two/test-file
+  - ./dir-three/test-file
+  - ./dir-four/test-file
+  - ./dir-five/my-file.txt
+  - ./dir-six/my-file.txt

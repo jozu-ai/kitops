@@ -2,38 +2,44 @@
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](./modelkit/compatibility.md)).
 
-Today AI/ML development in enterprises relies on artifacts that are tightly coupled, but versioned and stored separately:
-* Models in Jupyter notebooks or MLOps tools
-* Datasets in data lakes, databases, or files systems
-* Code in git repositories
-* Metadata (hyperparameters, features, weights, etc...) in various locations based on their type
+Organizations around the world are using KitOps as a "gate" in the [handoff between development and production](#level-1-handoff-from-development-to-production-). This is often part of establishing golden paths and platform engineering around AI/ML projects.
 
-For this reason, organizations around the world are using KitOps as a "gate" between development and production. Those who are concerned about end-to-end auditing of their model development (like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) extend KitOps usage to security and development use cases (see [Level 2](#level-2-adding-security-️) and [Level 3](#level-3-storage-for-all-ai-project-versions-) use cases below.)
+Those who are concerned about end-to-end auditing of their model development - like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) extend KitOps usage to security and development use cases (see [Level 2](#level-2-adding-security-️) and [Level 3](#level-3-storage-for-all-ai-project-versions-) use cases below.
+
+[ discord banner ]
 
 ## Level 1: Handoff From Development to Production 🤝
 
-Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production. KitOps is ideally suited to CI/CD pipelines (e.g., using [KitOps in a GitHub Action](https://dev.to/kitops/introducing-the-new-github-action-for-using-kit-cli-on-mlops-pipelines-21ia)) either triggered manually by the model development team when they're ready to send the model to production, or automatically when a model or its artifacts are updated in their respective repositories.
+Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
+
+KitOps is ideally suited to CI/CD pipelines (e.g., using KitOps in a GitHub Action, Dagger module, or other CI/CD pipeline flow) either triggered manually by the model development team when they're ready to send the model to production, or automatically when a model or its artifacts are updated in their respective repositories.
+
+Security conscious organizations often can't allow internal teams to use any publicly available model off of Hugging Face because:
+* Their licenses would put the organization at risk
+* They don't match the organization's security testing requirements
+* Their provenance isn't understood
+
+In these cases teams may use a pipeline (with [GitHub Actions](https://github.com/marketplace/actions/setup-kit-cli), [Dagger](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit), or [another tool](./modelkit/compatibility.md)) to pull models or sample datasets from Hugging Face, run them through a battery of tests, then publish them in tamper-proof and signed ModelKits to their private container registry.
 
 This ensures that:
-* __Operations teams have all the assets and information they need__ in order to determine how to test, deploy, audit, and manage these new workloads
+* __Everyone has a library of safe, immutable, and signed ModelKits__ speeding development without compromising security
+* __[Safe models can be deployed](./deploy.md)__ for development or production use cases
+* __Operations teams have all the assets and information they need__ for testing, deploying, auditing, and managing AI/ML projects
 * __AI versioned packages are held in the same enterprise registry__ as other production assets like containers making them easier to find, secure, and audit
 * __Compliance teams have a catalogue of versioned models__ that can be used for [EU AI Act](https://artificialintelligenceact.eu/) or other regulatory reporting
-* __Everyone has a library of immutable and signed ModelKits__ for intellectual property, progress tracking, or other requirements
 * __Organizations are protected against vendor shifts__ in their MLOps and Serving Infrastructure domains (this also gives them negotiating leverage with vendors)
 
-Teams working on model development continue to use their disparate repositories during the development cycle at this stage. This is where most organizations start their usage of KitOps, but once they start most continue on...
+**Get Started:**
+* [Kit Dagger Modules](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit): Kit Dagger modules make it easy to pack and selectively unpack ModelKits to speed pipelines.
+* [Kit GitHub Action](https://github.com/marketplace/actions/setup-kit-cli): Our Kit GitHub Action is used to build hundreds of ModelKits every day as part of pipelines.
+* [Learn to pack and unpack ModelKits](./get-started.md)
+* [Create containers or Kubernetes deployments directly from ModelKits](./deploy.md)
+
+This is where most organizations start their usage of KitOps, but once they start most continue on...
 
 ## Level 2: Adding Security 🛡️
 
 Some organizations want to scan their models either before they enter the development phase (ideal), or before they are promoted beyond development. The open source [ModelScan project](https://github.com/protectai/modelscan) can help here.
-
-### Creating a Curated Model Set 🧑‍🍳
-
-Security-conscious organizations will often restrict the set of models that data science teams can use as a basis for their work. In these cases specific models can be pulled from public repositories like Hugging Face, then scanned with a tool like ModelScan, and finally packaged as a KitOps ModelKit stored in their enterprise registry.
-
-This guarantees that models used by internal teams are safe and tamper-proof. By storing the models in the existing enterprise registry they're also easy for anyone to find or audit.
-
-### Protecting Production 🚦
 
 After model development has been completed, the resulting ModelKit and its artifacts can again by scanned by something like ModelScan and only allowed to move forward if it passes. Using ModelKits here again ensures that a model that passes the scan is packaged and signed so that it cannot be tampered with on its way to production.
 

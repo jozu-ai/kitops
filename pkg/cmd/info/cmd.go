@@ -17,19 +17,27 @@
 package info
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
+	"regexp"
 	"strings"
 
+	"kitops/pkg/artifact"
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 	"oras.land/oras-go/v2/errdef"
 	"oras.land/oras-go/v2/registry"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -49,11 +57,15 @@ kit info mymodel@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f6
 kit info --remote registry.example.com/my-model:1.0.0`
 )
 
+// Currently supported filter syntax: alphanumeric (plus dashes and underscores), dot-delimited fields
+var validFilterRegexp = regexp.MustCompile(`^\.?[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*$`)
+
 type infoOptions struct {
 	options.NetworkOptions
 	configHome  string
 	checkRemote bool
 	modelRef    *registry.Reference
+	filter      string
 }
 
 func InfoCommand() *cobra.Command {
@@ -70,6 +82,7 @@ func InfoCommand() *cobra.Command {
 
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().BoolVarP(&opts.checkRemote, "remote", "r", false, "Check remote registry instead of local storage")
+	cmd.Flags().StringVarP(&opts.filter, "filter", "f", "", "filter with node selectors")
 	cmd.Flags().SortFlags = false
 
 	return cmd
@@ -87,11 +100,21 @@ func runCommand(opts *infoOptions) func(*cobra.Command, []string) error {
 			}
 			return output.Fatalf("Error resolving modelkit: %s", err)
 		}
-		yamlBytes, err := config.MarshalToYAML()
-		if err != nil {
-			return output.Fatalf("Error formatting manifest: %w", err)
+
+		if len(opts.filter) > 0 {
+			filteredOutput, err := filterKitfile(config, opts.filter)
+			if err != nil {
+				return output.Fatalln(err)
+			}
+			fmt.Print(string(filteredOutput))
+		} else {
+			yamlBytes, err := config.MarshalToYAML()
+			if err != nil {
+				return output.Fatalf("Error formatting manifest: %w", err)
+			}
+			fmt.Print(string(yamlBytes))
 		}
-		fmt.Println(string(yamlBytes))
+
 		return nil
 	}
 }
@@ -120,5 +143,45 @@ func (opts *infoOptions) complete(ctx context.Context, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+func filterKitfile(config *artifact.KitFile, filter string) ([]byte, error) {
+	if err := checkFilterIsValid(filter); err != nil {
+		return nil, fmt.Errorf("invalid filter: %w", err)
+	}
+	// Accept filters that start (jq-style) and don't start with a '.'; we need to trim as otherwise we start the list
+	// with an empty string
+	filter = strings.TrimPrefix(filter, ".")
+
+	var filterSlice = strings.Split(filter, ".")
+	value := reflect.ValueOf(config)
+	for _, str := range filterSlice {
+		if value.Kind() == reflect.Ptr {
+			value = value.Elem()
+		}
+		field := value.FieldByName(cases.Title(language.Und, cases.NoLower).String(str))
+		if !field.IsValid() {
+			return nil, fmt.Errorf("error filtering output: cannot find required node")
+		}
+		value = field
+	}
+
+	buf := new(bytes.Buffer)
+	enc := yaml.NewEncoder(buf)
+	enc.SetIndent(2)
+	if err := enc.Encode(value.Interface()); err != nil {
+		return nil, fmt.Errorf("error formatting manifest: %w", err)
+	}
+	return buf.Bytes(), nil
+}
+
+func checkFilterIsValid(filter string) error {
+	if strings.Contains(filter, "[") {
+		return fmt.Errorf("array access using '[]' is not currently supported")
+	}
+	if !validFilterRegexp.MatchString(filter) {
+		return fmt.Errorf("invalid filter: %s", filter)
+	}
 	return nil
 }

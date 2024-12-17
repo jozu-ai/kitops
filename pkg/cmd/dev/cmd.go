@@ -18,7 +18,6 @@ package dev
 import (
 	"net"
 	"os"
-	"runtime"
 	"strconv"
 
 	"kitops/pkg/lib/harness"
@@ -70,24 +69,19 @@ func DevStopCommand() *cobra.Command {
 }
 
 func DevLogsCommand() *cobra.Command {
-	opts := &DevBaseOptions{}
+	opts := &DevLogsOptions{}
 	cmd := &cobra.Command{
 		Use:   "logs",
 		Short: devLogsShortDesc,
 		Long:  devLogsLongDesc,
 		Run:   runLogsCommand(opts),
 	}
+	cmd.Flags().BoolVarP(&opts.follow, "follow", "f", false, "Stream the log file")
 	return cmd
 }
 
 func runStartCommand(opts *DevStartOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
-			output.Infoln("Development server is not yet supported in this platform")
-			output.Infof("We are working to bring it to %s soon", runtime.GOOS)
-			return
-		}
-
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %s", err)
 			return
@@ -120,14 +114,14 @@ func runStopCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string
 	}
 }
 
-func runLogsCommand(opts *DevBaseOptions) func(cmd *cobra.Command, args []string) {
+func runLogsCommand(opts *DevLogsOptions) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		if err := opts.complete(cmd.Context(), args); err != nil {
 			output.Errorf("failed to complete options: %s", err)
 			return
 		}
 
-		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout())
+		err := harness.PrintLogs(opts.configHome, cmd.OutOrStdout(), opts.follow)
 		if err != nil {
 			output.Errorln(err)
 			os.Exit(1)
