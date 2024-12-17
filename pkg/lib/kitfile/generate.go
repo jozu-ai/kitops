@@ -96,7 +96,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 				Description: "Readme file",
 			})
 			continue
-		} else if strings.ToLower(name) == "license" {
+		} else if strings.HasPrefix(strings.ToLower(name), "license") {
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
 				Path:        name,
 				Description: "License file",
