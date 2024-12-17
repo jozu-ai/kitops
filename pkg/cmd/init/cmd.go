@@ -18,7 +18,9 @@ package kitinit
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io/fs"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/kitfile"
@@ -41,7 +43,10 @@ By default the command will prompt for input for a name and description for the 
 kit init .
 
 # Generate a Kitfile for files in ./my-model, with name "mymodel" and a description:
-kit init ./my-model --name "mymodel" --desc "This is my model's description"`
+kit init ./my-model --name "mymodel" --desc "This is my model's description"
+
+# Generate a Kitfile, overwriting any existing Kitfile:
+kit init ./my-model --force`
 )
 
 type initOptions struct {
@@ -49,6 +54,7 @@ type initOptions struct {
 	configHome          string
 	modelkitName        string
 	modelkitDescription string
+	overwrite           bool
 }
 
 func InitCommand() *cobra.Command {
@@ -65,6 +71,7 @@ func InitCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.modelkitName, "name", "", "Name for the ModelKit")
 	cmd.Flags().StringVar(&opts.modelkitDescription, "desc", "", "Description for the ModelKit")
+	cmd.Flags().BoolVarP(&opts.overwrite, "force", "f", false, "Overwrite existing Kitfile if present")
 	cmd.Flags().SortFlags = false
 	return cmd
 }
@@ -83,6 +90,16 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			}
 		}
 
+		// Check for existing Kitfile
+		kitfilePath := filepath.Join(opts.path, constants.DefaultKitfileName)
+		if _, err := os.Stat(kitfilePath); err == nil {
+			if !opts.overwrite {
+				return output.Fatalf("Kitfile already exists at %s. Use '--force' to overwrite", kitfilePath)
+			}
+		} else if !errors.Is(err, fs.ErrNotExist) {
+			return output.Fatalf("Error checking for existing Kitfile: %s", err)
+		}
+
 		kitfile, err := kitfile.GenerateKitfile(opts.path, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
@@ -91,7 +108,6 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 		if err != nil {
 			return output.Fatalf("Error formatting Kitfile: %s", err)
 		}
-		kitfilePath := filepath.Join(opts.path, constants.DefaultKitfileName)
 		if err := os.WriteFile(kitfilePath, bytes, 0644); err != nil {
 			return output.Fatalf("Failed to write Kitfile: %s", err)
 		}
