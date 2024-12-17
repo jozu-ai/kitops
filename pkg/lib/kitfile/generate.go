@@ -29,7 +29,7 @@ import (
 )
 
 var modelWeightsSuffixes = []string{
-	".safetensors", ".pkl",
+	".safetensors", ".pkl", ".joblib",
 	// Pytorch suffixes
 	".bin", ".pth", ".pt", ".mar", ".pt2", ".ptl",
 	// Tensorflow
@@ -47,11 +47,11 @@ var docsSuffixes = []string{
 }
 
 var metadataSuffixes = []string{
-	".json", ".yaml", ".xml", ".csv", ".txt",
+	".json", ".yaml", ".xml", ".txt",
 }
 
 var datasetSuffixes = []string{
-	".tar", ".zip",
+	".tar", ".zip", ".parquet", ".csv",
 }
 
 // Generate a basic Kitfile by looking at the contents of a directory. Parameter
