@@ -54,9 +54,20 @@ func doImport(ctx context.Context, opts *importOptions) error {
 		return err
 	}
 
-	kitfile, err := generateKitfile(tmpDir)
-	if err != nil {
-		return err
+	// Check on the off-chance a Kitfile already exists
+	var kitfile *artifact.KitFile
+	if kfpath, err := filesystem.FindKitfileInPath(tmpDir); err != nil {
+		kf, err := generateKitfile(tmpDir)
+		if err != nil {
+			return err
+		}
+		kitfile = kf
+	} else {
+		kf, err := readExistingKitfile(kfpath)
+		if err != nil {
+			return err
+		}
+		kitfile = kf
 	}
 
 	output.Infof("Packing model to %s", opts.tag)
@@ -116,4 +127,20 @@ func packDirectory(ctx context.Context, configHome, contextDir string, kitfile *
 		return fmt.Errorf("failed to tag manifest: %w", err)
 	}
 	return nil
+}
+
+func readExistingKitfile(kfPath string) (*artifact.KitFile, error) {
+	kfFile, err := os.Open(kfPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read existing Kitfile: %w", err)
+	}
+	defer kfFile.Close()
+	kitfile := &artifact.KitFile{}
+	if err := kitfile.LoadModel(kfFile); err != nil {
+		return nil, fmt.Errorf("failed to load existing Kitfile: %w", err)
+	}
+	if err := kfutils.ValidateKitfile(kitfile); err != nil {
+		return nil, fmt.Errorf("existing Kitfile is invalid: %w", err)
+	}
+	return kitfile, nil
 }
