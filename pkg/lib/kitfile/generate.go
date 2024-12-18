@@ -70,6 +70,7 @@ var datasetSuffixes = []string{
 // packageOpt can be used to define metadata for the Kitfile (i.e. the package
 // section), which is left empty if the parameter is nil.
 func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.KitFile, error) {
+	output.Logf(output.LogLevelTrace, "Generating Kitfile in %s", baseDir)
 	kitfile := &artifact.KitFile{
 		ManifestVersion: "1.0.0",
 	}
@@ -77,6 +78,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		kitfile.Package = *packageOpt
 	}
 
+	output.Logf(output.LogLevelTrace, "Reading directory contents")
 	ds, err := os.ReadDir(baseDir)
 	if err != nil {
 		return nil, fmt.Errorf("error reading directory: %w", err)
@@ -93,6 +95,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	for _, d := range ds {
 		filename := d.Name()
 		if constants.IsDefaultKitfileName(filename) {
+			output.Logf(output.LogLevelTrace, "Skipping Kitfile '%s'", filename)
 			// Skip Kitfile files (if present in the directory...). These won't be packed
 			// either way.
 			continue
@@ -100,6 +103,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		if d.IsDir() {
 			dirModelFiles, err := addDirToKitfile(kitfile, filename, d)
 			if err != nil {
+				output.Logf(output.LogLevelTrace, "Failed to determine type for directory %s: %s", filename, err)
 				unprocessedDirPaths = append(unprocessedDirPaths, filename)
 			}
 			modelFiles = append(modelFiles, dirModelFiles...)
@@ -108,12 +112,14 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 
 		// Check for "special" files (e.g. readme, license)
 		if strings.HasPrefix(strings.ToLower(filename), "readme") {
+			output.Logf(output.LogLevelTrace, "Found readme file '%s'", filename)
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
 				Path:        filename,
 				Description: "Readme file",
 			})
 			continue
 		} else if strings.HasPrefix(strings.ToLower(filename), "license") {
+			output.Logf(output.LogLevelTrace, "Found license file '%s'", filename)
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
 				Path:        filename,
 				Description: "License file",
@@ -124,6 +130,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 				output.Logf(output.LogLevelWarn, "Unable to determine license type")
 			}
 			detectedLicenseType = licenseType
+			output.Logf(output.LogLevelTrace, "Detected license %s for license file", detectedLicenseType)
 			continue
 		}
 
@@ -136,23 +143,29 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		case fileTypeMetadata:
 			// Metadata should be included in either Model or Datasets, depending on
 			// other contents
+			output.Logf(output.LogLevelTrace, "Detected metadata file '%s'", filename)
 			metadataPaths = append(metadataPaths, filename)
 		case fileTypeDocs:
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: filename})
 		case fileTypeDataset:
 			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: filename})
 		default:
+			output.Logf(output.LogLevelTrace, "File %s is either code or unknown type. Will be added as a catch-all section", filename)
 			// File is either code or unknown; we'll have to include it in a catch-all section
 			includeCatchallSection = true
 		}
 	}
 
 	if len(modelFiles) > 0 {
-		addModelToKitfile(kitfile, baseDir, modelFiles)
+		if err := addModelToKitfile(kitfile, baseDir, modelFiles); err != nil {
+			return nil, fmt.Errorf("failed to add model to Kitfile: %w", err)
+		}
+		output.Logf(output.LogLevelTrace, "Adding metadata files as model parts")
 		for _, metadataPath := range metadataPaths {
 			kitfile.Model.Parts = append(kitfile.Model.Parts, artifact.ModelPart{Path: metadataPath})
 		}
 	} else {
+		output.Logf(output.LogLevelTrace, "No model detected; adding metadata files as dataset layers")
 		for _, metadataPath := range metadataPaths {
 			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: metadataPath})
 		}
@@ -160,7 +173,9 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 
 	// Decide how to handle remaining paths. Either package them in one large code layer with basePath
 	// or as separate layers for each directory.
+	output.Logf(output.LogLevelTrace, "Unable to process %d paths in %s", len(unprocessedDirPaths), baseDir)
 	if includeCatchallSection || len(unprocessedDirPaths) > 5 {
+		output.Logf(output.LogLevelTrace, "Adding catch-all code layer to include files in %s", baseDir)
 		// Overwrite any code layers we added before; this is cleaner than e.g. having a layer for '.' and a layer for 'src'
 		kitfile.Code = []artifact.Code{{Path: "."}}
 	} else {
@@ -177,29 +192,32 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	} else if len(kitfile.Code) == 1 {
 		kitfile.Code[0].License = detectedLicenseType
 	} else {
+		output.Logf(output.LogLevelTrace, "Unsure what license applies to, adding to Kitfile package")
 		kitfile.Package.License = detectedLicenseType
 	}
 
 	return kitfile, nil
 }
 
-func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) (modelFiles []string, err error) {
+func addDirToKitfile(kitfile *artifact.KitFile, dirPath string, d fs.DirEntry) (modelFiles []string, err error) {
 	switch d.Name() {
 	case "docs":
+		output.Logf(output.LogLevelTrace, "Directory %s interpreted as documentation", d.Name())
 		kitfile.Docs = append(kitfile.Docs, artifact.Docs{
-			Path: path,
+			Path: dirPath,
 		})
 		return nil, nil
 	case "src", "pkg", "lib", "build":
+		output.Logf(output.LogLevelTrace, "Directory %s interpreted as code", d.Name())
 		kitfile.Code = append(kitfile.Code, artifact.Code{
-			Path: path,
+			Path: dirPath,
 		})
 		return nil, nil
 	}
 
-	entries, err := os.ReadDir(path)
+	entries, err := os.ReadDir(dirPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read directory %s: %w", path, err)
+		return nil, fmt.Errorf("failed to read directory %s: %w", dirPath, err)
 	}
 
 	// Sort entries in the directory to try and figure out what it contains. We'll reuse the
@@ -207,7 +225,7 @@ func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) (mod
 	// Avoid using maps here since they iterate in a random order.
 	directoryContents := [int(fileTypeUnknown) + 1][]string{}
 	for _, entry := range entries {
-		relPath := filepath.Join(path, entry.Name())
+		relPath := filepath.Join(dirPath, entry.Name())
 		if entry.IsDir() {
 			// TODO: we can potentially recurse further here if we find we need to
 			directoryContents[int(fileTypeUnknown)] = append(directoryContents[int(fileTypeUnknown)], relPath)
@@ -226,6 +244,7 @@ func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) (mod
 	for fType, files := range directoryContents {
 		if len(files) > 0 && fileType(fType) != fileTypeMetadata {
 			if overallFiletype != fileTypeUnknown {
+				output.Logf(output.LogLevelTrace, "Detected mixed contents within directory %s", dirPath)
 				directoryHasMixedContents = true
 			}
 			overallFiletype = fileType(fType)
@@ -236,13 +255,17 @@ func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) (mod
 	}
 	switch overallFiletype {
 	case fileTypeModel:
+		output.Logf(output.LogLevelTrace, "Interpreting directory %s as a model directory", dirPath)
 		// Include any metadata files as modelParts later
 		modelFiles = append(modelFiles, directoryContents[int(fileTypeMetadata)]...)
 	case fileTypeDataset:
-		kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: path})
+		output.Logf(output.LogLevelTrace, "Interpreting directory %s as a dataset directory", dirPath)
+		kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: dirPath})
 	case fileTypeDocs:
-		kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: path})
+		output.Logf(output.LogLevelTrace, "Interpreting directory %s as a docs directory", dirPath)
+		kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: dirPath})
 	default:
+		output.Logf(output.LogLevelTrace, "Could not determine type for directory %s", dirPath)
 		// If it's overall code, metadata, or unknown, just return it as unprocessed and let it be added as a Code section
 		// later
 		return modelFiles, fmt.Errorf("directory should be handled as Code")
