@@ -24,12 +24,11 @@ import (
 	"fmt"
 	"os"
 
-	"kitops/pkg/lib/repo/local"
-	"kitops/pkg/lib/repo/util"
-
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/repo/local"
+	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 
 	"github.com/opencontainers/go-digest"
