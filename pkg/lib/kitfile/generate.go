@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/fs"
 	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
 	"os"
 	"path/filepath"
@@ -91,6 +92,11 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	var detectedLicenseType string
 	for _, d := range ds {
 		filename := d.Name()
+		if constants.IsDefaultKitfileName(filename) {
+			// Skip Kitfile files (if present in the directory...). These won't be packed
+			// either way.
+			continue
+		}
 		if d.IsDir() {
 			dirModelFiles, err := addDirToKitfile(kitfile, filename, d)
 			if err != nil {
