@@ -28,6 +28,17 @@ import (
 	"github.com/google/licensecheck"
 )
 
+type fileType int
+
+const (
+	fileTypeModel fileType = iota
+	fileTypeDataset
+	fileTypeCode
+	fileTypeDocs
+	fileTypeMetadata
+	fileTypeUnknown
+)
+
 var modelWeightsSuffixes = []string{
 	".safetensors", ".pkl", ".joblib",
 	// Pytorch suffixes
@@ -76,32 +87,32 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	var unprocessedDirPaths []string
 	// Metadata files; we want these to be either model parts (if there is a model)
 	// or datasets
-	var metadataPaths []string
-	var modelFiles []fs.DirEntry
+	var modelFiles, metadataPaths []string
 	var detectedLicenseType string
 	for _, d := range ds {
-		name := d.Name()
+		filename := d.Name()
 		if d.IsDir() {
-			err := addDirToKitfile(kitfile, name, d)
+			dirModelFiles, err := addDirToKitfile(kitfile, filename, d)
 			if err != nil {
-				unprocessedDirPaths = append(unprocessedDirPaths, name)
+				unprocessedDirPaths = append(unprocessedDirPaths, filename)
 			}
+			modelFiles = append(modelFiles, dirModelFiles...)
 			continue
 		}
 
 		// Check for "special" files (e.g. readme, license)
-		if strings.HasPrefix(strings.ToLower(name), "readme") {
+		if strings.HasPrefix(strings.ToLower(filename), "readme") {
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
-				Path:        name,
+				Path:        filename,
 				Description: "Readme file",
 			})
 			continue
-		} else if strings.HasPrefix(strings.ToLower(name), "license") {
+		} else if strings.HasPrefix(strings.ToLower(filename), "license") {
 			kitfile.Docs = append(kitfile.Docs, artifact.Docs{
-				Path:        name,
+				Path:        filename,
 				Description: "License file",
 			})
-			licenseType, err := detectLicense(filepath.Join(baseDir, name))
+			licenseType, err := detectLicense(filepath.Join(baseDir, filename))
 			if err != nil {
 				output.Debugf("Error determining license type: %s", err)
 				output.Logf(output.LogLevelWarn, "Unable to determine license type")
@@ -113,27 +124,21 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 		// Try to determine type based on file extension
 		// To support multi-part models, we need to collect all paths and decide
 		// which one is the model and which one(s) are parts
-		if anySuffix(name, modelWeightsSuffixes) {
-			modelFiles = append(modelFiles, d)
-			continue
+		switch determineFileType(filename) {
+		case fileTypeModel:
+			modelFiles = append(modelFiles, filename)
+		case fileTypeMetadata:
+			// Metadata should be included in either Model or Datasets, depending on
+			// other contents
+			metadataPaths = append(metadataPaths, filename)
+		case fileTypeDocs:
+			kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: filename})
+		case fileTypeDataset:
+			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: filename})
+		default:
+			// File is either code or unknown; we'll have to include it in a catch-all section
+			includeCatchallSection = true
 		}
-		// Metadata should be included in either Model or Datasets, depending on
-		// other contents
-		if anySuffix(name, metadataSuffixes) {
-			metadataPaths = append(metadataPaths, name)
-			continue
-		}
-		if anySuffix(name, docsSuffixes) {
-			kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: name})
-			continue
-		}
-		if anySuffix(name, datasetSuffixes) {
-			kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: name})
-			continue
-		}
-
-		// We don't know what this file is; we'll include it in a catch-all section
-		includeCatchallSection = true
 	}
 
 	if len(modelFiles) > 0 {
@@ -172,32 +177,102 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	return kitfile, nil
 }
 
-func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) error {
-	// TODO: consider looking into directories to see if we can figure out what they store? Might work for datasets
+func addDirToKitfile(kitfile *artifact.KitFile, path string, d fs.DirEntry) (modelFiles []string, err error) {
 	switch d.Name() {
 	case "docs":
 		kitfile.Docs = append(kitfile.Docs, artifact.Docs{
 			Path: path,
 		})
+		return nil, nil
 	case "src", "pkg", "lib", "build":
 		kitfile.Code = append(kitfile.Code, artifact.Code{
 			Path: path,
 		})
-	default:
-		return fmt.Errorf("could not determine data type for directory")
+		return nil, nil
 	}
-	return nil
+
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", path, err)
+	}
+
+	// Sort entries in the directory to try and figure out what it contains. We'll reuse the
+	// fact that the fileTypes are enumerated using iota (and so are ints) to index correctly.
+	// Avoid using maps here since they iterate in a random order.
+	directoryContents := [int(fileTypeUnknown) + 1][]string{}
+	for _, entry := range entries {
+		relPath := filepath.Join(path, entry.Name())
+		if entry.IsDir() {
+			// TODO: we can potentially recurse further here if we find we need to
+			directoryContents[int(fileTypeUnknown)] = append(directoryContents[int(fileTypeUnknown)], relPath)
+			continue
+		}
+		fileType := determineFileType(entry.Name())
+		if fileType == fileTypeModel {
+			modelFiles = append(modelFiles, relPath)
+		}
+		directoryContents[int(fileType)] = append(directoryContents[int(fileType)], relPath)
+	}
+
+	// Try to detect directories that contain e.g. only datasets so we can add them
+	overallFiletype := fileTypeUnknown
+	directoryHasMixedContents := false
+	for fType, files := range directoryContents {
+		if len(files) > 0 && fileType(fType) != fileTypeMetadata {
+			if overallFiletype != fileTypeUnknown {
+				directoryHasMixedContents = true
+			}
+			overallFiletype = fileType(fType)
+		}
+	}
+	if directoryHasMixedContents {
+		return modelFiles, fmt.Errorf("mixed content in directory; unable to determine type")
+	}
+	switch overallFiletype {
+	case fileTypeModel:
+		// Include any metadata files as modelParts later
+		modelFiles = append(modelFiles, directoryContents[int(fileTypeMetadata)]...)
+	case fileTypeDataset:
+		kitfile.DataSets = append(kitfile.DataSets, artifact.DataSet{Path: path})
+	case fileTypeDocs:
+		kitfile.Docs = append(kitfile.Docs, artifact.Docs{Path: path})
+	default:
+		// If it's overall code, metadata, or unknown, just return it as unprocessed and let it be added as a Code section
+		// later
+		return modelFiles, fmt.Errorf("directory should be handled as Code")
+	}
+
+	return modelFiles, nil
 }
 
-func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []fs.DirEntry) error {
-	if len(modelFiles) == 0 {
+func determineFileType(filename string) fileType {
+	if anySuffix(filename, modelWeightsSuffixes) {
+		return fileTypeModel
+	}
+	// Metadata should be included in either Model or Datasets, depending on
+	// other contents
+	if anySuffix(filename, metadataSuffixes) {
+		return fileTypeMetadata
+	}
+	if anySuffix(filename, docsSuffixes) {
+		return fileTypeDocs
+	}
+	if anySuffix(filename, datasetSuffixes) {
+		return fileTypeDataset
+	}
+	return fileTypeUnknown
+
+}
+
+func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelPaths []string) error {
+	if len(modelPaths) == 0 {
 		return nil
 	}
 
-	if len(modelFiles) == 1 {
-		filename := modelFiles[0].Name()
+	if len(modelPaths) == 1 {
+		filename := filepath.Base(modelPaths[0])
 		kitfile.Model = &artifact.Model{
-			Path: filename,
+			Path: modelPaths[0],
 			Name: strings.TrimSuffix(filename, filepath.Ext(filename)),
 		}
 		return nil
@@ -208,20 +283,20 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []f
 	largestFile := ""
 	largestSize := int64(0)
 	averageSize := int64(0)
-	for _, modelFile := range modelFiles {
-		info, err := modelFile.Info()
+	for _, modelFile := range modelPaths {
+		info, err := os.Stat(modelFile)
 		if err != nil {
-			return fmt.Errorf("failed to process file %s: %w", filepath.Join(baseDir, modelFile.Name()), err)
+			return fmt.Errorf("failed to process file %s: %w", filepath.Join(baseDir, modelFile), err)
 		}
 		size := info.Size()
 		if size > largestSize {
 			largestSize = size
-			largestFile = modelFile.Name()
+			largestFile = modelFile
 		}
 		averageSize = averageSize + size
 	}
 	// Integer division is probably fine here; at most we're off by a byte.
-	averageSize = averageSize / int64(len(modelFiles))
+	averageSize = averageSize / int64(len(modelPaths))
 
 	// If the biggest file is 1.5x the average, make it the model and the rest parts; otherwise, add
 	// all parts in lexical order
@@ -230,21 +305,21 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelFiles []f
 			Path: largestFile,
 		}
 		kitfile.Model.Name = strings.TrimSuffix(largestFile, filepath.Ext(largestFile))
-		for _, modelFile := range modelFiles {
-			if modelFile.Name() == largestFile {
+		for _, modelFile := range modelPaths {
+			if modelFile == largestFile {
 				continue
 			}
 			kitfile.Model.Parts = append(kitfile.Model.Parts, artifact.ModelPart{
-				Path: modelFile.Name(),
+				Path: modelFile,
 			})
 		}
 	} else {
 		kitfile.Model = &artifact.Model{
-			Path: modelFiles[0].Name(),
+			Path: modelPaths[0],
 		}
-		for _, modelFile := range modelFiles[1:] {
+		for _, modelFile := range modelPaths[1:] {
 			kitfile.Model.Parts = append(kitfile.Model.Parts, artifact.ModelPart{
-				Path: modelFile.Name(),
+				Path: modelFile,
 			})
 		}
 	}
