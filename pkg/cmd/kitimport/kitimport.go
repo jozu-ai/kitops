@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
@@ -82,8 +83,11 @@ func doImport(ctx context.Context, opts *importOptions) error {
 }
 
 func cloneRepository(repo, destDir string) error {
-	hfRepo := fmt.Sprintf("https://huggingface.co/%s", repo)
-	if err := git.CloneRepository(hfRepo, destDir); err != nil {
+	fullRepo := repo
+	if !strings.HasPrefix(fullRepo, "http") {
+		fullRepo = fmt.Sprintf("https://huggingface.co/%s", repo)
+	}
+	if err := git.CloneRepository(fullRepo, destDir); err != nil {
 		return err
 	}
 	// Clean up git-related files, since we probably don't want those
