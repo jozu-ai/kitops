@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -30,6 +31,7 @@ import (
 	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/lib/repo/local"
 	repoutils "kitops/pkg/lib/repo/util"
+	"kitops/pkg/lib/util"
 	"kitops/pkg/output"
 
 	"oras.land/oras-go/v2/registry"
@@ -40,9 +42,12 @@ func doImport(ctx context.Context, opts *importOptions) error {
 	if err != nil {
 		return fmt.Errorf("failed to create temporary directory: %w", err)
 	}
+	doCleanup := true
 	defer func() {
-		if err := os.RemoveAll(tmpDir); err != nil {
-			output.Logf(output.LogLevelWarn, "Failed to remove temporary directory %s", tmpDir)
+		if doCleanup {
+			if err := os.RemoveAll(tmpDir); err != nil {
+				output.Logf(output.LogLevelWarn, "Failed to remove temporary directory %s", tmpDir)
+			}
 		}
 	}()
 
@@ -63,6 +68,18 @@ func doImport(ctx context.Context, opts *importOptions) error {
 			return err
 		}
 		kitfile = kf
+
+		if util.IsInteractiveSession() {
+			// If we hit an error here, we don't want to clean up files so that user
+			// can manually edit them.
+			doCleanup = false
+			newKitfile, err := promptToEditKitfile(tmpDir, opts.tag, kf)
+			if err != nil {
+				return err
+			}
+			kitfile = newKitfile
+			doCleanup = true
+		}
 	} else {
 		kf, err := readExistingKitfile(kfpath)
 		if err != nil {
@@ -147,4 +164,34 @@ func readExistingKitfile(kfPath string) (*artifact.KitFile, error) {
 		return nil, fmt.Errorf("existing Kitfile is invalid: %w", err)
 	}
 	return kitfile, nil
+}
+
+func promptToEditKitfile(contextDir, tag string, currentKitfile *artifact.KitFile) (*artifact.KitFile, error) {
+	kitfilePath := filepath.Join(contextDir, constants.DefaultKitfileName)
+	ans, err := util.PromptForInput("Would you like to edit Kitfile before packing? (y/N): ", false)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response: %w", err)
+	}
+	if !strings.HasPrefix(strings.ToLower(ans), "y") {
+		// Current one is fine!
+		return currentKitfile, nil
+	}
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
+		output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
+		output.Logf(output.LogLevelWarn, "    %s", kitfilePath)
+		output.Logf(output.LogLevelWarn, "and run command")
+		output.Logf(output.LogLevelWarn, "    kit pack -t %s %s", tag, contextDir)
+		output.Logf(output.LogLevelWarn, "to complete process")
+		return nil, fmt.Errorf("no editor found")
+	}
+	editCmd := exec.Command(editor, kitfilePath)
+	editCmd.Stdin = os.Stdin
+	editCmd.Stdout = os.Stdout
+	editCmd.Stderr = os.Stderr
+	if err := editCmd.Run(); err != nil {
+		return nil, fmt.Errorf("error running external editor: %w", err)
+	}
+	return readExistingKitfile(kitfilePath)
 }
