@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/output"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -40,6 +41,8 @@ kit import myorg/myrepo
 kit import myorg/myrepo --tag myrepository:latest
 `
 )
+
+var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)
 
 type importOptions struct {
 	repo       string
@@ -87,7 +90,10 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	opts.repo = args[0]
 
 	if opts.tag == "" {
-		opts.tag = strings.ToLower(fmt.Sprintf("%s:latest", opts.repo))
+		tag := repoToTagRegexp.ReplaceAllString(opts.repo, "${1}")
+		tag = strings.ToLower(tag)
+		opts.tag = fmt.Sprintf("%s:latest", tag)
+		output.Infof("Using tag %s. Use flag --tag to override", opts.tag)
 	}
 	return nil
 }
