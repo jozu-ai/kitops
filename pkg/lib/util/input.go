@@ -31,7 +31,7 @@ import (
 func PromptForInput(prompt string, isSensitive bool) (string, error) {
 	var bytes []byte
 	var err error
-	if !term.IsTerminal(int(syscall.Stdin)) {
+	if !IsInteractiveSession() {
 		return "", fmt.Errorf("attempting to read input from non-terminal")
 	}
 
@@ -47,4 +47,8 @@ func PromptForInput(prompt string, isSensitive bool) (string, error) {
 		return "", fmt.Errorf("failed to read input: %w", err)
 	}
 	return strings.TrimSpace(string(bytes)), nil
+}
+
+func IsInteractiveSession() bool {
+	return term.IsTerminal(int(syscall.Stdin))
 }
