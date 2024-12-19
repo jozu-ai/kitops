@@ -101,7 +101,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 			continue
 		}
 		if d.IsDir() {
-			dirModelFiles, err := addDirToKitfile(kitfile, filename, d)
+			dirModelFiles, err := addDirToKitfile(kitfile, baseDir, filename, d)
 			if err != nil {
 				output.Logf(output.LogLevelTrace, "Failed to determine type for directory %s: %s", filename, err)
 				unprocessedDirPaths = append(unprocessedDirPaths, filename)
@@ -199,7 +199,7 @@ func GenerateKitfile(baseDir string, packageOpt *artifact.Package) (*artifact.Ki
 	return kitfile, nil
 }
 
-func addDirToKitfile(kitfile *artifact.KitFile, dirPath string, d fs.DirEntry) (modelFiles []string, err error) {
+func addDirToKitfile(kitfile *artifact.KitFile, baseDir, dirPath string, d fs.DirEntry) (modelFiles []string, err error) {
 	switch d.Name() {
 	case "docs":
 		output.Logf(output.LogLevelTrace, "Directory %s interpreted as documentation", d.Name())
@@ -215,7 +215,7 @@ func addDirToKitfile(kitfile *artifact.KitFile, dirPath string, d fs.DirEntry) (
 		return nil, nil
 	}
 
-	entries, err := os.ReadDir(dirPath)
+	entries, err := os.ReadDir(filepath.Join(baseDir, dirPath))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read directory %s: %w", dirPath, err)
 	}
@@ -313,7 +313,7 @@ func addModelToKitfile(kitfile *artifact.KitFile, baseDir string, modelPaths []s
 	largestSize := int64(0)
 	averageSize := int64(0)
 	for _, modelFile := range modelPaths {
-		info, err := os.Stat(modelFile)
+		info, err := os.Stat(filepath.Join(baseDir, modelFile))
 		if err != nil {
 			return fmt.Errorf("failed to process file %s: %w", filepath.Join(baseDir, modelFile), err)
 		}
