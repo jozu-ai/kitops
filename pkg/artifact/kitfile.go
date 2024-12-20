@@ -44,7 +44,7 @@ type (
 
 	Docs struct {
 		Path        string `json:"path" yaml:"path"`
-		Description string `json:"description" yaml:"description"`
+		Description string `json:"description,omitempty" yaml:"description,omitempty"`
 		*LayerInfo  `json:",inline" yaml:",inline"`
 	}
 

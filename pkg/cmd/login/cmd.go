@@ -17,20 +17,18 @@
 package login
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"io"
 	"os"
 	"strings"
-	"syscall"
 
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/util"
 	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/term"
 	"oras.land/oras-go/v2/registry/remote/auth"
 )
 
@@ -122,12 +120,12 @@ func (opts *loginOptions) complete(ctx context.Context, args []string) error {
 		// Prompt for password (and username, if necessary)
 		var err error
 		if username == "" {
-			username, err = promptForInput("Username: ", false)
+			username, err = util.PromptForInput("Username: ", false)
 			if err != nil {
 				return err
 			}
 		}
-		password, err = promptForInput("Password: ", true)
+		password, err = util.PromptForInput("Password: ", true)
 		if err != nil {
 			return err
 		}
@@ -158,25 +156,4 @@ func readPasswordFromStdin() (string, error) {
 		return "", fmt.Errorf("failed to read password from standard input")
 	}
 	return strings.TrimSpace(string(passwd)), err
-}
-
-func promptForInput(prompt string, isSensitive bool) (string, error) {
-	var bytes []byte
-	var err error
-	if !term.IsTerminal(int(syscall.Stdin)) {
-		return "", fmt.Errorf("attempting to read input from non-terminal")
-	}
-
-	fmt.Print(prompt)
-	if isSensitive {
-		bytes, err = term.ReadPassword(int(syscall.Stdin))
-		fmt.Print("\n")
-	} else {
-		reader := bufio.NewReader(os.Stdin)
-		bytes, err = reader.ReadBytes('\n')
-	}
-	if err != nil {
-		return "", fmt.Errorf("failed to read input: %w", err)
-	}
-	return strings.TrimSpace(string(bytes)), nil
 }
