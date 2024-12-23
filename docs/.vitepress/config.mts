@@ -4,7 +4,7 @@ import type StateBlock from 'markdown-it/lib/rules_block/state_block'
 import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'path'
 
-import { defineConfig } from 'vitepress'
+import { defineConfig, type HeadConfig } from 'vitepress'
 import { getSidebarItemsFromMdFiles } from './utils.mts'
 
 const inProd = process.env.NODE_ENV === 'production'
@@ -20,11 +20,11 @@ const head = [
   ['meta', { name: "msapplication-TileColor", content: "#000000"}],
   ['meta', { name: "msapplication-config", content: "/favicons/browserconfig.xml"}],
   ['meta', { name: "theme-color", content: "#000000"}],
-  ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-QTDTMG01Z5' } ],
+  ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-QTDTMG01Z5'}],
   ['script', {}, "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-QTDTMG01Z5');"],
   ['script', {}, "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';\nj.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','dataLayer','GTM-TFFZXCQW');"],
   ['script', { async: '', defer: '', src: 'https://buttons.github.io/buttons.js' }],
-]
+] as HeadConfig[]
 
 // Prod only scripts
 if (inProd) {
@@ -145,10 +145,11 @@ export default defineConfig({
     }
   },
 
-  transformPageData(pageData) {
+  transformPageData(pageData, { siteConfig }) {
+    // Generate the canonical url's on each page, considering the cleanUrl config
     const canonicalUrl = `https://kitops.ml/${pageData.relativePath}`
       .replace(/index\.md$/, '')
-      .replace(/\.md$/, '.html')
+      .replace(/\.md$/, siteConfig.cleanUrls ? '' : '.html')
 
     pageData.frontmatter.head ??= []
     pageData.frontmatter.head.push([
@@ -184,6 +185,8 @@ export default defineConfig({
   },
 
   ignoreDeadLinks: true,
+
+  cleanUrls: true,
 
   markdown: {
     config: (md) => {
