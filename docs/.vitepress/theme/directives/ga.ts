@@ -15,7 +15,7 @@ function trackEvent(action, binding: DirectiveBinding) {
     }
 
     // Call the gtag function to track the event
-    window.gtag('event', action, parameters);
+    // window.gtag('event', action, parameters);
   }
 }
 
