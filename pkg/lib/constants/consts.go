@@ -60,6 +60,15 @@ func DefaultKitfileNames() []string {
 	return []string{"Kitfile", "kitfile", ".kitfile"}
 }
 
+func IsDefaultKitfileName(filename string) bool {
+	for _, name := range DefaultKitfileNames() {
+		if name == filename {
+			return true
+		}
+	}
+	return false
+}
+
 // DefaultConfigPath returns the default configuration and cache directory for the CLI.
 // This is platform-dependent, using
 //   - $XDG_DATA_HOME/kitops on Linux, with fall back to $HOME/.local/share/kitops
