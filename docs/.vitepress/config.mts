@@ -39,9 +39,9 @@ if (inProd) {
   )
 
   // CookieYes
-  // head.push(
-  //   ['script', { id: 'cookieyes', src: 'https://cdn-cookieyes.com/client_data/43ed933a5c31287e10124caf/script.js' }]
-  // )
+  head.push(
+    ['script', { id: 'cookieyes', type: 'text/javascript', src: 'https://cdn-cookieyes.com/client_data/43ed933a5c31287e10124caf/script.js' }]
+  )
 }
 
 // https://vitepress.dev/reference/site-config
