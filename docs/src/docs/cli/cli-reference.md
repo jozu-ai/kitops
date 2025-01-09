@@ -56,7 +56,8 @@ kit dev logs [flags]
 ### Options
 
 ```
-  -h, --help   help for logs
+  -f, --follow   Stream the log file
+  -h, --help     help for logs
 ```
 
 ### Options inherited from parent commands
