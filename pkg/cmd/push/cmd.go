@@ -33,16 +33,19 @@ import (
 
 const (
 	shortDesc = `Upload a modelkit to a specified registry`
-	longDesc  = `This command pushes modelkits to a remote registry.
+	longDesc  = `This command pushes modelkits from local storage to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before
-they can be pushed`
+If specified without a destination, the ModelKit must be tagged locally before
+pushing.`
 
-	example = `# Push the latest modelkits to a remote registry
-kit push registry.example.com/my-model:latest
+	example = `# Push the ModelKit tagged 'latest' to a remote registry
+kit push registry.example.com/my-org/my-model:latest
 
-# Push a specific version of a modelkits using a tag:
-kit push registry.example.com/my-model:1.0.0`
+# Push a ModelKit to a remote registry by digest
+kit push registry.example.com/my-org/my-model@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# Push local modelkit 'mymodel:1.0.0' to a remote registry
+kit push mymodel:1.0.0 registry.example.com/my-org/my-model:latest`
 )
 
 type pushOptions struct {
@@ -94,7 +97,7 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 func PushCommand() *cobra.Command {
 	opts := &pushOptions{}
 	cmd := &cobra.Command{
-		Use:     "push [flags] registry/repository[:tag|@digest] [registry/repository[:tag|@digest]]",
+		Use:     "push [flags] SOURCE [DESTINATION]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
