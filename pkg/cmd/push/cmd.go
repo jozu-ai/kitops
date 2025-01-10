@@ -47,8 +47,9 @@ kit push registry.example.com/my-model:1.0.0`
 
 type pushOptions struct {
 	options.NetworkOptions
-	configHome string
-	modelRef   *registry.Reference
+	configHome   string
+	srcModelRef  *registry.Reference
+	destModelRef *registry.Reference
 }
 
 func (opts *pushOptions) complete(ctx context.Context, args []string) error {
@@ -58,17 +59,30 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := util.ParseReference(args[0])
+	srcRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference: %w", err)
-	}
-	if modelRef.Registry == "localhost" {
-		return fmt.Errorf("registry is required when pushing")
+		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("reference cannot include multiple tags")
 	}
-	opts.modelRef = modelRef
+	opts.srcModelRef = srcRef
+	if len(args) == 1 {
+		opts.destModelRef = srcRef
+	} else {
+		destRef, extraTags, err := util.ParseReference(args[1])
+		if err != nil {
+			return fmt.Errorf("failed to parse target reference %s: %w", args[1], err)
+		}
+		if len(extraTags) > 0 {
+			return fmt.Errorf("target reference cannot include multiple tags")
+		}
+		opts.destModelRef = destRef
+	}
+
+	if opts.destModelRef.Registry == "localhost" {
+		return fmt.Errorf("registry is required when pushing")
+	}
 
 	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
 		return err
@@ -80,14 +94,14 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 func PushCommand() *cobra.Command {
 	opts := &pushOptions{}
 	cmd := &cobra.Command{
-		Use:     "push [flags] registry/repository[:tag|@digest]",
+		Use:     "push [flags] registry/repository[:tag|@digest] [registry/repository[:tag|@digest]]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
 		RunE:    runCommand(opts),
 	}
 
-	cmd.Args = cobra.ExactArgs(1)
+	cmd.Args = cobra.RangeArgs(1, 2)
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().SortFlags = false
 
@@ -102,20 +116,24 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 
 		remoteRepo, err := remote.NewRepository(
 			cmd.Context(),
-			opts.modelRef.Registry,
-			opts.modelRef.Repository,
+			opts.destModelRef.Registry,
+			opts.destModelRef.Repository,
 			&opts.NetworkOptions,
 		)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
-		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.modelRef)
+		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.srcModelRef)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
-		output.Infof("Pushing %s", opts.modelRef.String())
+		if opts.srcModelRef.String() != opts.destModelRef.String() {
+			output.Infof("Pushing %s to %s", opts.srcModelRef.String(), opts.destModelRef.String())
+		} else {
+			output.Infof("Pushing %s", opts.srcModelRef.String())
+		}
 		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts)
 		if err != nil {
 			return output.Fatalf("Failed to push: %s. Check you have write permissions to the organization and repository you are pushing to.", err)
