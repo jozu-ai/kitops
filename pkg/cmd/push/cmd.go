@@ -18,7 +18,9 @@ package push
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
@@ -29,6 +31,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote/errcode"
 )
 
 const (
@@ -138,8 +141,17 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 			output.Infof("Pushing %s", opts.srcModelRef.String())
 		}
 		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts)
-		if err != nil {
-			return output.Fatalf("Failed to push: %s. Check you have write permissions to the organization and repository you are pushing to.", err)
+		respErr := &errcode.ErrorResponse{}
+		if ok := errors.As(err, &respErr); ok {
+			output.Debugf("Got error pushing: %s", err)
+			errMsg := fmt.Sprintf("Failed to push: got response %d (%s) from remote", respErr.StatusCode, http.StatusText(respErr.StatusCode))
+			switch respErr.StatusCode {
+			case http.StatusUnauthorized:
+				errMsg = fmt.Sprintf("%s. Ensure the repository exists and you have push access to it.", errMsg)
+			}
+			return output.Fatalf(errMsg)
+		} else if err != nil {
+			return output.Fatalf("Failed to push: %s.", err)
 		}
 		output.Infof("Pushed %s", desc.Digest)
 		return nil
