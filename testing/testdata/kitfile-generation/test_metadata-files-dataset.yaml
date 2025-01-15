@@ -1,0 +1,23 @@
+description: "Attaches metadata files to datasets when no model"
+
+files:
+  - a-dataset.tar
+  - b-dataset.csv
+  - c-dataset.zip
+  - x-metadata.json
+  - y-metadata.yaml
+  - z-metadata.xml
+
+modelName: test-dataset-metadata
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-dataset-metadata
+    description: "Attaches metadata files to datasets when no model"
+  datasets:
+    - path: a-dataset.tar
+    - path: b-dataset.csv
+    - path: c-dataset.zip
+    - path: x-metadata.json
+    - path: y-metadata.yaml
+    - path: z-metadata.xml

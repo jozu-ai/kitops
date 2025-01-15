@@ -1,0 +1,21 @@
+description: "Handles models with an adaptor"
+
+files:
+  - model-adaptor1.gguf
+  - model-adaptor2.gguf
+  # Heuristically, this needs to be significantly bigger than the other files
+  # Since we store the filename in the file, we'll just make the filename long
+  - zzzzzzz-main-model-larger-than-normal-files.gguf
+
+modelName: test-model-and-adaptor
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-model-and-adaptor
+    description: "Handles models with an adaptor"
+  model:
+    name: zzzzzzz-main-model-larger-than-normal-files
+    path: zzzzzzz-main-model-larger-than-normal-files.gguf
+    parts:
+      - path: model-adaptor1.gguf
+      - path: model-adaptor2.gguf

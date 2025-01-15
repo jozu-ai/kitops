@@ -1,0 +1,10 @@
+description: "Generates empty Kitfile in empty directory"
+
+files: []
+
+modelName: test-empty
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-empty
+    description: "Generates empty Kitfile in empty directory"

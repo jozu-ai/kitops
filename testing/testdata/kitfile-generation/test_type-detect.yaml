@@ -1,0 +1,46 @@
+description: "Detects type of files based on extension"
+
+files:
+  - a-model.gguf
+  - b-model.safetensors
+  - c-model.pkl
+  - d-model.pb
+  - a-dataset.tar
+  - b-dataset.csv
+  - c-dataset.zip
+  - a-docs.md
+  - b-docs.adoc
+  - c-docs.pdf
+  # Specially-handled "documentation" files -- license and README
+  - README.md
+  - LICENSE
+  # Generic code files that should be caught in a catch-all section
+  - test.sh
+  - bootstrap.sh
+
+modelName: test-model-detect
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-model-detect
+    description: "Detects type of files based on extension"
+  model:
+    path: a-model.gguf
+    parts:
+      - path: b-model.safetensors
+      - path: c-model.pkl
+      - path: d-model.pb
+  datasets:
+    - path: a-dataset.tar
+    - path: b-dataset.csv
+    - path: c-dataset.zip
+  docs:
+    - path: LICENSE
+      description: License file
+    - path: README.md
+      description: Readme file
+    - path: a-docs.md
+    - path: b-docs.adoc
+    - path: c-docs.pdf
+  code:
+    - path: "."
