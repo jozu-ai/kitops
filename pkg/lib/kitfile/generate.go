@@ -226,16 +226,18 @@ func addDirToKitfile(kitfile *artifact.KitFile, baseDir, dirPath string, d fs.Di
 	directoryContents := [int(fileTypeUnknown) + 1][]string{}
 	for _, entry := range entries {
 		relPath := filepath.Join(dirPath, entry.Name())
+		// We want to use unix-style paths (separated by '/') even if we're generating on Windows.
+		kitfileRelPath := filepath.ToSlash(relPath)
 		if entry.IsDir() {
 			// TODO: we can potentially recurse further here if we find we need to
-			directoryContents[int(fileTypeUnknown)] = append(directoryContents[int(fileTypeUnknown)], relPath)
+			directoryContents[int(fileTypeUnknown)] = append(directoryContents[int(fileTypeUnknown)], kitfileRelPath)
 			continue
 		}
 		fileType := determineFileType(entry.Name())
 		if fileType == fileTypeModel {
-			modelFiles = append(modelFiles, relPath)
+			modelFiles = append(modelFiles, kitfileRelPath)
 		}
-		directoryContents[int(fileType)] = append(directoryContents[int(fileType)], relPath)
+		directoryContents[int(fileType)] = append(directoryContents[int(fileType)], kitfileRelPath)
 	}
 
 	// Try to detect directories that contain e.g. only datasets so we can add them
