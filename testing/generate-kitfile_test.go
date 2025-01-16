@@ -42,14 +42,13 @@ func (t kitfileGenTestCase) withName(name string) kitfileGenTestCase {
 }
 
 func TestKitfileGeneration(t *testing.T) {
-	cleanup := testPreflight(t)
-	defer cleanup(t)
+	testPreflight(t)
+
 	tests := loadAllTestCasesOrPanic[kitfileGenTestCase](t, filepath.Join("testdata", "kitfile-generation"))
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s (%s)", tt.Name, tt.Description), func(t *testing.T) {
 			// Set up temporary directory for work
-			tmpDir, removeTmp := setupTempDir(t)
-			defer removeTmp()
+			tmpDir := setupTempDir(t)
 
 			// Set up directory for KITOPS_HOME
 			contextPath := filepath.Join(tmpDir, ".kitops")
@@ -74,7 +73,11 @@ func TestKitfileGeneration(t *testing.T) {
 			if !assert.NoError(t, err) {
 				return
 			}
-			defer modelfile.Close()
+			t.Cleanup(func() {
+				if err := modelfile.Close(); err != nil {
+					t.Fatalf("Error closing model file: %s", err)
+				}
+			})
 			if err := actualKitfile.LoadModel(modelfile); !assert.NoError(t, err) {
 				return
 			}

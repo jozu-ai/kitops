@@ -47,14 +47,13 @@ func (t packUnpackTestcase) withName(name string) packUnpackTestcase {
 // We work in a new temporary directory for each test to avoid interaction between
 // tests.
 func TestPackUnpack(t *testing.T) {
-	cleanup := testPreflight(t)
-	defer cleanup(t)
+	testPreflight(t)
+
 	tests := loadAllTestCasesOrPanic[packUnpackTestcase](t, filepath.Join("testdata", "pack-unpack"))
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s (%s)", tt.Name, tt.Description), func(t *testing.T) {
 			// Set up temporary directory for work
-			tmpDir, removeTmp := setupTempDir(t)
-			defer removeTmp()
+			tmpDir := setupTempDir(t)
 
 			// Set up paths to use for test
 			modelKitPath, unpackPath, contextPath := setupTestDirs(t, tmpDir)
@@ -76,8 +75,7 @@ func TestPackUnpack(t *testing.T) {
 }
 
 func TestPackReproducibility(t *testing.T) {
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
