@@ -41,5 +41,19 @@ func CleanGitMetadata(dir string) error {
 			return fmt.Errorf("error removing %s: %w", path, err)
 		}
 	}
+
+	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		if d.Name() == ".gitignore" || d.Name() == ".gitattributes" {
+			return os.Remove(path)
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("error while cleaning git files from directory: %w", err)
+	}
+
 	return nil
 }
