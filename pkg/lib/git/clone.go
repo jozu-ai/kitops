@@ -25,7 +25,7 @@ import (
 	"os/exec"
 )
 
-func CloneRepository(repo, dest string) error {
+func CloneRepository(repo, dest, token string) error {
 	if err := checkGit(); err != nil {
 		return err
 	}
@@ -33,25 +33,44 @@ func CloneRepository(repo, dest string) error {
 		return err
 	}
 
+	cloneEnv := os.Environ()
+	if token != "" {
+		// Set up additional git config settings without overriding user's actual gitconfig.
+		// Git documentation for this "feature": https://git-scm.com/docs/git-config#ENVIRONMENT
+		cloneEnv = append(cloneEnv, fmt.Sprintf(`KIT_IMPORT_TOKEN=%s`, token))
+		cloneEnv = append(cloneEnv,
+			"GIT_CONFIG_COUNT=2",
+			"GIT_CONFIG_KEY_0=credential.username",
+			"GIT_CONFIG_VALUE_0=token",
+			"GIT_CONFIG_KEY_1=credential.helper",
+			`GIT_CONFIG_VALUE_1=!f() { test "$1" = get && echo "password=${KIT_IMPORT_TOKEN}"; }; f`,
+		)
+	} else {
+		// This is a workaround to disable interactive password prompts
+		cloneEnv = append(cloneEnv, "GIT_ASKPASS=true")
+	}
+
 	// Clone without LFS enabled to get metadata about repo first
 	cloneCmd := exec.Command("git", "clone", "--depth", "1", repo, dest)
-	cloneCmd.Env = os.Environ()
+	cloneCmd.Env = cloneEnv
 	cloneCmd.Env = append(cloneCmd.Env, "GIT_LFS_SKIP_SMUDGE=1")
 	cloneCmd.Stderr = os.Stderr
 	cloneCmd.Stdout = os.Stdout
+
 	output.Infof("Cloning repository %s", repo)
 	if err := cloneCmd.Run(); err != nil {
-		return fmt.Errorf("Error cloning repository: %w", err)
+		return fmt.Errorf("error cloning repository: %w", err)
 	}
 
 	// Pull LFS files
 	lfsCmd := exec.Command("git", "lfs", "pull")
 	lfsCmd.Dir = dest
+	lfsCmd.Env = cloneEnv
 	lfsCmd.Stdout = os.Stdout
 	lfsCmd.Stderr = os.Stderr
 	output.Infof("Pulling large files")
 	if err := lfsCmd.Run(); err != nil {
-		return fmt.Errorf("Error downloading LFS files: %w", err)
+		return fmt.Errorf("error downloading LFS files: %w", err)
 	}
 	// LFS pull prints progress by overwriting a line repeatedly; once it's done
 	// we need to print a newline to avoid overwriting the last line

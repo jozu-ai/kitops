@@ -48,6 +48,7 @@ type importOptions struct {
 	repo       string
 	configHome string
 	tag        string
+	token      string
 }
 
 func ImportCommand() *cobra.Command {
@@ -62,6 +63,7 @@ func ImportCommand() *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 	}
 
+	cmd.Flags().StringVar(&opts.token, "token", "", "Token to use for authenticating with repository")
 	cmd.Flags().StringVarP(&opts.tag, "tag", "t", "", "Tag for the ModelKit (default is '[repository]:latest')")
 	cmd.Flags().SortFlags = false
 	return cmd
