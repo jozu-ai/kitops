@@ -56,7 +56,7 @@ func doImport(ctx context.Context, opts *importOptions) error {
 		return err
 	}
 
-	if err := cloneRepository(opts.repo, tmpDir); err != nil {
+	if err := cloneRepository(opts.repo, tmpDir, opts.token); err != nil {
 		return err
 	}
 
@@ -99,12 +99,12 @@ func doImport(ctx context.Context, opts *importOptions) error {
 	return nil
 }
 
-func cloneRepository(repo, destDir string) error {
+func cloneRepository(repo, destDir, token string) error {
 	fullRepo := repo
 	if !strings.HasPrefix(fullRepo, "http") {
 		fullRepo = fmt.Sprintf("https://huggingface.co/%s", repo)
 	}
-	if err := git.CloneRepository(fullRepo, destDir); err != nil {
+	if err := git.CloneRepository(fullRepo, destDir, token); err != nil {
 		return err
 	}
 	// Clean up git-related files, since we probably don't want those
