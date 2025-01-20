@@ -30,6 +30,7 @@ import (
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/lib/git"
 	kfutils "kitops/pkg/lib/kitfile"
+	kfgen "kitops/pkg/lib/kitfile/generate"
 	"kitops/pkg/lib/repo/local"
 	repoutils "kitops/pkg/lib/repo/util"
 	"kitops/pkg/lib/util"
@@ -154,7 +155,7 @@ func cloneRepository(repo, destDir, token string) error {
 }
 
 func generateKitfile(contextDir string, modelPackage *artifact.Package) (*artifact.KitFile, error) {
-	kitfile, err := kfutils.GenerateKitfile(contextDir, modelPackage)
+	kitfile, err := kfgen.GenerateKitfile(contextDir, modelPackage)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kitfile: %w", err)
 	}

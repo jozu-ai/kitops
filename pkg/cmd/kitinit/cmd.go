@@ -23,7 +23,7 @@ import (
 	"io/fs"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	kfutils "kitops/pkg/lib/kitfile"
+	kfgen "kitops/pkg/lib/kitfile/generate"
 	"kitops/pkg/lib/util"
 	"kitops/pkg/output"
 	"os"
@@ -105,7 +105,7 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Error checking for existing Kitfile: %s", err)
 		}
 
-		kitfile, err := kfutils.GenerateKitfile(opts.path, modelPackage)
+		kitfile, err := kfgen.GenerateKitfile(opts.path, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
 		}
