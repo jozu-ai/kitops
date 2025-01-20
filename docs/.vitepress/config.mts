@@ -51,6 +51,8 @@ export default defineConfig({
   title: 'KitOps',
   description: 'Documentation for KitOps',
 
+  rewrites: (id) => id.replace(/(?<!(?:^|\/)index)\.md$/, '/index.md'),
+
   head,
 
   lastUpdated: true,
@@ -80,14 +82,14 @@ export default defineConfig({
       {
         text: 'Getting started',
         items: [
-          { text: 'Overview', link: '/docs/overview' },
-          { text: 'Get Started', link: '/docs/get-started' },
-          { text: 'Next Steps', link: '/docs/next-steps' },
-          { text: 'Deploy ModelKits', link: '/docs/deploy' },
-          { text: 'Local LLM Dev', link: '/docs/dev-mode' },
-          { text: 'Why KitOps?', link: '/docs/why-kitops' },
-          { text: 'How it is Used', link: '/docs/use-cases' },
-          { text: 'KitOps versus...', link: '/docs/versus' },
+          { text: 'Overview', link: '/docs/overview/' },
+          { text: 'Get Started', link: '/docs/get-started/' },
+          { text: 'Next Steps', link: '/docs/next-steps/' },
+          { text: 'Deploy ModelKits', link: '/docs/deploy/' },
+          { text: 'Local LLM Dev', link: '/docs/dev-mode/' },
+          { text: 'Why KitOps?', link: '/docs/why-kitops/' },
+          { text: 'How it is Used', link: '/docs/use-cases/' },
+          { text: 'KitOps versus...', link: '/docs/versus/' },
         ]
       },
       {

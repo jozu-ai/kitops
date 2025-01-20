@@ -115,13 +115,13 @@ onMounted(() => {
 
   <div class="flex flex-col lg:flex-row justify-center items-center gap-10 mt-10 md:mt-14 xl:mt-22">
     <div class="relative inline-block w-full max-w-48 lg:w-auto text-center lg:text-left group">
-      <a href="/docs/cli/installation.html#%F0%9F%AA%9F-windows-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
+      <a href="/docs/cli/installation/#%F0%9F%AA%9F-windows-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z"></path>
         </svg>
         Windows
       </a>
-      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden group-hover:block group-focus-within:block">
+      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
@@ -140,13 +140,13 @@ onMounted(() => {
     </div>
 
     <div class="relative inline-block w-full max-w-48 lg:w-auto text-center lg:text-left group">
-      <a href="/docs/cli/installation.html#%F0%9F%8D%8E-macos-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
+      <a href="/docs/cli/installation/#%F0%9F%8D%8E-macos-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z"></path>
         </svg>
         Mac
       </a>
-      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden group-hover:block group-focus-within:block">
+      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
@@ -161,13 +161,13 @@ onMounted(() => {
     </div>
 
     <div class="relative inline-block w-full max-w-48 lg:w-auto text-center lg:text-left group">
-      <a href="/docs/cli/installation.html#%F0%9F%90%A7-linux-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
+      <a href="/docs/cli/installation/#%F0%9F%90%A7-linux-install" class="kit-button flex justify-center lg:justify-start items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z"></path>
         </svg>
         Linux
       </a>
-      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden group-hover:block group-focus-within:block">
+      <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
@@ -284,7 +284,7 @@ onMounted(() => {
       <div class="h4 font-bold !text-cornflower">2</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Create a simple manifest file called a Kitfile with your model, dataset and code. Then build and push the ModelKit to a registry for sharing.</p>
-        <a href="/docs/kitfile/kf-overview.html" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
+        <a href="/docs/kitfile/kf-overview/" class="kit-button kit-button-cornflower md:w-fit mt-6">LEARN MORE</a>
       </div>
     </div>
 
@@ -292,7 +292,7 @@ onMounted(() => {
       <div class="h4 font-bold !text-gold">3</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Pull the ModelKit into your pipeline, or use <span class="text-gold">kit dev</span> to start working with the model locally.</p>
-        <a href="/docs/use-cases.html" class="kit-button md:w-fit mt-6">USE CASES</a>
+        <a href="/docs/use-cases/" class="kit-button md:w-fit mt-6">USE CASES</a>
       </div>
     </div>
   </div>
@@ -306,7 +306,7 @@ onMounted(() => {
     <li>
       <div class="text-off-white">🎁 Standards-based package</div>
       <p class="p2 mb-4 text-gray-06">A ModelKit package includes models, datasets, configurations, and code in an OCI artifact. Add as much or as little as your project needs.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/compatibility.html">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/compatibility/">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -316,7 +316,7 @@ onMounted(() => {
     <li>
       <div class="text-off-white">🔒 Tamper-proof</div>
       <p class="p2 mb-4 text-gray-06">Each ModelKit package is immutable and includes a SHA digest for itself, and every artifact it holds.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/spec.html">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/modelkit/spec/">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -326,7 +326,7 @@ onMounted(() => {
     <li>
       <div class="text-off-white">🏭 Tags and versions</div>
       <p class="p2 mb-4 text-gray-06">Each ModelKit is tagged and versioned so everyone knows which dataset and model work together.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops.html">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops/">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -336,7 +336,7 @@ onMounted(() => {
     <li>
       <div class="text-off-white">🤗 Use with LLM, ML, or AI projects</div>
       <p class="p2 mb-4 text-gray-06">ModelKits can be used with any AI, ML, or LLM project - even multi-modal models.</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference.html#kit-tag">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/cli/cli-reference/#kit-tag">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -356,7 +356,7 @@ onMounted(() => {
     <li>
       <div class="text-off-white">🏃‍♂️‍ Local dev mode</div>
       <p class="p2 mb-4 text-gray-06">Kit's Dev Mode lets your run an LLM locally, configure it, and prompt/chat with it instantly</p>
-      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops.html">
+      <a class="text-off-white font-bold flex items-center gap-2 text-base" href="/docs/why-kitops/">
         LEARN MORE
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" fill="#ECECEC"/>
@@ -366,7 +366,7 @@ onMounted(() => {
   </ol>
 
   <div class="mt-36 p2 text-center">
-    <a href="/docs/use-cases.html" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
+    <a href="/docs/use-cases/" class="kit-button mt-22">SEE THE KIT WORKFLOW</a>
   </div>
 </div>
 
@@ -442,7 +442,7 @@ onMounted(() => {
       </svg>
 
       <div>
-        <a href="/docs/modelkit/intro.html">LEARN MORE</a>
+        <a href="/docs/modelkit/intro/">LEARN MORE</a>
       </div>
     </div>
     <div class="kit-card max-w-[370px] flex flex-col">
@@ -459,7 +459,7 @@ onMounted(() => {
       </svg>
 
       <div>
-        <a href="/docs/cli/installation.html">LEARN MORE</a>
+        <a href="/docs/cli/installation/">LEARN MORE</a>
       </div>
     </div>
   </div>
@@ -548,7 +548,7 @@ onMounted(() => {
     </Vue3Marquee>
   </div>
 
-  <a href="/docs/modelkit/compatibility.html" class="kit-button mt-22">SEE FULL LIST</a>
+  <a href="/docs/modelkit/compatibility/" class="kit-button mt-22">SEE FULL LIST</a>
 </div>
 
 <div class="mt-32 md:mt-40 xl:mt-60 overflow-x-hidden">
@@ -591,14 +591,14 @@ onMounted(() => {
     <p class="mt-6">
       ModelKits do both. With a ModelKit, you can package all the parts of your AI project in one shareable asset, and tag them with a version.
       ModelKits were designed for the model development lifecycle, where projects are handed off from data science teams to application teams to deployment teams. Versioning and packaging makes it easy for team members to find the datasets and configurations that map to a specific model version.
-      You can <a href="/docs/overview.html" class="underline">read more details about KitOps in our overview</a>.
+      You can <a href="/docs/overview/" class="underline">read more details about KitOps in our overview</a>.
     </p>
   </Accordion>
 
   <Accordion content-class="space-y-[1em]">
     <template #title>How do I get started with Kit?</template>
 
-    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/get-started.html" class="underline">Quick Start</a>, where you’ll learn how to:</p>
+    <p class="mt-6">The easiest way to get started is to follow our <a href="/docs/get-started/" class="underline">Quick Start</a>, where you’ll learn how to:</p>
 
     <ul class="space-y-2 list-disc list-inside">
       <li>Package up a model, notebook, and datasets into a single ModelKit you can use with your existing tools</li>
