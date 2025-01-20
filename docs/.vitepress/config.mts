@@ -95,25 +95,25 @@ export default defineConfig({
       {
         text: 'ModelKit',
         items: [
-          { text: 'Overview', link: '/docs/modelkit/intro' },
-          { text: 'Specification', link: '/docs/modelkit/spec' },
+          { text: 'Overview', link: '/docs/modelkit/intro/' },
+          { text: 'Specification', link: '/docs/modelkit/spec/' },
           { text: 'ModelKit Quick Starts', link: 'https://jozu.ml/organization/jozu-quickstarts' },
-          { text: 'Compatibility', link: '/docs/modelkit/compatibility' },
+          { text: 'Compatibility', link: '/docs/modelkit/compatibility/' },
         ]
       },
       {
         text: 'Kitfile',
         items: [
-          { text: 'Overview', link: '/docs/kitfile/kf-overview' },
-          { text: 'Format', link: '/docs/kitfile/format' }
+          { text: 'Overview', link: '/docs/kitfile/kf-overview/' },
+          { text: 'Format', link: '/docs/kitfile/format/' }
         ]
       },
       {
         text: 'Python Library',
         items: [
-          { text: 'Overview', link: '/docs/pykitops.html' },
-          { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides.html' },
-          { text: 'Reference', link: '/docs/pykitops/reference.html' },
+          { text: 'Overview', link: '/docs/pykitops/' },
+          { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides/' },
+          { text: 'Reference', link: '/docs/pykitops/reference/' },
         ]
       },
       {
@@ -129,7 +129,7 @@ export default defineConfig({
       {
         text: 'Contribute',
         items: [
-          { text: 'Contribute to KitOps docs', link: '/contributing' }
+          { text: 'Contribute to KitOps docs', link: '/contributing/' }
         ]
       },
     ],
