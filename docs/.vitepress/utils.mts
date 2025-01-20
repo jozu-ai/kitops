@@ -34,10 +34,7 @@ export function getSidebarItemsFromMdFiles(pathName: string, options: Partial<Sc
   }
 
 	const path = resolve(BASE_PATH, `../src/${pathName}`)
-console.log(getItems(path, {
-  ...defaults,
-  ...options
-}))
+
 	return getItems(path, {
     ...defaults,
     ...options
