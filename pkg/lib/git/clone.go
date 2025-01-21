@@ -48,6 +48,7 @@ func CloneRepository(repo, dest, token string) error {
 	} else {
 		// This is a workaround to disable interactive password prompts
 		cloneEnv = append(cloneEnv, "GIT_ASKPASS=true")
+		cloneEnv = append(cloneEnv, "GIT_TERMINAL_PROMPT=0")
 	}
 
 	// Clone without LFS enabled to get metadata about repo first
