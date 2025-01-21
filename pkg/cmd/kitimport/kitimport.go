@@ -42,11 +42,20 @@ func doImport(ctx context.Context, opts *importOptions) error {
 	if err != nil {
 		return fmt.Errorf("failed to create temporary directory: %w", err)
 	}
+	curDir, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get current directory: %w", err)
+	}
 	doCleanup := true
 	defer func() {
 		if doCleanup {
+			// Make sure we're not in tmpDir before trying to remove it; on Windows we
+			// cannot remove the current working directory.
+			if err := os.Chdir(curDir); err != nil {
+				output.Logf(output.LogLevelWarn, "Failed to change directory to %s: %s", curDir, err)
+			}
 			if err := os.RemoveAll(tmpDir); err != nil {
-				output.Logf(output.LogLevelWarn, "Failed to remove temporary directory %s", tmpDir)
+				output.Logf(output.LogLevelWarn, "Failed to remove temporary directory %s: %s", tmpDir, err)
 			}
 		}
 	}()
