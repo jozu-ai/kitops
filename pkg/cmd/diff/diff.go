@@ -19,6 +19,7 @@ package diff
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
@@ -65,6 +66,17 @@ func compareManifests(manifestA *ocispec.Manifest, manifestB *ocispec.Manifest) 
 	for _, layer := range layerMapA {
 		result.UniqueLayersA = append(result.UniqueLayersA, layer)
 	}
+
+	// Sort the slices by layer type
+	sort.Slice(result.SharedLayers, func(i, j int) bool {
+		return result.SharedLayers[i].MediaType < result.SharedLayers[j].MediaType
+	})
+	sort.Slice(result.UniqueLayersA, func(i, j int) bool {
+		return result.UniqueLayersA[i].MediaType < result.UniqueLayersA[j].MediaType
+	})
+	sort.Slice(result.UniqueLayersB, func(i, j int) bool {
+		return result.UniqueLayersB[i].MediaType < result.UniqueLayersB[j].MediaType
+	})
 
 	return result
 }
