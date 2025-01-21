@@ -12,6 +12,8 @@ import './style.css'
 
 const isPlatformModalOpen = ref(false)
 
+const isProd = import.meta.env.PROD
+
 export default {
   extends: DefaultTheme,
   Layout: () => {
@@ -33,6 +35,19 @@ export default {
       'nav-bar-content-after': () => h(GithubStartButton, {
         class: 'ml-4 pt-2'
       }),
+
+      // Add a custom tracking pixel html
+      'layout-bottom': () => {
+        if (!isProd) {
+          return
+        }
+
+        return h('img', {
+          referrerpolicy: 'no-referrer-when-downgrade',
+          src: 'https://static.scarf.sh/a.png?x-pxid=58868f01-1c36-4fa2-8308-9d5ff7492d0a',
+          style: 'display:none;visibility:hidden;'
+        })
+      },
     })
   },
   enhanceApp({ app, router, siteData }) {
