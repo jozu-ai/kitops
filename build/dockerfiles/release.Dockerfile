@@ -34,9 +34,13 @@ ENV USER_ID=1001 \
     HOME=/home/user/
 
 RUN apk --no-cache upgrade && \
-    apk add --no-cache bash && \
+    apk add --no-cache git git-lfs && \
+    git-lfs install --system && \
     mkdir -p /home/user/ && \
     adduser -D $USER_NAME -h $HOME -u $USER_ID
+
+# Editor env var is required for kit import
+ENV EDITOR=vi
 
 COPY --from=kit-download /kit-cli-download/extracted/kit /usr/local/bin/kit
 COPY --from=kit-download /kit-cli-download/extracted/README.md /kit-cli-download/extracted/LICENSE /
