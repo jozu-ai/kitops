@@ -22,7 +22,7 @@ import (
 	"strings"
 	"sync"
 
-	v1 "github.com/opencontainers/image-spec/specs-go/v1"
+	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
 
@@ -52,6 +52,7 @@ func DiffCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "diff",
 		Short: "Compare two ModelKits",
+		Args:  cobra.ExactArgs(2),
 		Long: `Compare two ModelKits to see the differences in their layers.
 		
 		ModelKits can be specified from either a local or from a remote registry.
@@ -108,7 +109,7 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 		output.Infof("  ModelKit1: %s\n", opts.refA.String())
 		output.Infof("  ModelKit2: %s\n\n", opts.refB.String())
 
-		displayLayers("Shared Layers:", result.SharedLayers)
+		displayLayers("Shared", result.SharedLayers)
 		displayLayers(fmt.Sprintf("Unique to ModelKit1 (%s)", opts.refA.String()), result.UniqueLayersA)
 		displayLayers(fmt.Sprintf("Unique to ModelKit2 (%s)", opts.refB.String()), result.UniqueLayersB)
 		return nil
@@ -153,7 +154,7 @@ func removePrefix(arg string) string {
 	return arg
 }
 
-func displayLayers(title string, layers []v1.Descriptor) {
+func displayLayers(title string, layers []ocispec.Descriptor) {
 	output.Infoln(title)
 	output.Infoln("---------------------------------------")
 	if len(layers) > 0 {
