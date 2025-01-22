@@ -141,6 +141,49 @@ kit dev stop [flags]
   -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
+## kit import
+
+Import a model from HuggingFace
+
+### Synopsis
+
+Download a repository from HuggingFace and package it as a ModelKit.
+	
+The repository will be downloaded to a temporary directory and be packaged using a
+generated Kitfile.
+
+```
+kit import [flags] REPOSITORY
+```
+
+### Examples
+
+```
+# Download repository myorg/myrepo and package it, using the default tag
+kit import myorg/myrepo
+
+# Download repository and tag it 'myrepository:latest'
+kit import myorg/myrepo --tag myrepository:latest
+
+```
+
+### Options
+
+```
+      --token string   Token to use for authenticating with repository
+  -t, --tag string     Tag for the ModelKit (default is '[repository]:latest')
+  -h, --help           help for import
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
 ## kit info
 
 Show the configuration for a modelkit
@@ -182,6 +225,53 @@ kit info --remote registry.example.com/my-model:1.0.0
   -r, --remote            Check remote registry instead of local storage
   -f, --filter string     filter with node selectors
   -h, --help              help for info
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit init
+
+Generate a Kitfile for the contents of a directory
+
+### Synopsis
+
+Examine the contents of a directory and attempt to generate a basic Kitfile
+based on common file formats. Any files whose type (i.e. model, dataset, etc.)
+cannot be determined will be included in a code layer.
+
+By default the command will prompt for input for a name and description for the Kitfile
+
+```
+kit init [flags] PATH
+```
+
+### Examples
+
+```
+# Generate a Kitfile for the current directory:
+kit init .
+
+# Generate a Kitfile for files in ./my-model, with name "mymodel" and a description:
+kit init ./my-model --name "mymodel" --desc "This is my model's description"
+
+# Generate a Kitfile, overwriting any existing Kitfile:
+kit init ./my-model --force
+```
+
+### Options
+
+```
+      --name string   Name for the ModelKit
+      --desc string   Description for the ModelKit
+  -f, --force         Overwrite existing Kitfile if present
+  -h, --help          help for init
 ```
 
 ### Options inherited from parent commands
@@ -480,23 +570,26 @@ Upload a modelkit to a specified registry
 
 ### Synopsis
 
-This command pushes modelkits to a remote registry.
+This command pushes modelkits from local storage to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before
-they can be pushed
+If specified without a destination, the ModelKit must be tagged locally before
+pushing.
 
 ```
-kit push [flags] registry/repository[:tag|@digest]
+kit push [flags] SOURCE [DESTINATION]
 ```
 
 ### Examples
 
 ```
-# Push the latest modelkits to a remote registry
-kit push registry.example.com/my-model:latest
+# Push the ModelKit tagged 'latest' to a remote registry
+kit push registry.example.com/my-org/my-model:latest
 
-# Push a specific version of a modelkits using a tag:
-kit push registry.example.com/my-model:1.0.0
+# Push a ModelKit to a remote registry by digest
+kit push registry.example.com/my-org/my-model@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# Push local modelkit 'mymodel:1.0.0' to a remote registry
+kit push mymodel:1.0.0 registry.example.com/my-org/my-model:latest
 ```
 
 ### Options
