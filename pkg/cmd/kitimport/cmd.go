@@ -38,8 +38,7 @@ generated Kitfile.`
 kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:latest'
-kit import myorg/myrepo --tag myrepository:latest
-`
+kit import myorg/myrepo --tag myrepository:latest`
 )
 
 var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)

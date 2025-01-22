@@ -93,7 +93,6 @@ kit dev start
 
 # Serve the modelkit in ./my-model on port 8080
 kit dev start ./my-model --port 8080
-
 ```
 
 ### Options
@@ -164,7 +163,6 @@ kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:latest'
 kit import myorg/myrepo --tag myrepository:latest
-
 ```
 
 ### Options

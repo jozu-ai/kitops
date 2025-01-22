@@ -25,14 +25,13 @@ const (
 	devStartLongDesc  = `Start development server (experimental) from a modelkit
 
 Start a development server for an unpacked modelkit, using a context directory
-that includes the model and a kitfile.
-`
+that includes the model and a kitfile.`
+
 	devStartExample = `# Serve the model located in the current directory
 kit dev start
 
 # Serve the modelkit in ./my-model on port 8080
-kit dev start ./my-model --port 8080
-`
+kit dev start ./my-model --port 8080`
 
 	devStopShortDesc = "Stop development server"
 	devStopLongDesc  = "Stop the development server if it is running"
@@ -42,6 +41,5 @@ kit dev start ./my-model --port 8080
 
 If the development server is currently running, the logs for this server will
 be printed. If it is stopped, the logs for the previous run of the server, if
-available, will be printed instead.
-`
+available, will be printed instead.`
 )
