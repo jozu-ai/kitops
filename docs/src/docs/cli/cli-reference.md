@@ -80,7 +80,6 @@ Start development server (experimental) from a modelkit
 Start a development server for an unpacked modelkit, using a context directory
 that includes the model and a kitfile.
 
-
 ```
 kit dev start <directory> [flags]
 ```
@@ -147,9 +146,15 @@ Import a model from HuggingFace
 ### Synopsis
 
 Download a repository from HuggingFace and package it as a ModelKit.
-	
-The repository will be downloaded to a temporary directory and be packaged using a
-generated Kitfile.
+
+The repository can be specified either via a repository (e.g. myorg/myrepo) or
+with a full URL (https://huggingface.co/myorg/myrepo). The repository will be
+downloaded to a temporary directory and be packaged using a generated Kitfile.
+
+In interactive settings, this command will read the EDITOR environment variable
+to determine which editor should be used for editing the Kitfile.
+
+Note: importing repositories requires 'git' and 'git-lfs' to be installed.
 
 ```
 kit import [flags] REPOSITORY
@@ -158,11 +163,11 @@ kit import [flags] REPOSITORY
 ### Examples
 
 ```
-# Download repository myorg/myrepo and package it, using the default tag
+# Download repository myorg/myrepo and package it, using the default tag (myorg/myrepo:latest)
 kit import myorg/myrepo
 
-# Download repository and tag it 'myrepository:latest'
-kit import myorg/myrepo --tag myrepository:latest
+# Download repository and tag it 'myrepository:mytag'
+kit import myorg/myrepo --tag myrepository:mytag
 ```
 
 ### Options
