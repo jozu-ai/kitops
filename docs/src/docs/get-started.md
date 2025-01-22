@@ -39,6 +39,8 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
+You can get started using one of our sample ModelKits (covered below), or you can [import a ModelKit from Hugging Face](./hf-import.md).
+
 Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/organization/jozu-quickstarts) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
 
 If you have a model already on your machine you can use that instead.
