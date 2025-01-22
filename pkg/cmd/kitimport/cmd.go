@@ -30,15 +30,21 @@ import (
 const (
 	shortDesc = `Import a model from HuggingFace`
 	longDesc  = `Download a repository from HuggingFace and package it as a ModelKit.
-	
-The repository will be downloaded to a temporary directory and be packaged using a
-generated Kitfile.`
 
-	example = `# Download repository myorg/myrepo and package it, using the default tag
+The repository can be specified either via a repository (e.g. myorg/myrepo) or
+with a full URL (https://huggingface.co/myorg/myrepo). The repository will be
+downloaded to a temporary directory and be packaged using a generated Kitfile.
+
+In interactive settings, this command will read the EDITOR environment variable
+to determine which editor should be used for editing the Kitfile.
+
+Note: importing repositories requires 'git' and 'git-lfs' to be installed.`
+
+	example = `# Download repository myorg/myrepo and package it, using the default tag (myorg/myrepo:latest)
 kit import myorg/myrepo
 
-# Download repository and tag it 'myrepository:latest'
-kit import myorg/myrepo --tag myrepository:latest`
+# Download repository and tag it 'myrepository:mytag'
+kit import myorg/myrepo --tag myrepository:mytag`
 )
 
 var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)
