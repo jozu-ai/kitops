@@ -275,7 +275,7 @@ If the `KITOPS_HOME` is set in various places the order of precedence is:
     
     Linux: `$XDG_DATA_HOME/kitops`, falling back to `~/.local/share/kitops`
     
-    Windows: `%LOCALAPPDATA\kitops`
+    Windows: `%LOCALAPPDATA%\kitops`
     
     Darwin: `~/Library/Caches/kitops`
 
