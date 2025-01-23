@@ -63,11 +63,34 @@ Because ModelKits are OCI 1.1 artifacts, they can be signed like any other OCI a
 If you need a quick way to sign a ModelKit you can follow the same instructions as for a container, using a tool like [Cosign](https://docs.sigstore.dev/cosign/signing/signing_with_containers/).
 
 
-## Making your own Kitfile
+## Using Kitfiles
 
 A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read. 
 
+There are three ways to create a Kitfile:
+
+1. Import a repository from Hugging Face using `kit import` and Kit creates the Kitfile for you!
+1. Use `kit init` to auto-generate a Kitfile from any directory
+1. Hand write a Kitfile for that artisanal vibe...
+
+### 1/ Import From Hugging Face
+
 If you are building a ModelKit from a Hugging Face repository you can use the [kit import](./hf-import.md) command and the Kitfile will be generated for you. However, it's still helpful to understand the Kitfile structure.
+
+### 2/ Generating a Kitfile From a Directory
+
+If you have your AI/ML project artifacts in a directory structure already then the easiest way to get started is with [kit init](https://kitops.ml/docs/cli/cli-reference/#kit-init). From the root of the directory with the AI/ML artifacts you wish to pack in the ModelKit run:
+
+```sh
+kit init .
+```
+
+Once you have the generated Kitfile you can [pack the ModelKit](#using-the-kitfile-to-pack-a-modelkit), and push to a registry.
+
+You can learn more about the syntax, options, and flags in our [CLI docs](https://kitops.ml/docs/cli/cli-reference/#kit-init).
+
+
+### 3/ Writing Your Own Kitfile
 
 There are five parrts to a Kitfile:
 
@@ -105,9 +128,9 @@ code:
 
 Any relative paths defined within the Kitfile are interpreted as being relative to the context directory sent to the `kit pack` command.
 
-### Kitfile Examples
+#### Kitfile Examples
 
-Here's a complete Kitfile example, with a model, documentation, two datasets, and a codebase:
+The following Kitfile includes a model, documentation, two datasets, and a codebase:
 
 ```yaml
 manifestVersion: 1.0
