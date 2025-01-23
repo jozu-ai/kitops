@@ -92,7 +92,7 @@ You can learn more about the syntax, options, and flags in our [CLI docs](https:
 
 ### 3/ Writing Your Own Kitfile
 
-There are five parrts to a Kitfile:
+There are five parts to a Kitfile:
 
 1. The `package` section: Metadata about the ModelKit, including the author, description, and license
 1. The `model` section: Information about the serialized model
