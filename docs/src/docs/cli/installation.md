@@ -262,6 +262,24 @@ To verify that `kit` was installed successfully, open a new terminal window and 
 kit version
 ```
 
+## Optional: Set Your Environment
+
+You can configure which directory credentials and storage are located:
+* `--config` flag for a specific kit CLI execution
+* `KITOPS_HOME` environment variable for permanent configurations
+
+If the `KITOPS_HOME` is set in various places the order of precedence is:
+1. `--config` flag, if specified
+1. `$KITOPS_HOME` environment variable, if set
+1. A default OS-dependent value:
+    
+    Linux: `$XDG_DATA_HOME/kitops`, falling back to `~/.local/share/kitops`
+    
+    Windows: `%LOCALAPPDATA\kitops`
+    
+    Darwin: `~/Library/Caches/kitops`
+
+
 ## Follow the Quick Start
 
 Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
