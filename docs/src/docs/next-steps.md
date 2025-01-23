@@ -6,7 +6,7 @@ In this guide you'll learn how to:
 * Sign your ModelKit
 * Make your own Kitfile
 * Read the Kitfile or manifest from a ModelKit
-* Tag ModelKits and keep your registry tidy
+* Version and tag ModelKits (and keep your registry tidy)
 
 ## Deploying a ModelKit
 
