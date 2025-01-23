@@ -72,7 +72,17 @@ func doImport(ctx context.Context, opts *importOptions) error {
 	// Check on the off-chance a Kitfile already exists
 	var kitfile *artifact.KitFile
 	if kfpath, err := filesystem.FindKitfileInPath(tmpDir); err != nil {
-		kf, err := generateKitfile(tmpDir)
+		// Fill fields in package so that they're not empty in `kit list` later.
+		sections := strings.Split(opts.repo, "/")
+		var modelPackage *artifact.Package
+		if len(sections) >= 2 {
+			modelPackage = &artifact.Package{
+				Name:    sections[len(sections)-1],
+				Authors: []string{sections[len(sections)-2]},
+			}
+		}
+
+		kf, err := generateKitfile(tmpDir, modelPackage)
 		if err != nil {
 			return err
 		}
@@ -123,8 +133,8 @@ func cloneRepository(repo, destDir, token string) error {
 	return nil
 }
 
-func generateKitfile(contextDir string) (*artifact.KitFile, error) {
-	kitfile, err := kfutils.GenerateKitfile(contextDir, nil)
+func generateKitfile(contextDir string, modelPackage *artifact.Package) (*artifact.KitFile, error) {
+	kitfile, err := kfutils.GenerateKitfile(contextDir, modelPackage)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kitfile: %w", err)
 	}
