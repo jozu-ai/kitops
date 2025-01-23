@@ -2,15 +2,59 @@
 
 In this guide you'll learn how to:
 * Deploy a ModelKit
+* Use the power of `unpack`
 * Sign your ModelKit
 * Make your own Kitfile
-* The power of `unpack`
 * Read the Kitfile or manifest from a ModelKit
 * Tag ModelKits and keep your registry tidy
 
 ## Deploying a ModelKit
 
 You can create a container or Kubernetes deployment using a ModelKit. See our [deployment instructions](./deploy.md).
+
+## The Power of Unpack
+
+Models and their datasets can be very large and take a long time to push or pull, so Kit includes a unique and flexible [unpack command](./cli/cli-reference.md#kit-unpack) that allows you to pull only pieces of the ModelKit you need, saving time and storage space.
+
+Use the `--filter` or `-f` flag in the CLI to filter. For example, use `--filter=model` to unpack only the model, or `--filter=datasets:my-dataset` to unpack only the dataset named `my-dataset`.
+
+### Unpacking with filters
+
+1. Unpack only the dataset named "my-dataset" to the current directory...
+
+    ```sh
+    kit unpack myrepo/my-model:latest --filter=datasets:my-dataset
+    ```
+
+1. Unpack only the model and all datasets to a specified directory...
+
+    ```sh
+    kit unpack myrepo/my-model:latest --filter=model,datasets -d /path/to/unpacked
+    ```
+
+1. Unpack only the docs layer with path "./README.md" to the current directory...
+
+    ```sh
+    kit unpack myrepo/my-model:latest --filter=docs:./README.md
+    ```
+
+
+`--filter` can take any of the following arguments:
+* `--filter:model` to unpack only the model to the destination file system
+* `--filter:docs` to unpack only the documentation to the destination file system
+* `--filter:datasets` to unpack only the datasets to the destination file system
+* `--filter:code` to unpack only the code bases to the destination file system
+* `--filter:config` to unpack only the Kitfile to the destination file system
+
+Filters can be combined and the same filter can be repeated to unpack a series of specific files:
+
+```sh
+kit unpack myrepo/my-model:latest
+  --filter=datasets:training
+  --filter=datasets:evaluation
+```
+
+Get more information on unpack and filtering in the [CLI reference docs](https://kitops.ml/docs/cli/cli-reference/#kit-unpack).
 
 ## Signing your ModelKit
 
@@ -21,13 +65,17 @@ If you need a quick way to sign a ModelKit you can follow the same instructions 
 
 ## Making your own Kitfile
 
-A Kitfile is the configuration document for your ModelKit. It's written in YAML so it's easy to read. There are five main parts to a Kitfile:
+A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read. 
+
+If you are building a ModelKit from a Hugging Face repository you can use the [kit import](./hf-import.md) command and the Kitfile will be generated for you. However, it's still helpful to understand the Kitfile structure.
+
+There are five parrts to a Kitfile:
 
 1. The `package` section: Metadata about the ModelKit, including the author, description, and license
 1. The `model` section: Information about the serialized model
-1. The `docs` section: Information about documentation for the ModelKit
-1. The `code` section: Information about codebases related to the project, including Jupyter notebook folders
 1. The `datasets` section: Information on included datasets
+1. The `code` section: Information about codebases related to the project, including Jupyter notebook folders
+1. The `docs` section: Information about documentation for the ModelKit
 
 A Kitfile only needs the `package` section, plus one or more of the other sections.
 
@@ -98,24 +146,6 @@ code:
     path: ./notebooks
 ```
 
-A minimal ModelKit for distributing a pair of datasets looks like this:
-
-```yaml
-manifestVersion: v1.0.0
-
-package:
-  authors:
-    - Jozu
-
-datasets:
-  - name: training data
-    path: ./data/train.csv
-    license: Apache-2.0
-  - description: validation data
-    name: validation data
-    path: ./data/validate.csv
-```
-
 More information on Kitfiles can be found in the [Overview](./kitfile/kf-overview.md) and [Format](./kitfile/format.md) documentation.
 
 ### Using the Kitfile to Pack a ModelKit
@@ -155,31 +185,6 @@ Second, you will need to login, then [kit push](./cli/cli-reference.md#kit-push)
 kit login docker.io
 kit push docker.io/jozubrad/film-slm:champion
 ```
-
-# The Power of Unpack
-
-Models and their datasets can be very large and take a long time to push or pull, so Kit includes a unique and flexible [unpack command](./cli/cli-reference.md#kit-unpack) that allows you to pull only pieces of the ModelKit you need, saving time and storage space:
-
-`unpack` can take arguments for partial unpacking of a ModelKit:
-* `--model` to unpack only the model to the destination file system
-* `--docs` to unpack only the documentation to the destination file system
-* `--datasets` to unpack only the datasets to the destination file system
-* `--code` to unpack only the code bases to the destination file system
-* `--config` to unpack only the Kitfile to the destination file system
-
-For example:
-
-```sh
-kit unpack mymodel:challenger --model -d ./model
-```
-
-Will extract only the model from the `mymodel:challenger` ModelKit, and place it in a local directory called `/model`.
-
-The `unpack` command is part of the typical push and pull commands:
-* `pack` will pack up a set of assets into a ModelKit package.
-* `push` will push the whole ModelKit to a registry.
-* `pull` will pull the whole ModelKit from a registry.
-* `unpack` will extract all, or selected assets, from the ModelKit.
 
 ## Read the Kitfile or Manifest from a ModelKit
 
