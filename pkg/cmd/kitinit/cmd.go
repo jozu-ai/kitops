@@ -23,7 +23,7 @@ import (
 	"io/fs"
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
-	"kitops/pkg/lib/kitfile"
+	kfutils "kitops/pkg/lib/kitfile"
 	"kitops/pkg/lib/util"
 	"kitops/pkg/output"
 	"os"
@@ -54,6 +54,7 @@ type initOptions struct {
 	configHome          string
 	modelkitName        string
 	modelkitDescription string
+	modelkitAuthor      string
 	overwrite           bool
 }
 
@@ -71,6 +72,7 @@ func InitCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.modelkitName, "name", "", "Name for the ModelKit")
 	cmd.Flags().StringVar(&opts.modelkitDescription, "desc", "", "Description for the ModelKit")
+	cmd.Flags().StringVar(&opts.modelkitAuthor, "author", "", "Author for the ModelKit")
 	cmd.Flags().BoolVarP(&opts.overwrite, "force", "f", false, "Overwrite existing Kitfile if present")
 	cmd.Flags().SortFlags = false
 	return cmd
@@ -89,6 +91,9 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 				Description: opts.modelkitDescription,
 			}
 		}
+		if opts.modelkitAuthor != "" {
+			modelPackage.Authors = append(modelPackage.Authors, opts.modelkitAuthor)
+		}
 
 		// Check for existing Kitfile
 		kitfilePath := filepath.Join(opts.path, constants.DefaultKitfileName)
@@ -100,7 +105,7 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Error checking for existing Kitfile: %s", err)
 		}
 
-		kitfile, err := kitfile.GenerateKitfile(opts.path, modelPackage)
+		kitfile, err := kfutils.GenerateKitfile(opts.path, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
 		}
@@ -125,19 +130,28 @@ func (opts *initOptions) complete(ctx context.Context, args []string) error {
 	opts.configHome = configHome
 	opts.path = args[0]
 
-	if opts.modelkitName == "" {
-		name, err := util.PromptForInput("Enter a name for the ModelKit: ", false)
-		if err != nil {
-			return err
+	if util.IsInteractiveSession() {
+		if opts.modelkitName == "" {
+			name, err := util.PromptForInput("Enter a name for the ModelKit: ", false)
+			if err != nil {
+				return err
+			}
+			opts.modelkitName = name
 		}
-		opts.modelkitName = name
-	}
-	if opts.modelkitDescription == "" {
-		desc, err := util.PromptForInput("Enter a short description for the ModelKit: ", false)
-		if err != nil {
-			return err
+		if opts.modelkitDescription == "" {
+			desc, err := util.PromptForInput("Enter a short description for the ModelKit: ", false)
+			if err != nil {
+				return err
+			}
+			opts.modelkitDescription = desc
 		}
-		opts.modelkitDescription = desc
+		if opts.modelkitAuthor == "" {
+			author, err := util.PromptForInput("Enter an author for the ModelKit: ", false)
+			if err != nil {
+				return err
+			}
+			opts.modelkitAuthor = author
+		}
 	}
 
 	return nil
