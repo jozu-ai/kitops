@@ -22,6 +22,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"kitops/pkg/artifact"
@@ -94,6 +95,12 @@ func doImport(ctx context.Context, opts *importOptions) error {
 			doCleanup = false
 			newKitfile, err := promptToEditKitfile(tmpDir, opts.tag, kf)
 			if err != nil {
+				output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
+				output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
+				output.Logf(output.LogLevelWarn, "    %s", filepath.Join(tmpDir, constants.DefaultKitfileName))
+				output.Logf(output.LogLevelWarn, "and run command")
+				output.Logf(output.LogLevelWarn, "    kit pack -t %s %s", opts.tag, tmpDir)
+				output.Logf(output.LogLevelWarn, "to complete process")
 				return err
 			}
 			kitfile = newKitfile
@@ -195,15 +202,9 @@ func promptToEditKitfile(contextDir, tag string, currentKitfile *artifact.KitFil
 		// Current one is fine!
 		return currentKitfile, nil
 	}
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
-		output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
-		output.Logf(output.LogLevelWarn, "    %s", kitfilePath)
-		output.Logf(output.LogLevelWarn, "and run command")
-		output.Logf(output.LogLevelWarn, "    kit pack -t %s %s", tag, contextDir)
-		output.Logf(output.LogLevelWarn, "to complete process")
-		return nil, fmt.Errorf("no editor found")
+	editor, err := getEditorName()
+	if err != nil {
+		return nil, err
 	}
 	editCmd := exec.Command(editor, kitfilePath)
 	editCmd.Stdin = os.Stdin
@@ -213,4 +214,21 @@ func promptToEditKitfile(contextDir, tag string, currentKitfile *artifact.KitFil
 		return nil, fmt.Errorf("error running external editor: %w", err)
 	}
 	return readExistingKitfile(kitfilePath)
+}
+
+func getEditorName() (string, error) {
+	// Default: use the editor in the standard $EDITOR environment variable
+	editor := os.Getenv("EDITOR")
+	if editor != "" {
+		return editor, nil
+	}
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		// Check for nano, which should be the default editor on Linux and MacOS
+		if path, err := exec.LookPath("nano"); err == nil {
+			return path, nil
+		}
+	}
+	// TODO: can we do anything default for Windows platforms?
+
+	return "", fmt.Errorf("no editor found")
 }
