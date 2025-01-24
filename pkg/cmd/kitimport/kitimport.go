@@ -228,7 +228,11 @@ func getEditorName() (string, error) {
 			return path, nil
 		}
 	}
-	// TODO: can we do anything default for Windows platforms?
+	if runtime.GOOS == "windows" {
+		// On current Windows, using notepad will block until the editor (or editor tab)
+		// is closed.
+		return "notepad", nil
+	}
 
 	return "", fmt.Errorf("no editor found")
 }
