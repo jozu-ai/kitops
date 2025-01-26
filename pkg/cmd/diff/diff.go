@@ -39,6 +39,7 @@ type diffInfo struct {
 
 // Helper struct diffResult contains the comparison results between two ModelKits.
 type diffResult struct {
+	SameConfig    bool
 	SharedLayers  []ocispec.Descriptor
 	UniqueLayersA []ocispec.Descriptor
 	UniqueLayersB []ocispec.Descriptor
@@ -47,6 +48,9 @@ type diffResult struct {
 // compareManifests compares two OCI manifests and returns the shared and unique layers.
 func compareManifests(manifestA *ocispec.Manifest, manifestB *ocispec.Manifest) *diffResult {
 	result := &diffResult{}
+
+	// Compare the config digests
+	result.SameConfig = manifestA.Config.Digest == manifestB.Config.Digest
 
 	layerMapA := make(map[string]ocispec.Descriptor)
 	for _, layer := range manifestA.Layers {
