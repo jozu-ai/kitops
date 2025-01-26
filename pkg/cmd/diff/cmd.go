@@ -103,11 +103,23 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 			output.Infoln("ModelKits are identical")
 			return nil
 		}
+
 		result := compareManifests(diffA.Manifest, diffB.Manifest)
 		// Header
 		output.Infoln("Comparing:")
 		output.Infof("  ModelKit1: %s\n", opts.refA.String())
 		output.Infof("  ModelKit2: %s\n\n", opts.refB.String())
+
+		output.Infoln("Configurations:")
+		output.Infoln("---------------------------------------")
+		if result.SameConfig {
+			output.Infof("  Configs are identical (Digest: %s)\n\n", diffA.Manifest.Config.Digest[:17])
+
+		} else {
+			fmt.Printf("Configs differ:\n")
+			fmt.Printf("  ModelKit1 Config Digest: %s\n", diffA.Manifest.Config.Digest[:17])
+			fmt.Printf("  ModelKit2 Config Digest: %s\n\n", diffB.Manifest.Config.Digest[:17])
+		}
 
 		displayLayers("Shared", result.SharedLayers)
 		displayLayers(fmt.Sprintf("Unique to ModelKit1 (%s)", opts.refA.String()), result.UniqueLayersA)
