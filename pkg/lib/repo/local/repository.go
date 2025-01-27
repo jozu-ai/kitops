@@ -87,6 +87,16 @@ func (li *localIndex) save() error {
 		return nil
 	}
 
+	seenDigests := map[digest.Digest]bool{}
+	var uniqueManifests []ocispec.Descriptor
+	for _, desc := range li.Manifests {
+		if !seenDigests[desc.Digest] {
+			uniqueManifests = append(uniqueManifests, desc)
+		}
+		seenDigests[desc.Digest] = true
+	}
+	li.Manifests = uniqueManifests
+
 	indexJson, err := json.Marshal(li.Index)
 	if err != nil {
 		return fmt.Errorf("failed to marshal index: %w", err)
