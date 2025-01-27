@@ -121,9 +121,17 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 			fmt.Printf("  ModelKit2 Config Digest: %s\n\n", diffB.Manifest.Config.Digest[:17])
 		}
 
-		displayLayers("Shared", result.SharedLayers)
-		displayLayers(fmt.Sprintf("Unique to ModelKit1 (%s)", opts.refA.String()), result.UniqueLayersA)
-		displayLayers(fmt.Sprintf("Unique to ModelKit2 (%s)", opts.refB.String()), result.UniqueLayersB)
+		output.Infoln("Annotations:")
+		output.Infoln("---------------------------------------")
+		if result.AnnotationsMatch {
+			output.Infof("  Annotations are identical \n\n")
+		} else {
+			fmt.Printf("  Annotations does not match\n\n")
+		}
+
+		displayLayers("Shared Layers", result.SharedLayers)
+		displayLayers(fmt.Sprintf("Unique Layers to ModelKit1 (%s)", opts.refA.String()), result.UniqueLayersA)
+		displayLayers(fmt.Sprintf("Unique Layers to ModelKit2 (%s)", opts.refB.String()), result.UniqueLayersB)
 		return nil
 	}
 }
