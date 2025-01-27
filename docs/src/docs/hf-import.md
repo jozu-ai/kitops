@@ -3,9 +3,11 @@
 You can automatically generate a ModelKit from a Hugging Face repository using the `kit import` command. This speeds and simplifies the job of getting started with ModelKits.
 
 ::: warning
-In v1.0.0 Git LFS is required for importing from Hugging Face.
+Git LFS is required for importing from Hugging Face.
+:::
 
-To edit the Kitfile you need to have an editor defined in the $EDITOR environment variable.
+::: tip
+To customize the editor used for editing the Kitfile during import, set the `EDITOR` environment variable
 :::
 
 You can read more about the `import` command in our [CLI reference](https://kitops.ml/docs/cli/cli-reference/#kit-import).
