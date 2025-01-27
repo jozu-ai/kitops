@@ -48,7 +48,6 @@ If the development server is currently running, the logs for this server will
 be printed. If it is stopped, the logs for the previous run of the server, if
 available, will be printed instead.
 
-
 ```
 kit dev logs [flags]
 ```
@@ -271,10 +270,11 @@ kit init ./my-model --force
 ### Options
 
 ```
-      --name string   Name for the ModelKit
-      --desc string   Description for the ModelKit
-  -f, --force         Overwrite existing Kitfile if present
-  -h, --help          help for init
+      --name string     Name for the ModelKit
+      --desc string     Description for the ModelKit
+      --author string   Author for the ModelKit
+  -f, --force           Overwrite existing Kitfile if present
+  -h, --help            help for init
 ```
 
 ### Options inherited from parent commands
