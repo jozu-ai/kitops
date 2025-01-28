@@ -74,7 +74,7 @@ func ImportCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.token, "token", "", "Token to use for authenticating with repository")
 	cmd.Flags().StringVarP(&opts.tag, "tag", "t", "", "Tag for the ModelKit (default is '[repository]:latest')")
-	cmd.Flags().StringVarP(&opts.kitfilePath, "file", "f", "", "Path to Kitfile to use for packing")
+	cmd.Flags().StringVarP(&opts.kitfilePath, "file", "f", "", "Path to Kitfile to use for packing (use '-' to read from standard input)")
 	cmd.Flags().SortFlags = false
 	return cmd
 }
