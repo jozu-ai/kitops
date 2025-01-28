@@ -72,7 +72,19 @@ func doImport(ctx context.Context, opts *importOptions) error {
 
 	// Check on the off-chance a Kitfile already exists
 	var kitfile *artifact.KitFile
-	if kfpath, err := filesystem.FindKitfileInPath(tmpDir); err != nil {
+	if opts.kitfilePath != "" {
+		kf, err := readExistingKitfile(opts.kitfilePath)
+		if err != nil {
+			return err
+		}
+		kitfile = kf
+	} else if kfpath, err := filesystem.FindKitfileInPath(tmpDir); err == nil {
+		kf, err := readExistingKitfile(kfpath)
+		if err != nil {
+			return err
+		}
+		kitfile = kf
+	} else {
 		// Fill fields in package so that they're not empty in `kit list` later.
 		sections := strings.Split(opts.repo, "/")
 		var modelPackage *artifact.Package
@@ -93,7 +105,7 @@ func doImport(ctx context.Context, opts *importOptions) error {
 			// If we hit an error here, we don't want to clean up files so that user
 			// can manually edit them.
 			doCleanup = false
-			newKitfile, err := promptToEditKitfile(tmpDir, opts.tag, kf)
+			newKitfile, err := promptToEditKitfile(tmpDir, kf)
 			if err != nil {
 				output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
 				output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
@@ -106,12 +118,6 @@ func doImport(ctx context.Context, opts *importOptions) error {
 			kitfile = newKitfile
 			doCleanup = true
 		}
-	} else {
-		kf, err := readExistingKitfile(kfpath)
-		if err != nil {
-			return err
-		}
-		kitfile = kf
 	}
 
 	output.Infof("Packing model to %s", opts.tag)
@@ -192,7 +198,7 @@ func readExistingKitfile(kfPath string) (*artifact.KitFile, error) {
 	return kitfile, nil
 }
 
-func promptToEditKitfile(contextDir, tag string, currentKitfile *artifact.KitFile) (*artifact.KitFile, error) {
+func promptToEditKitfile(contextDir string, currentKitfile *artifact.KitFile) (*artifact.KitFile, error) {
 	kitfilePath := filepath.Join(contextDir, constants.DefaultKitfileName)
 	ans, err := util.PromptForInput("Would you like to edit Kitfile before packing? (y/N): ", false)
 	if err != nil {

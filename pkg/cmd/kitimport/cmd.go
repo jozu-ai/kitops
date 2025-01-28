@@ -44,16 +44,20 @@ Note: importing repositories requires 'git' and 'git-lfs' to be installed.`
 kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:mytag'
-kit import myorg/myrepo --tag myrepository:mytag`
+kit import myorg/myrepo --tag myrepository:mytag
+
+# Download repository and pack it using an existing Kitfile
+kit import myorg/myrepo --file ./path/to/Kitfile`
 )
 
 var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)
 
 type importOptions struct {
-	repo       string
-	configHome string
-	tag        string
-	token      string
+	configHome  string
+	repo        string
+	tag         string
+	token       string
+	kitfilePath string
 }
 
 func ImportCommand() *cobra.Command {
@@ -70,6 +74,7 @@ func ImportCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.token, "token", "", "Token to use for authenticating with repository")
 	cmd.Flags().StringVarP(&opts.tag, "tag", "t", "", "Tag for the ModelKit (default is '[repository]:latest')")
+	cmd.Flags().StringVarP(&opts.kitfilePath, "file", "f", "", "Path to Kitfile to use for packing")
 	cmd.Flags().SortFlags = false
 	return cmd
 }
