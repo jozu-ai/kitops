@@ -2,7 +2,7 @@
 
 This part of the project documentation focuses on a **problem-oriented** approach. You'll tackle common tasks that you might have, with the help of the code provided in this project. 
 
-This guide will walk you through using PyKitOps to create a ModelKit and push it to JozuHub. We'll cover creating a Kitfile from scratch and configuring all necessary components.
+This guide will walk you through using PyKitOps to create a ModelKit and push it to Jozu Hub. We'll cover creating a Kitfile from scratch and configuring all necessary components.
 
 
 ## How To Create A Kitfile Object?
@@ -142,9 +142,9 @@ kitfile.docs = [
 #   description: Sample Model
 ```
 
-### Pushing to JozuHub
+### Pushing to Jozu Hub
 
-Once you've created your Kitfile, you can push it to JozuHub using the ModelKitManager. Here's how:
+Once you've created your Kitfile, you can push it to Jozu Hub using the ModelKitManager. Here's how:
 
 ```python
 from kitops.modelkit.manager import ModelKitManager
@@ -159,13 +159,13 @@ manager = ModelKitManager(
 # Assign your Kitfile
 manager.kitfile = kitfile
 
-# Pack and push to JozuHub
+# Pack and push to Jozu Hub
 manager.pack_and_push_modelkit(save_kitfile=True)
 ```
 
 ### Complete Example
 
-Here's a complete script that creates a Kitfile and pushes it to JozuHub:
+Here's a complete script that creates a Kitfile and pushes it to Jozu Hub:
 
 ```python
 import os
@@ -216,7 +216,7 @@ if __name__ == "__main__":
         {"path": "docs/LICENSE"}
     ]
     
-    # Push to JozuHub
+    # Push to Jozu Hub
     modelkit_tag = "jozu.ml/yourname/reponame:latest"
     manager = ModelKitManager(
         working_directory=".",
