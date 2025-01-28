@@ -38,6 +38,23 @@ const (
 	//Constants for formatting output tables.
 	layerTableHeadings = "Type    | Digest             | Size"
 	layerTableFormat   = "%-7s | %-18s | %s\n"
+	shortDesc          = "Compare two ModelKits"
+	longDesc           = `Compare two ModelKits to see the differences in their layers.
+		
+ModelKits can be specified from either a local or from a remote registry.
+To specify a local ModelKit, prefix the reference with 'local://', e.g. 'local://jozu.ml/foo/bar'.
+To specify a remote ModelKit, prefix the reference with 'remote://', e.g. 'remote://jozu.ml/foo/bar'.
+If no prefix is specified, the local registry will be checked first.
+`
+	examples = `# Compare two ModelKits
+kit diff jozu.ml/foo:latest jozu.ml/bar:latest
+
+# Compare two ModelKits from a remote registry
+kit diff remote://jozu.ml/foo:champion remote://jozu.ml/bar:latest
+
+# Compare local ModelKit with a remote ModelKit
+kit diff local://jozu.ml/foo:latest remote://jozu.ml/foo:latest
+`
 )
 
 type diffOptions struct {
@@ -50,17 +67,11 @@ type diffOptions struct {
 func DiffCommand() *cobra.Command {
 	opts := &diffOptions{}
 	cmd := &cobra.Command{
-		Use:   "diff",
-		Short: "Compare two ModelKits",
-		Args:  cobra.ExactArgs(2),
-		Long: `Compare two ModelKits to see the differences in their layers.
-		
-		ModelKits can be specified from either a local or from a remote registry.
-		To specify a local ModelKit, prefix the reference with 'local://', e.g. 'local://jozu.ml/foo/bar'.
-		To specify a remote ModelKit, prefix the reference with 'remote://', e.g. 'remote://jozu.ml/foo/bar'.
-		If no prefix is specified, the local registry will be checked first.
-		`,
-		Example: "kit diff modelkit1 modelkit2",
+		Use:     "diff <ModelKit1> <ModelKit2>",
+		Short:   shortDesc,
+		Args:    cobra.ExactArgs(2),
+		Long:    longDesc,
+		Example: examples,
 		RunE:    runCommand(opts),
 	}
 	return cmd
@@ -116,9 +127,9 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 			output.Infof("  Configs are identical (Digest: %s)\n\n", diffA.Manifest.Config.Digest[:17])
 
 		} else {
-			fmt.Printf("Configs differ:\n")
-			fmt.Printf("  ModelKit1 Config Digest: %s\n", diffA.Manifest.Config.Digest[:17])
-			fmt.Printf("  ModelKit2 Config Digest: %s\n\n", diffB.Manifest.Config.Digest[:17])
+			output.Infof("Configs differ:\n")
+			output.Infof("  ModelKit1 Config Digest: %s\n", diffA.Manifest.Config.Digest[:17])
+			output.Infof("  ModelKit2 Config Digest: %s\n\n", diffB.Manifest.Config.Digest[:17])
 		}
 
 		output.Infoln("Annotations:")
@@ -126,7 +137,7 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 		if result.AnnotationsMatch {
 			output.Infof("  Annotations are identical \n\n")
 		} else {
-			fmt.Printf("  Annotations does not match\n\n")
+			output.Infof("  Annotations does not match\n\n")
 		}
 
 		displayLayers("Shared Layers", result.SharedLayers)
@@ -143,10 +154,6 @@ func (opts *diffOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("default config path not set on command context")
 	}
 	opts.configHome = configHome
-
-	if len(args) < 2 {
-		return fmt.Errorf("this command requires two references. usage: 'kit diff ref1 ref2'")
-	}
 
 	imageName := removePrefix(args[0])
 	refA, err := registry.ParseReference(imageName)
