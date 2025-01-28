@@ -70,9 +70,16 @@ func doImport(ctx context.Context, opts *importOptions) error {
 		return err
 	}
 
-	// Check on the off-chance a Kitfile already exists
 	var kitfile *artifact.KitFile
-	if opts.kitfilePath != "" {
+	if opts.kitfilePath == "-" {
+		kitfile = &artifact.KitFile{}
+		if err := kitfile.LoadModel(os.Stdin); err != nil {
+			return fmt.Errorf("failed to read Kitfile from input: %w", err)
+		}
+		if err := kfutils.ValidateKitfile(kitfile); err != nil {
+			return err
+		}
+	} else if opts.kitfilePath != "" {
 		kf, err := readExistingKitfile(opts.kitfilePath)
 		if err != nil {
 			return err
