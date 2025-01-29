@@ -1,6 +1,7 @@
 // Adapted from https://github.com/vuejs/vitepress/issues/1737#issuecomment-1372010207
 import * as fs from 'fs'
 import { resolve } from 'path'
+import type { DefaultTheme } from 'vitepress'
 
 type ScanOptions = {
   capitalize?: boolean,
@@ -42,14 +43,18 @@ export function getSidebarItemsFromMdFiles(pathName: string, options: Partial<Sc
 
 // Read the folder and return the `{ text, items }` array.
 function getItems(path: string, options: Partial<ScanOptions>) {
-	let content = fs.readdirSync(path).filter(item => !item.startsWith('.'))
+	let content = fs.readdirSync(path).filter((item: string) => !item.startsWith('.'))
 
 	if (!content) {
     return;
   }
 
   const getFormattedText = (text: string) => {
-    let formattedText = options.textFormat(text)
+    let formattedText = text
+
+    if (options.textFormat) {
+      formattedText = options.textFormat(formattedText)
+    }
 
     // If a custom label was provided, use that as-is and don't capitalize it to respect custom values.
     if (options.replacements && options.replacements[text]) {
@@ -63,7 +68,7 @@ function getItems(path: string, options: Partial<ScanOptions>) {
     return formattedText;
   }
 
-  let arr = content.map((item) => {
+  let arr = content.map((item: string) => {
     const text = getFormattedText(item.split('.')[0])
 
     // If is content, just resolve it.
@@ -89,7 +94,7 @@ function getItems(path: string, options: Partial<ScanOptions>) {
     }
   })
 
-  arr = arr.flatMap((item) => {
+  arr = arr.flatMap((item: DefaultTheme.SidebarItem) => {
     if (item?.link) {
       item.link = normalizeLink(item.link)
     }
@@ -101,6 +106,6 @@ function getItems(path: string, options: Partial<ScanOptions>) {
 }
 
 // Normalize a given path and return the `link` value in a standard, normalized format.
-function normalizeLink(path) {
-	return path.replace(/\\/g, '/').split('.')[0]
+function normalizeLink(path: string) {
+	return `${path.replace(/\\/g, '/').split('.')[0]}/`
 }

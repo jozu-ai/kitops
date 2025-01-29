@@ -44,16 +44,16 @@ const (
 
 // testPreflight should be called at the start of every test; it returns a function that
 // restores state (e.g. working directory) that may have been changed by executing commands.
-func testPreflight(t *testing.T) func(t *testing.T) {
+func testPreflight(t *testing.T) {
 	wd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
-	return func(t *testing.T) {
+	t.Cleanup(func() {
 		if err := os.Chdir(wd); err != nil {
 			t.Fatal(err)
 		}
-	}
+	})
 }
 
 // runCommand executes kit <args>, saving stdout/stderr output to a buffer
@@ -86,19 +86,21 @@ func runCommand(t *testing.T, e shouldExpectError, args ...string) string {
 	return string(outlog)
 }
 
-func setupTempDir(t *testing.T) (tmpDir string, removeTmpDir func()) {
+// setupTempDir creates a temporary directory and returns its path. Directory is automatically
+// cleaned up on test completion.
+func setupTempDir(t *testing.T) (tmpDir string) {
 	// Set up temporary directory for work
 	tmpDir, err := os.MkdirTemp("", "kitops-testing-*")
 	if !assert.NoError(t, err) {
 		t.Fatalf("Could not create temporary directory: %s", err)
 	}
-	removeTmpDir = func() {
+	t.Logf("Using temp directory: %s", tmpDir)
+	t.Cleanup(func() {
 		if err := os.RemoveAll(tmpDir); err != nil {
 			t.Logf("Error removing temp dir: %s", err)
 		}
-	}
-	t.Logf("Using temp directory: %s", tmpDir)
-	return tmpDir, removeTmpDir
+	})
+	return tmpDir
 }
 
 // setupTestDirs generates the test directories used for storing $KIT_HOME, the original modelkit

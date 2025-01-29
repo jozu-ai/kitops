@@ -1,0 +1,17 @@
+description: "Handles existing Kitfiles"
+
+files:
+  - test-model.npy
+  - Kitfile
+  - kitfile
+  - .kitfile
+
+modelName: test-existing-kitfile
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-existing-kitfile
+    description: "Handles existing Kitfiles"
+  model:
+    name: test-model
+    path: test-model.npy

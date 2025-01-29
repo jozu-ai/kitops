@@ -25,8 +25,10 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
 	"kitops/pkg/output"
@@ -39,95 +41,79 @@ import (
 // a descriptor (including hash) for the compressed file, the layer is saved to a temporary file
 // on disk and must be moved to an appropriate location. It is the responsibility of the caller
 // to clean up the temporary file when it is no longer needed.
-func compressLayer(path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, err error) {
+func compressLayer(path string, mediaType constants.MediaType, ignore filesystem.IgnorePaths) (tempFilePath string, desc ocispec.Descriptor, layerInfo *artifact.LayerInfo, err error) {
 	// Clean path to ensure consistent format (./path vs path/ vs path)
 	path = filepath.Clean(path)
 
 	if layerIgnored, err := ignore.Matches(path, path); err != nil {
-		return "", ocispec.DescriptorEmptyJSON, err
+		return "", ocispec.DescriptorEmptyJSON, nil, err
 	} else if layerIgnored {
-		output.Errorf("Warning: layer path %s ignored by kitignore", path)
+		output.Errorf("Warning: %s layer path %s ignored by kitignore", mediaType.BaseType, path)
 	}
 
-	pathInfo, err := os.Stat(path)
+	totalSize, err := getTotalSize(path, ignore)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("%s path %s does not exist", mediaType.BaseType, path)
-		}
-		return "", ocispec.DescriptorEmptyJSON, err
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("error processing %s: %w", mediaType.BaseType, err)
 	}
-	totalSize, err := getTotalSize(path, pathInfo, ignore)
-	if err != nil {
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to get size of layer: %w", err)
+	if totalSize == 0 {
+		output.Logf(output.LogLevelWarn, "No files detected in %s layer with path %s", mediaType.BaseType, path)
 	}
 
 	tempFile, err := os.CreateTemp("", "kitops_layer_*")
 	if err != nil {
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to create temporary file: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to create temporary file: %w", err)
 	}
 	tempFileName := tempFile.Name()
 	output.Debugf("Compressing layer to temporary file %s", tempFileName)
 
 	digester := digest.Canonical.Digester()
-	mw := io.MultiWriter(tempFile, digester.Hash())
+	var diffIdDigester digest.Digester
+	fileWriter := io.MultiWriter(tempFile, digester.Hash())
 
-	var cw io.WriteCloser
-	var tw *tar.Writer
+	var compressedWriter io.WriteCloser
+	var tarWriter *tar.Writer
 	switch mediaType.Compression {
 	case constants.GzipCompression:
-		cw = gzip.NewWriter(mw)
-		tw = tar.NewWriter(cw)
+		compressedWriter = gzip.NewWriter(fileWriter)
+		diffIdDigester = digest.Canonical.Digester()
+		mw := io.MultiWriter(compressedWriter, diffIdDigester.Hash())
+		tarWriter = tar.NewWriter(mw)
 	case constants.GzipFastestCompression:
-		cw, err = gzip.NewWriterLevel(mw, gzip.BestSpeed)
+		compressedWriter, err = gzip.NewWriterLevel(fileWriter, gzip.BestSpeed)
 		if err != nil {
-			return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to set up gzip compression: %w", err)
+			return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to set up gzip compression: %w", err)
 		}
-		tw = tar.NewWriter(cw)
+		diffIdDigester = digest.Canonical.Digester()
+		mw := io.MultiWriter(compressedWriter, diffIdDigester.Hash())
+		tarWriter = tar.NewWriter(mw)
 	case constants.NoneCompression:
-		tw = tar.NewWriter(mw)
+		tarWriter = tar.NewWriter(fileWriter)
+		diffIdDigester = digester
 	}
-	ptw, plog := output.TarProgress(totalSize, tw)
+	progressTarWriter, plog := output.TarProgress(totalSize, tarWriter)
 
-	// Wrapper function for closing writers before returning an error
-	// Note: we have to close gzip writer before reading digest from digester as closing is what writes the GZIP footer
-	handleErr := func(err error) (string, ocispec.Descriptor, error) {
+	if err := writeLayerToTar(path, ignore, progressTarWriter, plog); err != nil {
 		// Don't care about these errors since we'll be deleting the file anyways
-		_ = ptw.Close()
-		_ = tw.Close()
-		if cw != nil {
-			_ = cw.Close()
+		_ = progressTarWriter.Close()
+		_ = tarWriter.Close()
+		if compressedWriter != nil {
+			_ = compressedWriter.Close()
 		}
 		_ = tempFile.Close()
 		removeTempFile(tempFileName)
-		return "", ocispec.DescriptorEmptyJSON, err
-	}
-
-	if pathInfo.Mode().IsRegular() {
-		if err := writeHeaderToTar(pathInfo.Name(), pathInfo, ptw, plog); err != nil {
-			return handleErr(err)
-		}
-		if err := writeFileToTar(path, pathInfo, ptw, plog); err != nil {
-			return handleErr(err)
-		}
-	} else if pathInfo.IsDir() {
-		if err := writeDirToTar(path, ignore, ptw, plog); err != nil {
-			return handleErr(err)
-		}
-	} else {
-		return handleErr(fmt.Errorf("path %s is neither a file nor a directory", path))
 	}
 	plog.Wait()
 
-	callAndPrintError(ptw.Close, "Failed to close writer: %s")
-	callAndPrintError(tw.Close, "Failed to close tar writer: %s")
-	if cw != nil {
-		callAndPrintError(cw.Close, "Failed to close compression writer: %s")
+	callAndPrintError(progressTarWriter.Close, "Failed to close writer: %s")
+	callAndPrintError(tarWriter.Close, "Failed to close tar writer: %s")
+	if compressedWriter != nil {
+		callAndPrintError(compressedWriter.Close, "Failed to close compression writer: %s")
 	}
 
 	tempFileInfo, err := tempFile.Stat()
 	if err != nil {
 		removeTempFile(tempFileName)
-		return "", ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to stat temporary file: %w", err)
+		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to stat temporary file: %w", err)
 	}
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
 
@@ -136,24 +122,41 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		Digest:    digester.Digest(),
 		Size:      tempFileInfo.Size(),
 	}
-	return tempFileName, desc, nil
+	layerInfo = &artifact.LayerInfo{
+		Digest: digester.Digest().String(),
+		DiffId: diffIdDigester.Digest().String(),
+	}
+	return tempFileName, desc, layerInfo, nil
 }
 
-// writeDirToTar walks the filesystem at basePath, compressing contents via the *tar.Writer.
-// Any non-regular files and directories (e.g. symlinks) are skipped.
-func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
-	// We'll want paths in the tarball to be relative to the *parent* of basePath since we want
-	// to compress the directory pointed at by basePath
-	trimPath := filepath.Dir(basePath)
-	if trimPath == "." {
-		// Avoid accidentally trimming leading `.` from filenames
-		trimPath = ""
+func writeLayerToTar(basePath string, ignore filesystem.IgnorePaths, tarWriter *output.ProgressTar, plog *output.ProgressLogger) error {
+	// Make sure target path exists; otherwise we'll miss it while walking below
+	_, err := os.Stat(basePath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("path %s does not exist", basePath)
+		}
+		return err
 	}
-	return filepath.Walk(basePath, func(file string, fi os.FileInfo, err error) error {
+
+	// Utility function to decide if two paths are in the same directory tree (i.e. one is a parent of the other)
+	sameDirTree := func(a, b string) bool {
+		aToB, errA := filepath.Rel(a, b)
+		bToA, errB := filepath.Rel(b, a)
+		if errA != nil || errB != nil {
+			plog.Logf(output.LogLevelWarn, "Cannot compare directories %s and %s, skipping path", a, b)
+			return false
+		}
+		if strings.Contains(aToB, "..") && strings.Contains(bToA, "..") {
+			return false
+		}
+		return true
+	}
+
+	filepath.Walk(".", func(file string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		// Skip adding an entry for the context directory to the tarball
 		if file == "." {
 			return nil
 		}
@@ -161,7 +164,15 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.P
 		if !fi.Mode().IsRegular() && !fi.Mode().IsDir() {
 			return nil
 		}
+		// Since we're walking from the context directory, we want to skip irrelevant files (e.g. sibling directories)
+		if !sameDirTree(basePath, file) {
+			if fi.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
+		}
 
+		// Check if file should be ignored by the ignorefile/other Kitfile layers
 		if shouldIgnore, err := ignore.Matches(file, basePath); err != nil {
 			return fmt.Errorf("failed to match %s against ignore file: %w", file, err)
 		} else if shouldIgnore {
@@ -173,19 +184,16 @@ func writeDirToTar(basePath string, ignore filesystem.IgnorePaths, ptw *output.P
 			return nil
 		}
 
-		relPath, err := filepath.Rel(trimPath, file)
-		if err != nil {
-			return fmt.Errorf("failed to find relative path for %s", file)
-		}
-
-		if err := writeHeaderToTar(relPath, fi, ptw, plog); err != nil {
+		if err := writeHeaderToTar(file, fi, tarWriter, plog); err != nil {
 			return err
 		}
 		if fi.IsDir() {
 			return nil
 		}
-		return writeFileToTar(file, fi, ptw, plog)
+		return writeFileToTar(file, fi, tarWriter, plog)
 	})
+
+	return nil
 }
 
 func writeHeaderToTar(name string, fi os.FileInfo, ptw *output.ProgressTar, plog *output.ProgressLogger) error {
@@ -218,11 +226,20 @@ func writeFileToTar(file string, fi os.FileInfo, ptw *output.ProgressTar, plog *
 	return nil
 }
 
-func getTotalSize(basePath string, pathInfo fs.FileInfo, ignore filesystem.IgnorePaths) (int64, error) {
+func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error) {
 	if !output.ProgressEnabled() {
 		// Won't use this information anyways, save the work.
 		return 0, nil
 	}
+
+	pathInfo, err := os.Stat(basePath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return 0, fmt.Errorf("path %s does not exist", basePath)
+		}
+		return 0, err
+	}
+
 	if pathInfo.Mode().IsRegular() {
 		return pathInfo.Size(), nil
 	} else if pathInfo.IsDir() {
@@ -279,7 +296,7 @@ func sanitizeTarHeader(header *tar.Header) {
 	header.AccessTime = time.Time{}
 	header.ModTime = time.Time{}
 	header.ChangeTime = time.Time{}
-	header.Uid = 0
+	header.Uid = 1000
 	header.Gid = 0
 	header.Uname = ""
 	header.Gname = ""

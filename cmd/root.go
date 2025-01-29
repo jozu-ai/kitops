@@ -26,6 +26,8 @@ import (
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/info"
 	"kitops/pkg/cmd/inspect"
+	"kitops/pkg/cmd/kitimport"
+	"kitops/pkg/cmd/kitinit"
 	"kitops/pkg/cmd/list"
 	"kitops/pkg/cmd/login"
 	"kitops/pkg/cmd/logout"
@@ -149,6 +151,8 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(logout.LogoutCommand())
 	rootCmd.AddCommand(version.VersionCommand())
 	rootCmd.AddCommand(dev.DevCommand())
+	rootCmd.AddCommand(kitinit.InitCommand())
+	rootCmd.AddCommand(kitimport.ImportCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

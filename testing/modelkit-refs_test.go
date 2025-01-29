@@ -44,14 +44,13 @@ func (t modelkitRefTestcase) withName(name string) modelkitRefTestcase {
 }
 
 func TestModelKitReferences(t *testing.T) {
-	cleanup := testPreflight(t)
-	defer cleanup(t)
+	testPreflight(t)
+
 	tests := loadAllTestCasesOrPanic[modelkitRefTestcase](t, filepath.Join("testdata", "modelkit-refs"))
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s (%s)", tt.Name, tt.Description), func(t *testing.T) {
 			// Set up temporary directory for work
-			tmpDir, removeTmp := setupTempDir(t)
-			defer removeTmp()
+			tmpDir := setupTempDir(t)
 
 			// Set up directory for KITOPS_HOME
 			contextPath := filepath.Join(tmpDir, ".kitops")

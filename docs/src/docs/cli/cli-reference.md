@@ -48,7 +48,6 @@ If the development server is currently running, the logs for this server will
 be printed. If it is stopped, the logs for the previous run of the server, if
 available, will be printed instead.
 
-
 ```
 kit dev logs [flags]
 ```
@@ -56,7 +55,8 @@ kit dev logs [flags]
 ### Options
 
 ```
-  -h, --help   help for logs
+  -f, --follow   Stream the log file
+  -h, --help     help for logs
 ```
 
 ### Options inherited from parent commands
@@ -79,7 +79,6 @@ Start development server (experimental) from a modelkit
 Start a development server for an unpacked modelkit, using a context directory
 that includes the model and a kitfile.
 
-
 ```
 kit dev start <directory> [flags]
 ```
@@ -92,7 +91,6 @@ kit dev start
 
 # Serve the modelkit in ./my-model on port 8080
 kit dev start ./my-model --port 8080
-
 ```
 
 ### Options
@@ -129,6 +127,54 @@ kit dev stop [flags]
 
 ```
   -h, --help   help for stop
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit import
+
+Import a model from HuggingFace
+
+### Synopsis
+
+Download a repository from HuggingFace and package it as a ModelKit.
+
+The repository can be specified either via a repository (e.g. myorg/myrepo) or
+with a full URL (https://huggingface.co/myorg/myrepo). The repository will be
+downloaded to a temporary directory and be packaged using a generated Kitfile.
+
+In interactive settings, this command will read the EDITOR environment variable
+to determine which editor should be used for editing the Kitfile.
+
+Note: importing repositories requires 'git' and 'git-lfs' to be installed.
+
+```
+kit import [flags] REPOSITORY
+```
+
+### Examples
+
+```
+# Download repository myorg/myrepo and package it, using the default tag (myorg/myrepo:latest)
+kit import myorg/myrepo
+
+# Download repository and tag it 'myrepository:mytag'
+kit import myorg/myrepo --tag myrepository:mytag
+```
+
+### Options
+
+```
+      --token string   Token to use for authenticating with repository
+  -t, --tag string     Tag for the ModelKit (default is '[repository]:latest')
+  -h, --help           help for import
 ```
 
 ### Options inherited from parent commands
@@ -181,6 +227,54 @@ kit info --remote registry.example.com/my-model:1.0.0
   -r, --remote            Check remote registry instead of local storage
   -f, --filter string     filter with node selectors
   -h, --help              help for info
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit init
+
+Generate a Kitfile for the contents of a directory
+
+### Synopsis
+
+Examine the contents of a directory and attempt to generate a basic Kitfile
+based on common file formats. Any files whose type (i.e. model, dataset, etc.)
+cannot be determined will be included in a code layer.
+
+By default the command will prompt for input for a name and description for the Kitfile
+
+```
+kit init [flags] PATH
+```
+
+### Examples
+
+```
+# Generate a Kitfile for the current directory:
+kit init .
+
+# Generate a Kitfile for files in ./my-model, with name "mymodel" and a description:
+kit init ./my-model --name "mymodel" --desc "This is my model's description"
+
+# Generate a Kitfile, overwriting any existing Kitfile:
+kit init ./my-model --force
+```
+
+### Options
+
+```
+      --name string     Name for the ModelKit
+      --desc string     Description for the ModelKit
+      --author string   Author for the ModelKit
+  -f, --force           Overwrite existing Kitfile if present
+  -h, --help            help for init
 ```
 
 ### Options inherited from parent commands
@@ -479,23 +573,26 @@ Upload a modelkit to a specified registry
 
 ### Synopsis
 
-This command pushes modelkits to a remote registry.
+This command pushes modelkits from local storage to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before
-they can be pushed
+If specified without a destination, the ModelKit must be tagged locally before
+pushing.
 
 ```
-kit push [flags] registry/repository[:tag|@digest]
+kit push [flags] SOURCE [DESTINATION]
 ```
 
 ### Examples
 
 ```
-# Push the latest modelkits to a remote registry
-kit push registry.example.com/my-model:latest
+# Push the ModelKit tagged 'latest' to a remote registry
+kit push registry.example.com/my-org/my-model:latest
 
-# Push a specific version of a modelkits using a tag:
-kit push registry.example.com/my-model:1.0.0
+# Push a ModelKit to a remote registry by digest
+kit push registry.example.com/my-org/my-model@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# Push local modelkit 'mymodel:1.0.0' to a remote registry
+kit push mymodel:1.0.0 registry.example.com/my-org/my-model:latest
 ```
 
 ### Options

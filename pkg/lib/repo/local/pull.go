@@ -70,8 +70,16 @@ func (l *localRepo) PullModel(ctx context.Context, src oras.ReadOnlyTarget, ref 
 		return fmt.Errorf("failed to get %s layer: %w", constants.FormatMediaTypeForUser(desc.MediaType), err)
 	}
 	var semErr error
+	// In some cases, manifests can contain duplicate digests. If we try to concurrently pull the same digest
+	// twice, a race condition will cause the pull the fail.
+	pulledDigests := map[string]bool{}
 	for _, pullDesc := range toPull {
 		pullDesc := pullDesc
+		digest := pullDesc.Digest.String()
+		if pulledDigests[digest] {
+			continue
+		}
+		pulledDigests[digest] = true
 		if err := sem.Acquire(errCtx, 1); err != nil {
 			// Save error and break to get the _actual_ error
 			semErr = err

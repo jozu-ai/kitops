@@ -188,7 +188,7 @@ func (t *ProgressTar) Close() error {
 }
 
 func TarProgress(total int64, tw *tar.Writer) (*ProgressTar, *ProgressLogger) {
-	if !progressEnabled {
+	if !progressEnabled || total == 0 {
 		return &ProgressTar{tw: tw}, &ProgressLogger{stdout}
 	}
 

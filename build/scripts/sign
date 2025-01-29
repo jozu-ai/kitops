@@ -4,6 +4,7 @@
 # Signs macOS binaries using codesign, notarizes macOS zip archives using notarytool
 set -e
 
+APPLE_CREDS=(--apple-id "${APPLE_ID?}" --team-id "${APPLE_TEAM_ID?}" --password "${APPLE_ID_PASSWORD?}")
 
 sign_macos() {
   printf "signing %s\n" "$1"
@@ -13,7 +14,17 @@ sign_macos() {
   fi
 
   if [[ $1 == *.zip ]]; then
-    xcrun notarytool submit "$1" --apple-id "${APPLE_ID?}" --team-id "${APPLE_TEAM_ID?}" --password "${APPLE_ID_PASSWORD?}" --wait
+    set +e
+    xcrun notarytool submit "$1" "${APPLE_CREDS[@]}" --wait --verbose | tee out.temp
+    RET=$?
+    set -e
+    if grep -q "id: " out.temp; then
+      SUB_ID=$(awk '/id: / { print $2;exit; }' out.temp)
+      rm -f out.temp
+      xcrun notarytool log "$SUB_ID" "${APPLE_CREDS[@]}"
+    fi
+
+    return $RET
   else
     codesign --timestamp --options=runtime -s "${APPLE_DEVELOPER_ID?}" -v "$1"
   fi
@@ -28,9 +39,9 @@ fi
 platform="$(uname -s)"
 
 for input_file; do
-    if [ "$platform" = "Darwin" ]; then
-      sign_macos "$input_file"
-    else
-      printf "warning: don't know how to sign %s on %s\n" "$1", "$platform" >&2
-    fi
+  if [ "$platform" = "Darwin" ]; then
+    sign_macos "$input_file"
+  else
+    printf "warning: don't know how to sign %s on %s\n" "$1", "$platform" >&2
+  fi
 done

@@ -193,7 +193,8 @@
       letter-spacing: 2.7px;
     }
 
-    &:not(:disabled):hover {
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
       @apply text-white;
       background-color: var(--color-gold);
       background-size: 0% 0%;
@@ -202,6 +203,10 @@
     &:not(:disabled):focus {
       @apply text-white;
     }
+  }
+
+  .kit-button.kit-button-small {
+    font-size: 12px;
   }
 
   .kit-button.kit-button-cornflower {

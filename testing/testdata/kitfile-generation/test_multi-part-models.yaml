@@ -1,0 +1,22 @@
+description: "Handles multi-part models"
+
+files:
+  - model-0005.safetensors
+  - model-0004.safetensors
+  - model-0003.safetensors
+  - model-0002.safetensors
+  - model-0001.safetensors
+
+modelName: test-multipart
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-multipart
+    description: "Handles multi-part models"
+  model:
+    path: model-0001.safetensors
+    parts:
+      - path: model-0002.safetensors
+      - path: model-0003.safetensors
+      - path: model-0004.safetensors
+      - path: model-0005.safetensors

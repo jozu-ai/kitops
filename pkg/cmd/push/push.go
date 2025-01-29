@@ -30,10 +30,11 @@ import (
 
 func PushModel(ctx context.Context, localRepo local.LocalRepo, repo registry.Repository, opts *pushOptions) (ocispec.Descriptor, error) {
 	trackedRepo, logger := output.WrapTarget(repo)
-	ref := opts.modelRef.Reference
+	srcTag := opts.srcModelRef.Reference
+	destTag := opts.destModelRef.Reference
 	copyOpts := oras.CopyOptions{}
 	copyOpts.Concurrency = opts.Concurrency
-	desc, err := oras.Copy(ctx, localRepo, ref, trackedRepo, ref, copyOpts)
+	desc, err := oras.Copy(ctx, localRepo, srcTag, trackedRepo, destTag, copyOpts)
 	if err != nil {
 		return ocispec.DescriptorEmptyJSON, fmt.Errorf("failed to copy to remote: %w", err)
 	}

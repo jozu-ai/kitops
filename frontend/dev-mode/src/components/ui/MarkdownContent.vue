@@ -17,3 +17,9 @@ const markdown = new MarkdownIt()
 <!-- eslint-disable-next-line -->
 <Component :is="props.is" v-html="markdown.render(props.source)" />
 </template>
+
+<style scoped>
+:deep(code) {
+  @apply whitespace-pre-wrap;
+}
+</style>

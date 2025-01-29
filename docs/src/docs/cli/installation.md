@@ -13,6 +13,8 @@ This page includes instructions for:
 * Installing on [Linux](#🐧-linux-install) with Brew or TAR
 * Building from the [source code](#🛠️-build-from-source-code)
 
+[ discord banner ]
+
 ## 🍎 MacOS Install
 
 The simplest way to install Kit on a Mac is with [Homebrew](https://brew.sh/). You can also install from [ZIP](#mac-install-from-zip).
@@ -39,7 +41,7 @@ Now follow our [Quick Start](/docs/get-started.md) to learn how to pack and shar
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
-1. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
+1. MacOS: <a href="https://kitops.gateway.scarf.sh/github/macos/apple_silicon_arm_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Apple Silicon)',
@@ -48,7 +50,7 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Apple Silicon / ARM64
 </a>
 
-2. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
+2. MacOS: <a href="https://kitops.gateway.scarf.sh/github/macos/intesl_x86_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Intel)',
@@ -79,7 +81,7 @@ Now follow our [Quick Start](../get-started.md) to learn how to pack and share y
 
 Make sure you get the correct download for your hardware.
 
-1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
+1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'Windows (AMD64)',
@@ -88,7 +90,7 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 64-bit
 </a>
 
-1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
+1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/arm_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'Windows (ARM64)',
@@ -97,7 +99,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
+1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_32/latest"
   v-ga-track="{
     category: 'link',
     label: 'Windows (x86_32)',
@@ -150,7 +152,7 @@ Now follow our [Quick Start](../get-started.md) to learn how to pack and share y
 
 Make sure you get the correct download for your hardware.
 
-1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
+1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'Linux (AMD64)',
@@ -159,7 +161,7 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, AMD 64-bit
 </a>
 
-1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
+1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/arm_64/latest"
   v-ga-track="{
     category: 'link',
     label: 'Linux (ARM64)',
@@ -168,7 +170,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
+1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_32/latest"
   v-ga-track="{
     category: 'link',
     label: 'Linux (x86_32)',
@@ -259,6 +261,24 @@ To verify that `kit` was installed successfully, open a new terminal window and 
 ```shell
 kit version
 ```
+
+## Optional: Set Your Environment
+
+You can configure which directory credentials and storage are located:
+* `--config` flag for a specific kit CLI execution
+* `KITOPS_HOME` environment variable for permanent configurations
+
+If the `KITOPS_HOME` is set in various places the order of precedence is:
+1. `--config` flag, if specified
+1. `$KITOPS_HOME` environment variable, if set
+1. A default OS-dependent value:
+    
+    Linux: `$XDG_DATA_HOME/kitops`, falling back to `~/.local/share/kitops`
+    
+    Windows: `%LOCALAPPDATA%\kitops`
+    
+    Darwin: `~/Library/Caches/kitops`
+
 
 ## Follow the Quick Start
 

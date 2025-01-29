@@ -1,17 +1,18 @@
 // https://vitepress.dev/guide/custom-theme
 import { h, ref } from 'vue'
-import { VueReCaptcha } from 'vue-recaptcha-v3'
 import { type Theme, inBrowser } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import PlatformSelect from './components/PlatformSelect.vue'
 import PlatformSnippet from './components/PlatformSnippet.vue'
 import GithubStartButton from './components/GithubStartButton.vue'
-import Layout from './Layout.vue'
+import DiscordBanner from './components/DiscordBanner.vue'
 import './assets/css/fonts.css'
 import './assets/css/tailwind.css'
 import './style.css'
 
 const isPlatformModalOpen = ref(false)
+
+const isProd = import.meta.env.PROD
 
 export default {
   extends: DefaultTheme,
@@ -33,18 +34,25 @@ export default {
       'sidebar-nav-after': () => h(PlatformSelect),
       'nav-bar-content-after': () => h(GithubStartButton, {
         class: 'ml-4 pt-2'
-      })
+      }),
+
+      // Add a custom tracking pixel html
+      'layout-bottom': () => {
+        if (!isProd) {
+          return
+        }
+
+        return h('img', {
+          referrerpolicy: 'no-referrer-when-downgrade',
+          src: 'https://static.scarf.sh/a.png?x-pxid=58868f01-1c36-4fa2-8308-9d5ff7492d0a',
+          style: 'display:none;visibility:hidden;'
+        })
+      },
     })
   },
   enhanceApp({ app, router, siteData }) {
     app.component('PlatformSnippet', PlatformSnippet)
     app.provide('isPlatformModalOpen', isPlatformModalOpen)
-
-    app.use(VueReCaptcha, {
-      siteKey: '6Lc4-VAqAAAAAF6W1JTuP24DYqc_BzHD715Yqob-',
-      loaderOptions: {
-        autoHideBadge: true
-      },
-    })
+    app.component('DiscordBanner', DiscordBanner);
   }
 } satisfies Theme

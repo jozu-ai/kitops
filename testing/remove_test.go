@@ -39,8 +39,7 @@ model:
 
 func TestRemoveSingleModelkitTag(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -67,8 +66,7 @@ func TestRemoveSingleModelkitTag(t *testing.T) {
 
 func TestRemoveSingleModelkitDigest(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -96,8 +94,7 @@ func TestRemoveSingleModelkitDigest(t *testing.T) {
 
 func TestRemoveSingleModelkitNoTag(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -124,8 +121,7 @@ func TestRemoveSingleModelkitNoTag(t *testing.T) {
 
 func TestRemoveModelkitUntagsWhenMultiple(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -157,8 +153,7 @@ func TestRemoveModelkitUntagsWhenMultiple(t *testing.T) {
 
 func TestRemoveModelkitUntagsAllWhenDigest(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -191,8 +186,7 @@ func TestRemoveModelkitUntagsAllWhenDigest(t *testing.T) {
 
 func TestRemoveModelkitUntagged(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)
@@ -234,8 +228,7 @@ func TestRemoveModelkitUntagged(t *testing.T) {
 
 func TestRemoveModelkitAll(t *testing.T) {
 	// Set up temporary directory for work
-	tmpDir, removeTmp := setupTempDir(t)
-	defer removeTmp()
+	tmpDir := setupTempDir(t)
 
 	modelKitPath, _, contextPath := setupTestDirs(t, tmpDir)
 	t.Setenv(constants.KitopsHomeEnvVar, contextPath)

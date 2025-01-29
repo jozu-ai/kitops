@@ -1,0 +1,49 @@
+description: "Handles directories"
+
+files:
+  # Special-cased names
+  - src/test-file.sh
+  - pkg/test-file.sh
+  - lib/test-file.sh
+  - build/test-file.sh
+  - docs/documentation-file
+  # directories with only models
+  - model-contents/my-model1.gguf
+  - model-contents/my-model2.gguf
+  - model-contents/z-metadata.json
+  # directories with only datasets
+  - dataset-contents/dataset-001.zip
+  - dataset-contents/dataset-002.zip
+  - dataset-contents/dataset-003.zip
+  - dataset-contents/z-metadata.json
+  # documentation-only directory with weird name
+  - my-files/doc1.md
+  - my-files/doc2.md
+  - my-files/new.pdf
+  # mixed contents to be handled as code
+  - mixed-contents/documentation.md
+  - mixed-contents/dataset.csv
+  - mixed-contents/meta.json
+
+modelName: test-directory-handling
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-directory-handling
+    description: "Handles directories"
+  model:
+    path: model-contents/my-model1.gguf
+    parts:
+      - path: model-contents/my-model2.gguf
+      - path: model-contents/z-metadata.json
+  datasets:
+    - path: dataset-contents
+  docs:
+    - path: docs
+    - path: my-files
+  code:
+    - path: build
+    - path: lib
+    - path: pkg
+    - path: src
+    - path: mixed-contents

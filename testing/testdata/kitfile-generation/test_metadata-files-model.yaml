@@ -1,0 +1,33 @@
+description: "Attaches metadata files to Model when present"
+
+files:
+  - a-model.gguf
+  - b-model.safetensors
+  - c-model.pkl
+  - d-model.pb
+  - a-dataset.tar
+  - b-dataset.csv
+  - c-dataset.zip
+  - x-metadata.json
+  - y-metadata.yaml
+  - z-metadata.xml
+
+modelName: test-model-metadata
+expectedKitfile:
+  manifestVersion: "1.0.0"
+  package:
+    name: test-model-metadata
+    description: "Attaches metadata files to Model when present"
+  model:
+    path: a-model.gguf
+    parts:
+      - path: b-model.safetensors
+      - path: c-model.pkl
+      - path: d-model.pb
+      - path: x-metadata.json
+      - path: y-metadata.yaml
+      - path: z-metadata.xml
+  datasets:
+    - path: a-dataset.tar
+    - path: b-dataset.csv
+    - path: c-dataset.zip

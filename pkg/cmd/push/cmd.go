@@ -18,7 +18,9 @@ package push
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 
 	"kitops/pkg/cmd/options"
 	"kitops/pkg/lib/constants"
@@ -29,26 +31,31 @@ import (
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
+	"oras.land/oras-go/v2/registry/remote/errcode"
 )
 
 const (
 	shortDesc = `Upload a modelkit to a specified registry`
-	longDesc  = `This command pushes modelkits to a remote registry.
+	longDesc  = `This command pushes modelkits from local storage to a remote registry.
 
-The modelkits should be tagged with the target registry and repository before
-they can be pushed`
+If specified without a destination, the ModelKit must be tagged locally before
+pushing.`
 
-	example = `# Push the latest modelkits to a remote registry
-kit push registry.example.com/my-model:latest
+	example = `# Push the ModelKit tagged 'latest' to a remote registry
+kit push registry.example.com/my-org/my-model:latest
 
-# Push a specific version of a modelkits using a tag:
-kit push registry.example.com/my-model:1.0.0`
+# Push a ModelKit to a remote registry by digest
+kit push registry.example.com/my-org/my-model@sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+
+# Push local modelkit 'mymodel:1.0.0' to a remote registry
+kit push mymodel:1.0.0 registry.example.com/my-org/my-model:latest`
 )
 
 type pushOptions struct {
 	options.NetworkOptions
-	configHome string
-	modelRef   *registry.Reference
+	configHome   string
+	srcModelRef  *registry.Reference
+	destModelRef *registry.Reference
 }
 
 func (opts *pushOptions) complete(ctx context.Context, args []string) error {
@@ -58,17 +65,30 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.configHome = configHome
 
-	modelRef, extraTags, err := util.ParseReference(args[0])
+	srcRef, extraTags, err := util.ParseReference(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to parse reference: %w", err)
-	}
-	if modelRef.Registry == "localhost" {
-		return fmt.Errorf("registry is required when pushing")
+		return fmt.Errorf("failed to parse reference %s: %w", args[0], err)
 	}
 	if len(extraTags) > 0 {
 		return fmt.Errorf("reference cannot include multiple tags")
 	}
-	opts.modelRef = modelRef
+	opts.srcModelRef = srcRef
+	if len(args) == 1 {
+		opts.destModelRef = srcRef
+	} else {
+		destRef, extraTags, err := util.ParseReference(args[1])
+		if err != nil {
+			return fmt.Errorf("failed to parse target reference %s: %w", args[1], err)
+		}
+		if len(extraTags) > 0 {
+			return fmt.Errorf("target reference cannot include multiple tags")
+		}
+		opts.destModelRef = destRef
+	}
+
+	if opts.destModelRef.Registry == "localhost" {
+		return fmt.Errorf("registry is required when pushing")
+	}
 
 	if err := opts.NetworkOptions.Complete(ctx, args); err != nil {
 		return err
@@ -80,14 +100,14 @@ func (opts *pushOptions) complete(ctx context.Context, args []string) error {
 func PushCommand() *cobra.Command {
 	opts := &pushOptions{}
 	cmd := &cobra.Command{
-		Use:     "push [flags] registry/repository[:tag|@digest]",
+		Use:     "push [flags] SOURCE [DESTINATION]",
 		Short:   shortDesc,
 		Long:    longDesc,
 		Example: example,
 		RunE:    runCommand(opts),
 	}
 
-	cmd.Args = cobra.ExactArgs(1)
+	cmd.Args = cobra.RangeArgs(1, 2)
 	opts.AddNetworkFlags(cmd)
 	cmd.Flags().SortFlags = false
 
@@ -102,23 +122,36 @@ func runCommand(opts *pushOptions) func(*cobra.Command, []string) error {
 
 		remoteRepo, err := remote.NewRepository(
 			cmd.Context(),
-			opts.modelRef.Registry,
-			opts.modelRef.Repository,
+			opts.destModelRef.Registry,
+			opts.destModelRef.Repository,
 			&opts.NetworkOptions,
 		)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
-		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.modelRef)
+		localRepo, err := local.NewLocalRepo(constants.StoragePath(opts.configHome), opts.srcModelRef)
 		if err != nil {
 			return output.Fatalln(err)
 		}
 
-		output.Infof("Pushing %s", opts.modelRef.String())
+		if opts.srcModelRef.String() != opts.destModelRef.String() {
+			output.Infof("Pushing %s to %s", opts.srcModelRef.String(), opts.destModelRef.String())
+		} else {
+			output.Infof("Pushing %s", opts.srcModelRef.String())
+		}
 		desc, err := PushModel(cmd.Context(), localRepo, remoteRepo, opts)
-		if err != nil {
-			return output.Fatalf("Failed to push: %s. Check you have write permissions to the organization and repository you are pushing to.", err)
+		respErr := &errcode.ErrorResponse{}
+		if ok := errors.As(err, &respErr); ok {
+			output.Debugf("Got error pushing: %s", err)
+			errMsg := fmt.Sprintf("Failed to push: got response %d (%s) from remote", respErr.StatusCode, http.StatusText(respErr.StatusCode))
+			switch respErr.StatusCode {
+			case http.StatusUnauthorized:
+				errMsg = fmt.Sprintf("%s. Ensure the repository exists and you have push access to it.", errMsg)
+			}
+			return output.Fatalf(errMsg)
+		} else if err != nil {
+			return output.Fatalf("Failed to push: %s.", err)
 		}
 		output.Infof("Pushed %s", desc.Digest)
 		return nil

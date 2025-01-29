@@ -6,6 +6,8 @@ Organizations around the world are using KitOps as a "gate" in the [handoff betw
 
 Those who are concerned about end-to-end auditing of their model development - like those in regulated industries, or under the jurisdiction of the [EU AI Act](https://artificialintelligenceact.eu/) extend KitOps usage to security and development use cases (see [Level 2](#level-2-adding-security-️) and [Level 3](#level-3-storage-for-all-ai-project-versions-) use cases below.
 
+[ discord banner ]
+
 ## Level 1: Handoff From Development to Production 🤝
 
 Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
