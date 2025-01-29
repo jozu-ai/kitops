@@ -271,5 +271,61 @@
     "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
     "author": "Jesse Williams",
     "published_time": "2024-11-29"
-  }
+  },
+  {
+  "url": "https://jozu.com/blog/how-to-turn-your-openshift-pipelines-into-an-mlops-pipeline",
+    "description": "How to Turn Your OpenShift Pipelines Into an MLOps Pipeline",
+    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-12-03"
+  },
+  {
+  "url": "https://jozu.com/blog/platform-engineering-vs-mlops-key-comparisons",
+    "description": "Platform Engineering vs. MLOps: Key Comparisons",
+    "tags": ["KitOps", "DevOps", "LLMops", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-12-06"
+  },
+  {
+  "url": "https://jozu.com/blog/understanding-the-mlops-lifecycle/",
+    "description": "Understanding the MLOps Lifecycle",
+    "tags": ["KitOps", "DevOps", "Open Source", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2024-12-17"
+  },
+  {
+  "url": "https://jozu.com/blog/kitops-v1-0-0-release-announcement/",
+    "description": "KitOps v1.0.0 is Now Generally Available, Featuring Hugging Face to ModelKit Import",
+    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "author": "Angel Misevski",
+    "published_time": "2025-01-22"
+  },
+  {
+  "url": "https://www.devopsparadox.com/episodes/managing-your-ai-workloads-with-kitops-299/",
+    "description": "DevOps Paradox: Managing Your AI Workloads With KitOps",
+    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "author": "Gorkem Ercan",
+    "published_time": "2025-01-22"
+  },
+  {
+  "url": "https://jozu.com/blog/whats-next-for-the-kitops-project/",
+    "description": "What’s Next for the KitOps Project",
+    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "author": "Brad Micklea",
+    "published_time": "2025-01-23"
+  },
+  {
+  "url": "https://medium.com/gitconnected/secure-your-model-development-lifecycle-9bd81fb40bf6",
+    "description": "Secure your model development lifecycle",
+    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "author": "Brad Micklea",
+    "published_time": "2025-01-27"
+  },
+  {
+  "url": "https://jozu.com/blog/accelerating-ml-development-with-devpods-and-modelkits/",
+    "description": "Accelerating ML Development with DevPods and ModelKits",
+    "tags": ["KitOps", "DevOps", "DevPods", "MLOps"],
+    "author": "Jesse Williams",
+    "published_time": "2025-01-28"
+  },
 ]
