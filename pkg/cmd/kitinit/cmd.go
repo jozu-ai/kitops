@@ -105,7 +105,11 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Error checking for existing Kitfile: %s", err)
 		}
 
-		kitfile, err := kfgen.GenerateKitfile(opts.path, modelPackage)
+		dirContents, err := kfgen.DirectoryListingFromFS(opts.path)
+		if err != nil {
+			return output.Fatalf("Error processing directory: %s", err)
+		}
+		kitfile, err := kfgen.GenerateKitfile(dirContents, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
 		}

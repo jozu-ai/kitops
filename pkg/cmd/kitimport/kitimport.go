@@ -155,7 +155,11 @@ func cloneRepository(repo, destDir, token string) error {
 }
 
 func generateKitfile(contextDir string, modelPackage *artifact.Package) (*artifact.KitFile, error) {
-	kitfile, err := kfgen.GenerateKitfile(contextDir, modelPackage)
+	dirContents, err := kfgen.DirectoryListingFromFS(contextDir)
+	if err != nil {
+		return nil, fmt.Errorf("error processing directory: %w", err)
+	}
+	kitfile, err := kfgen.GenerateKitfile(dirContents, modelPackage)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate Kitfile: %w", err)
 	}
