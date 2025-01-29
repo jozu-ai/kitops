@@ -20,11 +20,13 @@ import (
 	"context"
 	"fmt"
 	"kitops/pkg/lib/constants"
+	repoutils "kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"oras.land/oras-go/v2/registry"
 )
 
 const (
@@ -58,6 +60,7 @@ type importOptions struct {
 	tag         string
 	token       string
 	kitfilePath string
+	modelKitRef *registry.Reference
 }
 
 func ImportCommand() *cobra.Command {
@@ -85,7 +88,7 @@ func runCommand(opts *importOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		if err := doImport(cmd.Context(), opts); err != nil {
+		if err := importUsingGit(cmd.Context(), opts); err != nil {
 			return output.Fatalln(err)
 		}
 
@@ -107,5 +110,11 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 		opts.tag = fmt.Sprintf("%s:latest", tag)
 		output.Infof("Using tag %s. Use flag --tag to override", opts.tag)
 	}
+
+	ref, _, err := repoutils.ParseReference(opts.tag)
+	if err != nil {
+		return fmt.Errorf("tag %s is invalid. Use --tag to override", opts.tag)
+	}
+	opts.modelKitRef = ref
 	return nil
 }
