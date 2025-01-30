@@ -4,7 +4,7 @@ KitOps is the market's only open source, standards-based packaging and versionin
 
 KitOps has been downloaded over 20,000 times in just the last three months. Users often use it as a:
 
-* [Secure and immutable packaging and versioning standard](./modelkit/intro.md) that is [compatible with their existing container registry](https://kitops.org/docs/modelkit/compatibility.html#compliant-oci-registries)
+* [Secure and immutable packaging and versioning standard](./modelkit/intro.md) that is [compatible with their existing container registry](/docs/modelkit/compatibility/#compliant-oci-registries)
 * Point-of-control between development and production to [enforce consistency in packaging and documentation](./kitfile/kf-overview.md)
 * Catalogue of meaningful AI/ML project versions for regulatory compliance or change tracking
 * Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](./deploy.md)

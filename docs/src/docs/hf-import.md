@@ -10,7 +10,7 @@ Git LFS is required for importing from Hugging Face.
 To customize the editor used for editing the Kitfile during import, set the `EDITOR` environment variable
 :::
 
-You can read more about the `import` command in our [CLI reference](https://kitops.org/docs/cli/cli-reference/#kit-import).
+You can read more about the `import` command in our [CLI reference](/docs/cli/cli-reference/#kit-import).
 
 ## Importing a Hugging Face repository
 

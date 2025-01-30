@@ -21,7 +21,7 @@ However, [ModelKits](./modelkit/intro.md) are more secure and flexible way to pa
 
 Unlike MLOps tools, KitOps:
 
-* Can be stored in the [container registry](https://kitops.org/docs/modelkit/compatibility.html#compliant-oci-registries) every team already uses
+* Can be stored in the [container registry](/docs/modelkit/compatibility/#compliant-oci-registries) every team already uses
 * Fits naturally (and without any changes) into organizations' existing deployment, security, and compliance processes
 * Can already be [used with *every* software, DevOps, and data science tool](./modelkit/compatibility.md)
 * Is available as free open source, and openly governed so it protects users and organizations from vendor lock-in
@@ -58,7 +58,7 @@ Additionally, while you can run a model in a notebook, the model isn't durably s
 
 #### ModelKits & Jupyter Notebooks
 
-We suggest continuing to use notebooks, but include a [Kitfile](./kitfile/kf-overview.md) in each, and at the end of the notebook execute a `kit pack` command to save the [serialized model, dataset, and code](./cli/cli-reference.html#kit-pack) from the notebook into a ModelKit for versioning, centralized tracking, and sharing. This allows the data science team to continue to use Jupyter Notebooks, but allows software engineering, product management, and infrastructure teams to easily run, track, and use the models outside of notebooks.
+We suggest continuing to use notebooks, but include a [Kitfile](./kitfile/kf-overview.md) in each, and at the end of the notebook execute a `kit pack` command to save the [serialized model, dataset, and code](./cli/cli-reference/#kit-pack) from the notebook into a ModelKit for versioning, centralized tracking, and sharing. This allows the data science team to continue to use Jupyter Notebooks, but allows software engineering, product management, and infrastructure teams to easily run, track, and use the models outside of notebooks.
 
 ### Containers
 
@@ -66,7 +66,7 @@ We love containers - they're great for running and deploying models. But they're
 
 #### ModelKits & Containers
 
-We suggest having data science and production operations teams discuss how a model will be deployed (in a container, as a side-car, etc...) early in the development cycle. If a container is going to be used, you can [include a dockerfile or container in a ModelKit](./kitfile/kf-overview.html#kitfile-structure) so that a model can be easily run locally or pushed through a standard deployment pipeline when needed.
+We suggest having data science and production operations teams discuss how a model will be deployed (in a container, as a side-car, etc...) early in the development cycle. If a container is going to be used, you can [include a dockerfile or container in a ModelKit](./kitfile/kf-overview/#kitfile-structure) so that a model can be easily run locally or pushed through a standard deployment pipeline when needed.
 
 ### Git
 
@@ -74,7 +74,7 @@ Git is excellent at managing software projects that consist of a large number of
 
 #### ModelKits & Git
 
-Code related to model development is often easier to store in ModelKits where it is always in-sync with the Jupyter Notebook, serialized model, and datasets used during development. Larger codebases and code related to application integrations are best kept in git, but is often helpful to also package into the ModelKit ([a codebase can be stored in a ModelKit](./kitfile/format.html#code) so that anyone can see the state of the code at the point that the project's ModelKit was versioned).
+Code related to model development is often easier to store in ModelKits where it is always in-sync with the Jupyter Notebook, serialized model, and datasets used during development. Larger codebases and code related to application integrations are best kept in git, but is often helpful to also package into the ModelKit ([a codebase can be stored in a ModelKit](./kitfile/format/#code) so that anyone can see the state of the code at the point that the project's ModelKit was versioned).
 
 ### Dataset Storage
 
