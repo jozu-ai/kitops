@@ -26,6 +26,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 )
 
 const (
@@ -35,12 +38,31 @@ const (
 func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []string) error {
 	client := &http.Client{}
 
+	sem := semaphore.NewWeighted(5)
+	errs, errCtx := errgroup.WithContext(ctx)
+	var semErr error
+
 	for _, f := range filepaths {
+		f := f
+		if err := sem.Acquire(errCtx, 1); err != nil {
+			semErr = err
+			break
+		}
+
 		fileURL := fmt.Sprintf(resolveURLFmt, modelRepo, f)
 		destPath := filepath.Join(destDir, f)
-		if err := downloadFile(ctx, client, fileURL, destPath); err != nil {
-			return err
-		}
+		errs.Go(func() error {
+			defer sem.Release(1)
+			output.Infof("Downloading file %s", f)
+			return downloadFile(errCtx, client, fileURL, destPath)
+		})
+	}
+
+	if err := errs.Wait(); err != nil {
+		return err
+	}
+	if semErr != nil {
+		return fmt.Errorf("failed to acquire lock: %w", semErr)
 	}
 
 	return nil
