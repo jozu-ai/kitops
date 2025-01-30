@@ -41,7 +41,7 @@ func NewIgnoreFromContext(contextDir string, kitfile *artifact.KitFile, extraLay
 	if err != nil {
 		return nil, err
 	}
-	return NewIgnore(kitIgnorePaths, kitfile)
+	return NewIgnore(kitIgnorePaths, kitfile, extraLayers...)
 }
 
 func NewIgnore(kitIgnorePaths []string, kitfile *artifact.KitFile, extraLayers ...string) (IgnorePaths, error) {
