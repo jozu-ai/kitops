@@ -22,6 +22,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -36,6 +37,12 @@ import (
 
 	"oras.land/oras-go/v2/registry"
 )
+
+// This is somewhat fragile but should work for most cases. We want just the 'repository' for a given url/path for one
+// of two cases:
+//   - huggingface URLs: extract the repository for calling HF API endpoints
+//   - generic git repositories: extract something we can use to auto-fill package name + author
+var extractRepoRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[.0-9A-Za-z_-]+)[^/]*$`)
 
 func generateKitfile(dirContents *kfgen.DirectoryListing, repo string, outDir string) (*artifact.KitFile, error) {
 	// Fill fields in package so that they're not empty in `kit list` later.
@@ -156,4 +163,8 @@ func getEditorName() (string, error) {
 	}
 
 	return "", fmt.Errorf("no editor found")
+}
+
+func extractRepoFromURL(url string) string {
+	return extractRepoRegexp.ReplaceAllString(url, "${1}")
 }
