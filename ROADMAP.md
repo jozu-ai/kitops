@@ -21,7 +21,7 @@ See the full changelog from [0.4](https://github.com/jozu-ai/kitops/releases/tag
 * Demo: using [ModelKits with Jupyter Notebooks](https://youtu.be/OQPp7QEvk7Q?feature=shared)
 * Add [Windows & Linux for `kit dev`](https://github.com/jozu-ai/kitops/releases/tag/v0.4.0) command
 * [Add `--filter` option](https://github.com/jozu-ai/kitops/releases/tag/v0.4.0) to `kit info` command
-* Deploy [ModelKits as containers](https://kitops.ml/docs/deploy.html)
+* Deploy [ModelKits as containers](https://kitops.org/docs/deploy.html)
 * [Added parameters field](https://github.com/jozu-ai/kitops/pull/514) to datasets and code
 * [Enhanced proxy](https://github.com/jozu-ai/kitops/pull/512) support
 
@@ -41,7 +41,7 @@ Users want to be able to deploy their models through existing CI/CD/CT pipelines
 
 Users want to be able to get the Kit CLI from locations like Brew, Choco, and Conda.
 
-* [Install with Brew](https://kitops.ml/docs/cli/installation.html)
+* [Install with Brew](https://kitops.org/docs/cli/installation.html)
 * Use KitOps with our Python SDK
 * Add support for Choco
 * Add support for Conda

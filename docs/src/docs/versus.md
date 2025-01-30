@@ -21,7 +21,7 @@ However, [ModelKits](./modelkit/intro.md) are more secure and flexible way to pa
 
 Unlike MLOps tools, KitOps:
 
-* Can be stored in the [container registry](https://kitops.ml/docs/modelkit/compatibility.html#compliant-oci-registries) every team already uses
+* Can be stored in the [container registry](https://kitops.org/docs/modelkit/compatibility.html#compliant-oci-registries) every team already uses
 * Fits naturally (and without any changes) into organizations' existing deployment, security, and compliance processes
 * Can already be [used with *every* software, DevOps, and data science tool](./modelkit/compatibility.md)
 * Is available as free open source, and openly governed so it protects users and organizations from vendor lock-in

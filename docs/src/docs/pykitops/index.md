@@ -1,10 +1,10 @@
 # KitOps Python Library
 
-This site contains the project documentation for the PyKitOps SDK project - a python library for working with [KitOps' ModelKits](https://kitops.ml) in code.
+This site contains the project documentation for the PyKitOps SDK project - a python library for working with [KitOps' ModelKits](https://kitops.org) in code.
 
 The KitOps Python library is an open source project hosted on [GitHub](https://github.com/jozu-ai/pykitops/).
 
-You can find [KitOps and ModelKit documentation](https://kitops.ml/docs/overview.html) on the KitOps site.
+You can find [KitOps and ModelKit documentation](https://kitops.org/docs/overview.html) on the KitOps site.
 
 ## PyKitOps Documentation
 

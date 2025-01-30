@@ -140,7 +140,7 @@ export default defineConfig({
 
   transformPageData(pageData, { siteConfig }) {
     // Generate the canonical url's on each page, considering the cleanUrl config
-    const canonicalUrl = `https://kitops.ml/${pageData.relativePath}`
+    const canonicalUrl = `https://kitops.org/${pageData.relativePath}`
       .replace(/index\.md$/, '')
       .replace(/\.md$/, siteConfig.cleanUrls ? '' : '.html')
 
@@ -152,7 +152,7 @@ export default defineConfig({
   },
 
   sitemap: {
-    hostname: 'https://kitops.ml'
+    hostname: 'https://kitops.org'
   },
 
   vite: {

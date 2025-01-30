@@ -23,7 +23,7 @@ To determine if the Kit CLI is installed in your environment:
     Go version: go1.22.6
     ```
 
-If you don't have the Kit CLI installed, follow the [Kit Installation Instructions](https://kitops.ml/docs/cli/installation.html).
+If you don't have the Kit CLI installed, follow the [Kit Installation Instructions](https://kitops.org/docs/cli/installation.html).
 
 ### 2/ Prepare Your Registry
 

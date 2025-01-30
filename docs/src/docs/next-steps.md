@@ -54,7 +54,7 @@ kit unpack myrepo/my-model:latest
   --filter=datasets:evaluation
 ```
 
-Get more information on unpack and filtering in the [CLI reference docs](https://kitops.ml/docs/cli/cli-reference/#kit-unpack).
+Get more information on unpack and filtering in the [CLI reference docs](https://kitops.org/docs/cli/cli-reference/#kit-unpack).
 
 ## Signing your ModelKit
 
@@ -65,7 +65,7 @@ If you need a quick way to sign a ModelKit you can follow the same instructions 
 
 ## Using Kitfiles
 
-A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read. 
+A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read.
 
 There are three ways to create a Kitfile:
 
@@ -79,7 +79,7 @@ If you are building a ModelKit from a Hugging Face repository you can use the [k
 
 ### 2/ Generating a Kitfile From a Directory
 
-If you have your AI/ML project artifacts in a directory structure already then the easiest way to get started is with [kit init](https://kitops.ml/docs/cli/cli-reference/#kit-init). From the root of the directory with the AI/ML artifacts you wish to pack in the ModelKit run:
+If you have your AI/ML project artifacts in a directory structure already then the easiest way to get started is with [kit init](https://kitops.org/docs/cli/cli-reference/#kit-init). From the root of the directory with the AI/ML artifacts you wish to pack in the ModelKit run:
 
 ```sh
 kit init .
@@ -87,7 +87,7 @@ kit init .
 
 Once you have the generated Kitfile you can [pack the ModelKit](#using-the-kitfile-to-pack-a-modelkit), and push to a registry.
 
-You can learn more about the syntax, options, and flags in our [CLI docs](https://kitops.ml/docs/cli/cli-reference/#kit-init).
+You can learn more about the syntax, options, and flags in our [CLI docs](https://kitops.org/docs/cli/cli-reference/#kit-init).
 
 
 ### 3/ Writing Your Own Kitfile
@@ -102,7 +102,7 @@ There are five parts to a Kitfile:
 
 A Kitfile only needs the `package` section, plus one or more of the other sections.
 
-The `model` section can contain a single model, or you can create model dependencies with `model parts` which is covered in the [KitFile format documentation](https://kitops.ml/docs/kitfile/format.html#model).
+The `model` section can contain a single model, or you can create model dependencies with `model parts` which is covered in the [KitFile format documentation](https://kitops.org/docs/kitfile/format.html#model).
 
 The `datasets`, `code`, and `docs` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
 
