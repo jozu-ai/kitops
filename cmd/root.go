@@ -24,6 +24,7 @@ import (
 	"path/filepath"
 
 	"kitops/pkg/cmd/dev"
+	"kitops/pkg/cmd/diff"
 	"kitops/pkg/cmd/info"
 	"kitops/pkg/cmd/inspect"
 	"kitops/pkg/cmd/kitimport"
@@ -152,6 +153,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(version.VersionCommand())
 	rootCmd.AddCommand(dev.DevCommand())
 	rootCmd.AddCommand(kitinit.InitCommand())
+	rootCmd.AddCommand(diff.DiffCommand())
 	rootCmd.AddCommand(kitimport.ImportCommand())
 }
 
