@@ -103,6 +103,7 @@ export default defineConfig({
         text: 'Python Library',
         items: [
           { text: 'Overview', link: '/docs/pykitops/' },
+          { text: 'Before You Begin', link: '/docs/pykitops/before-you-begin/' },
           { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides/' },
           { text: 'Reference', link: '/docs/pykitops/reference/' },
         ]
