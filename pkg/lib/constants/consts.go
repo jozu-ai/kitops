@@ -50,6 +50,7 @@ const (
 	// MaxModelRefChain is the maximum number of "parent" modelkits a modelkit may have
 	// by e.g. referring to another modelkit in its .model.path
 	MaxModelRefChain = 10
+	ConfigFileName   = "config.json"
 )
 
 var (
@@ -111,6 +112,9 @@ func DefaultConfigPath() (string, error) {
 
 func StoragePath(configBase string) string {
 	return filepath.Join(configBase, StorageSubpath)
+}
+func ConfigFilePath(configHome string) string {
+	return filepath.Join(configHome, ConfigFileName)
 }
 
 func IngestPath(storageBase string) string {
