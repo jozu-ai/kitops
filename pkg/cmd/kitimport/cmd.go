@@ -23,7 +23,6 @@ import (
 	repoutils "kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
 	"net/url"
-	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -52,8 +51,6 @@ kit import myorg/myrepo --tag myrepository:mytag
 # Download repository and pack it using an existing Kitfile
 kit import myorg/myrepo --file ./path/to/Kitfile`
 )
-
-var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)
 
 type importOptions struct {
 	configHome  string
@@ -110,7 +107,7 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	opts.repo = args[0]
 
 	if opts.tag == "" {
-		tag := repoToTagRegexp.ReplaceAllString(opts.repo, "${1}")
+		tag := extractRepoFromURL(opts.repo)
 		tag = strings.ToLower(tag)
 		opts.tag = fmt.Sprintf("%s:latest", tag)
 		output.Infof("Using tag %s. Use flag --tag to override", opts.tag)

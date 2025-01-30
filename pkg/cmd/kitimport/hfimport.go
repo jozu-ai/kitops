@@ -34,7 +34,8 @@ import (
 )
 
 func importUsingHF(ctx context.Context, opts *importOptions) error {
-	// TODO: Handle full huggingface URLs
+	// Handle full HF URLs by extracting repository name from URL
+	repo := extractRepoFromURL(opts.repo)
 
 	tmpDir, err := os.MkdirTemp("", "kitops_import_tmp")
 	if err != nil {
@@ -49,7 +50,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 		}
 	}()
 
-	dirListing, err := hf.ListFiles(ctx, opts.repo)
+	dirListing, err := hf.ListFiles(ctx, repo)
 	if err != nil {
 		return fmt.Errorf("failed to list files from HuggingFace API: %w", err)
 	}
@@ -70,7 +71,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 		}
 		kitfile = kf
 	} else {
-		kf, err := generateKitfile(dirListing, opts.repo, tmpDir)
+		kf, err := generateKitfile(dirListing, repo, tmpDir)
 		if err != nil {
 			return err
 		}
