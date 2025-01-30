@@ -22,6 +22,7 @@ import (
 	"kitops/pkg/lib/constants"
 	repoutils "kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -88,7 +89,11 @@ func runCommand(opts *importOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Invalid arguments: %s", err)
 		}
 
-		if err := importUsingGit(cmd.Context(), opts); err != nil {
+		importer, err := getImporter(opts)
+		if err != nil {
+			return output.Fatalln(err)
+		}
+		if err := importer(cmd.Context(), opts); err != nil {
 			return output.Fatalln(err)
 		}
 
@@ -117,4 +122,17 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	}
 	opts.modelKitRef = ref
 	return nil
+}
+
+func getImporter(opts *importOptions) (func(context.Context, *importOptions) error, error) {
+	repoUrl, err := url.Parse(opts.repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse %s: %w", opts.repo, err)
+	}
+
+	if repoUrl.Host == "" || strings.Contains(repoUrl.Host, "huggingface") {
+		return importUsingHF, nil
+	}
+
+	return importUsingGit, nil
 }
