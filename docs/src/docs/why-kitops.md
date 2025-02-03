@@ -4,10 +4,10 @@ KitOps is the market's only open source, standards-based packaging and versionin
 
 KitOps has been downloaded over 20,000 times in just the last three months. Users often use it as a:
 
-* [Secure and immutable packaging and versioning standard](./modelkit/intro.md) that is [compatible with their existing container registry](https://kitops.ml/docs/modelkit/compatibility.html#compliant-oci-registries)
-* Point-of-control between development and production to [enforce consistency in packaging and documentation](./kitfile/kf-overview.md)
+* [Secure and immutable packaging and versioning standard](../modelkit/intro/) that is [compatible with their existing container registry](../modelkit/compatibility/#compliant-oci-registries)
+* Point-of-control between development and production to [enforce consistency in packaging and documentation](../kitfile/kf-overview/)
 * Catalogue of meaningful AI/ML project versions for regulatory compliance or change tracking
-* Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](./deploy.md)
+* Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](../deploy/)
 
 > [!NOTE]
 > The goal of KitOps is to be a library of versioned packages for your AI project, stored in an enterprise registry you already use.
