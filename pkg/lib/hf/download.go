@@ -42,6 +42,8 @@ func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []s
 	errs, errCtx := errgroup.WithContext(ctx)
 	var semErr error
 
+	progress, plog := output.NewDownloadProgress()
+
 	for _, f := range filepaths {
 		f := f
 		if err := sem.Acquire(errCtx, 1); err != nil {
@@ -53,8 +55,8 @@ func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []s
 		destPath := filepath.Join(destDir, f)
 		errs.Go(func() error {
 			defer sem.Release(1)
-			output.Infof("Downloading file %s", f)
-			return downloadFile(errCtx, client, token, fileURL, destPath)
+			plog.Infof("Downloading file %s", f)
+			return downloadFile(errCtx, client, token, fileURL, destPath, f, progress, plog)
 		})
 	}
 
@@ -64,11 +66,18 @@ func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []s
 	if semErr != nil {
 		return fmt.Errorf("failed to acquire lock: %w", semErr)
 	}
+	progress.Done()
 
 	return nil
 }
 
-func downloadFile(ctx context.Context, client *http.Client, token, srcURL, destPath string) error {
+func downloadFile(
+	ctx context.Context,
+	client *http.Client,
+	token, srcURL, destPath, filename string,
+	progress *output.DownloadProgressBar,
+	plog *output.ProgressLogger) error {
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, srcURL, nil)
 	if err != nil {
 		return fmt.Errorf("failed to resolve URL: %w", err)
@@ -82,13 +91,20 @@ func downloadFile(ctx context.Context, client *http.Client, token, srcURL, destP
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			output.Logf(output.LogLevelWarn, "Failed to close response body: %w", err)
+			plog.Logf(output.LogLevelWarn, "Failed to close response body: %w", err)
 		}
 	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("received status code %d when downloading file %s", resp.StatusCode, destPath)
 	}
+
+	contentRC := progress.TrackDownload(resp.Body, filename, resp.ContentLength)
+	defer func() {
+		if err := contentRC.Close(); err != nil {
+			plog.Logf(output.LogLevelWarn, "TEMP: see if this is an issue: %s", err)
+		}
+	}()
 
 	if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
 		return fmt.Errorf("failed to create directory: %w", err)
@@ -100,11 +116,11 @@ func downloadFile(ctx context.Context, client *http.Client, token, srcURL, destP
 	}
 	defer func() {
 		if err := f.Close(); err != nil && !errors.Is(err, fs.ErrClosed) {
-			output.Errorf("Error closing file %s: %s", destPath, err)
+			plog.Logf(output.LogLevelError, "Error closing file %s: %s", destPath, err)
 		}
 	}()
 
-	n, err := io.Copy(f, resp.Body)
+	n, err := io.Copy(f, contentRC)
 	if err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
