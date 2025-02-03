@@ -35,7 +35,7 @@ const (
 	resolveURLFmt = "https://huggingface.co/%s/resolve/main/%s"
 )
 
-func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []string) error {
+func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []string, token string) error {
 	client := &http.Client{}
 
 	sem := semaphore.NewWeighted(5)
@@ -54,7 +54,7 @@ func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []s
 		errs.Go(func() error {
 			defer sem.Release(1)
 			output.Infof("Downloading file %s", f)
-			return downloadFile(errCtx, client, fileURL, destPath)
+			return downloadFile(errCtx, client, token, fileURL, destPath)
 		})
 	}
 
@@ -68,10 +68,13 @@ func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []s
 	return nil
 }
 
-func downloadFile(ctx context.Context, client *http.Client, srcURL string, destPath string) error {
+func downloadFile(ctx context.Context, client *http.Client, token, srcURL, destPath string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, srcURL, nil)
 	if err != nil {
 		return fmt.Errorf("failed to resolve URL: %w", err)
+	}
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 	resp, err := client.Do(req)
 	if err != nil {
