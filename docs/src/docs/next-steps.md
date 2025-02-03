@@ -10,11 +10,11 @@ In this guide you'll learn how to:
 
 ## Deploying a ModelKit
 
-You can create a container or Kubernetes deployment using a ModelKit. See our [deployment instructions](./deploy.md).
+You can create a container or Kubernetes deployment using a ModelKit. See our [deployment instructions](../deploy/).
 
 ## The Power of Unpack
 
-Models and their datasets can be very large and take a long time to push or pull, so Kit includes a unique and flexible [unpack command](./cli/cli-reference.md#kit-unpack) that allows you to pull only pieces of the ModelKit you need, saving time and storage space.
+Models and their datasets can be very large and take a long time to push or pull, so Kit includes a unique and flexible [unpack command](../cli/cli-reference/#kit-unpack) that allows you to pull only pieces of the ModelKit you need, saving time and storage space.
 
 Use the `--filter` or `-f` flag in the CLI to filter. For example, use `--filter=model` to unpack only the model, or `--filter=datasets:my-dataset` to unpack only the dataset named `my-dataset`.
 
@@ -54,7 +54,7 @@ kit unpack myrepo/my-model:latest
   --filter=datasets:evaluation
 ```
 
-Get more information on unpack and filtering in the [CLI reference docs](https://kitops.ml/docs/cli/cli-reference/#kit-unpack).
+Get more information on unpack and filtering in the [CLI reference docs](../cli/cli-reference/#kit-unpack).
 
 ## Signing your ModelKit
 
@@ -65,7 +65,7 @@ If you need a quick way to sign a ModelKit you can follow the same instructions 
 
 ## Using Kitfiles
 
-A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read. 
+A Kitfile is the configuration document for your ModelKit. It's similar to a recipe or a `dockerfile` for a container. It's written in YAML so it's easy to read.
 
 There are three ways to create a Kitfile:
 
@@ -75,11 +75,11 @@ There are three ways to create a Kitfile:
 
 ### 1/ Import From Hugging Face
 
-If you are building a ModelKit from a Hugging Face repository you can use the [kit import](./hf-import.md) command and the Kitfile will be generated for you. However, it's still helpful to understand the Kitfile structure.
+If you are building a ModelKit from a Hugging Face repository you can use the [kit import](../hf-import/) command and the Kitfile will be generated for you. However, it's still helpful to understand the Kitfile structure.
 
 ### 2/ Generating a Kitfile From a Directory
 
-If you have your AI/ML project artifacts in a directory structure already then the easiest way to get started is with [kit init](https://kitops.ml/docs/cli/cli-reference/#kit-init). From the root of the directory with the AI/ML artifacts you wish to pack in the ModelKit run:
+If you have your AI/ML project artifacts in a directory structure already then the easiest way to get started is with [kit init](../cli/cli-reference/#kit-init). From the root of the directory with the AI/ML artifacts you wish to pack in the ModelKit run:
 
 ```sh
 kit init .
@@ -87,7 +87,7 @@ kit init .
 
 Once you have the generated Kitfile you can [pack the ModelKit](#using-the-kitfile-to-pack-a-modelkit), and push to a registry.
 
-You can learn more about the syntax, options, and flags in our [CLI docs](https://kitops.ml/docs/cli/cli-reference/#kit-init).
+You can learn more about the syntax, options, and flags in our [CLI docs](../cli/cli-reference/#kit-init).
 
 
 ### 3/ Writing Your Own Kitfile
@@ -102,7 +102,7 @@ There are five parts to a Kitfile:
 
 A Kitfile only needs the `package` section, plus one or more of the other sections.
 
-The `model` section can contain a single model, or you can create model dependencies with `model parts` which is covered in the [KitFile format documentation](https://kitops.ml/docs/kitfile/format.html#model).
+The `model` section can contain a single model, or you can create model dependencies with `model parts` which is covered in the [KitFile format documentation](../kitfile/format/#model).
 
 The `datasets`, `code`, and `docs` sections are lists, so each entry must start with a dash. The dash is required even if you are only packaging a single item of that type.
 
@@ -169,11 +169,11 @@ code:
     path: ./notebooks
 ```
 
-More information on Kitfiles can be found in the [Overview](./kitfile/kf-overview.md) and [Format](./kitfile/format.md) documentation.
+More information on Kitfiles can be found in the [Overview](../kitfile/kf-overview/) and [Format](../kitfile/format/) documentation.
 
 ### Using the Kitfile to Pack a ModelKit
 
-When you're done writing the Kitfile, name it `Kitfile` without an extension. Now you can use the [kit pack command](./cli/cli-reference.md#kit-pack) to build your ModelKit.
+When you're done writing the Kitfile, name it `Kitfile` without an extension. Now you can use the [kit pack command](../cli/cli-reference/#kit-pack) to build your ModelKit.
 
 To pack a ModelKit with a Kitfile in the current directory, name it "film-slm", attach the "champion" tag, and store it in the local registry:
 
@@ -202,7 +202,7 @@ First, you need to tag the image in your local registry with the remote registry
 kit pack . -t docker.io/jozubrad/film-slm:champion
 ```
 
-Second, you will need to login, then [kit push](./cli/cli-reference.md#kit-push) your local image to the remote registry:
+Second, you will need to login, then [kit push](../cli/cli-reference/#kit-push) your local image to the remote registry:
 
 ```sh
 kit login docker.io
@@ -211,7 +211,7 @@ kit push docker.io/jozubrad/film-slm:champion
 
 ## Read the Kitfile or Manifest from a ModelKit
 
-For any ModelKit in your local or remote registry you can use the [info command](./cli/cli-reference.md#kit-info) to easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull commands.
+For any ModelKit in your local or remote registry you can use the [info command](../cli/cli-reference/#kit-info) to easily read the Kitfile without pulling or unpacking it. This is a great way to understand what's in a ModelKit you might be interested in without needing to execute the more time-consuming unpack/pull commands.
 
 ```sh
 kit info mymodel:challenger
@@ -242,7 +242,7 @@ datasets:
     description: UCF Video Dataset
 ```
 
-If you need more details, like the size, file format, or SHA digest of the contents, you can use [kit inspect](./cli/cli-reference.md#kit-inspect) to print the manifest to the terminal using the inspect command:
+If you need more details, like the size, file format, or SHA digest of the contents, you can use [kit inspect](../cli/cli-reference/#kit-inspect) to print the manifest to the terminal using the inspect command:
 
 ```sh
 kit inspect mymodel:challenger
@@ -276,7 +276,7 @@ kit inspect mymodel:challenger
 }
 ```
 
-`size` is shown in bytes. For more information on the manifest can be found in the [specification documentation](./modelkit/spec.md).
+`size` is shown in bytes. For more information on the manifest can be found in the [specification documentation](../modelkit/spec/).
 
 ## Tag ModelKits and Keep Your Registry Tidy
 
@@ -286,13 +286,13 @@ Tagging is a great way to version your ModelKits as they move through the develo
 
 However, after testing my latest model, if I find that its scores are much higher than the current champion model I may tag it `challenger` so everyone knows that this is likely to be the next model we deploy to production, replacing our current champion model.
 
-To do that I can create a new ModelKit and use the [tag command](./cli/cli-reference.md#kit-tag). For example to change from `latest` to `challenger`:
+To do that I can create a new ModelKit and use the [tag command](../cli/cli-reference/#kit-tag). For example to change from `latest` to `challenger`:
 
 ```sh
 kit tag mymodel:latest mymodel:challenger
 ```
 
-If you run [kit list](./cli/cli-reference.md#kit-list) you'll now see that you have two models in your local registry:
+If you run [kit list](../cli/cli-reference/#kit-list) you'll now see that you have two models in your local registry:
 
 ```sh
 kit list
@@ -328,7 +328,7 @@ mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 
 Sometimes you want to remove a ModelKit that you've packed and stored in the repository. The `kit remove` command comes to the rescue.
 
-In this case, we no longer want the `challenger` ModelKit since it's a duplicate of the `champion` now. [Removing it](./cli/cli-reference.md#kit-remove) from our registry will keep things clean and clearer for other users:
+In this case, we no longer want the `challenger` ModelKit since it's a duplicate of the `champion` now. [Removing it](../cli/cli-reference/#kit-remove) from our registry will keep things clean and clearer for other users:
 
 ```sh
 kit remove mymodel:challenger
@@ -347,8 +347,8 @@ mymodel     latest      Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74f
 mymodel     champion    Rajat        Finetuning_SLM   13.1 MiB   sha256:f268a74ff85a00f2a68400dfc17b045bc7c1638da7f096c7ae400ad5bdfd520c
 ```
 
-You can learn more about all the Kit CLI commands from our [command reference doc](./cli/cli-reference.md).
+You can learn more about all the Kit CLI commands from our [command reference doc](../cli/cli-reference/).
 
-To learn about how to run an LLM locally using Kit, see our [Kit Dev](./dev-mode.md) documentation.
+To learn about how to run an LLM locally using Kit, see our [Kit Dev](../dev-mode/) documentation.
 
 Thanks for taking some time to play with Kit. We'd love to hear what you think. Feel free to drop us an [issue in our GitHub repository](https://github.com/jozu-ai/kitops/issues) or join [our Discord server](https://discord.gg/Tapeh8agYy).

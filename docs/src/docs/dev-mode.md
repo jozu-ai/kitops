@@ -16,7 +16,7 @@ Now unpack an LLM ModelKit - there are several on [Jozu Hub](https://jozu.ml/dis
 kit unpack jozu.ml/jozu/phi3:3.8b-mini-instruct-4k-q4_K_M
 ```
 
-Now start your LLM dev server locally using the [kit dev start command](./cli/cli-reference.md#kit-dev-start):
+Now start your LLM dev server locally using the [kit dev start command](../cli/cli-reference/#kit-dev-start):
 
 ```sh
 kit dev start .
@@ -24,7 +24,7 @@ kit dev start .
 
 In the command output you'll see a URL you can use to interact with the LLM (there's a command flag to always use the same port). You can control parameters of the model, change the prompt, or chat with the LLM.
 
-If you need to get logs use the [dev logs command](./cli/cli-reference.md#kit-dev-logs):
+If you need to get logs use the [dev logs command](../cli/cli-reference/#kit-dev-logs):
 
 ```sh
 kit dev logs
