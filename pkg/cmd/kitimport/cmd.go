@@ -19,11 +19,13 @@ package kitimport
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"slices"
+	"strings"
+
 	"kitops/pkg/lib/constants"
 	repoutils "kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
-	"net/url"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"oras.land/oras-go/v2/registry"
@@ -40,7 +42,18 @@ downloaded to a temporary directory and be packaged using a generated Kitfile.
 In interactive settings, this command will read the EDITOR environment variable
 to determine which editor should be used for editing the Kitfile.
 
-Note: importing repositories requires 'git' and 'git-lfs' to be installed.`
+This command supports multiple ways of downloading files from the remote
+repository. The tool used can be specified using the --tool flag with one of the
+options below:
+
+  --tool=hf  : Download files using the Huggingface API. Requires REPOSITORY to
+	             be a Huggingface repository. This is the default for Huggingface
+							 repositories
+  --tool=git : Download files using Git and Git LFS. Works for any Git
+	             repository but requires that Git and Git LFS are installed.
+
+By default, Kit will automatically select the tool based on the provided
+REPOSITORY.`
 
 	example = `# Download repository myorg/myrepo and package it, using the default tag (myorg/myrepo:latest)
 kit import myorg/myrepo
@@ -53,12 +66,13 @@ kit import myorg/myrepo --file ./path/to/Kitfile`
 )
 
 type importOptions struct {
-	configHome  string
-	repo        string
-	tag         string
-	token       string
-	kitfilePath string
-	modelKitRef *registry.Reference
+	configHome   string
+	repo         string
+	tag          string
+	token        string
+	kitfilePath  string
+	downloadTool string
+	modelKitRef  *registry.Reference
 }
 
 func ImportCommand() *cobra.Command {
@@ -76,6 +90,7 @@ func ImportCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.token, "token", "", "Token to use for authenticating with repository")
 	cmd.Flags().StringVarP(&opts.tag, "tag", "t", "", "Tag for the ModelKit (default is '[repository]:latest')")
 	cmd.Flags().StringVarP(&opts.kitfilePath, "file", "f", "", "Path to Kitfile to use for packing (use '-' to read from standard input)")
+	cmd.Flags().StringVar(&opts.downloadTool, "tool", "", "Tool to use for downloading files: options are 'git' and 'hf' (default: detect based on repository)")
 	cmd.Flags().SortFlags = false
 	return cmd
 }
@@ -118,18 +133,30 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 		return fmt.Errorf("tag %s is invalid. Use --tag to override", opts.tag)
 	}
 	opts.modelKitRef = ref
+
+	validTools := []string{"git", "hf"}
+	if opts.downloadTool != "" && !slices.Contains(validTools, opts.downloadTool) {
+		return fmt.Errorf("invalid value for --tool flag. Valid options are: %s", strings.Join(validTools, ", "))
+	}
 	return nil
 }
 
 func getImporter(opts *importOptions) (func(context.Context, *importOptions) error, error) {
-	repoUrl, err := url.Parse(opts.repo)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse %s: %w", opts.repo, err)
-	}
-
-	if repoUrl.Host == "" || strings.Contains(repoUrl.Host, "huggingface") {
+	switch opts.downloadTool {
+	case "hf":
 		return importUsingHF, nil
-	}
+	case "git":
+		return importUsingGit, nil
+	default:
+		repoUrl, err := url.Parse(opts.repo)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse %s: %w", opts.repo, err)
+		}
 
-	return importUsingGit, nil
+		if repoUrl.Host == "" || strings.Contains(repoUrl.Host, "huggingface") {
+			return importUsingHF, nil
+		}
+
+		return importUsingGit, nil
+	}
 }
