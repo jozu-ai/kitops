@@ -35,10 +35,16 @@ const (
 	resolveURLFmt = "https://huggingface.co/%s/resolve/main/%s"
 )
 
-func DownloadFiles(ctx context.Context, modelRepo, destDir string, filepaths []string, token string) error {
+func DownloadFiles(
+	ctx context.Context,
+	modelRepo, destDir string,
+	filepaths []string,
+	token string,
+	maxConcurrency int) error {
+
 	client := &http.Client{}
 
-	sem := semaphore.NewWeighted(5)
+	sem := semaphore.NewWeighted(int64(maxConcurrency))
 	errs, errCtx := errgroup.WithContext(ctx)
 	var semErr error
 
