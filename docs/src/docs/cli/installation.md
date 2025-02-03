@@ -33,7 +33,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](/docs/get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -73,7 +73,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -122,7 +122,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -144,7 +144,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -203,7 +203,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -272,17 +272,17 @@ If the `KITOPS_HOME` is set in various places the order of precedence is:
 1. `--config` flag, if specified
 1. `$KITOPS_HOME` environment variable, if set
 1. A default OS-dependent value:
-    
+
     Linux: `$XDG_DATA_HOME/kitops`, falling back to `~/.local/share/kitops`
-    
+
     Windows: `%LOCALAPPDATA%\kitops`
-    
+
     Darwin: `~/Library/Caches/kitops`
 
 
 ## Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 ## Become a Design Partner
 

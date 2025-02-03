@@ -6,7 +6,7 @@ KitOps is an innovative open-source project designed to enhance collaboration am
 
 ### 🎁 ModelKit
 
-At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, doc, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool. You can even [deploy ModelKits to containers or Kubernetes](./deploy.md).
+At the heart of KitOps is the ModelKit, an OCI-compliant packaging format that enables the seamless sharing of all necessary artifacts involved in the AI/ML model lifecycle. This includes datasets, code, doc, configurations, and the models themselves. By standardizing the way these components are packaged, ModelKit facilitates a more streamlined and collaborative development process that is compatible with nearly any tool. You can even [deploy ModelKits to containers or Kubernetes](../deploy/).
 
 ### 📄 Kitfile
 
@@ -20,7 +20,7 @@ Bringing everything together is the Kit Command Line Interface (CLI). The Kit CL
 
 KitOps is a key element in a platform engineering solution for AI/ML projects.
 
-[See how security-conscious organization are using ModelKits](./use-cases.md) with their existing tools to develop AI/ML projects faster and safer than ever before.
+[See how security-conscious organization are using ModelKits](../use-cases/) with their existing tools to develop AI/ML projects faster and safer than ever before.
 
 ## The Goal of KitOps
 
@@ -32,14 +32,14 @@ KitOps drives greater speed, security, and collaboration for teams working with 
 
 KitOps clears the path to use AI/ML with your existing tools and applications. No need to be an AI/ML expert, KitOps lets you concentrate on integrating AI/ML models into your applications, while Kit handles the packaging and sharing.
 
-[Get Started](./get-started.md).
+[Get Started](../get-started/).
 
 ### 👷 For DevOps teams
 
 ModelKits fit into your existing processes and the Kit CLI lets you pack or unpack ModelKit artifacts in the pipelines and automation you have proven over the last decade.
 
-[Build a better golden path for AI/ML projects](./use-cases.md).
-[Get Started](./get-started.md).
+[Build a better golden path for AI/ML projects](../use-cases/).
+[Get Started](../get-started/).
 
 
 ### 👩‍🔬 For data scientists
@@ -47,7 +47,7 @@ ModelKits fit into your existing processes and the Kit CLI lets you pack or unpa
 KitOps enables you to innovate in AI/ML without the usual infrastructure distractions. It simplifies dataset and model management and sharing, fostering closer collaboration with developers. With KitOps, you can spend more time experimenting and less time grappling with traditional software development tools.
 
 [See how to use KitOps with Jupyter Notebooks](https://www.youtube.com/watch?v=OQPp7QEvk7Q).
-[Get Started](./get-started.md).
+[Get Started](../get-started/).
 
 ## Benefits of KitOps
 
@@ -65,7 +65,7 @@ One of the core strengths of KitOps is its ability to keep data and code version
 
 ### 🚀 Deployment Ready
 
-Designed with a focus on deployment, ModelKits package assets in standard formats so you can depoly them as [containers or to Kubernetes](./deploy.md). They're also [compatible with nearly any tool](./modelkit/compatibility.md) - helping you get your model to production faster and more efficiently.
+Designed with a focus on deployment, ModelKits package assets in standard formats so you can deploy them as [containers or to Kubernetes](../deploy/). They're also [compatible with nearly any tool](../modelkit/compatibility/) - helping you get your model to production faster and more efficiently.
 
 ### 🏭 Standards-Based Approach
 

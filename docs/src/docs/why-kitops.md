@@ -45,12 +45,12 @@ Kit's ModelKits are the better solution:
 * Remove tampering risks by using an immutable package
 * Reduce risks by including the provenance of the model and datasets
 
-Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](./kitfile/kf-overview.md)).
+Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](../kitfile/kf-overview/)).
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
 
 Most people won't need everything, so just `kit unpack` only the layers you need (e.g., only model and datasets, or only code and docs) from the remote registry. Or, if you need everything then a `kit pull` will grab everything.
 
-Finally [package it all up as a container or Kubernetes deployment](./deploy.md).
+Finally [package it all up as a container or Kubernetes deployment](../deploy/).
 
-Check out our [getting started doc](./get-started.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md) and even making them [deployable](./deploy.md).
+Check out our [getting started doc](../get-started/), see the power and flexibility of our [CLI commands](../cli/cli-reference/), or learn more about packaging your AI/ML project with [ModelKits](../modelkit/intro/) and even making them [deployable](../deploy/).
