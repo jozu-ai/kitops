@@ -50,7 +50,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 		}
 	}()
 
-	dirListing, err := hf.ListFiles(ctx, repo)
+	dirListing, err := hf.ListFiles(ctx, repo, opts.token)
 	if err != nil {
 		return fmt.Errorf("failed to list files from HuggingFace API: %w", err)
 	}
@@ -101,7 +101,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 	if err != nil {
 		return err
 	}
-	if err := hf.DownloadFiles(ctx, opts.repo, tmpDir, toDownload); err != nil {
+	if err := hf.DownloadFiles(ctx, opts.repo, tmpDir, toDownload, opts.token); err != nil {
 		return fmt.Errorf("error downloading repository: %w", err)
 	}
 

@@ -42,23 +42,26 @@ type hfErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func ListFiles(ctx context.Context, modelRepo string) (*kfgen.DirectoryListing, error) {
+func ListFiles(ctx context.Context, modelRepo string, token string) (*kfgen.DirectoryListing, error) {
 	client := &http.Client{}
 	baseURL, err := url.Parse(fmt.Sprintf(treeURLFmt, modelRepo))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
 
-	return walkRepoTree(ctx, client, baseURL, ".")
+	return walkRepoTree(ctx, client, token, baseURL, ".")
 }
 
-func walkRepoTree(ctx context.Context, client *http.Client, repoBaseUrl *url.URL, subDir string) (*kfgen.DirectoryListing, error) {
+func walkRepoTree(ctx context.Context, client *http.Client, token string, repoBaseUrl *url.URL, subDir string) (*kfgen.DirectoryListing, error) {
 	curUrl := *repoBaseUrl
 	curUrl.Path = path.Join(curUrl.Path, subDir)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, curUrl.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -79,7 +82,7 @@ func walkRepoTree(ctx context.Context, client *http.Client, repoBaseUrl *url.URL
 	for _, elem := range *repoTree {
 		switch elem.Type {
 		case "directory":
-			subDirListing, err := walkRepoTree(ctx, client, repoBaseUrl, elem.Path)
+			subDirListing, err := walkRepoTree(ctx, client, token, repoBaseUrl, elem.Path)
 			if err != nil {
 				return nil, err
 			}
