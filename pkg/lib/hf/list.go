@@ -20,11 +20,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	kfgen "kitops/pkg/lib/kitfile/generate"
-	"kitops/pkg/output"
 	"net/http"
 	"net/url"
 	"path"
+
+	kfgen "kitops/pkg/lib/kitfile/generate"
+	"kitops/pkg/output"
 )
 
 const (

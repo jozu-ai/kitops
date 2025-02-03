@@ -25,12 +25,13 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"kitops/pkg/output"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"kitops/pkg/output"
 )
 
 const (
