@@ -4,10 +4,10 @@ KitOps is the market's only open source, standards-based packaging and versionin
 
 KitOps has been downloaded over 20,000 times in just the last three months. Users often use it as a:
 
-* [Secure and immutable packaging and versioning standard](./modelkit/intro.md) that is [compatible with their existing container registry](/docs/modelkit/compatibility/#compliant-oci-registries)
-* Point-of-control between development and production to [enforce consistency in packaging and documentation](./kitfile/kf-overview.md)
+* [Secure and immutable packaging and versioning standard](../modelkit/intro/) that is [compatible with their existing container registry](../modelkit/compatibility/#compliant-oci-registries)
+* Point-of-control between development and production to [enforce consistency in packaging and documentation](../kitfile/kf-overview/)
 * Catalogue of meaningful AI/ML project versions for regulatory compliance or change tracking
-* Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](./deploy.md)
+* Mechanism to simplify and unify the [creation of containers or Kubernetes deployment YAML](../deploy/)
 
 > [!NOTE]
 > The goal of KitOps is to be a library of versioned packages for your AI project, stored in an enterprise registry you already use.
@@ -45,12 +45,12 @@ Kit's ModelKits are the better solution:
 * Remove tampering risks by using an immutable package
 * Reduce risks by including the provenance of the model and datasets
 
-Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](./kitfile/kf-overview.md)).
+Use `kit pack` to package up your Jupyter notebook, serialized model, and datasets (based on a [Kitfile](../kitfile/kf-overview/)).
 
 Then `kit push` it to any OCI-compliant registry, even a private one.
 
 Most people won't need everything, so just `kit unpack` only the layers you need (e.g., only model and datasets, or only code and docs) from the remote registry. Or, if you need everything then a `kit pull` will grab everything.
 
-Finally [package it all up as a container or Kubernetes deployment](./deploy.md).
+Finally [package it all up as a container or Kubernetes deployment](../deploy/).
 
-Check out our [getting started doc](./get-started.md), see the power and flexibility of our [CLI commands](./cli/cli-reference.md), or learn more about packaging your AI/ML project with [ModelKits](./modelkit/intro.md) and even making them [deployable](./deploy.md).
+Check out our [getting started doc](../get-started/), see the power and flexibility of our [CLI commands](../cli/cli-reference/), or learn more about packaging your AI/ML project with [ModelKits](../modelkit/intro/) and even making them [deployable](../deploy/).

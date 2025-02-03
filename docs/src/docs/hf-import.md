@@ -10,13 +10,13 @@ Git LFS is required for importing from Hugging Face.
 To customize the editor used for editing the Kitfile during import, set the `EDITOR` environment variable
 :::
 
-You can read more about the `import` command in our [CLI reference](/docs/cli/cli-reference/#kit-import).
+You can read more about the `import` command in our [CLI reference](../cli/cli-reference/#kit-import).
 
 ## Importing a Hugging Face repository
 
 1. **Get the HF URL**: On the Hugging Face site, copy the URL from the repository you want to create a ModelKit from (e.g., https://huggingface.co/HuggingFaceTB/SmolLM-135M-Instruct). You can also customize the name or add a tag name if desired.
 
-1. **Kit import**: In a terminal window running Kit version 1.0.0 at least, type `kit import https://huggingface.co/HuggingFaceTB/SmolLM-135M-Instruct`. This will download and build a [Kitfile](./kitfile/kf-overview.md) based on the Hugging Face model and give you an opportunity to edit it before the ModelKit is packed.
+1. **Kit import**: In a terminal window running Kit version 1.0.0 at least, type `kit import https://huggingface.co/HuggingFaceTB/SmolLM-135M-Instruct`. This will download and build a [Kitfile](../kitfile/kf-overview/) based on the Hugging Face model and give you an opportunity to edit it before the ModelKit is packed.
 
 1. **Auto-generate the ModelKit**: Once the Kitfile is accepted a ModelKit will be built and saved to your local registry using the name you selected. If you didn't specify a tag name the ModelKit will be tagged `latest`.
 

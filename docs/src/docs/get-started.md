@@ -12,24 +12,24 @@ In this guide, we'll use ModelKits and the kit CLI to easily:
 
 ## Before we start...
 
-1. Make sure you've got the [Kit CLI setup](./cli/installation.md).
+1. Make sure you've got the [Kit CLI setup](../cli/installation/).
 2. Create and navigate to a new folder on your filesystem - we suggest calling it `KitStart` but any name works.
 
 ## Learning to use the CLI
 
 ### 1/ Check your CLI Version
 
-Check that the Kit CLI is properly installed by using the [version command](./cli/cli-reference.md#kit-version).
+Check that the Kit CLI is properly installed by using the [version command](../cli/cli-reference/#kit-version).
 
 ```sh
 kit version
 ```
 
-You'll see information about the version of Kit you're running. If you get an error check to make sure you have [Kit installed and in your path](./cli/installation.md).
+You'll see information about the version of Kit you're running. If you get an error check to make sure you have [Kit installed and in your path](../cli/installation/).
 
 ### 2/ Login to Your Registry
 
-You can use the [login command](./cli/cli-reference.md#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote (you can see our [list of compliant registries](./modelkit/compatibility.md)). In this guide, we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit like whether it's signed or has provenance. You can substitute your own repository if preferred.
+You can use the [login command](../cli/cli-reference/#kit-login) to authenticate with any OCI v1.1-compatible container registry - local or remote (you can see our [list of compliant registries](../modelkit/compatibility/)). In this guide, we'll use the [Jozu Hub](https://jozu.ml/) because it's free to sign-up and provides more detail on what's inside each ModelKit like whether it's signed or has provenance. You can substitute your own repository if preferred.
 
 ```sh
 kit login jozu.ml
@@ -39,9 +39,9 @@ After entering your username and password, you'll see `Log in successful`. If yo
 
 ### 3/ Get a Sample ModelKit
 
-You can get started using one of our sample ModelKits (covered below), or you can [import a ModelKit from Hugging Face](./hf-import.md).
+You can get started using one of our sample ModelKits (covered below), or you can [import a ModelKit from Hugging Face](../hf-import/).
 
-Let's use the [unpack command](./cli/cli-reference.md#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/organization/jozu-quickstarts) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](./cli/cli-reference.md#kit-unpack) for details.
+Let's use the [unpack command](../cli/cli-reference/#kit-unpack) to pull a [sample ModelKit from Jozu Hub](https://jozu.ml/organization/jozu-quickstarts) to our machine that we can play with. In this case, we'll unpack the whole thing, but one of the great things about Kit is that you can also selectively unpack only the artifacts you need: just the model, the model and dataset, the code, the configuration...whatever you want. Check out the `unpack` [command reference](../cli/cli-reference/#kit-unpack) for details.
 
 If you have a model already on your machine you can use that instead.
 
@@ -71,11 +71,11 @@ tree
 └── training-data.txt* A Kitfile
 ```
 
-The [Kitfile](./kitfile/kf-overview.md) is the manifest for our ModelKit, the serialized model, and a set of files or directories including the adapter, dataset, and docs. Every ModelKit has a Kitfile and you can use the info and inspect commands to view them from the CLI (there's more on this in our [Next Steps](next-steps.md) doc).
+The [Kitfile](../kitfile/kf-overview/) is the manifest for our ModelKit, the serialized model, and a set of files or directories including the adapter, dataset, and docs. Every ModelKit has a Kitfile and you can use the info and inspect commands to view them from the CLI (there's more on this in our [Next Steps](../next-steps/) doc).
 
 ### 4/ Check the Local Repository
 
-Use the [list command](./cli/cli-reference.md#kit-list) to check what's in our local repository.
+Use the [list command](../cli/cli-reference/#kit-list) to check what's in our local repository.
 
 ```sh
 kit list
@@ -85,7 +85,7 @@ You'll see the column headings for an empty table with things like `REPOSITORY`,
 
 ### 5/ Pack the ModelKit
 
-Since our repository is empty we'll need to use the [pack command](./cli/cli-reference.md#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. The command will look like: `kit pack . -t [your registry address]/[your registry user or organization name]/[your repository name]:[your tag name]`
+Since our repository is empty we'll need to use the [pack command](../cli/cli-reference/#kit-pack) to create our ModelKit. The ModelKit in your local registry will need to be named the same as your remote registry. The command will look like: `kit pack . -t [your registry address]/[your registry user or organization name]/[your repository name]:[your tag name]`
 
 In our case, we are pushing a ModelKit tagged `latest` to:
 * The [Jozu Hub](https://jozu.ml/) registry
@@ -112,13 +112,13 @@ You should see an entry named based on whatever you used in your pack command.
 
 ### 6/ (Optional) Remove a ModelKit from a Local Repository
 
-If you have a typo when packing a ModelKit you can easily remove it from your repository and try again. The [Next Steps guide includes information on how to remove ModelKits](./next-steps.md#remove-command).
+If you have a typo when packing a ModelKit you can easily remove it from your repository and try again. The [Next Steps guide includes information on how to remove ModelKits](../next-steps/#remove-command).
 
 Once you've removed the mistaken ModelKit from the repository, you can repeat the `kit pack` command in the previous step, being sure to provide the correct organization and repository name for your ModelKit.
 
 ### 7/ Push the ModelKit to a Remote Repository
 
-The [push command](./cli/cli-reference.md#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In our case it looks like:
+The [push command](../cli/cli-reference/#kit-push) will copy the newly built ModelKit from your local repository to the remote repository you logged into earlier. The naming of your ModelKit will need to be the same as what you see in your `kit list` command (REPOSITORY:TAG). You can even copy and paste it. In our case it looks like:
 
 ```sh
 kit push jozu.ml/brad/quick-start:latest
@@ -130,7 +130,7 @@ Note that some registries, like Jozu Hub, don't automatically create a repositor
 
 You've learned how to unpack a ModelKit, pack one up, and push it. Anyone with access to your remote repository can now pull your new ModelKit and start playing with your model using the `kit pull` or `kit unpack` commands.
 
-If you'd like to learn more about using Kit, try our [Next Steps with Kit](./next-steps.md) document that covers:
+If you'd like to learn more about using Kit, try our [Next Steps with Kit](../next-steps/) document that covers:
 * Creating a container or Kubernetes deployment from a ModelKit
 * Signing your ModeKit
 * Making your own Kitfile
@@ -138,7 +138,7 @@ If you'd like to learn more about using Kit, try our [Next Steps with Kit](./nex
 * Tagging ModelKits
 * Keeping your registry tidy
 
-Or, if you want to run an LLM-based ModelKit locally try our [dev mode](./dev-mode.md).
+Or, if you want to run an LLM-based ModelKit locally try our [dev mode](../dev-mode/).
 
 Finally, if you're building workflows using Dagger you can use KitOps through our [Daggerverse modules](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit). Or get the [GitHub Action for Kit](https://github.com/marketplace/actions/setup-kit-cli).
 
