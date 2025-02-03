@@ -22,10 +22,11 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"kitops/pkg/output"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"kitops/pkg/output"
 
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"

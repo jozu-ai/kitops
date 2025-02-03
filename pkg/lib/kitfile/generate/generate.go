@@ -18,12 +18,13 @@ package generate
 
 import (
 	"fmt"
-	"kitops/pkg/artifact"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/output"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	"kitops/pkg/output"
 
 	"github.com/google/licensecheck"
 )
