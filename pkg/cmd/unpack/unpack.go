@@ -219,7 +219,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
 	}
 	var logger *output.ProgressLogger
-	rc, logger = output.WrapReadCloser(desc.Size, rc)
+	rc, logger = output.WrapUnpackReadCloser(desc.Size, rc)
 	defer rc.Close()
 
 	var cr io.ReadCloser
