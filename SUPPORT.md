@@ -3,7 +3,7 @@
 Welcome to our project! We use GitHub for tracking bugs and feature requests.
 
 If you need other types of help try:
-* View our [product documentation](/docs/overview.html)
+* View our [product documentation](/docs/overview/)
 * Join the [KitOps Discord](https://discord.gg/Tapeh8agYy)
 * Join our [public office hours meeting](./GOVERNANCE.md)
 
