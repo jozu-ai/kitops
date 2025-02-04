@@ -75,7 +75,7 @@ export default defineConfig({
           { text: 'Overview', link: '/docs/overview/' },
           { text: 'Get Started', link: '/docs/get-started/' },
           { text: 'Next Steps', link: '/docs/next-steps/' },
-          { text: 'HF Import', link: '/docs/hf-import/' },
+          { text: 'HuggingFace Import', link: '/docs/hf-import/' },
           { text: 'Deploy ModelKits', link: '/docs/deploy/' },
           { text: 'Local LLM Dev', link: '/docs/dev-mode/' },
           { text: 'Why KitOps?', link: '/docs/why-kitops/' },
