@@ -115,7 +115,7 @@ func runCommand(opts *diffOptions) func(cmd *cobra.Command, args []string) error
 			return nil
 		}
 
-		result := compareManifests(diffA.Manifest, diffB.Manifest)
+		result := CompareManifests(diffA.Manifest, diffB.Manifest)
 		// Header
 		output.Infoln("Comparing:")
 		output.Infof("  ModelKit1: %s\n", opts.refA.String())
