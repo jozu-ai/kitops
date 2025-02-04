@@ -37,8 +37,8 @@ type diffInfo struct {
 	Descriptor ocispec.Descriptor
 }
 
-// Helper struct diffResult contains the comparison results between two ModelKits.
-type diffResult struct {
+// Helper struct DiffResult contains the comparison results between two ModelKits.
+type DiffResult struct {
 	SameConfig       bool
 	AnnotationsMatch bool
 	SharedLayers     []ocispec.Descriptor
@@ -47,8 +47,8 @@ type diffResult struct {
 }
 
 // compareManifests compares two OCI manifests and returns the shared and unique layers.
-func compareManifests(manifestA *ocispec.Manifest, manifestB *ocispec.Manifest) *diffResult {
-	result := &diffResult{}
+func CompareManifests(manifestA *ocispec.Manifest, manifestB *ocispec.Manifest) *DiffResult {
+	result := &DiffResult{}
 
 	// Compare the config digests
 	result.SameConfig = manifestA.Config.Digest == manifestB.Config.Digest
