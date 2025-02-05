@@ -18,6 +18,7 @@ package kitimport
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -86,19 +87,21 @@ func importUsingGit(ctx context.Context, opts *importOptions) error {
 		if util.IsInteractiveSession() {
 			// If we hit an error here, we don't want to clean up files so that user
 			// can manually edit them.
-			doCleanup = false
 			newKitfile, err := promptToEditKitfile(tmpDir, kf)
 			if err != nil {
-				output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
-				output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
-				output.Logf(output.LogLevelWarn, "    %s", filepath.Join(tmpDir, constants.DefaultKitfileName))
-				output.Logf(output.LogLevelWarn, "and run command")
-				output.Logf(output.LogLevelWarn, "    kit pack -t %s %s", opts.tag, tmpDir)
-				output.Logf(output.LogLevelWarn, "to complete process")
+				if errors.Is(err, ErrNoEditorFound) {
+					doCleanup = false
+					output.Logf(output.LogLevelWarn, "Could not determine default editor from $EDITOR environment variable")
+					output.Logf(output.LogLevelWarn, "Please manually edit Kitfile at path")
+					output.Logf(output.LogLevelWarn, "    %s", filepath.Join(tmpDir, constants.DefaultKitfileName))
+					output.Logf(output.LogLevelWarn, "and run command")
+					output.Logf(output.LogLevelWarn, "    kit pack -t %s %s", opts.tag, tmpDir)
+					output.Logf(output.LogLevelWarn, "to complete process")
+					return err
+				}
 				return err
 			}
 			kitfile = newKitfile
-			doCleanup = true
 		}
 	}
 
