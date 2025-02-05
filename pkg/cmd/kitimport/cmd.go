@@ -142,7 +142,7 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	}
 
 	if opts.concurrency < 1 {
-		opts.concurrency = 5
+		return fmt.Errorf("invalid argument for concurrency (%d): must be at least 1", opts.concurrency)
 	}
 	return nil
 }
