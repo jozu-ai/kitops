@@ -18,6 +18,7 @@ package kitimport
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -37,6 +38,8 @@ import (
 
 	"oras.land/oras-go/v2/registry"
 )
+
+var ErrNoEditorFound = errors.New("no editor found")
 
 func generateKitfile(dirContents *kfgen.DirectoryListing, repo string, outDir string) (*artifact.KitFile, error) {
 	// Fill fields in package so that they're not empty in `kit list` later.
@@ -67,15 +70,15 @@ func generateKitfile(dirContents *kfgen.DirectoryListing, repo string, outDir st
 func readExistingKitfile(kfPath string) (*artifact.KitFile, error) {
 	kfFile, err := os.Open(kfPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read existing Kitfile: %w", err)
+		return nil, fmt.Errorf("failed to read Kitfile: %w", err)
 	}
 	defer kfFile.Close()
 	kitfile := &artifact.KitFile{}
 	if err := kitfile.LoadModel(kfFile); err != nil {
-		return nil, fmt.Errorf("failed to load existing Kitfile from %s: %w", kfPath, err)
+		return nil, fmt.Errorf("failed to load Kitfile from %s: %w", kfPath, err)
 	}
 	if err := kfutils.ValidateKitfile(kitfile); err != nil {
-		return nil, fmt.Errorf("existing Kitfile (%s) is invalid: %w", kfPath, err)
+		return nil, fmt.Errorf("kitfile (%s) is invalid: %w", kfPath, err)
 	}
 	return kitfile, nil
 }
@@ -156,7 +159,7 @@ func getEditorName() (string, error) {
 		return "notepad", nil
 	}
 
-	return "", fmt.Errorf("no editor found")
+	return "", ErrNoEditorFound
 }
 
 // extractRepoFromURL attempts to normalize a string or URL into a repository name as is used on GitHub and Huggingface.
