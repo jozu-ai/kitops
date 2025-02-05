@@ -100,7 +100,7 @@ func ImportCommand() *cobra.Command {
 func runCommand(opts *importOptions) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			return output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalln(err)
 		}
 
 		importer, err := getImporter(opts)
@@ -124,7 +124,11 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	opts.repo = args[0]
 
 	if opts.tag == "" {
-		tag := extractRepoFromURL(opts.repo)
+		tag, err := extractRepoFromURL(opts.repo)
+		if err != nil {
+			output.Errorf("Could not generate tag from URL: %s", err)
+			return fmt.Errorf("use flag --tag to set a tag for ModelKit")
+		}
 		tag = strings.ToLower(tag)
 		opts.tag = fmt.Sprintf("%s:latest", tag)
 		output.Infof("Using tag %s. Use flag --tag to override", opts.tag)
@@ -132,7 +136,7 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 
 	ref, _, err := repoutils.ParseReference(opts.tag)
 	if err != nil {
-		return fmt.Errorf("tag %s is invalid. Use --tag to override", opts.tag)
+		return fmt.Errorf("invalid argument: tag '%s' is invalid: %w", opts.tag, err)
 	}
 	opts.modelKitRef = ref
 

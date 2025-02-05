@@ -35,7 +35,10 @@ import (
 
 func importUsingHF(ctx context.Context, opts *importOptions) error {
 	// Handle full HF URLs by extracting repository name from URL
-	repo := extractRepoFromURL(opts.repo)
+	repo, err := extractRepoFromURL(opts.repo)
+	if err != nil {
+		return fmt.Errorf("could not process URL %s: %w", opts.repo, err)
+	}
 
 	tmpDir, err := os.MkdirTemp("", "kitops_import_tmp")
 	if err != nil {
