@@ -19,10 +19,10 @@ package kitimport
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"runtime"
 	"strings"
 
@@ -37,12 +37,6 @@ import (
 
 	"oras.land/oras-go/v2/registry"
 )
-
-// This is somewhat fragile but should work for most cases. We want just the 'repository' for a given url/path for one
-// of two cases:
-//   - huggingface URLs: extract the repository for calling HF API endpoints
-//   - generic git repositories: extract something we can use to auto-fill package name + author
-var extractRepoRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[.0-9A-Za-z_-]+)[^/]*$`)
 
 func generateKitfile(dirContents *kfgen.DirectoryListing, repo string, outDir string) (*artifact.KitFile, error) {
 	// Fill fields in package so that they're not empty in `kit list` later.
@@ -165,6 +159,21 @@ func getEditorName() (string, error) {
 	return "", fmt.Errorf("no editor found")
 }
 
-func extractRepoFromURL(url string) string {
-	return extractRepoRegexp.ReplaceAllString(url, "${1}")
+// extractRepoFromURL attempts to normalize a string or URL into a repository name as is used on GitHub and Huggingface.
+// Returns an error we cannot automatically handle the input URL/string.
+//   - https://example.com/segment1/segment2 --> segment1/segment2
+//   - 'organization/repository'             --> 'organization/repository'
+func extractRepoFromURL(rawUrl string) (string, error) {
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse url: %w", err)
+	}
+
+	path := strings.Trim(u.Path, "/")
+	segments := strings.Split(path, "/")
+	if len(segments) != 2 {
+		return "", fmt.Errorf("could not extract organization and repository from '%s'", path)
+	}
+
+	return path, nil
 }
