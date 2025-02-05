@@ -23,6 +23,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"time"
 
 	kfgen "kitops/pkg/lib/kitfile/generate"
 	"kitops/pkg/output"
@@ -44,7 +45,9 @@ type hfErrorResponse struct {
 }
 
 func ListFiles(ctx context.Context, modelRepo string, token string) (*kfgen.DirectoryListing, error) {
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
 	baseURL, err := url.Parse(fmt.Sprintf(treeURLFmt, modelRepo))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)

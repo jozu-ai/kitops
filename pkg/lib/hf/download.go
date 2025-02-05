@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"kitops/pkg/output"
 
@@ -43,7 +44,9 @@ func DownloadFiles(
 	token string,
 	maxConcurrency int) error {
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 1 * time.Hour,
+	}
 
 	sem := semaphore.NewWeighted(int64(maxConcurrency))
 	errs, errCtx := errgroup.WithContext(ctx)
