@@ -138,6 +138,53 @@ kit dev stop [flags]
   -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
+## kit diff
+
+Compare two ModelKits
+
+### Synopsis
+
+Compare two ModelKits to see the differences in their layers.
+		
+ModelKits can be specified from either a local or from a remote registry.
+To specify a local ModelKit, prefix the reference with 'local://', e.g. 'local://jozu.ml/foo/bar'.
+To specify a remote ModelKit, prefix the reference with 'remote://', e.g. 'remote://jozu.ml/foo/bar'.
+If no prefix is specified, the local registry will be checked first.
+
+
+```
+kit diff <ModelKit1> <ModelKit2> [flags]
+```
+
+### Examples
+
+```
+# Compare two ModelKits
+kit diff jozu.ml/foo:latest jozu.ml/bar:latest
+
+# Compare two ModelKits from a remote registry
+kit diff remote://jozu.ml/foo:champion remote://jozu.ml/bar:latest
+
+# Compare local ModelKit with a remote ModelKit
+kit diff local://jozu.ml/foo:latest remote://jozu.ml/foo:latest
+
+```
+
+### Options
+
+```
+  -h, --help   help for diff
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
 ## kit import
 
 Import a model from HuggingFace
@@ -153,7 +200,18 @@ downloaded to a temporary directory and be packaged using a generated Kitfile.
 In interactive settings, this command will read the EDITOR environment variable
 to determine which editor should be used for editing the Kitfile.
 
-Note: importing repositories requires 'git' and 'git-lfs' to be installed.
+This command supports multiple ways of downloading files from the remote
+repository. The tool used can be specified using the --tool flag with one of the
+options below:
+
+  --tool=hf  : Download files using the Huggingface API. Requires REPOSITORY to
+	             be a Huggingface repository. This is the default for Huggingface
+							 repositories
+  --tool=git : Download files using Git and Git LFS. Works for any Git
+	             repository but requires that Git and Git LFS are installed.
+
+By default, Kit will automatically select the tool based on the provided
+REPOSITORY.
 
 ```
 kit import [flags] REPOSITORY
@@ -167,14 +225,20 @@ kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:mytag'
 kit import myorg/myrepo --tag myrepository:mytag
+
+# Download repository and pack it using an existing Kitfile
+kit import myorg/myrepo --file ./path/to/Kitfile
 ```
 
 ### Options
 
 ```
-      --token string   Token to use for authenticating with repository
-  -t, --tag string     Tag for the ModelKit (default is '[repository]:latest')
-  -h, --help           help for import
+      --token string      Token to use for authenticating with repository
+  -t, --tag string        Tag for the ModelKit (default is '[repository]:latest')
+  -f, --file string       Path to Kitfile to use for packing (use '-' to read from standard input)
+      --tool string       Tool to use for downloading files: options are 'git' and 'hf' (default: detect based on repository)
+      --concurrency int   Maximum number of simultaneous downloads (for huggingface) (default 5)
+  -h, --help              help for import
 ```
 
 ### Options inherited from parent commands
