@@ -39,7 +39,7 @@ export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  description: 'Documentation for KitOps',
+  description: 'Discover KitOps: an open-source DevOps tool that packages and versions your AI/ML models, datasets, code, and configurations into reproducible artifacts called ModelKits. Simplify your AI pipeline with standardized packaging and deployment.',
 
   rewrites: (id) => id.replace(/(?<!(?:^|\/)index)\.md$/, '/index.md'),
 
