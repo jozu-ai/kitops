@@ -227,11 +227,6 @@ func writeFileToTar(file string, fi os.FileInfo, ptw *output.ProgressTar, plog *
 }
 
 func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error) {
-	if !output.ProgressEnabled() {
-		// Won't use this information anyways, save the work.
-		return 0, nil
-	}
-
 	pathInfo, err := os.Stat(basePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
