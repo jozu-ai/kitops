@@ -1,3 +1,6 @@
+---
+description: Import models from Hugging Face into KitOps effortlessly. Follow our guide to integrate your existing AI models seamlessly.
+---
 # Importing a ModelKit from Hugging Face
 
 You can automatically generate a ModelKit from a Hugging Face repository using the `kit import` command. This speeds and simplifies the job of getting started with ModelKits.

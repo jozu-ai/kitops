@@ -1,3 +1,6 @@
+---
+description: Next steps in your KitOps journey. Explore advanced features, best practices, and how to optimize your workflow.
+---
 # Next Steps with Kit
 
 In this guide you'll learn how to:

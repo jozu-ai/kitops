@@ -1,3 +1,6 @@
+---
+description: Deploy your ModelKits with ease. Learn how to package, distribute, and run your AI/ML models in production environments.
+---
 # Deploying ModelKits
 
 This page outlines how to use `init` or Kit CLI containers to deploy a ModelKit-packaged AI/ML project to Kubernetes or any other container runtime. The KitOps repo provides pre-built ModelKits that can be used for both semi-turnkey solutions, and more DIY options.

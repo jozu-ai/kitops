@@ -1,3 +1,6 @@
+---
+description: Get an overview of the Kitfile format. Understand how Kitfiles define your ModelKits and ensure consistent packaging.
+---
 # Kitfile: Your AI/ML Project Blueprint
 
 ## What is a Kitfile?

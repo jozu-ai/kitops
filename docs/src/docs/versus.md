@@ -1,3 +1,6 @@
+---
+description: KitOps vs. other solutions—compare features, benefits, and use cases to understand why ModelKits are the future of AI/ML packaging.
+---
 # How KitOps is Different
 
 When people first come across KitOps they sometimes wonder, "how is this better than my favorite MLOps tool, git, Docker, etc...?"
