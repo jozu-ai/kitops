@@ -1,3 +1,6 @@
+---
+description: Explore real-world use cases for KitOps. See how organizations are leveraging ModelKits for AI/ML efficiency.
+---
 # How KitOps Is Used 🛠️
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](../modelkit/compatibility/)).
