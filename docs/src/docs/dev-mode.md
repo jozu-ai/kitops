@@ -1,3 +1,6 @@
+---
+description: Use KitOps in development mode for rapid iteration. Discover how to streamline experimentation and testing for AI/ML models.
+---
 # Kit Dev: Run an LLM Locally
 
 If you're using Kit with LLMs you can quickly run the model locally to speed integration, testing, or experimentation.

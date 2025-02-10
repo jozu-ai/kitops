@@ -138,7 +138,7 @@ func WrapTarget(wrap oras.Target) (oras.Target, *ProgressLogger) {
 	}, &ProgressLogger{p}
 }
 
-func WrapReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogger) {
+func WrapUnpackReadCloser(size int64, rc io.ReadCloser) (io.ReadCloser, *ProgressLogger) {
 	if !progressEnabled {
 		return rc, &ProgressLogger{stdout}
 	}
@@ -258,5 +258,50 @@ func NewPullProgress(ctx context.Context) *PullProgress {
 	return &PullProgress{
 		progress:       p,
 		ProgressLogger: ProgressLogger{p},
+	}
+}
+
+type DownloadProgressBar struct {
+	progress *mpb.Progress
+}
+
+func NewDownloadProgress() (*DownloadProgressBar, *ProgressLogger) {
+	if !progressEnabled {
+		return &DownloadProgressBar{}, &ProgressLogger{stdout}
+	}
+	p := mpb.New(
+		mpb.WithWidth(30),
+		mpb.WithRefreshRate(150*time.Millisecond),
+	)
+	return &DownloadProgressBar{
+		progress: p,
+	}, &ProgressLogger{p}
+}
+
+func (pb *DownloadProgressBar) TrackDownload(rc io.ReadCloser, name string, totalSize int64) io.ReadCloser {
+	if pb.progress == nil {
+		return rc
+	}
+	bar := pb.progress.New(totalSize,
+		barStyle(),
+		mpb.PrependDecorators(
+			decor.Name("Downloading"),
+		),
+		mpb.AppendDecorators(
+			decor.Counters(decor.SizeB1024(0), "% .1f / % .1f"),
+			decor.Name(" | "),
+			decor.AverageSpeed(decor.SizeB1024(0), "% .2f"),
+			decor.Name(" | "),
+			decor.Name(name),
+		),
+		mpb.BarRemoveOnComplete(),
+	)
+	barRC := bar.ProxyReader(rc)
+	return barRC
+}
+
+func (pb *DownloadProgressBar) Done() {
+	if pb.progress != nil {
+		pb.progress.Wait()
 	}
 }

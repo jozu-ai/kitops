@@ -1,3 +1,6 @@
+---
+description: Access the PyKitOps reference documentation. Find detailed explanations of functions, classes, and APIs available for ModelKit management.
+---
 # Reference
 
 This is the reference or code API.  It includes the classes, functions,

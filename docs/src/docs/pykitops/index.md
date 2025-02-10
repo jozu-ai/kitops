@@ -1,3 +1,6 @@
+---
+description: Discover PyKitOps, the Python library for working with ModelKits. Integrate KitOps into your Python-based AI workflows.
+---
 # KitOps Python Library
 
 This site contains the project documentation for the PyKitOps SDK project - a python library for working with [KitOps' ModelKits](https://kitops.org) in code.

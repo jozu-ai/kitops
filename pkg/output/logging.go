@@ -134,13 +134,13 @@ func (pw *ProgressLogger) Wait() {
 }
 
 func (pw *ProgressLogger) Infoln(s any) {
-	if !logLevel.shouldPrint(LogLevelInfo) {
+	if logLevel.shouldPrint(LogLevelInfo) {
 		loglnTo(pw.output, LogLevelInfo, s)
 	}
 }
 
 func (pw *ProgressLogger) Infof(s string, args ...any) {
-	if !logLevel.shouldPrint(LogLevelInfo) {
+	if logLevel.shouldPrint(LogLevelInfo) {
 		logfTo(pw.output, LogLevelInfo, s, args...)
 	}
 }

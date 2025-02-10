@@ -1,3 +1,7 @@
+---
+description: Learn how to install the Kit CLI on MacOS, Windows, and Linux. Follow our detailed instructions to set up KitOps and start managing your AI/ML ModelKits efficiently.
+---
+
 <script setup>
 import vGaTrack from '@theme/directives/ga'
 </script>

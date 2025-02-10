@@ -1,3 +1,6 @@
+---
+description: Why choose KitOps? Understand the benefits of standardized model packaging, reproducibility, and streamlined deployments.
+---
 # Why Use KitOps?
 
 KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](../modelkit/compatibility/)).

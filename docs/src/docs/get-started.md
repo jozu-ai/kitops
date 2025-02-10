@@ -1,3 +1,7 @@
+---
+description: Begin your journey with KitOps. Learn how to download, install, and utilize the Kit CLI to create and manage ModelKits for your AI/ML projects. Follow our step-by-step guide to streamline your development process.
+---
+
 <script setup>
 import vGaTrack from '@theme/directives/ga'
 </script>

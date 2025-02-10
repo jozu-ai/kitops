@@ -18,11 +18,12 @@ package testing
 
 import (
 	"fmt"
-	"kitops/pkg/artifact"
-	"kitops/pkg/lib/constants"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
 
 	"github.com/stretchr/testify/assert"
 )

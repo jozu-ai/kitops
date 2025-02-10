@@ -39,7 +39,7 @@ export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  description: 'Documentation for KitOps',
+  description: 'Discover KitOps: an open-source DevOps tool that packages and versions your AI/ML models, datasets, code, and configurations into reproducible artifacts called ModelKits. Simplify your AI pipeline with standardized packaging and deployment.',
 
   rewrites: (id) => id.replace(/(?<!(?:^|\/)index)\.md$/, '/index.md'),
 
@@ -103,6 +103,7 @@ export default defineConfig({
         text: 'Python Library',
         items: [
           { text: 'Overview', link: '/docs/pykitops/' },
+          { text: 'Before You Begin', link: '/docs/pykitops/before-you-begin/' },
           { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides/' },
           { text: 'Reference', link: '/docs/pykitops/reference/' },
         ]
