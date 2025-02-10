@@ -30,7 +30,7 @@ We welcome many different types of contributions including:
 * Web design
 * Communications, social media, blog posts, or other marketing
 
-If you think there's something else you can help with please contact us in the [#general channel of our Discord server](https://discord.gg/Tapeh8agYy) or during our [office hours meeting](./GOVERNANCE.md#meetings) and let's discuss how we can work together.
+If you think there's something else you can help with please contact us in the [#general channel of our Discord server](https://discord.gg/Tapeh8agYy) or during our [office hours meeting](https://github.com/jozu-ai/kitops/blob/main/GOVERNANCE.md#-meetings) and let's discuss how we can work together.
 
 ## Development Environment Setup
 
@@ -86,7 +86,7 @@ There are two aspects of code review: giving and receiving. To make it easier fo
 * Write good commit messages
 * Break large changes into a logical series of smaller patches which individually make easily understandable changes, and in aggregate solve a broader issue
 
-Reviewers, the people giving the review, are highly encouraged to revisit our [Code of Conduct](./CODE-OF-CONDUCT.md) and must go above and beyond to promote a collaborative, respectful community. When reviewing PRs from others [The Gentle Art of Patch Review](https://sage.thesharps.us/2014/09/01/the-gentle-art-of-patch-review/) suggests an iterative series of focuses which is designed to lead new contributors to positive collaboration without inundating them initially with a pile of suggestions:
+Reviewers, the people giving the review, are highly encouraged to revisit our [Code of Conduct](https://github.com/jozu-ai/kitops/blob/main/CODE-OF-CONDUCT.md) and must go above and beyond to promote a collaborative, respectful community. When reviewing PRs from others [The Gentle Art of Patch Review](https://sage.thesharps.us/2014/09/01/the-gentle-art-of-patch-review/) suggests an iterative series of focuses which is designed to lead new contributors to positive collaboration without inundating them initially with a pile of suggestions:
 
 1. Is the idea behind the contribution sound?
 1. Is the contribution architected correctly?
@@ -116,5 +116,5 @@ repository, you can amend your commit with the sign-off by running
 The best way to reach us with a question when contributing is to ask on:
 
 * The original github issue
-* Our Discord channel (TODO)
-* At our [office hours meeting](./GOVERNANCE.md)
+* Our [Discord server](https://discord.gg/Tapeh8agYy)
+* At our [office hours meeting](https://github.com/jozu-ai/kitops/blob/main/GOVERNANCE.md#-meetings)

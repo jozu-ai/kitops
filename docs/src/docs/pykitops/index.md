@@ -3,7 +3,7 @@ description: Discover PyKitOps, the Python library for working with ModelKits. I
 ---
 # KitOps Python Library
 
-This site contains the project documentation for the PyKitOps SDK project - a python library for working with [KitOps' ModelKits](https://kitops.ml) in code.
+This site contains the project documentation for the PyKitOps SDK project - a python library for working with [KitOps' ModelKits](https://kitops.org) in code.
 
 The KitOps Python library is an open source project hosted on [GitHub](https://github.com/jozu-ai/pykitops/).
 
