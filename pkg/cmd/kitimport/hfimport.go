@@ -107,7 +107,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 	if err != nil {
 		return err
 	}
-	if err := hf.DownloadFiles(ctx, opts.repo, tmpDir, toDownload, opts.token, opts.concurrency); err != nil {
+	if err := hf.DownloadFiles(ctx, repo, tmpDir, toDownload, opts.token, opts.concurrency); err != nil {
 		return fmt.Errorf("error downloading repository: %w", err)
 	}
 

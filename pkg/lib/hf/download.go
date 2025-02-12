@@ -88,6 +88,7 @@ func downloadFile(
 	progress *output.DownloadProgressBar,
 	plog *output.ProgressLogger) error {
 
+	plog.Debugf("Downloading from %s", srcURL)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, srcURL, nil)
 	if err != nil {
 		return fmt.Errorf("failed to resolve URL: %w", err)
@@ -106,7 +107,7 @@ func downloadFile(
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("received status code %d when downloading file %s to %s", resp.StatusCode, srcURL, destPath)
+		return fmt.Errorf("received status code %d when downloading file %s from %s", resp.StatusCode, filename, srcURL)
 	}
 
 	contentRC := progress.TrackDownload(resp.Body, filename, resp.ContentLength)
