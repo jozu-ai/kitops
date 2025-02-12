@@ -42,7 +42,7 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 		return fmt.Errorf("could not process URL %s: %w", opts.repo, err)
 	}
 
-	tmpDir, cleanupTmp, err := cache.MkCacheDir("import_hf", "")
+	tmpDir, cleanupTmp, err := cache.MkCacheDir("import", "")
 	if err != nil {
 		return fmt.Errorf("failed to create temporary directory: %w", err)
 	}
@@ -115,6 +115,11 @@ func importUsingHF(ctx context.Context, opts *importOptions) error {
 		return fmt.Errorf("failed to pack ModelKit: %w", err)
 	}
 	output.Infof("Model is packed as %s", opts.tag)
+
+	if err := cache.CleanCacheDir(cache.CacheImportSubdir); err != nil {
+		output.Logf(output.LogLevelWarn, "Failed to clean cache directory: %s", err)
+	}
+
 	return nil
 }
 
