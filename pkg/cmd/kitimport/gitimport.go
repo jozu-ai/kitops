@@ -27,6 +27,7 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/filesystem/cache"
 	"kitops/pkg/lib/git"
 	kfutils "kitops/pkg/lib/kitfile"
 	kfgen "kitops/pkg/lib/kitfile/generate"
@@ -35,16 +36,14 @@ import (
 )
 
 func importUsingGit(ctx context.Context, opts *importOptions) error {
-	tmpDir, err := os.MkdirTemp("", "kitops_import_tmp")
+	tmpDir, cleanupTmp, err := cache.MkCacheDir("import_git", "")
 	if err != nil {
-		return fmt.Errorf("failed to create temporary directory: %w", err)
+		return err
 	}
 	doCleanup := true
 	defer func() {
 		if doCleanup {
-			if err := os.RemoveAll(tmpDir); err != nil {
-				output.Logf(output.LogLevelWarn, "Failed to remove temporary directory %s: %s", tmpDir, err)
-			}
+			cleanupTmp()
 		}
 	}()
 
