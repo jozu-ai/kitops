@@ -40,6 +40,7 @@ import (
 	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem/cache"
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/update"
 	"kitops/pkg/output"
@@ -99,6 +100,7 @@ func RunCommand() *cobra.Command {
 				return errors.New("exit")
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
+			cache.SetCacheHome(constants.CachePath(configHome))
 			cmd.SetContext(ctx)
 
 			update.CheckForUpdate(configHome)
