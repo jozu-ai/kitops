@@ -106,7 +106,7 @@ func downloadFile(
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("received status code %d when downloading file %s", resp.StatusCode, destPath)
+		return fmt.Errorf("received status code %d when downloading file %s to %s", resp.StatusCode, srcURL, destPath)
 	}
 
 	contentRC := progress.TrackDownload(resp.Body, filename, resp.ContentLength)
