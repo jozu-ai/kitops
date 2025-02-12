@@ -35,12 +35,19 @@ func cacheHome() string {
 	return cacheHomeDir
 }
 
+type CacheSubDir string
+
+const (
+	CachePackSubdir   CacheSubDir = "pack"
+	CacheImportSubdir CacheSubDir = "import"
+)
+
 // MkCacheDir creates a directory within configHome to be used for temporary storage and returns a function that can
 // be called to remove it once it is no longer needed. If cacheKey is not empty, the cache directory will be
 // deterministic and can be used to resume operations. Otherwise the directory will be generated with a random,
 // non-colliding name.
-func MkCacheDir(subcommand, cacheKey string) (cacheDir string, cleanup func(), err error) {
-	cacheSubDir := filepath.Join(cacheHome(), subcommand)
+func MkCacheDir(subDir CacheSubDir, cacheKey string) (cacheDir string, cleanup func(), err error) {
+	cacheSubDir := filepath.Join(cacheHome(), string(subDir))
 	if err := os.MkdirAll(cacheSubDir, 0700); err != nil {
 		return "", nil, fmt.Errorf("failed to create cache directory %s: %w", cacheSubDir, err)
 	}
@@ -50,7 +57,7 @@ func MkCacheDir(subcommand, cacheKey string) (cacheDir string, cleanup func(), e
 			return "", nil, fmt.Errorf("failed to create cache directory %s: %w", cacheDir, err)
 		}
 	} else {
-		tmpDir, err := os.MkdirTemp(cacheSubDir, fmt.Sprintf("kitops_%s_", subcommand))
+		tmpDir, err := os.MkdirTemp(cacheSubDir, fmt.Sprintf("kitops_%s_", subDir))
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to create cache directory in %s: %w", cacheSubDir, err)
 		}
@@ -65,8 +72,8 @@ func MkCacheDir(subcommand, cacheKey string) (cacheDir string, cleanup func(), e
 	return cacheDir, cleanup, nil
 }
 
-func MkCacheFile(subcommand, basename string) (tempFile *os.File, cleanup func(), err error) {
-	cacheSubDir := filepath.Join(cacheHome(), subcommand)
+func MkCacheFile(subDir CacheSubDir, basename string) (tempFile *os.File, cleanup func(), err error) {
+	cacheSubDir := filepath.Join(cacheHome(), string(subDir))
 	if err := os.MkdirAll(cacheSubDir, 0700); err != nil {
 		return nil, nil, fmt.Errorf("failed to create cache directory %s: %w", cacheSubDir, err)
 	}
@@ -85,6 +92,30 @@ func MkCacheFile(subcommand, basename string) (tempFile *os.File, cleanup func()
 		}
 	}
 	return f, cleanup, nil
+}
+
+func CleanCacheDir(subDir CacheSubDir) error {
+	cacheSubDir := filepath.Join(cacheHome(), string(subDir))
+	ds, err := os.ReadDir(cacheSubDir)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil
+		}
+		return fmt.Errorf("failed to read cache directory %s: %w", cacheSubDir, err)
+	}
+	for _, d := range ds {
+		entryPath := filepath.Join(cacheSubDir, d.Name())
+		if d.IsDir() {
+			if err := os.RemoveAll(entryPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+				return fmt.Errorf("failed to remove directory %s: %w", entryPath, err)
+			}
+		} else {
+			if err := os.Remove(entryPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+				return fmt.Errorf("failed to remove file %s: %w", entryPath, err)
+			}
+		}
+	}
+	return nil
 }
 
 func StatCache() (totalSize int64, subdirsSize map[string]int64, err error) {

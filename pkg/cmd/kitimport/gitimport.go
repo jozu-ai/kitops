@@ -36,7 +36,7 @@ import (
 )
 
 func importUsingGit(ctx context.Context, opts *importOptions) error {
-	tmpDir, cleanupTmp, err := cache.MkCacheDir("import_git", "")
+	tmpDir, cleanupTmp, err := cache.MkCacheDir(cache.CacheImportSubdir, "")
 	if err != nil {
 		return err
 	}
@@ -109,6 +109,11 @@ func importUsingGit(ctx context.Context, opts *importOptions) error {
 		return fmt.Errorf("failed to pack ModelKit: %w", err)
 	}
 	output.Infof("Model is packed as %s", opts.tag)
+
+	if err := cache.CleanCacheDir(cache.CacheImportSubdir); err != nil {
+		output.Logf(output.LogLevelWarn, "Failed to clean cache directory: %s", err)
+	}
+
 	return nil
 }
 

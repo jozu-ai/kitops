@@ -60,7 +60,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		output.Logf(output.LogLevelWarn, "No files detected in %s layer with path %s", mediaType.BaseType, path)
 	}
 
-	tempFile, tempFileCleanup, err := cache.MkCacheFile("pack", "kitops_layer_")
+	tempFile, tempFileCleanup, err := cache.MkCacheFile(cache.CachePackSubdir, "kitops_layer_")
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to create temporary file: %w", err)
 	}
@@ -274,12 +274,6 @@ func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error)
 func callAndPrintError(f func() error, msg string) {
 	if err := f(); err != nil {
 		output.Errorf(msg, err)
-	}
-}
-
-func removeTempFile(filepath string) {
-	if err := os.Remove(filepath); err != nil && !os.IsNotExist(err) {
-		output.Errorf("Failed to clean up temporary file %s: %s", filepath, err)
 	}
 }
 
