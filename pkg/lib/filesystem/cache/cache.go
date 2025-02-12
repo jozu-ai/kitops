@@ -86,3 +86,63 @@ func MkCacheFile(subcommand, basename string) (tempFile *os.File, cleanup func()
 	}
 	return f, cleanup, nil
 }
+
+func StatCache() (totalSize int64, subdirsSize map[string]int64, err error) {
+	getDirSize := func(dir string) (int64, error) {
+		var dirSize int64
+		err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			info, err := d.Info()
+			if err != nil {
+				return fmt.Errorf("failed to examine %s: %w", path, err)
+			}
+			dirSize = dirSize + info.Size()
+			return nil
+		})
+		if err != nil {
+			return 0, err
+		}
+		return dirSize, nil
+	}
+
+	ds, err := os.ReadDir(cacheHome())
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return 0, map[string]int64{}, nil
+		}
+		return 0, nil, fmt.Errorf("failed to read cache directory: %w", err)
+	}
+	subdirsSize = map[string]int64{}
+	for _, dirEntry := range ds {
+		size, err := getDirSize(filepath.Join(cacheHome(), dirEntry.Name()))
+		if err != nil {
+			return 0, nil, err
+		}
+		subdirsSize[dirEntry.Name()] = size
+		totalSize = totalSize + size
+	}
+
+	return totalSize, subdirsSize, nil
+}
+
+func ClearCache() error {
+	ds, err := os.ReadDir(cacheHome())
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil
+		}
+		return fmt.Errorf("failed to read cache directory: %w", err)
+	}
+	for _, dirEntry := range ds {
+		if dirEntry.IsDir() {
+			output.Debugf("Removing cache directory %s", dirEntry.Name())
+			os.RemoveAll(filepath.Join(cacheHome(), dirEntry.Name()))
+		} else {
+			output.Debugf("Removing cache file %s", dirEntry.Name())
+			os.Remove(filepath.Join(cacheHome(), dirEntry.Name()))
+		}
+	}
+	return nil
+}
