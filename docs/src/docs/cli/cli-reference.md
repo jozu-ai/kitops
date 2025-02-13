@@ -1,13 +1,103 @@
 ---
 outline: 2
 title: "Kit CLI Reference"
-description: Explore the Kit CLI command reference. Get detailed information on commands available for building, versioning, pushing, pulling, and running ModelKits within your AI/ML projects.
 ---
 <script setup>
 import VersionInfo from '@theme/components/VersionInfo.vue'
 </script>
 
 <VersionInfo />
+## kit cache
+
+Manage temporary files cached by Kit
+
+### Synopsis
+
+Manage files stored in the temporary KitOps cache dir ($KITOPS_HOME/cache)
+
+Normally, this directory is empty, but may contain leftover files from resumable
+downloads or files that were not cleaned up due to the command being cancelled.
+
+### Examples
+
+```
+# Get information about size of cached files
+kit cache info
+
+# Clear files in cache
+kit cache clear
+		
+```
+
+### Options
+
+```
+  -h, --help   help for cache
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit cache clear
+
+Clear temporary cache storage
+
+### Synopsis
+
+Clear temporary files from cache storage.
+
+```
+kit cache clear [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for clear
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit cache info
+
+Get information about cache disk usage
+
+### Synopsis
+
+Print the total size of temporary files in the cache directory.
+
+```
+kit cache info [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for info
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
 ## kit dev
 
 Run models locally (experimental)
