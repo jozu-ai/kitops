@@ -23,6 +23,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"kitops/pkg/cmd/config"
 	"kitops/pkg/cmd/dev"
 	"kitops/pkg/cmd/diff"
 	"kitops/pkg/cmd/info"
@@ -73,6 +74,29 @@ func RunCommand() *cobra.Command {
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			output.SetOut(cmd.OutOrStdout())
 			output.SetErr(cmd.ErrOrStderr())
+
+			// Load config from the file (or default if it doesn't exist)
+			configHome, err := getConfigHome(opts)
+			if err != nil {
+				output.Errorf("Failed to read base config directory")
+				output.Infof("Use the --config flag or set the $%s environment variable to provide a default", constants.KitopsHomeEnvVar)
+				output.Debugf("Error: %s", err)
+				return errors.New("exit")
+			}
+
+			configPath := constants.ConfigFilePath(configHome)
+			cfg, err := config.LoadConfig(configPath)
+			if err != nil {
+				return output.Fatalf("Failed to load config: %s", err)
+			}
+			// Override the config values with flag values if the flags were provided
+			if opts.loglevel == "" && cfg.LogLevel != "" {
+				opts.loglevel = cfg.LogLevel
+			}
+			if opts.progressBars == "" && cfg.Progress != "" {
+				opts.progressBars = cfg.Progress
+			}
+
 			if err := output.SetLogLevelFromString(opts.loglevel); err != nil {
 				return output.Fatalln(err)
 			}
@@ -93,13 +117,6 @@ func RunCommand() *cobra.Command {
 				output.SetProgressBars("none")
 			}
 
-			configHome, err := getConfigHome(opts)
-			if err != nil {
-				output.Errorf("Failed to read base config directory")
-				output.Infof("Use the --config flag or set the $%s environment variable to provide a default", constants.KitopsHomeEnvVar)
-				output.Debugf("Error: %s", err)
-				return errors.New("exit")
-			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
 			cache.SetCacheHome(constants.CachePath(configHome))
 			cmd.SetContext(ctx)
@@ -148,6 +165,7 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(pull.PullCommand())
 	rootCmd.AddCommand(tag.TagCommand())
 	rootCmd.AddCommand(list.ListCommand())
+	rootCmd.AddCommand(config.ConfigCommand())
 	rootCmd.AddCommand(inspect.InspectCommand())
 	rootCmd.AddCommand(info.InfoCommand())
 	rootCmd.AddCommand(remove.RemoveCommand())
@@ -171,6 +189,7 @@ func Execute() {
 }
 
 func getConfigHome(opts *rootOptions) (string, error) {
+	// First check if the config path is provided via flags
 	if opts.configHome != "" {
 		output.Debugf("Using config directory from flag: %s", opts.configHome)
 		absHome, err := filepath.Abs(opts.configHome)
@@ -180,6 +199,7 @@ func getConfigHome(opts *rootOptions) (string, error) {
 		return absHome, nil
 	}
 
+	// Then check if it's provided via environment variable
 	envHome := os.Getenv(constants.KitopsHomeEnvVar)
 	if envHome != "" {
 		output.Debugf("Using config directory from environment variable: %s", envHome)
@@ -190,6 +210,7 @@ func getConfigHome(opts *rootOptions) (string, error) {
 		return absHome, nil
 	}
 
+	// Finally, fall back to the default path
 	defaultHome, err := constants.DefaultConfigPath()
 	if err != nil {
 		return "", err
