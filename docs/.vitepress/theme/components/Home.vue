@@ -276,7 +276,7 @@ onMounted(() => {
       <div class="h4 font-bold !text-salmon">1</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+        <a href="/docs/cli/installation/" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
       </div>
     </div>
 
