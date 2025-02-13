@@ -11,4 +11,4 @@ The KitOps Python library is an open source project hosted on [GitHub](https://g
 
 1. [Before You Begin](./before-you-begin/)
 2. [How-To Guides](./how-to-guides/)
-3. [API Reference](./reference/index/)
+3. [API Reference](./reference/)
