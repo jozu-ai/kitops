@@ -74,6 +74,8 @@ func DiffCommand() *cobra.Command {
 		Example: examples,
 		RunE:    runCommand(opts),
 	}
+	opts.AddNetworkFlags(cmd)
+	cmd.Flags().SortFlags = false
 	return cmd
 }
 
