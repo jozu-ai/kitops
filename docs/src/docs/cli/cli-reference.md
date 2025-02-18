@@ -265,7 +265,13 @@ kit diff local://jozu.ml/foo:latest remote://jozu.ml/foo:latest
 ### Options
 
 ```
-  -h, --help   help for diff
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
+  -h, --help              help for diff
 ```
 
 ### Options inherited from parent commands
