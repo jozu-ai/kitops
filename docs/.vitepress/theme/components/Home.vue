@@ -193,10 +193,7 @@ onMounted(() => {
     KitOps is an open source DevOps tool that packages and versions your AI/ML model, datasets, code, and configuration into a reproducible artifact called a ModelKit. ModelKits are built on existing standards, ensuring compatibility with the tools your data scientists and developers already use.
   </div>
 
-  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
-    <source src="/how-it-works.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <iframe width="1050" height="590" class="max-w-full mt-22 mx-auto" src="https://www.youtube.com/embed/1TD-e_wVe4Q?si=ONnBiZJCFICDJoVt&amp;autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 <div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container" id="join">
