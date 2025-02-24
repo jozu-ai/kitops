@@ -83,7 +83,7 @@ jobs:
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
           ./build/scripts/sign ./dist/kitops-offline-darwin-x86_64.zip
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1  # v4.6.1
         with:
             name: dist-macos
             if-no-files-found: error
@@ -112,7 +112,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1  # v4.6.1
         with:
             name: dist-windows
             if-no-files-found: error
@@ -141,7 +141,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1  # v4.6.1
         with:
             name: dist-linux
             if-no-files-found: error
@@ -195,7 +195,7 @@ jobs:
       # homebrew recipe and pushing it to the repository: 
       # 'jozu-ai/homebrew-kitops'
       - name: Upload homebrew-files as a build artifact
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1  # v4.6.1
         with:
           name: homebrew-files
           if-no-files-found: error
@@ -353,7 +353,7 @@ jobs:
 
       - name: Build and push base Kit container
         id: build-kit-container
-        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991    # v6.13.0
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497    # v6.14.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true
@@ -371,7 +371,7 @@ jobs:
 
       - name: Build and push Kit init container
         id: build-kit-init-container
-        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991    # v6.13.0
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497    # v6.14.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true
