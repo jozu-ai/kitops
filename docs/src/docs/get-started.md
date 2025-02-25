@@ -79,13 +79,18 @@ The [Kitfile](../kitfile/kf-overview/) is the manifest for our ModelKit, the ser
 
 ### 4/ Check the Local Repository
 
-Use the [list command](../cli/cli-reference/#kit-list) to check what's in our local repository.
+Use the [list command](../cli/cli-reference/#kit-list) to check what's in the KitOps local registry.
 
 ```sh
 kit list
 ```
 
 You'll see the column headings for an empty table with things like `REPOSITORY`, `TAG`, etc...
+
+The local registry is found at `$KITOPS_HOME/storage`. The $KITOPS_HOME location is system dependent:
+	- Linux: `$XDG_DATA_HOME/kitops` with a fall back to `$HOME/.local/share/kitops`
+	- MacOS: `~/Library/Caches/kitops`
+	- Windows: `%LOCALAPPDATA%\kitops`
 
 ### 5/ Pack the ModelKit
 
