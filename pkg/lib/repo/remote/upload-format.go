@@ -34,7 +34,8 @@ const (
 )
 
 var (
-	googleArtifactRegistryRegexp = regexp.MustCompile(`.*\.pkg\.dev$`)
+	googleArtifactRegistryRegexp  = regexp.MustCompile(`.*\.pkg\.dev$`)
+	googleContainerRegistryRegexp = regexp.MustCompile(`.*\.?gcr.io$`)
 )
 
 func getUploadFormat(registry string, size int64) uploadFormat {
@@ -44,7 +45,7 @@ func getUploadFormat(registry string, size int64) uploadFormat {
 		// ghcr.io returns 416 is a PATCH has Content-Length greater than 4.0 MiB for some reason
 		// Transfer-Encoding: chunked is supported by the registry, but not implemented yet.
 		return uploadMonolithicPut
-	case googleArtifactRegistryRegexp.MatchString(registry):
+	case googleArtifactRegistryRegexp.MatchString(registry) || googleContainerRegistryRegexp.MatchString(registry):
 		// Google Artifact Registry does not support chunked uploads and instead requires monolithic
 		// uploads.
 		// docs: https://cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling#pushing
