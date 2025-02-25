@@ -16,7 +16,10 @@
 
 package remote
 
-import "kitops/pkg/output"
+import (
+	"kitops/pkg/output"
+	"regexp"
+)
 
 type uploadFormat int
 
@@ -30,12 +33,21 @@ const (
 	uploadChunkDefaultSize int64 = 100 << 20
 )
 
+var (
+	googleArtifactRegistryRegexp = regexp.MustCompile(`.*\.pkg\.dev$`)
+)
+
 func getUploadFormat(registry string, size int64) uploadFormat {
 	output.SafeDebugf("Getting upload format for: %s", registry)
-	switch registry {
-	case "ghcr.io":
+	switch {
+	case registry == "ghcr.io":
 		// ghcr.io returns 416 is a PATCH has Content-Length greater than 4.0 MiB for some reason
 		// Transfer-Encoding: chunked is supported by the registry, but not implemented yet.
+		return uploadMonolithicPut
+	case googleArtifactRegistryRegexp.MatchString(registry):
+		// Google Artifact Registry does not support chunked uploads and instead requires monolithic
+		// uploads.
+		// docs: https://cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling#pushing
 		return uploadMonolithicPut
 	default:
 		// No matches above, use heuristic
