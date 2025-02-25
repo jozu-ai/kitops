@@ -19,6 +19,12 @@ Manage files stored in the temporary KitOps cache dir ($KITOPS_HOME/cache)
 Normally, this directory is empty, but may contain leftover files from resumable
 downloads or files that were not cleaned up due to the command being cancelled.
 
+The $KITOPS_HOME location is system dependent:
+	- Linux: $XDG_DATA_HOME/kitops with a fall back to $HOME/.local/share/kitops
+	- MacOS: ~/Library/Caches/kitops
+	- Windows: %LOCALAPPDATA%\kitops
+
+
 ### Examples
 
 ```
