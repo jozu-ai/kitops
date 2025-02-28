@@ -1,3 +1,6 @@
+---
+description: Follow practical how-to guides for PyKitOps. Learn step-by-step methods for managing and deploying ModelKits in Python.
+---
 # How-to Guides
 
 This part of the project documentation focuses on a **problem-oriented** approach. You'll tackle common tasks that you might have, with the help of the code provided in this project.
