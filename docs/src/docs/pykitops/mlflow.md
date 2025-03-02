@@ -42,7 +42,7 @@ manager = ModelKitManager(working_directory=artifact_location, user_credentials=
 manager.login()
 
 # Create a new Kitfile based on the contents of the working directory
-kit.init(directory=artifact_location, name=name, description="")
+kit.init(directory=artifact_location, name=name, description="my cool description", author=username)
 
 # Pack the ModelKit using the Kitfile recipe, and push it to the registry
 manager.pack_and_push_modelkit(with_login_and_logout=False)
