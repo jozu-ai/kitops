@@ -100,7 +100,17 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Python Library',
+        text: 'Kit CLI',
+        items: getSidebarItemsFromMdFiles('docs/cli', {
+            replacements: {
+              'cli-reference': 'Command Reference' ,
+              'installation': 'Download & Install'
+            },
+            textFormat: (text) => text.replaceAll('cli-', '')
+          })
+      },
+      {
+        text: 'Kit Python Library',
         items: [
           { text: 'Overview', link: '/docs/pykitops/' },
           { text: 'Before You Begin', link: '/docs/pykitops/before-you-begin/' },
@@ -109,14 +119,12 @@ export default defineConfig({
         ]
       },
       {
-        text: 'CLI',
-        items: getSidebarItemsFromMdFiles('docs/cli', {
-            replacements: {
-              'cli-reference': 'Command Reference' ,
-              'installation': 'Download & Install'
-            },
-            textFormat: (text) => text.replaceAll('cli-', '')
-          })
+        text: 'Integrations',
+        items: [
+          { text: 'MLFlow', link: '/docs/pykitops/mlflow/' },
+          { text: 'CI/CD', link: '/docs/pykitops/cicd/' },
+          // { text: 'Juptyer', link: '/docs/pykitops/jupyter/' },
+        ]
       },
       {
         text: 'Contribute',
