@@ -39,7 +39,7 @@ creds = UserCredentials(username=username, registry="jozu.ml")
 manager = ModelKitManager(working_directory=artifact_location, user_credentials=creds, modelkit_tag=modelkit_tag)
 
 # Log into the registry where the ModelKit will be pushed and stored
-kit.login() 
+manager.login()
 
 # Create a new Kitfile based on the contents of the working directory
 kit.init(directory=artifact_location, name=name, description="")
