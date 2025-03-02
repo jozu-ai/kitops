@@ -34,7 +34,9 @@ In the following code:
 
 ```py
 # Add the KitOps ModelKitManager and initialize it with the working directory and ModelKit tag (name)
-manager = ModelKitManager(working_directory=artifact_location, modelkit_tag)
+# password can be read from Environment Variables or .env files: JOZU_PASSWORD=<secret password> 
+creds = UserCredentials(username=username, registry="jozu.ml")
+manager = ModelKitManager(working_directory=artifact_location, user_credentials=creds, modelkit_tag=modelkit_tag)
 
 # Log into the registry where the ModelKit will be pushed and stored
 kit.login() 
