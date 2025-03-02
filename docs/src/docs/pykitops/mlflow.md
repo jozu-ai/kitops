@@ -33,16 +33,26 @@ In the following code:
 `modelkit_tag` = a name for the ModelKit, for example "latest"
 
 ```py
-# Add the KitOps ModelKitManager and initialize it with the working directory and ModelKit tag (name)
-# password can be read from Environment Variables or .env files: JOZU_PASSWORD=<secret password> 
+# Add the KitOps ModelKitManager
+from kitops.modelkit.manager import ModelKitManager
+from kitops.modelkit.user import UserCredentials
+from kitops.cli import kit
+
+# A password can be read from Environment Variables or .env files: JOZU_PASSWORD=<secret password> 
+# Add in your own username from the registry that you are accessing, e.g. username=bmicklea
 creds = UserCredentials(username=username, registry="jozu.ml")
+
+# Initialize the ModelKitManager with:
+# - the working directory ("artifact_location")
+# - reference to the creds variable
+# - a tag name e.g. modelkit_tag=latest
 manager = ModelKitManager(working_directory=artifact_location, user_credentials=creds, modelkit_tag=modelkit_tag)
 
 # Log into the registry where the ModelKit will be pushed and stored
 manager.login()
 
-# Create a new Kitfile based on the contents of the working directory
-kit.init(directory=artifact_location, name=name, description="my cool description", author=username)
+# Create a new Kitfile (your ModelKit's "recipe") based on the contents of the working directory
+kit.init(directory=artifact_location, name=name, description="my cool project", author=username)
 
 # Pack the ModelKit using the Kitfile recipe, and push it to the registry
 manager.pack_and_push_modelkit(with_login_and_logout=False)
