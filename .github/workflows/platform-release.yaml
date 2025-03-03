@@ -172,7 +172,7 @@ jobs:
           cp ./kitops/build/homebrew/*.* ./homebrew-files
           
       - name: Merge build artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.3
         with:
           path: dist
           pattern: dist-*
@@ -271,7 +271,7 @@ jobs:
           token: ${{ secrets.GITOPS_PAT }}
             
       - name: Download the homebrew artifacts to build the homebrew recipe
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.3
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.3
         with:
           name: homebrew-files
           path: homebrew-files
@@ -336,10 +336,10 @@ jobs:
     needs: [release]
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25    # v3.4.0
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392    # v3.6.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca  # v3.9.0
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2  # v3.10.0
 
       - name: Login to ghcr.io
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567         # v3.3.0
@@ -353,7 +353,7 @@ jobs:
 
       - name: Build and push base Kit container
         id: build-kit-container
-        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497    # v6.14.0
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4    # v6.15.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true
@@ -371,7 +371,7 @@ jobs:
 
       - name: Build and push Kit init container
         id: build-kit-init-container
-        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497    # v6.14.0
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4    # v6.15.0
         with:
           platforms: linux/amd64,linux/arm64
           push: true
@@ -388,14 +388,14 @@ jobs:
             index:org.opencontainers.image.licenses=Apache-2.0
 
       - name: Generate artifact attestation for base container
-        uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4   # v2.2.0
+        uses: actions/attest-build-provenance@bd77c077858b8d561b7a36cbe48ef4cc642ca39d   # v2.2.2
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build-kit-container.outputs.digest }}
           push-to-registry: true
 
       - name: Generate artifact attestation for base container
-        uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4   # v2.2.0
+        uses: actions/attest-build-provenance@bd77c077858b8d561b7a36cbe48ef4cc642ca39d   # v2.2.2
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}
           subject-digest: ${{ steps.build-kit-init-container.outputs.digest }}
