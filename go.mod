@@ -6,10 +6,10 @@ require (
 	github.com/google/licensecheck v0.3.1
 	github.com/moby/patternmatcher v0.6.0
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/opencontainers/image-spec v1.1.0
+	github.com/opencontainers/image-spec v1.1.1
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/vbauerster/mpb/v8 v8.9.2
+	github.com/vbauerster/mpb/v8 v8.9.3
 	golang.org/x/mod v0.23.0
 	golang.org/x/sync v0.11.0
 	golang.org/x/sys v0.30.0
