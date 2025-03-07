@@ -39,7 +39,7 @@ export default defineConfig({
   appearance: 'force-dark',
   srcDir: 'src',
   title: 'KitOps',
-  description: 'Documentation for KitOps',
+  description: 'Discover KitOps: an open-source DevOps tool that packages and versions your AI/ML models, datasets, code, and configurations into reproducible artifacts called ModelKits. Simplify your AI pipeline with standardized packaging and deployment.',
 
   rewrites: (id) => id.replace(/(?<!(?:^|\/)index)\.md$/, '/index.md'),
 
@@ -61,10 +61,10 @@ export default defineConfig({
 
     // Top navigation
     nav: [
-      { text: 'Get Started', activeMatch: '^/#getstarted', link: '/docs/get-started.html' },
+      { text: 'Get Started', activeMatch: '^/#getstarted', link: '/docs/get-started/' },
       { text: 'How does it work?', activeMatch: `^/#howdoesitwork`, link: '/#howdoesitwork' },
-      { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview' },
-      { text: 'Blog', activeMatch: `^/blog`, link: '/blog' },
+      { text: 'Docs', activeMatch: `^/docs`, link: '/docs/overview/' },
+      { text: 'Blog', activeMatch: `^/blog`, link: '/blog/' },
     ],
 
     // Sidebar nav
@@ -75,7 +75,7 @@ export default defineConfig({
           { text: 'Overview', link: '/docs/overview/' },
           { text: 'Get Started', link: '/docs/get-started/' },
           { text: 'Next Steps', link: '/docs/next-steps/' },
-          { text: 'HF Import', link: '/docs/hf-import/' },
+          { text: 'HuggingFace Import', link: '/docs/hf-import/' },
           { text: 'Deploy ModelKits', link: '/docs/deploy/' },
           { text: 'Local LLM Dev', link: '/docs/dev-mode/' },
           { text: 'Why KitOps?', link: '/docs/why-kitops/' },
@@ -100,15 +100,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Python Library',
-        items: [
-          { text: 'Overview', link: '/docs/pykitops/' },
-          { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides/' },
-          { text: 'Reference', link: '/docs/pykitops/reference/' },
-        ]
-      },
-      {
-        text: 'CLI',
+        text: 'Kit CLI',
         items: getSidebarItemsFromMdFiles('docs/cli', {
             replacements: {
               'cli-reference': 'Command Reference' ,
@@ -116,6 +108,23 @@ export default defineConfig({
             },
             textFormat: (text) => text.replaceAll('cli-', '')
           })
+      },
+      {
+        text: 'Kit Python Library',
+        items: [
+          { text: 'Overview', link: '/docs/pykitops/' },
+          { text: 'Before You Begin', link: '/docs/pykitops/before-you-begin/' },
+          { text: 'How-to Guides', link: '/docs/pykitops/how-to-guides/' },
+          { text: 'Reference', link: '/docs/pykitops/reference/' },
+        ]
+      },
+      {
+        text: 'Integrations',
+        items: [
+          { text: 'MLFlow', link: '/docs/pykitops/mlflow/' },
+          { text: 'CI/CD', link: '/docs/pykitops/cicd/' },
+          // { text: 'Juptyer', link: '/docs/pykitops/jupyter/' },
+        ]
       },
       {
         text: 'Contribute',
@@ -140,7 +149,7 @@ export default defineConfig({
 
   transformPageData(pageData, { siteConfig }) {
     // Generate the canonical url's on each page, considering the cleanUrl config
-    const canonicalUrl = `https://kitops.ml/${pageData.relativePath}`
+    const canonicalUrl = `https://kitops.org/${pageData.relativePath}`
       .replace(/index\.md$/, '')
       .replace(/\.md$/, siteConfig.cleanUrls ? '' : '.html')
 
@@ -152,7 +161,7 @@ export default defineConfig({
   },
 
   sitemap: {
-    hostname: 'https://kitops.ml'
+    hostname: 'https://kitops.org'
   },
 
   vite: {

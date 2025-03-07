@@ -1,3 +1,6 @@
+---
+description: Deploy your ModelKits with ease. Learn how to package, distribute, and run your AI/ML models in production environments.
+---
 # Deploying ModelKits
 
 This page outlines how to use `init` or Kit CLI containers to deploy a ModelKit-packaged AI/ML project to Kubernetes or any other container runtime. The KitOps repo provides pre-built ModelKits that can be used for both semi-turnkey solutions, and more DIY options.
@@ -17,7 +20,7 @@ The container is configurable via environment variables:
 
 `$MODELKIT_REF`: The ModelKit to pull (required).
 `$UNPACK_PATH`: Where to unpack the ModelKit (normally you’d want a `volumeMount` here). This is required and will default to `/home/user/modelkit`.
-`$UNPACK_FILTER`: Optional filter to limit what is unpacked (e.g., just the model, or model + code). The filter format is the same as the [--filter command line argument](./cli/cli-reference.md) for the Kit CLI.
+`$UNPACK_FILTER`: Optional filter to limit what is unpacked (e.g., just the model, or model + code). The filter format is the same as the [--filter command line argument](../cli/cli-reference/) for the Kit CLI.
 `$COSIGN_KEY`: Path to the key that should be used for verification, mounted inside the init container (e.g., from a Kubernetes secret).
 `$COSIGN_CERT_IDENTITY`: Signing identity for keyless signing.
 `$COSIGN_CERT_OIDC_ISSUER`: OIDC issuer for keyless signer identity.

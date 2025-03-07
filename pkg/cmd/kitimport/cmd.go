@@ -19,12 +19,16 @@ package kitimport
 import (
 	"context"
 	"fmt"
-	"kitops/pkg/lib/constants"
-	"kitops/pkg/output"
-	"regexp"
+	"net/url"
+	"slices"
 	"strings"
 
+	"kitops/pkg/lib/constants"
+	repoutils "kitops/pkg/lib/repo/util"
+	"kitops/pkg/output"
+
 	"github.com/spf13/cobra"
+	"oras.land/oras-go/v2/registry"
 )
 
 const (
@@ -38,22 +42,38 @@ downloaded to a temporary directory and be packaged using a generated Kitfile.
 In interactive settings, this command will read the EDITOR environment variable
 to determine which editor should be used for editing the Kitfile.
 
-Note: importing repositories requires 'git' and 'git-lfs' to be installed.`
+This command supports multiple ways of downloading files from the remote
+repository. The tool used can be specified using the --tool flag with one of the
+options below:
+
+  --tool=hf  : Download files using the Huggingface API. Requires REPOSITORY to
+	             be a Huggingface repository. This is the default for Huggingface
+							 repositories
+  --tool=git : Download files using Git and Git LFS. Works for any Git
+	             repository but requires that Git and Git LFS are installed.
+
+By default, Kit will automatically select the tool based on the provided
+REPOSITORY.`
 
 	example = `# Download repository myorg/myrepo and package it, using the default tag (myorg/myrepo:latest)
 kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:mytag'
-kit import myorg/myrepo --tag myrepository:mytag`
+kit import myorg/myrepo --tag myrepository:mytag
+
+# Download repository and pack it using an existing Kitfile
+kit import myorg/myrepo --file ./path/to/Kitfile`
 )
 
-var repoToTagRegexp = regexp.MustCompile(`^.*?([0-9A-Za-z_-]+/[0-9A-Za-z_-]+)[^/]*$`)
-
 type importOptions struct {
-	repo       string
-	configHome string
-	tag        string
-	token      string
+	configHome   string
+	repo         string
+	tag          string
+	token        string
+	kitfilePath  string
+	downloadTool string
+	concurrency  int
+	modelKitRef  *registry.Reference
 }
 
 func ImportCommand() *cobra.Command {
@@ -70,6 +90,9 @@ func ImportCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.token, "token", "", "Token to use for authenticating with repository")
 	cmd.Flags().StringVarP(&opts.tag, "tag", "t", "", "Tag for the ModelKit (default is '[repository]:latest')")
+	cmd.Flags().StringVarP(&opts.kitfilePath, "file", "f", "", "Path to Kitfile to use for packing (use '-' to read from standard input)")
+	cmd.Flags().StringVar(&opts.downloadTool, "tool", "", "Tool to use for downloading files: options are 'git' and 'hf' (default: detect based on repository)")
+	cmd.Flags().IntVar(&opts.concurrency, "concurrency", 5, "Maximum number of simultaneous downloads (for huggingface)")
 	cmd.Flags().SortFlags = false
 	return cmd
 }
@@ -77,10 +100,14 @@ func ImportCommand() *cobra.Command {
 func runCommand(opts *importOptions) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		if err := opts.complete(cmd.Context(), args); err != nil {
-			return output.Fatalf("Invalid arguments: %s", err)
+			return output.Fatalln(err)
 		}
 
-		if err := doImport(cmd.Context(), opts); err != nil {
+		importer, err := getImporter(opts)
+		if err != nil {
+			return output.Fatalln(err)
+		}
+		if err := importer(cmd.Context(), opts); err != nil {
 			return output.Fatalln(err)
 		}
 
@@ -97,10 +124,49 @@ func (opts *importOptions) complete(ctx context.Context, args []string) error {
 	opts.repo = args[0]
 
 	if opts.tag == "" {
-		tag := repoToTagRegexp.ReplaceAllString(opts.repo, "${1}")
+		tag, err := extractRepoFromURL(opts.repo)
+		if err != nil {
+			output.Errorf("Could not generate tag from URL: %s", err)
+			return fmt.Errorf("use flag --tag to set a tag for ModelKit")
+		}
 		tag = strings.ToLower(tag)
 		opts.tag = fmt.Sprintf("%s:latest", tag)
 		output.Infof("Using tag %s. Use flag --tag to override", opts.tag)
 	}
+
+	ref, _, err := repoutils.ParseReference(opts.tag)
+	if err != nil {
+		return fmt.Errorf("invalid argument: tag '%s' is invalid: %w", opts.tag, err)
+	}
+	opts.modelKitRef = ref
+
+	validTools := []string{"git", "hf"}
+	if opts.downloadTool != "" && !slices.Contains(validTools, opts.downloadTool) {
+		return fmt.Errorf("invalid value for --tool flag. Valid options are: %s", strings.Join(validTools, ", "))
+	}
+
+	if opts.concurrency < 1 {
+		return fmt.Errorf("invalid argument for concurrency (%d): must be at least 1", opts.concurrency)
+	}
 	return nil
+}
+
+func getImporter(opts *importOptions) (func(context.Context, *importOptions) error, error) {
+	switch opts.downloadTool {
+	case "hf":
+		return importUsingHF, nil
+	case "git":
+		return importUsingGit, nil
+	default:
+		repoUrl, err := url.Parse(opts.repo)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse %s: %w", opts.repo, err)
+		}
+
+		if repoUrl.Host == "" || strings.Contains(repoUrl.Host, "huggingface") {
+			return importUsingHF, nil
+		}
+
+		return importUsingGit, nil
+	}
 }

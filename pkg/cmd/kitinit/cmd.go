@@ -21,13 +21,14 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"kitops/pkg/artifact"
-	"kitops/pkg/lib/constants"
-	kfutils "kitops/pkg/lib/kitfile"
-	"kitops/pkg/lib/util"
-	"kitops/pkg/output"
 	"os"
 	"path/filepath"
+
+	"kitops/pkg/artifact"
+	"kitops/pkg/lib/constants"
+	kfgen "kitops/pkg/lib/kitfile/generate"
+	"kitops/pkg/lib/util"
+	"kitops/pkg/output"
 
 	"github.com/spf13/cobra"
 )
@@ -105,7 +106,11 @@ func runCommand(opts *initOptions) func(*cobra.Command, []string) error {
 			return output.Fatalf("Error checking for existing Kitfile: %s", err)
 		}
 
-		kitfile, err := kfutils.GenerateKitfile(opts.path, modelPackage)
+		dirContents, err := kfgen.DirectoryListingFromFS(opts.path)
+		if err != nil {
+			return output.Fatalf("Error processing directory: %s", err)
+		}
+		kitfile, err := kfgen.GenerateKitfile(dirContents, modelPackage)
 		if err != nil {
 			return output.Fatalf("Error generating Kitfile: %s", err)
 		}

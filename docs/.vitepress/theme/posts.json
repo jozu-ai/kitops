@@ -1,331 +1,550 @@
 [
   {
     "url": "https://www.gorkem-ercan.com/p/do-data-scientists-really-like-git",
-    "tags": ["thought leadership"],
+    "tags": [
+      "thought leadership"
+    ],
     "published_time": "2024-02-27"
   },
   {
     "url": "https://dev.to/jwilliamsr/the-transitory-nature-of-mlops-advocating-for-devopsmlops-coalescence-1k6j",
-    "tags": ["ai", "devops", "open source", "machine learning"],
+    "tags": [
+      "ai",
+      "devops",
+      "open source",
+      "machine learning"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-03-25"
   },
   {
     "url": "https://thenewstack.io/beyond-git-a-new-collaboration-model-for-ai-ml-development/",
-    "tags": ["git", "devops", "open source", "machine learning"],
+    "tags": [
+      "git",
+      "devops",
+      "open source",
+      "machine learning"
+    ],
     "published_time": "2024-04-02"
   },
   {
     "url": "https://open.spotify.com/episode/1BoMxaEYiZIrFTrT1N5UKa?si=zH9L868bRGyU0wc8oxz6vQ",
     "description": "Listen to this episode from Partially Redacted: Data Privacy, Security & Compliance on Spotify. In this episode, we dive into the world of MLOps, the engine behind secure and reliable AI/ML deployments. MLOps focuses on the lifecycle of machine learning models, ensuring they are developed and deployed efficiently and responsibly. With the explosion of ML applications, the demand for specialized tools has skyrocketed, highlighting the need for improved observability, auditing, and reproducibility. This shift necessitates an evolution in ML toolchains to address gaps in security, governance, and reliability. Jozu is a platform founded to tackle these very challenges by enhancing the collaboration between AI/ML and application development teams. Jozu aims to provide a comprehensive suite of tools focusing on efficiency throughout the model development and deployment process. This conversation discusses the importance of MLOps, the limitations of current tools, and how Jozu is paving the way for the future of secure and reliable ML deployments.",
-    "tags": ["mlops", "kitops", "machine learning", "podcast"],
+    "tags": [
+      "mlops",
+      "kitops",
+      "machine learning",
+      "podcast"
+    ],
     "author": "Brad Micklea",
     "published_time": "2024-04-17"
   },
   {
     "url": "https://dev.to/kitops/streamlining-aiml-deployment-with-jozu-model-kits-innovations-and-future-directions-41ae",
     "description": "Yesterday, Brad Micklea, Jozu CEO and KitOps maintainer, was a guest on the Partially Redacted podcast hosted by Sean Falconer. The 45-minute conversation covered a lot of ground. Specifically, the current state of the KitOps project, where the project is headed, and some of our early ideas for productizing and releasing Jozu, which builds on top of KitOps. In this post I dive a bit deeper into a few of these topics.",
-    "tags": ["mlops", "kitops", "machine learning", "open source"],
+    "tags": [
+      "mlops",
+      "kitops",
+      "machine learning",
+      "open source"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-04-19"
   },
   {
     "url": "https://dev.to/kitops/strategies-for-tagging-modelkits-208j",
     "description": "ModelKits, much like other OCI artifacts, can be identified using tags that are comprehensible to humans. This blog explores various strategies for effectively tagging your ModelKits.",
-    "tags": ["mlops", "kitops", "ModelKits"],
+    "tags": [
+      "mlops",
+      "kitops",
+      "ModelKits"
+    ],
     "author": "Gorkem Ercan",
     "published_time": "2024-04-19"
   },
-    {
+  {
     "url": "https://dev.to/kitops/why-enterprise-ai-projects-are-moving-too-slowly-29ik",
-    "tags": ["mlops", "kitops", "ModelKits"],
+    "tags": [
+      "mlops",
+      "kitops",
+      "ModelKits"
+    ],
     "author": "Brad Micklea",
     "published_time": "2024-04-22"
   },
   {
     "url": "https://dev.to/github20k/i-fine-tuned-my-model-on-a-new-programming-language-you-can-do-it-too-449",
-    "tags": ["kitops", "ModelKits", "LLMs", "Community"],
+    "tags": [
+      "kitops",
+      "ModelKits",
+      "LLMs",
+      "Community"
+    ],
     "author": "Nevo David",
     "published_time": "2024-04-25"
   },
   {
-  "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
+    "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
     "description": "From Jupyter Notebook to production-ready artifact: explore our guide to using KitOps and ModelKit for seamless deployment.",
-    "tags": ["KitOps", "MLOps", "ModelKit", "Community"],
+    "tags": [
+      "KitOps",
+      "MLOps",
+      "ModelKit",
+      "Community"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-07-08"
   },
   {
     "url": "https://jozu.com/blog/a-step-by-step-guide-to-building-an-mlops-pipeline/",
     "description": "Exploring the steps and processes of building an MLOps pipeline.",
-    "tags": ["KitOps", "MLOps", "Community"],
+    "tags": [
+      "KitOps",
+      "MLOps",
+      "Community"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-06-04"
   },
   {
     "url": "https://www.youtube.com/watch?v=jRi3wmaHQBQ",
-    "description": "Let's dive into the dynamic relationship between enterprises and AI/ML teams with Brad Micklea, Founder & CEO of Jozu and project lead for Kitops.ml. Brad shares valuable insights on bridging the gap and improving the collaboration between these entities. From common challenges to effective strategies, Brad sheds light on the crucial role of communication, alignment, and AI/ML literacy in driving successful collaborations.",
-    "tags": ["KitOps", "Podcast", "LLMs", "Community"],
+    "description": "Let's dive into the dynamic relationship between enterprises and AI/ML teams with Brad Micklea, Founder & CEO of Jozu and project lead for kitops.org. Brad shares valuable insights on bridging the gap and improving the collaboration between these entities. From common challenges to effective strategies, Brad sheds light on the crucial role of communication, alignment, and AI/ML literacy in driving successful collaborations.",
+    "tags": [
+      "KitOps",
+      "Podcast",
+      "LLMs",
+      "Community"
+    ],
     "author": "Lights On Data Show",
     "published_time": "2024-04-26"
   },
   {
-  "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
+    "url": "https://jozu.com/blog/how-to-turn-a-jupyter-notebook-into-a-deployable-artifact/",
     "description": "How to turn a Jupyter Notebook into a deployable artifact.",
-    "tags": ["KitOps", "Jupyter", "Tutorial"],
+    "tags": [
+      "KitOps",
+      "Jupyter",
+      "Tutorial"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-07-08"
   },
   {
-  "url": "https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing",
+    "url": "https://www.codeproject.com/Articles/5384392/A-Step-by-Step-Guide-to-Building-and-Distributing",
     "description": "In this article, we build a Retrieval-Augmented Generation (RAG) pipeline using KitOps, integrating tools like ChromaDB for embeddings, Llama 3 for language models, and SentenceTransformer for embedding models.",
-    "tags": ["KitOps", "RAG", "Tutorial"],
+    "tags": [
+      "KitOps",
+      "RAG",
+      "Tutorial"
+    ],
     "author": "Gorkem Ercan",
     "published_time": "2024-07-09"
   },
   {
-  "url": "https://jozu.com/blog/25-open-source-ai-tools-to-cut-your-development-time-in-half/",
+    "url": "https://jozu.com/blog/25-open-source-ai-tools-to-cut-your-development-time-in-half/",
     "description": "25 Open Source AI Tools to Cut Your Development Time in Half.",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-07-11"
   },
   {
-  "url": "https://jozu.com/blog/tools-to-ease-collaboration-between-data-scientists-and-application-developers/",
+    "url": "https://jozu.com/blog/tools-to-ease-collaboration-between-data-scientists-and-application-developers/",
     "description": "Tools to ease collaboration between data scientists and application developers.",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-07-16"
   },
   {
-  "url": "https://jozu.com/blog/how-to-tune-and-deploy-your-first-small-language-model-sllm/",
+    "url": "https://jozu.com/blog/how-to-tune-and-deploy-your-first-small-language-model-sllm/",
     "description": "How to Tune and Deploy Your First Small Language Model (sLLM).",
-    "tags": ["KitOps", "sLLM", "MLOps"],
+    "tags": [
+      "KitOps",
+      "sLLM",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-07-30"
   },
   {
-  "url": "https://jozu.com/blog/10-open-source-mlops-projects-you-didnt-know-about/",
+    "url": "https://jozu.com/blog/10-open-source-mlops-projects-you-didnt-know-about/",
     "description": "10 Open Source MLOps Projects You Didn’t Know About.",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-08-01"
   },
   {
-  "url": "https://jozu.com/blog/from-jupyter-notebook-to-deployed-application-in-4-steps/",
+    "url": "https://jozu.com/blog/from-jupyter-notebook-to-deployed-application-in-4-steps/",
     "description": "From Jupyter Notebook to deployed application in 4 steps.",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-08-14"
   },
   {
-  "url": "https://jozu.com/blog/turn-your-existing-devops-pipeline-into-an-mlops-pipeline-with-modelkits/",
+    "url": "https://jozu.com/blog/turn-your-existing-devops-pipeline-into-an-mlops-pipeline-with-modelkits/",
     "description": "Turn Your Existing DevOps Pipeline Into an MLOps Pipeline With ModelKits",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-08-27"
   },
   {
-  "url": "https://jozu.com/blog/turn-devops-to-mlops-pipelines-with-this-open-source-tool/",
+    "url": "https://jozu.com/blog/turn-devops-to-mlops-pipelines-with-this-open-source-tool/",
     "description": "Turn DevOps to MLOps Pipelines With This Open-Source Tool",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-09-04"
   },
   {
-  "url": "https://developers.redhat.com/articles/2024/09/16/enhance-llms-instructlab-kitops",
+    "url": "https://developers.redhat.com/articles/2024/09/16/enhance-llms-instructlab-kitops",
     "description": "Enhance LLMs and streamline MLOps using InstructLab and KitOps",
-    "tags": ["KitOps", "Open Source", "MLOps", "Red Hat"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps",
+      "Red Hat"
+    ],
     "author": "Cedric Clyburn",
     "published_time": "2024-09-16"
   },
   {
-  "url": "https://jozu.com/blog/critical-llm-security-risks-and-best-practices-for-teams/",
+    "url": "https://jozu.com/blog/critical-llm-security-risks-and-best-practices-for-teams/",
     "description": "Critical LLM Security Risks and Best Practices for Teams",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-09-17"
   },
   {
-  "url": "https://jozu.com/blog/from-proprietary-data-to-expert-ai-with-lamini-and-kitops/",
+    "url": "https://jozu.com/blog/from-proprietary-data-to-expert-ai-with-lamini-and-kitops/",
     "description": "From Proprietary Data to Expert AI with Lamini and KitOps",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-09-24"
   },
   {
-  "url": "https://jozu.com/blog/top-5-production-ready-open-source-ai-libraries-for-engineering-teams",
+    "url": "https://jozu.com/blog/top-5-production-ready-open-source-ai-libraries-for-engineering-teams",
     "description": "Top 5 Production-Ready Open Source AI Libraries for Engineering Teams",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-10-04"
   },
   {
-  "url": "https://jozu.com/blog/free-online-tutorials-to-help-you-develop-machine-learning-applications",
+    "url": "https://jozu.com/blog/free-online-tutorials-to-help-you-develop-machine-learning-applications",
     "description": "Free Online Tutorials to Help You Develop Machine Learning Applications",
-    "tags": ["KitOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-10-08"
   },
   {
-  "url": "https://jozu.com/blog/building-an-mlops-pipeline-with-dagger-io-and-kitops/",
+    "url": "https://jozu.com/blog/building-an-mlops-pipeline-with-dagger-io-and-kitops/",
     "description": "Building an MLOps pipeline with Dagger.io and KitOps",
-    "tags": ["KitOps", "Open Source", "DevOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-10-11"
   },
   {
-  "url": "https://jozu.com/blog/10-mlops-tools-that-comply-with-the-eu-ai-act/",
+    "url": "https://jozu.com/blog/10-mlops-tools-that-comply-with-the-eu-ai-act/",
     "description": "10 MLOps Tools That Comply With the EU AI Act",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-10-15"
   },
   {
-  "url": "https://testguildperf.libsyn.com/simplifying-the-aiml-to-production-pipeline-with-grkem-ercan",
+    "url": "https://testguildperf.libsyn.com/simplifying-the-aiml-to-production-pipeline-with-grkem-ercan",
     "description": "Simplifying the AI/ML to Production Pipeline with Görkem Ercan",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "TestGuild DevOps Toolchain Podcast",
     "published_time": "2024-10-16"
   },
   {
-  "url": "https://podcasts.apple.com/us/podcast/revolutionizing-mlops-gorka-erkand-on-jozus-game-changing/id1521202681?i=1000673555349",
+    "url": "https://podcasts.apple.com/us/podcast/revolutionizing-mlops-gorka-erkand-on-jozus-game-changing/id1521202681?i=1000673555349",
     "description": "Revolutionizing MLOps: Gorkem Ercan on Jozu's Game-Changing Solutions for AI Integration",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "Beers and Bytes Podcast",
     "published_time": "2024-10-18"
   },
   {
-  "url": "https://podcasts.apple.com/us/podcast/gorkem-ercan-eclipse-ai-ml-ci-cd/id1467065787?i=1000673695983",
+    "url": "https://podcasts.apple.com/us/podcast/gorkem-ercan-eclipse-ai-ml-ci-cd/id1467065787?i=1000673695983",
     "description": "Gorkem Ercan - Eclipse, AI/ML, CI/CD",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "Swift Developer Podcast - App development and discussion",
     "published_time": "2024-10-20"
   },
   {
-  "url": "https://dev.to/rohan_sharma/top-5-open-source-mlops-tool-to-boost-your-production-4j0a",
+    "url": "https://dev.to/rohan_sharma/top-5-open-source-mlops-tool-to-boost-your-production-4j0a",
     "description": "Top 5 open-source MLOps tool to boost your production",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "Rohan Sharma",
     "published_time": "2024-10-23"
   },
   {
-  "url": "https://jozu.com/blog/ai-security-how-to-protect-your-projects-with-hardened-modelkits/",
+    "url": "https://jozu.com/blog/ai-security-how-to-protect-your-projects-with-hardened-modelkits/",
     "description": "AI Security: How to Protect Your Projects with Hardened ModelKits",
-    "tags": ["KitOps", "Open Source", "DevOps", "Security"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Security"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-05"
   },
   {
-  "url": "https://jozu.com/blog/start-your-ai-project-in-minutes-with-jozu-quickstart-modelkits/",
+    "url": "https://jozu.com/blog/start-your-ai-project-in-minutes-with-jozu-quickstart-modelkits/",
     "description": "The Fastest Way to Start Your AI Project–Quickstart ModelKits",
-    "tags": ["KitOps", "Open Source", "DevOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-07"
   },
   {
-  "url": "https://jozu.com/blog/20-open-source-tools-i-recommend-to-build-share-and-run-ai-projects/",
+    "url": "https://jozu.com/blog/20-open-source-tools-i-recommend-to-build-share-and-run-ai-projects/",
     "description": "20 Open Source Tools I Recommend to Build, Share, and Run AI Projects",
-    "tags": ["KitOps", "Open Source", "DevOps", "AI"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "AI"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-13"
   },
   {
-  "url": "https://jozu.com/blog/were-submitting-kitops-to-the-cncf/",
+    "url": "https://jozu.com/blog/were-submitting-kitops-to-the-cncf/",
     "description": "We’re submitting KitOps to the CNCF",
-    "tags": ["KitOps", "Open Source", "KitOps", "CNCF"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "KitOps",
+      "CNCF"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-18"
   },
   {
-  "url": "https://jozu.com/blog/deploying-ai-projects-through-a-jenkins-pipeline/",
+    "url": "https://jozu.com/blog/deploying-ai-projects-through-a-jenkins-pipeline/",
     "description": "Deploying AI Projects Through a Jenkins Pipeline",
-    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-20"
   },
   {
-  "url": "https://jozu.com/blog/jozu-hub-vs-docker-hub-which-one-works-best-for-ai-ml/",
+    "url": "https://jozu.com/blog/jozu-hub-vs-docker-hub-which-one-works-best-for-ai-ml/",
     "description": "Jozu Hub vs. Docker Hub? Which One Works Best for AI/ML?",
-    "tags": ["KitOps", "Open Source", "DevOps", "Containers"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "Containers"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-22"
   },
   {
-  "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
+    "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
     "description": "How to Use KitOps with MLflow",
-    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-29"
   },
   {
-  "url": "https://www.youtube.com/watch?v=0JjVHSPmxp4",
+    "url": "https://www.youtube.com/watch?v=0JjVHSPmxp4",
     "description": "Lightening Talk–Building an MLOps pipeline with Dagger.io and KitOps",
-    "tags": ["KitOps", "Open Source", "KitOps", "Talk"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "KitOps",
+      "Talk"
+    ],
     "author": "Cloud Native Rejekts",
     "published_time": "2024-11-29"
   },
   {
-  "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
+    "url": "https://jozu.com/blog/how-to-use-kitops-with-mlflow/",
     "description": "How to Use KitOps with MLflow",
-    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-11-29"
   },
   {
-  "url": "https://jozu.com/blog/how-to-turn-your-openshift-pipelines-into-an-mlops-pipeline",
+    "url": "https://jozu.com/blog/how-to-turn-your-openshift-pipelines-into-an-mlops-pipeline",
     "description": "How to Turn Your OpenShift Pipelines Into an MLOps Pipeline",
-    "tags": ["KitOps", "Open Source", "DevOps", "MLOps"],
+    "tags": [
+      "KitOps",
+      "Open Source",
+      "DevOps",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-12-03"
   },
   {
-  "url": "https://jozu.com/blog/platform-engineering-vs-mlops-key-comparisons",
+    "url": "https://jozu.com/blog/platform-engineering-vs-mlops-key-comparisons",
     "description": "Platform Engineering vs. MLOps: Key Comparisons",
-    "tags": ["KitOps", "DevOps", "LLMops", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "LLMops",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-12-06"
   },
   {
-  "url": "https://jozu.com/blog/understanding-the-mlops-lifecycle/",
+    "url": "https://jozu.com/blog/understanding-the-mlops-lifecycle/",
     "description": "Understanding the MLOps Lifecycle",
-    "tags": ["KitOps", "DevOps", "Open Source", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Open Source",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2024-12-17"
   },
   {
-  "url": "https://jozu.com/blog/kitops-v1-0-0-release-announcement/",
+    "url": "https://jozu.com/blog/kitops-v1-0-0-release-announcement/",
     "description": "KitOps v1.0.0 is Now Generally Available, Featuring Hugging Face to ModelKit Import",
-    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Release Notes",
+      "MLOps"
+    ],
     "author": "Angel Misevski",
     "published_time": "2025-01-22"
   },
   {
-  "url": "https://www.devopsparadox.com/episodes/managing-your-ai-workloads-with-kitops-299/",
+    "url": "https://www.devopsparadox.com/episodes/managing-your-ai-workloads-with-kitops-299/",
     "description": "DevOps Paradox: Managing Your AI Workloads With KitOps",
-    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Release Notes",
+      "MLOps"
+    ],
     "author": "Gorkem Ercan",
     "published_time": "2025-01-22"
   },
   {
-  "url": "https://jozu.com/blog/whats-next-for-the-kitops-project/",
+    "url": "https://jozu.com/blog/whats-next-for-the-kitops-project/",
     "description": "What’s Next for the KitOps Project",
-    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Release Notes",
+      "MLOps"
+    ],
     "author": "Brad Micklea",
     "published_time": "2025-01-23"
   },
   {
-  "url": "https://medium.com/gitconnected/secure-your-model-development-lifecycle-9bd81fb40bf6",
+    "url": "https://medium.com/gitconnected/secure-your-model-development-lifecycle-9bd81fb40bf6",
     "description": "Secure your model development lifecycle",
-    "tags": ["KitOps", "DevOps", "Release Notes", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Release Notes",
+      "MLOps"
+    ],
     "author": "Brad Micklea",
     "published_time": "2025-01-27"
   },
   {
-  "url": "https://jozu.com/blog/accelerating-ml-development-with-devpods-and-modelkits/",
+    "url": "https://jozu.com/blog/accelerating-ml-development-with-devpods-and-modelkits/",
     "description": "Accelerating ML Development with DevPods and ModelKits",
-    "tags": ["KitOps", "DevOps", "DevPods", "MLOps"],
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "DevPods",
+      "MLOps"
+    ],
     "author": "Jesse Williams",
     "published_time": "2025-01-28"
-  },
+  }
 ]

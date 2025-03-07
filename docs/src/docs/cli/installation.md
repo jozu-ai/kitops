@@ -1,3 +1,7 @@
+---
+description: Learn how to install the Kit CLI on MacOS, Windows, and Linux. Follow our detailed instructions to set up KitOps and start managing your AI/ML ModelKits efficiently.
+---
+
 <script setup>
 import vGaTrack from '@theme/directives/ga'
 </script>
@@ -33,7 +37,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](/docs/get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -41,7 +45,7 @@ Now follow our [Quick Start](/docs/get-started.md) to learn how to pack and shar
 
 There are two generations of Mac hardware, if you aren't sure which you have [check here](https://www.sweetwater.com/sweetcare/articles/intel-based-mac-or-mac-with-apple-silicon/#:~:text=Choose%20About%20This%20Mac.,a%20Mac%20with%20Apple%20silicon.&text=As%20of%20this%20writing%2C%20Apple,have%20an%20Intel%2Dbased%20Mac.).
 
-1. MacOS: <a href="https://kitops.gateway.scarf.sh/github/macos/apple_silicon_arm_64/latest"
+1. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Apple Silicon)',
@@ -50,7 +54,7 @@ There are two generations of Mac hardware, if you aren't sure which you have [ch
   Apple Silicon / ARM64
 </a>
 
-2. MacOS: <a href="https://kitops.gateway.scarf.sh/github/macos/intesl_x86_64/latest"
+2. MacOS: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'MacOS (Intel)',
@@ -73,7 +77,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -81,7 +85,7 @@ Now follow our [Quick Start](../get-started.md) to learn how to pack and share y
 
 Make sure you get the correct download for your hardware.
 
-1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_64/latest"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (AMD64)',
@@ -90,7 +94,7 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, 64-bit
 </a>
 
-1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/arm_64/latest"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (ARM64)',
@@ -99,7 +103,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-1. Windows: <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_32/latest"
+1. Windows: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
   v-ga-track="{
     category: 'link',
     label: 'Windows (x86_32)',
@@ -122,7 +126,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -144,7 +148,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -152,7 +156,7 @@ Now follow our [Quick Start](../get-started.md) to learn how to pack and share y
 
 Make sure you get the correct download for your hardware.
 
-1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_64/latest"
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (AMD64)',
@@ -161,7 +165,7 @@ Make sure you get the correct download for your hardware.
   Intel / AMD, AMD 64-bit
 </a>
 
-1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/arm_64/latest"
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (ARM64)',
@@ -170,7 +174,7 @@ Make sure you get the correct download for your hardware.
   ARM 64-bit
 </a>
 
-1. Linux: <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_32/latest"
+1. Linux: <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
   v-ga-track="{
     category: 'link',
     label: 'Linux (x86_32)',
@@ -203,7 +207,7 @@ kit version
 
 This command should display the version number of the Kit CLI you have installed, indicating that the installation was successful.
 
-Now follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 **Need Help?** If something isn't working [get help on our Discord channel](https://discord.gg/Tapeh8agYy).
 
@@ -272,17 +276,17 @@ If the `KITOPS_HOME` is set in various places the order of precedence is:
 1. `--config` flag, if specified
 1. `$KITOPS_HOME` environment variable, if set
 1. A default OS-dependent value:
-    
+
     Linux: `$XDG_DATA_HOME/kitops`, falling back to `~/.local/share/kitops`
-    
+
     Windows: `%LOCALAPPDATA%\kitops`
-    
+
     Darwin: `~/Library/Caches/kitops`
 
 
 ## Follow the Quick Start
 
-Now that everything is set up you can follow our [Quick Start](../get-started.md) to learn how to pack and share your first ModelKit.
+Now that everything is set up you can follow our [Quick Start](../../get-started/) to learn how to pack and share your first ModelKit.
 
 ## Become a Design Partner
 

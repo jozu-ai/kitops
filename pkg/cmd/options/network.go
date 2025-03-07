@@ -63,7 +63,7 @@ func (o *NetworkOptions) Complete(ctx context.Context, args []string) error {
 		o.ClientCertKeyPath = certKeyPath
 	}
 	if o.Concurrency < 1 {
-		o.Concurrency = 5
+		return fmt.Errorf("invalid argument for concurrency (%d): must be at least 1", o.Concurrency)
 	}
 
 	return nil

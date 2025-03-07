@@ -38,6 +38,7 @@ const (
 	// credentials are stored in $KITOPS_HOME/credentials.json
 	DefaultConfigSubdir               = "kitops"
 	StorageSubpath                    = "storage"
+	CacheSubpath                      = "cache"
 	CredentialsSubpath                = "credentials.json"
 	HarnessSubpath                    = "harness"
 	HarnessProcessFile                = "process.pid"
@@ -123,6 +124,10 @@ func HarnessPath(configBase string) string {
 
 func CredentialsPath(configBase string) string {
 	return filepath.Join(configBase, CredentialsSubpath)
+}
+
+func CachePath(configBase string) string {
+	return filepath.Join(configBase, CacheSubpath)
 }
 
 // IndexJsonPath is a wrapper for getting the index.json path for a local OCI index,

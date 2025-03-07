@@ -20,9 +20,10 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"kitops/pkg/output"
 	"os"
 	"os/exec"
+
+	"kitops/pkg/output"
 )
 
 func CloneRepository(repo, dest, token string) error {

@@ -1,6 +1,9 @@
+---
+description: Explore real-world use cases for KitOps. See how organizations are leveraging ModelKits for AI/ML efficiency.
+---
 # How KitOps Is Used 🛠️
 
-KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](./modelkit/compatibility.md)).
+KitOps is the market's only open source, standards-based packaging and versioning system designed for AI/ML projects. Using the OCI standard allows KitOps to be painlessly adopted by any organization using containers and enterprise registries today (see a partial list of [compatible tools](../modelkit/compatibility/)).
 
 Organizations around the world are using KitOps as a "gate" in the [handoff between development and production](#level-1-handoff-from-development-to-production-). This is often part of establishing golden paths and platform engineering around AI/ML projects.
 
@@ -10,7 +13,7 @@ Those who are concerned about end-to-end auditing of their model development - l
 
 ## Level 1: Handoff From Development to Production 🤝
 
-Organizations are having AI teams build a [ModelKit](./modelkit/intro.md) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
+Organizations are having AI teams build a [ModelKit](../modelkit/intro/) for each version of the AI project that is going to staging, user acceptance testing (UAT), or production.
 
 KitOps is ideally suited to CI/CD pipelines (e.g., using KitOps in a GitHub Action, Dagger module, or other CI/CD pipeline flow) either triggered manually by the model development team when they're ready to send the model to production, or automatically when a model or its artifacts are updated in their respective repositories.
 
@@ -19,11 +22,11 @@ Security conscious organizations often can't allow internal teams to use any pub
 * They don't match the organization's security testing requirements
 * Their provenance isn't understood
 
-In these cases teams may use a pipeline (with [GitHub Actions](https://github.com/marketplace/actions/setup-kit-cli), [Dagger](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit), or [another tool](./modelkit/compatibility.md)) to pull models or sample datasets from Hugging Face, run them through a battery of tests, then publish them in tamper-proof and signed ModelKits to their private container registry.
+In these cases teams may use a pipeline (with [GitHub Actions](https://github.com/marketplace/actions/setup-kit-cli), [Dagger](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit), or [another tool](../modelkit/compatibility/)) to pull models or sample datasets from Hugging Face, run them through a battery of tests, then publish them in tamper-proof and signed ModelKits to their private container registry.
 
 This ensures that:
 * __Everyone has a library of safe, immutable, and signed ModelKits__ speeding development without compromising security
-* __[Safe models can be deployed](./deploy.md)__ for development or production use cases
+* __[Safe models can be deployed](../deploy/)__ for development or production use cases
 * __Operations teams have all the assets and information they need__ for testing, deploying, auditing, and managing AI/ML projects
 * __AI versioned packages are held in the same enterprise registry__ as other production assets like containers making them easier to find, secure, and audit
 * __Compliance teams have a catalogue of versioned models__ that can be used for [EU AI Act](https://artificialintelligenceact.eu/) or other regulatory reporting
@@ -32,8 +35,8 @@ This ensures that:
 **Get Started:**
 * [Kit Dagger Modules](https://daggerverse.dev/mod/github.com/jozu-ai/daggerverse/kit): Kit Dagger modules make it easy to pack and selectively unpack ModelKits to speed pipelines.
 * [Kit GitHub Action](https://github.com/marketplace/actions/setup-kit-cli): Our Kit GitHub Action is used to build hundreds of ModelKits every day as part of pipelines.
-* [Learn to pack and unpack ModelKits](./get-started.md)
-* [Create containers or Kubernetes deployments directly from ModelKits](./deploy.md)
+* [Learn to pack and unpack ModelKits](../get-started/)
+* [Create containers or Kubernetes deployments directly from ModelKits](../deploy/)
 
 This is where most organizations start their usage of KitOps, but once they start most continue on...
 
@@ -54,7 +57,7 @@ This ensures that:
 * Data and AI teams who don't work closely together can share artifacts even if they're using different development tools
 * Development artifacts can't be accidentally or maliciously tampered with
 
-This can be a lightweight process automated with ModelKit packing via the Kit [CLI](./cli/cli-reference.md).
+This can be a lightweight process automated with ModelKit packing via the Kit [CLI](../cli/cli-reference/).
 
 The beauty of KitOps' ModelKits is their flexibility and the fact that they fit into the already standard tools and processes that organizations have built around OCI artifacts and registries.
 

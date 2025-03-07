@@ -1,0 +1,19 @@
+{
+    "SameConfig": true,
+    "AnnotationsMatch": true,
+    "SharedLayers": [
+      {
+        "digest": "sha256:layer1"
+      }
+    ],
+    "UniqueLayersA": [
+      {
+        "digest": "sha256:layer2"
+      }
+    ],
+    "UniqueLayersB": [
+      {
+        "digest": "sha256:layer3"
+      }
+    ]
+  }

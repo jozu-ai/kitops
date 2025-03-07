@@ -27,6 +27,7 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/filesystem/cache"
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/repo/util"
 	"kitops/pkg/output"
@@ -57,6 +58,11 @@ func SaveModel(ctx context.Context, localRepo local.LocalRepo, kitfile *artifact
 	if err != nil {
 		return nil, err
 	}
+
+	if err := cache.CleanCacheDir(cache.CachePackSubdir); err != nil {
+		output.Logf(output.LogLevelWarn, "Failed to clean cache directory: %s", err)
+	}
+
 	return manifestDesc, nil
 }
 

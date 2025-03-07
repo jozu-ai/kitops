@@ -123,15 +123,15 @@ onMounted(() => {
       </a>
       <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-x86_64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Intel / AMD, 64-bit
           </a>
-          <a href="https://kitops.gateway.scarf.sh/github/windows/arm_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-arm64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             ARM 64-bit
           </a>
-          <a href="https://kitops.gateway.scarf.sh/github/windows/intel_amd_32/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-windows-i386.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Intel / AMD, 32-bit
           </a>
@@ -148,11 +148,11 @@ onMounted(() => {
       </a>
       <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <a href="https://kitops.gateway.scarf.sh/github/macos/apple_silicon_arm_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-arm64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Apple Silicon / ARM64
           </a>
-          <a href="https://kitops.gateway.scarf.sh/github/macos/intesl_x86_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-darwin-x86_64.zip"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Intel / x86_64
           </a>
@@ -169,15 +169,15 @@ onMounted(() => {
       </a>
       <div class="absolute right-0 pt-2 whitespace-nowrap min-w-52 hidden lg:group-hover:block lg:group-focus-within:block">
         <div class="py-1 bg-night border border-off-white mt-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-x86_64.tar.gz"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Intel / AMD, 64-bit
           </a>
-          <a href="https://kitops.gateway.scarf.sh/github/linux/arm_64/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-arm64.tar.gz"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             ARM 64-bit
           </a>
-          <a href="https://kitops.gateway.scarf.sh/github/linux/intel_amd_32/latest"
+          <a href="https://github.com/jozu-ai/kitops/releases/latest/download/kitops-linux-i386.tar.gz"
             target="_blank" class="block px-4 py-2 text-white hocus:text-night font-bold hocus:bg-gold" role="menuitem">
             Intel / AMD, 32-bit
           </a>
@@ -193,10 +193,7 @@ onMounted(() => {
     KitOps is an open source DevOps tool that packages and versions your AI/ML model, datasets, code, and configuration into a reproducible artifact called a ModelKit. ModelKits are built on existing standards, ensuring compatibility with the tools your data scientists and developers already use.
   </div>
 
-  <video width="1050" autoplay controls muted loop class="max-w-full mt-22 mx-auto rounded-lg">
-    <source src="/how-it-works.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <iframe width="1050" class="border-2 border-black max-w-full aspect-video mt-22 mx-auto" src="https://www.youtube.com/embed/iK9mnU0prRU?si=ommsLD32Kjj4RUMu&amp;autoplay=0" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 <div v-if="!isSubscribed" class="mt-32 md:mt-40 xl:mt-60 px-6 md:px-12 content-container" id="join">
@@ -276,7 +273,7 @@ onMounted(() => {
       <div class="h4 font-bold !text-salmon">1</div>
       <div class="mt-8 flex flex-col flex-1 justify-between">
         <p class="p2">Download and install Kit CLI.</p>
-        <a href="/docs/cli/installation" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
+        <a href="/docs/cli/installation/" v-ga-track="{ category: 'button', label: 'install', location: 'get started' }" class="kit-button kit-button-salmon md:w-fit mt-6">Install the CLI</a>
       </div>
     </div>
 

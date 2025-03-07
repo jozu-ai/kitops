@@ -1,6 +1,7 @@
 ---
 outline: 2
 title: "Kit CLI Reference"
+description: Explore the Kit CLI command reference. Get detailed information on commands available for building, versioning, pushing, pulling, and running ModelKits within your AI/ML projects.
 ---
 <script setup>
 import VersionInfo from '@theme/components/VersionInfo.vue'

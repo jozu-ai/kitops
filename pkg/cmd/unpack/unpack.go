@@ -20,6 +20,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -218,7 +219,7 @@ func unpackLayer(ctx context.Context, store content.Storage, desc ocispec.Descri
 		return fmt.Errorf("failed get layer %s: %w", desc.Digest, err)
 	}
 	var logger *output.ProgressLogger
-	rc, logger = output.WrapReadCloser(desc.Size, rc)
+	rc, logger = output.WrapUnpackReadCloser(desc.Size, rc)
 	defer rc.Close()
 
 	var cr io.ReadCloser
@@ -296,13 +297,7 @@ func extractTar(tr *tar.Reader, extractDir string, overwrite bool, logger *outpu
 				return fmt.Errorf("failed to create file %s: %w", outPath, err)
 			}
 			defer func() {
-				if errClose := file.Close(); errClose != nil {
-					if err == nil {
-						err = fmt.Errorf("failed to close log file: %w", errClose)
-					} else {
-						err = fmt.Errorf("%v; failed to close log file: %w", err, errClose)
-					}
-				}
+				err = errors.Join(err, file.Close())
 			}()
 			written, err := io.Copy(file, tr)
 			if err != nil {

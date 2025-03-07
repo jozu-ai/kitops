@@ -24,8 +24,10 @@ import (
 	"path/filepath"
 
 	"kitops/pkg/cmd/dev"
+	"kitops/pkg/cmd/diff"
 	"kitops/pkg/cmd/info"
 	"kitops/pkg/cmd/inspect"
+	"kitops/pkg/cmd/kitcache"
 	"kitops/pkg/cmd/kitimport"
 	"kitops/pkg/cmd/kitinit"
 	"kitops/pkg/cmd/list"
@@ -39,6 +41,7 @@ import (
 	"kitops/pkg/cmd/unpack"
 	"kitops/pkg/cmd/version"
 	"kitops/pkg/lib/constants"
+	"kitops/pkg/lib/filesystem/cache"
 	"kitops/pkg/lib/repo/local"
 	"kitops/pkg/lib/update"
 	"kitops/pkg/output"
@@ -98,6 +101,7 @@ func RunCommand() *cobra.Command {
 				return errors.New("exit")
 			}
 			ctx := context.WithValue(cmd.Context(), constants.ConfigKey{}, configHome)
+			cache.SetCacheHome(constants.CachePath(configHome))
 			cmd.SetContext(ctx)
 
 			update.CheckForUpdate(configHome)
@@ -152,7 +156,9 @@ func addSubcommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(version.VersionCommand())
 	rootCmd.AddCommand(dev.DevCommand())
 	rootCmd.AddCommand(kitinit.InitCommand())
+	rootCmd.AddCommand(diff.DiffCommand())
 	rootCmd.AddCommand(kitimport.ImportCommand())
+	rootCmd.AddCommand(kitcache.CacheCommand())
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

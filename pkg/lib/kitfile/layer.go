@@ -31,6 +31,7 @@ import (
 	"kitops/pkg/artifact"
 	"kitops/pkg/lib/constants"
 	"kitops/pkg/lib/filesystem"
+	"kitops/pkg/lib/filesystem/cache"
 	"kitops/pkg/output"
 
 	"github.com/opencontainers/go-digest"
@@ -59,7 +60,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		output.Logf(output.LogLevelWarn, "No files detected in %s layer with path %s", mediaType.BaseType, path)
 	}
 
-	tempFile, err := os.CreateTemp("", "kitops_layer_*")
+	tempFile, tempFileCleanup, err := cache.MkCacheFile(cache.CachePackSubdir, "kitops_layer_")
 	if err != nil {
 		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to create temporary file: %w", err)
 	}
@@ -99,8 +100,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 		if compressedWriter != nil {
 			_ = compressedWriter.Close()
 		}
-		_ = tempFile.Close()
-		removeTempFile(tempFileName)
+		tempFileCleanup()
 	}
 	plog.Wait()
 
@@ -112,7 +112,7 @@ func compressLayer(path string, mediaType constants.MediaType, ignore filesystem
 
 	tempFileInfo, err := tempFile.Stat()
 	if err != nil {
-		removeTempFile(tempFileName)
+		tempFileCleanup()
 		return "", ocispec.DescriptorEmptyJSON, nil, fmt.Errorf("failed to stat temporary file: %w", err)
 	}
 	callAndPrintError(tempFile.Close, "Failed to close temporary file: %s")
@@ -227,11 +227,6 @@ func writeFileToTar(file string, fi os.FileInfo, ptw *output.ProgressTar, plog *
 }
 
 func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error) {
-	if !output.ProgressEnabled() {
-		// Won't use this information anyways, save the work.
-		return 0, nil
-	}
-
 	pathInfo, err := os.Stat(basePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -279,12 +274,6 @@ func getTotalSize(basePath string, ignore filesystem.IgnorePaths) (int64, error)
 func callAndPrintError(f func() error, msg string) {
 	if err := f(); err != nil {
 		output.Errorf(msg, err)
-	}
-}
-
-func removeTempFile(filepath string) {
-	if err := os.Remove(filepath); err != nil && !os.IsNotExist(err) {
-		output.Errorf("Failed to clean up temporary file %s: %s", filepath, err)
 	}
 }
 

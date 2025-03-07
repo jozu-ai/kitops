@@ -1,12 +1,110 @@
 ---
 outline: 2
 title: "Kit CLI Reference"
+description: Explore the Kit CLI command reference. Get detailed information on commands available for building, versioning, pushing, pulling, and running ModelKits within your AI/ML projects.
 ---
 <script setup>
 import VersionInfo from '@theme/components/VersionInfo.vue'
 </script>
 
 <VersionInfo />
+## kit cache
+
+Manage temporary files cached by Kit
+
+### Synopsis
+
+Manage files stored in the temporary KitOps cache dir ($KITOPS_HOME/cache)
+
+Normally, this directory is empty, but may contain leftover files from resumable
+downloads or files that were not cleaned up due to the command being cancelled.
+
+The $KITOPS_HOME location is system dependent:
+	- Linux: $XDG_DATA_HOME/kitops with a fall back to $HOME/.local/share/kitops
+	- MacOS: ~/Library/Caches/kitops
+	- Windows: %LOCALAPPDATA%\kitops
+
+
+### Examples
+
+```
+# Get information about size of cached files
+kit cache info
+
+# Clear files in cache
+kit cache clear
+		
+```
+
+### Options
+
+```
+  -h, --help   help for cache
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit cache clear
+
+Clear temporary cache storage
+
+### Synopsis
+
+Clear temporary files from cache storage.
+
+```
+kit cache clear [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for clear
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
+## kit cache info
+
+Get information about cache disk usage
+
+### Synopsis
+
+Print the total size of temporary files in the cache directory.
+
+```
+kit cache info [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for info
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
 ## kit dev
 
 Run models locally (experimental)
@@ -138,6 +236,59 @@ kit dev stop [flags]
   -v, --verbose count      Increase verbosity of output (use -vv for more)
 ```
 
+## kit diff
+
+Compare two ModelKits
+
+### Synopsis
+
+Compare two ModelKits to see the differences in their layers.
+		
+ModelKits can be specified from either a local or from a remote registry.
+To specify a local ModelKit, prefix the reference with 'local://', e.g. 'local://jozu.ml/foo/bar'.
+To specify a remote ModelKit, prefix the reference with 'remote://', e.g. 'remote://jozu.ml/foo/bar'.
+If no prefix is specified, the local registry will be checked first.
+
+
+```
+kit diff <ModelKit1> <ModelKit2> [flags]
+```
+
+### Examples
+
+```
+# Compare two ModelKits
+kit diff jozu.ml/foo:latest jozu.ml/bar:latest
+
+# Compare two ModelKits from a remote registry
+kit diff remote://jozu.ml/foo:champion remote://jozu.ml/bar:latest
+
+# Compare local ModelKit with a remote ModelKit
+kit diff local://jozu.ml/foo:latest remote://jozu.ml/foo:latest
+
+```
+
+### Options
+
+```
+      --plain-http        Use plain HTTP when connecting to remote registries
+      --tls-verify        Require TLS and verify certificates when connecting to remote registries (default true)
+      --cert string       Path to client certificate used for authentication (can also be set via environment variable KITOPS_CLIENT_CERT)
+      --key string        Path to client certificate key used for authentication (can also be set via environment variable KITOPS_CLIENT_KEY)
+      --concurrency int   Maximum number of simultaneous uploads/downloads (default 5)
+      --proxy string      Proxy to use for connections (overrides proxy set by environment)
+  -h, --help              help for diff
+```
+
+### Options inherited from parent commands
+
+```
+      --config string      Alternate path to root storage directory for CLI
+      --log-level string   Log messages above specified level ('trace', 'debug', 'info', 'warn', 'error') (default 'info') (default "info")
+      --progress string    Configure progress bars for longer operations (options: none, plain, fancy) (default "plain")
+  -v, --verbose count      Increase verbosity of output (use -vv for more)
+```
+
 ## kit import
 
 Import a model from HuggingFace
@@ -153,7 +304,18 @@ downloaded to a temporary directory and be packaged using a generated Kitfile.
 In interactive settings, this command will read the EDITOR environment variable
 to determine which editor should be used for editing the Kitfile.
 
-Note: importing repositories requires 'git' and 'git-lfs' to be installed.
+This command supports multiple ways of downloading files from the remote
+repository. The tool used can be specified using the --tool flag with one of the
+options below:
+
+  --tool=hf  : Download files using the Huggingface API. Requires REPOSITORY to
+	             be a Huggingface repository. This is the default for Huggingface
+							 repositories
+  --tool=git : Download files using Git and Git LFS. Works for any Git
+	             repository but requires that Git and Git LFS are installed.
+
+By default, Kit will automatically select the tool based on the provided
+REPOSITORY.
 
 ```
 kit import [flags] REPOSITORY
@@ -167,14 +329,20 @@ kit import myorg/myrepo
 
 # Download repository and tag it 'myrepository:mytag'
 kit import myorg/myrepo --tag myrepository:mytag
+
+# Download repository and pack it using an existing Kitfile
+kit import myorg/myrepo --file ./path/to/Kitfile
 ```
 
 ### Options
 
 ```
-      --token string   Token to use for authenticating with repository
-  -t, --tag string     Tag for the ModelKit (default is '[repository]:latest')
-  -h, --help           help for import
+      --token string      Token to use for authenticating with repository
+  -t, --tag string        Tag for the ModelKit (default is '[repository]:latest')
+  -f, --file string       Path to Kitfile to use for packing (use '-' to read from standard input)
+      --tool string       Tool to use for downloading files: options are 'git' and 'hf' (default: detect based on repository)
+      --concurrency int   Maximum number of simultaneous downloads (for huggingface) (default 5)
+  -h, --help              help for import
 ```
 
 ### Options inherited from parent commands
