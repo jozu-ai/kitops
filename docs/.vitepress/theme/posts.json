@@ -546,5 +546,89 @@
     ],
     "author": "Jesse Williams",
     "published_time": "2025-01-28"
+  },
+   {
+    "url": "https://medium.com/gitconnected/secure-your-model-development-lifecycle-9bd81fb40bf6",
+    "description": "Secure your model development lifecycle",
+    "tags": [
+      "KitOps",
+      "DevOps",
+      "Security",
+      "MLOps"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-01-27"
+  },
+  {
+    "url": "https://jozu.com/blog/deploying-ml-projects-with-argo-cd/",
+    "description": "Deploying ML projects with Argo CD",
+    "tags": [
+      "KitOps",
+      "Open-Source",
+      "ArgoCD",
+      "CICD"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-03"
+  },
+  {
+    "url": "https://jozu.com/blog/10-must-know-open-source-platform-engineering-tools-for-ai-ml-workflows/",
+    "description": "10 Must-Know Open Source Platform Engineering Tools for AI/ML Workflows",
+    "tags": [
+      "KitOps",
+      "Open-Source",
+      "Platform Engineering",
+      "CICD"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-06"
+  },
+  {
+    "url": "https://medium.com/data-science-collective/how-to-build-a-secure-hugging-face-deployment-pipeline-with-dagger-io-kitops-and-jozu-hub-2da214a0bfb0",
+    "description": "How to Build a Secure Hugging Face Deployment Pipeline with Dagger.io, KitOps, and Jozu Hub",
+    "tags": [
+      "KitOps",
+      "Hugging Face",
+      "Security",
+      "CICD"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-11"
+  },
+  {
+    "url": "https://medium.com/gitconnected/a-golden-path-to-production-why-platform-engineering-is-the-key-to-scaling-ai-ml-workflows-ba77043eb0f9",
+    "description": "A Golden Path to Production — Why Platform Engineering is the Key to Scaling AI/ML Workflows",
+    "tags": [
+      "KitOps",
+      "Hugging Face",
+      "Security",
+      "CICD"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-11"
+  },
+  {
+    "url": "https://jozu.com/blog/automating-ml-pipeline-with-modelkits-github-actions/",
+    "description": "Automating ML Pipeline with ModelKits + GitHub Actions",
+    "tags": [
+      "KitOps",
+      "Open-Source",
+      "GitHub Actions",
+      "ModelKits"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-18"
+  },
+  {
+    "url": "https://medium.com/data-science-collective/open-source-tools-for-scaling-ml-workloads-e49cd3fe41cd",
+    "description": "Open Source Tools for Scaling ML Workloads",
+    "tags": [
+      "KitOps",
+      "Open-Source",
+      "DevOps",
+      "CICD"
+    ],
+    "author": "Jesse Williams",
+    "published_time": "2025-02-26"
   }
 ]
