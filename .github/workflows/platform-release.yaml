@@ -388,14 +388,14 @@ jobs:
             index:org.opencontainers.image.licenses=Apache-2.0
 
       - name: Generate artifact attestation for base container
-        uses: actions/attest-build-provenance@bd77c077858b8d561b7a36cbe48ef4cc642ca39d   # v2.2.2
+        uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2   # v2.2.3
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build-kit-container.outputs.digest }}
           push-to-registry: true
 
       - name: Generate artifact attestation for base container
-        uses: actions/attest-build-provenance@bd77c077858b8d561b7a36cbe48ef4cc642ca39d   # v2.2.2
+        uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2   # v2.2.3
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.INIT_IMAGE_NAME }}
           subject-digest: ${{ steps.build-kit-init-container.outputs.digest }}
