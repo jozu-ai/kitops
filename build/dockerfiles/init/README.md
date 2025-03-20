@@ -1,4 +1,5 @@
 # Kit CLI init container
+
 This image is designed to be used as an init container on platforms such as Kubernetes and supports
 
 * Unpacking a ModelKit to a specific path within the container
@@ -35,7 +36,7 @@ metadata:
 spec:
   initContainers:
   - name: kitops-init
-    image: ghcr.io/jozu-ai/kitops-init-container:latest
+    image: ghcr.io/jozu-ai/kitops-init:latest
     env:
       - name: MODELKIT_REF
         value: "ghcr.io/jozu-ai/my-modelkit:latest"
@@ -62,12 +63,15 @@ spec:
 ```
 
 ## Building the image
+
 Building the image requires docker or podman. To build the image, run the following command in this directory:
+
 ```shell
 docker build -t kit-init-container:latest .
 ```
 
 By default, the image will be built using `ghcr.io/jozu-ai/kit:next` as a base. This can be overridden (to build using a specific version of Kit, for example) by using the build arg `KIT_BASE_IMAGE`:
+
 ```shell
 # Build the image based on Kit v0.3.2 instead of 'next'
 docker build -t kit-init-container:latest --build-arg KIT_BASE_IMAGE=ghcr.io/jozu-ai/kit:v0.3.2 .

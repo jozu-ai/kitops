@@ -45,7 +45,7 @@ The container is configurable via environment variables:
    # it available to the main container
    initContainers:
      - name: kitops-init
-       image: ghcr.io/jozu-ai/kitops-init-container:latest
+       image: ghcr.io/jozu-ai/kitops-init:latest
        env:
          - name: MODELKIT_REF
            value: "ghcr.io/jozu-ai/my-modelkit:latest"
