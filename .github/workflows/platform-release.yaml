@@ -50,7 +50,7 @@ jobs:
           p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
 
       - name: Install Syft
-        uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 #v0.24.2
+        uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c #v0.24.3
         with:
           syft-version: v1.32.0
 
@@ -79,7 +79,7 @@ jobs:
           ./build/scripts/sign ./dist/kitops-darwin-x86_64.zip
           ./build/scripts/sign ./dist/kitops-offline-darwin-x86_64.zip
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
             name: dist-macos
             if-no-files-found: error
@@ -101,7 +101,7 @@ jobs:
             go-version-file: 'go.mod'
 
       - name: Install Syft
-        uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 #v0.24.2
+        uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c #v0.24.3
         with:
           syft-version: v1.32.0
 
@@ -114,7 +114,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
             name: dist-windows
             if-no-files-found: error
@@ -135,7 +135,7 @@ jobs:
             go-version-file: 'go.mod'
 
       - name: Install Syft
-        uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 #v0.24.2
+        uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c #v0.24.3
         with:
           syft-version: v1.32.0
 
@@ -149,7 +149,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
             name: dist-linux
             if-no-files-found: error
@@ -191,7 +191,7 @@ jobs:
           cp ./kitops/build/homebrew/*.* ./homebrew-files
 
       - name: Merge build artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           path: dist
           pattern: dist-*
@@ -214,7 +214,7 @@ jobs:
       # homebrew recipe and pushing it to the repository:
       # 'kitops-ml/homebrew-kitops'
       - name: Upload homebrew-files as a build artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: homebrew-files
           if-no-files-found: error
@@ -297,7 +297,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download the homebrew artifacts to build the homebrew recipe
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: homebrew-files
           path: homebrew-files
